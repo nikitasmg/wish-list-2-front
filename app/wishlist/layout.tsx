@@ -1,4 +1,4 @@
-import { Header } from '@/components/Header'
+import { Header } from '@/components/header'
 import * as React from 'react'
 
 export default function Layout({

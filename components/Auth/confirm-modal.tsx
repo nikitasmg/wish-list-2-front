@@ -1,4 +1,4 @@
-import { ModalBase } from '@/components/ModalBase'
+import { ModalBase } from '@/components/modal-base'
 import * as React from 'react'
 
 type Props = {

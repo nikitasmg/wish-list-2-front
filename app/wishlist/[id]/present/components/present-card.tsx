@@ -1,6 +1,6 @@
 import { WishlistMenu } from '@/app/wishlist/[id]/components/wishlist-menu'
 import { PresentMenu } from '@/app/wishlist/[id]/present/components/present-menu'
-import { CardCover } from '@/components/CardCover'
+import { CardCover } from '@/components/card-cover'
 import { Present } from '@/shared/types'
 import { Heart } from 'lucide-react'
 import { useRouter } from 'next/navigation'

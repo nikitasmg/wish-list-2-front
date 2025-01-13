@@ -1,4 +1,4 @@
-import { CardCover } from '@/components/CardCover'
+import { CardCover } from '@/components/card-cover'
 import { WishlistMenu } from '@/app/wishlist/[id]/components/wishlist-menu'
 import { Wishlist } from '@/shared/types'
 import { useRouter } from 'next/navigation'

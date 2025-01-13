@@ -1,7 +1,7 @@
 'use client'
 import { useApiGetAllWishlists } from '@/api/wishlist'
 import { WishlistCard } from '@/app/wishlist/components/wishlistCard'
-import { PlusCard } from '@/components/PlusCard'
+import { PlusCard } from '@/components/plus-card'
 import * as React from 'react'
 
 export default function Page() {

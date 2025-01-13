@@ -1,5 +1,6 @@
-import { Header } from '@/components/Header'
+import { Header } from '@/components/header'
 import Image from 'next/image'
+import Link from 'next/link'
 import React from 'react'
 
 export default function Home() {
@@ -11,12 +12,13 @@ export default function Home() {
           Добро пожаловать в мир <span className="text-primary">вишлистов</span>
         </h2>
         <div className="flex flex-col gap-4 items-center justify-between mb-10 md:flex-row">
-          <div className="bg-primary p-5 rounded-2xl text-xl flex items-center gap-2 cursor-pointer text-gray-100 w-full justify-center md:w-auto md:justify-start">
+          <Link href={'/wishlist'}
+                className="bg-primary p-5 rounded-2xl text-xl flex items-center gap-2 cursor-pointer text-gray-100 w-full justify-center md:w-auto md:justify-start">
             <div
               className="flex justify-center items-center text-3xl text-primary p-3 rounded-full bg-gray-300 w-[30px] h-[30px]">+
             </div>
             Хочу вишлист
-          </div>
+          </Link>
           <div className="text-3xl max-w-[700px]">
             <span className="text-primary font-bold">Get wishlist</span> - это бесплатный сервис по созданию вишлистов
           </div>
@@ -54,10 +56,10 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <Image className='m-auto' src="/present-2.png" alt="present" width={400} height={150} />
+          <Image className="m-auto" src="/present-2.png" alt="present" width={400} height={150} />
         </div>
         <div className="flex flex-col-reverse justify-between mb-10 md:flex-row mditems-center">
-          <Image className='m-auto' src="/people.png" alt="present" width={400} height={150} />
+          <Image className="m-auto" src="/people.png" alt="present" width={400} height={150} />
           <div>
             <h2 className="text-4xl mb-4">Почему это круто?</h2>
             <div className="flex flex-col items-start gap-4 md:flex-row md:items-start md:gap-16">
@@ -83,9 +85,9 @@ export default function Home() {
             Пусть твои друзья сделают выбор за тебя
           </span>
         </div>
-        <button className="bg-primary text-gray-200 text-xl max-w-[300px] p-4 rounded-xl mx-auto">
+        <Link href={'/wishlist'} className="bg-primary text-gray-200 text-xl max-w-[300px] p-4 rounded-xl mx-auto">
           Вперед за вишлистом!
-        </button>
+        </Link>
       </main>
     </>
   )
