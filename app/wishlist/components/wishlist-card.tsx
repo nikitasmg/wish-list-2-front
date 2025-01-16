@@ -26,7 +26,7 @@ export const WishlistCard = ({ wishlist }: Props) => {
       <div className="p-4">
         <div className="flex items-center justify-between">
           <div className="font-bold mb-2 truncate">{wishlist.title}</div>
-          <WishlistMenu id={wishlist.id} />
+          <WishlistMenu wishlist={wishlist} />
         </div>
         {wishlist.description && (
           <div className="truncate">{wishlist.description}</div>

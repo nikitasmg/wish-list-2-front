@@ -1,29 +1,20 @@
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server';
 
-export function middleware(request: NextRequest) {
-  // Assume a "Cookie:nextjs=fast" header to be present on the incoming request
-  // Getting cookies from the request using the `RequestCookies` API
-  let cookie = request.cookies.get('token')
-  console.log(cookie) // => { name: 'nextjs', value: 'fast', Path: '/' }
-  const allCookies = request.cookies.getAll()
-  console.log(allCookies) // => [{ name: 'nextjs', value: 'fast' }]
+export function middleware(req: NextRequest) {
+  // Извлекаем cookie
+  const token = req.cookies.get('token');
 
-  request.cookies.has('nextjs') // => true
-  request.cookies.delete('nextjs')
-  request.cookies.has('nextjs') // => false
+  // Проверяем наличие токена
+  if (!token) {
+    // Если токен отсутствует, редиректим на страницу /login
+    return NextResponse.redirect(new URL('/login', req.url));
+  }
 
-  // Setting cookies on the response using the `ResponseCookies` API
-  const response = NextResponse.next()
-  response.cookies.set('vercel', 'fast')
-  response.cookies.set({
-    name: 'vercel',
-    value: 'fast',
-    path: '/',
-  })
-  cookie = response.cookies.get('vercel')
-  console.log(cookie) // => { name: 'vercel', value: 'fast', Path: '/' }
-  // The outgoing response will have a `Set-Cookie:vercel=fast;path=/` header.
-
-  return response
+  // Если токен есть, продолжаем обработку запроса
+  return NextResponse.next();
 }
+
+// Указать, для каких путей применить middleware
+export const config = {
+  matcher: ['/wishlist/:path*'], // замените на ваши пути
+};

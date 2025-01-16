@@ -29,7 +29,7 @@ export const CardCover = ({ cover, title, className}: Props) => {
           src={cover}
           alt={title ?? 'wishlist cover'}
           layout="fill"
-          objectFit="contain"
+          objectFit="cover"
         />
       </div>
     </div>

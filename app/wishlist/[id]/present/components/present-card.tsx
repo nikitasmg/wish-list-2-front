@@ -1,9 +1,7 @@
-import { WishlistMenu } from '@/app/wishlist/[id]/components/wishlist-menu'
 import { PresentMenu } from '@/app/wishlist/[id]/present/components/present-menu'
 import { CardCover } from '@/components/card-cover'
 import { Present } from '@/shared/types'
 import { Heart } from 'lucide-react'
-import { useRouter } from 'next/navigation'
 import * as React from 'react'
 
 type Props = {
@@ -12,7 +10,6 @@ type Props = {
 };
 
 export const PresentCard = ({ present, wishlistId }: Props) => {
-  // const navigate = useRouter()
   return (
     <div
       className="relative w-full md:w-[250px] h-[300] bg-accent flex flex-col rounded-2xl shadow hover:shadow-xl transition"

@@ -23,7 +23,7 @@ export const useApiCreateWishlist = () => {
     mutationFn: async data => {
       return api.post('wishlist', data, {
         headers: {
-          contentType: 'multipart/form-data',
+          "Content-Type": 'multipart/form-data',
         },
       })
     },
@@ -39,7 +39,7 @@ export const useApiEditWishlist = (id: string) => {
     mutationFn: async data => {
       return api.put(`wishlist/${id}`, data, {
         headers: {
-          contentType: 'multipart/form-data',
+          "Content-Type": 'multipart/form-data',
         },
       })
     },

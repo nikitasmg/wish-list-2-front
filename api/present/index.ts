@@ -1,5 +1,5 @@
 import api from '@/lib/api'
-import { Present, Wishlist } from '@/shared/types'
+import { Present } from '@/shared/types'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
 
@@ -23,7 +23,7 @@ export const useApiCreatePresent = (wishlistId: string) => {
     mutationFn: async data => {
       return api.post(`present/${wishlistId}`, data, {
         headers: {
-          contentType: 'multipart/form-data',
+          "Content-Type": 'multipart/form-data',
         },
       })
     },
@@ -39,7 +39,7 @@ export const useApiEditPresent = (wishlistId: string) => {
     mutationFn: async ({ data, id }) => {
       return api.put(`present/${id}`, data, {
         headers: {
-          contentType: 'multipart/form-data',
+          "Content-Type": 'multipart/form-data',
         },
       })
     },

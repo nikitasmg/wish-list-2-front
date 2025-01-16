@@ -3,7 +3,6 @@ import axios, { AxiosRequestConfig, AxiosInstance } from 'axios'
 // Создаем интерфейс для параметров запроса
 interface ApiHelperOptions {
   baseURL: string;
-  token: string | null;
 }
 
 class ApiHelper {
@@ -47,7 +46,6 @@ class ApiHelper {
   }
 }
 
-const token = localStorage.getItem('token')
-const api = new ApiHelper({ baseURL: 'http://localhost:8080/api/', token })
+const api = new ApiHelper({ baseURL: 'http://localhost:8080/api/' })
 
 export default api

@@ -2,10 +2,10 @@ import { AuthForm } from '@/components/Auth/components/auth-form'
 import { cn } from "@/lib/utils"
 import {
   Card,
-  CardContent,
+  CardContent, CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from '@/components/ui/card'
 import Link from 'next/link'
 
 
@@ -18,9 +18,9 @@ export function RegistrationForm({
       <Card>
         <CardHeader className="text-center">
           <CardTitle className="text-xl">Добро пожаловать!</CardTitle>
-          {/*<CardDescription>*/}
-          {/*  Login with your Apple or Google account*/}
-          {/*</CardDescription>*/}
+          <CardDescription>
+            Создайте аккаунт
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid gap-6">

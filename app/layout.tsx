@@ -1,4 +1,3 @@
-import { Header } from '@/components/header'
 import * as React from 'react'
 
 import Providers from '@/app/providers'
@@ -28,9 +27,7 @@ export default function RootLayout({
       className={`${manrope.variable} antialiased`}
     >
     <Providers>
-      <div className="p-5">
-        {children}
-      </div>
+      {children}
     </Providers>
     <Toaster />
     </body>

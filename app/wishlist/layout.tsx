@@ -9,7 +9,9 @@ export default function Layout({
   return (
     <>
       <Header />
-      {children}
+      <div className='p-5'>
+        {children}
+      </div>
     </>
   )
 }

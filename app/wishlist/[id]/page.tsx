@@ -24,7 +24,7 @@ export default function Page() {
       <Breadcrumbs items={[ { name: 'Мои вишлисты', url: '/wishlist' } ]} page={wishlist.title} />
       <div className="flex items-center justify-between">
         <h2 className="text-4xl">{wishlist.title}</h2>
-        <WishlistMenu id={wishlist.id} />
+        <WishlistMenu wishlist={wishlist}/>
       </div>
       {wishlist.description && (
         <Card>
