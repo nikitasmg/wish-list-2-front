@@ -1,6 +1,6 @@
 'use client'
 import { useApiGetWishlistById } from '@/api/wishlist'
-import { CreateForm } from '@/app/wishlist/create/components/create-form'
+import { CreateForm } from '@/app/wishlist/components/create-form'
 import { useParams } from 'next/navigation'
 import * as React from 'react'
 

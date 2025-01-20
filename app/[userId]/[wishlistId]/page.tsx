@@ -2,6 +2,7 @@
 
 import { useApiGetWishlistById } from '@/api/wishlist'
 import { PresentsPage } from '@/app/[userId]/[wishlistId]/components/presents-page'
+import { cn } from '@/lib/utils'
 import Image from 'next/image'
 import { useParams } from 'next/navigation'
 
@@ -19,7 +20,7 @@ export default function Page() {
   }
 
   return (
-    <div className="dark-blue w-screen min-h-screen bg-background px-2 md:px-5">
+    <div className={cn("w-screen min-h-screen bg-background px-2 md:px-5", wishlist.colorScheme)}>
       <div className='flex flex-col py-5'>
         <div className="flex flex-col-reverse gap-6 md:flex-row md:justify-between mb-10">
           <div className="text-5xl font-bold text-primary flex flex-col gap-4 justify-between col-auto">

@@ -54,10 +54,12 @@ export const useApiDeletePresent = (id: string, wishlistId: string) => {
   const queryClient = useQueryClient()
   return useMutation<{ data: Present }, AxiosError>({
     mutationFn: async () => {
-      return api.delete(`present/${id}`)
+      return api.delete(`present/${wishlistId}/${id}`)
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: [ 'presents', wishlistId ] })
     },
   })
 }
+
+// export const useApi

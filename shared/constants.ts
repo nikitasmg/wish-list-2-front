@@ -6,3 +6,46 @@ export const icons = {
   dog: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLWRvZyI+PHBhdGggZD0iTTExLjI1IDE2LjI1aDEuNUwxMiAxN3oiLz48cGF0aCBkPSJNMTYgMTR2LjUiLz48cGF0aCBkPSJNNC40MiAxMS4yNDdBMTMuMTUyIDEzLjE1MiAwIDAgMCA0IDE0LjU1NkM0IDE4LjcyOCA3LjU4MiAyMSAxMiAyMXM4LTIuMjcyIDgtNi40NDRhMTEuNzAyIDExLjcwMiAwIDAgMC0uNDkzLTMuMzA5Ii8+PHBhdGggZD0iTTggMTR2LjUiLz48cGF0aCBkPSJNOC41IDguNWMtLjM4NCAxLjA1LTEuMDgzIDIuMDI4LTIuMzQ0IDIuNS0xLjkzMS43MjItMy41NzYtLjI5Ny0zLjY1Ni0xLS4xMTMtLjk5NCAxLjE3Ny02LjUzIDQtNyAxLjkyMy0uMzIxIDMuNjUxLjg0NSAzLjY1MSAyLjIzNUE3LjQ5NyA3LjQ5NyAwIDAgMSAxNCA1LjI3N2MwLTEuMzkgMS44NDQtMi41OTggMy43NjctMi4yNzcgMi44MjMuNDcgNC4xMTMgNi4wMDYgNCA3LS4wOC43MDMtMS43MjUgMS43MjItMy42NTYgMS0xLjI2MS0uNDcyLTEuODU1LTEuNDUtMi4yMzktMi41Ii8+PC9zdmc+',
   sun: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLXN1biI+PGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iNCIvPjxwYXRoIGQ9Ik0xMiAydjIiLz48cGF0aCBkPSJNMTIgMjB2MiIvPjxwYXRoIGQ9Im00LjkzIDQuOTMgMS40MSAxLjQxIi8+PHBhdGggZD0ibTE3LjY2IDE3LjY2IDEuNDEgMS40MSIvPjxwYXRoIGQ9Ik0yIDEyaDIiLz48cGF0aCBkPSJNMjAgMTJoMiIvPjxwYXRoIGQ9Im02LjM0IDE3LjY2LTEuNDEgMS40MSIvPjxwYXRoIGQ9Im0xOS4wNyA0LjkzLTEuNDEgMS40MSIvPjwvc3ZnPg=='
 }
+
+export const colorSchema = [
+  {
+    name: "Основной",
+    value: "main",
+    colors: ["hsl(0 0% 100%)", "#A40E67"],
+  },
+  {
+    name: "Темный",
+    value: "dark",
+    colors: ["#1A2D4A", "#5F2A86"],
+  },
+  {
+    name: "Розовый",
+    value: "pink",
+    colors: ["#FCD0D0", "#FF4C4C"],
+  },
+  {
+    name: "Зеленый",
+    value: "green",
+    colors: ["#D9F7D9", "#4CAF50"],
+  },
+  {
+    name: "Синий",
+    value: "blue",
+    colors: ["#E1F5FE", "#00BFFF"],
+  },
+  {
+    name: "Темно-синий",
+    value: "dark-blue",
+    colors: ["hsl(220 20% 10%)", "#30B2D3"],
+  },
+  {
+    name: "Монохромный",
+    value: "monochrome",
+    colors: ["#F0F4F8", "#7E9AB0"],
+  },
+  {
+    name: "Темно-коричневый",
+    value: "dark-brown",
+    colors: ["#3F3D34", "hsl(25, 40%, 55%)"],
+  },
+];

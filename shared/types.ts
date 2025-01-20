@@ -8,6 +8,16 @@ export type Wishlist = {
   title: string;
   description: string;
   cover: string;
+  presentsCount: number;
+  settings: {
+    colorScheme: string
+    showGiftAvailability: boolean
+  }
+  location: {
+    name: string,
+    link?: string,
+    time?: Date
+  }
 }
 
 export type Present = {
