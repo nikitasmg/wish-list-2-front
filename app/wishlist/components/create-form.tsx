@@ -74,6 +74,11 @@ export function CreateForm({ edit, wishlist }: Props) {
         colorScheme: edit ? wishlist?.settings.colorScheme : 'main',
         showGiftAvailability: edit ? wishlist?.settings.showGiftAvailability : false,
       },
+      location: {
+        name: edit ? wishlist?.location.name : '',
+        link: edit ? wishlist?.location.link : '',
+        time: wishlist?.location.time ? new Date(wishlist?.location.time) : undefined,
+      },
     },
   })
 
@@ -142,7 +147,7 @@ export function CreateForm({ edit, wishlist }: Props) {
           name="title"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Название</FormLabel>
+              <FormLabel>Название*</FormLabel>
               <FormControl>
                 <Input placeholder="Мой день рождения" {...field} />
               </FormControl>
@@ -157,14 +162,13 @@ export function CreateForm({ edit, wishlist }: Props) {
               <FormItem>
                 <FormLabel>Описание</FormLabel>
                 <FormControl>
-                  <Textarea {...field} placeholder="Что будет на празднике время, дата, место и тд"
+                  <Textarea {...field} placeholder="Что будет на празднике, программа развлечений и тд"
                             className="resize-none h-[200px]" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-
         <div className='flex items-center justify-between min-h-[200px] gap-8'>
           {imageUrl ? (
               <div className="relative w-[200px] h-[200px] rounded-lg">
