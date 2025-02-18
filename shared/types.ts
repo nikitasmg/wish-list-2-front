@@ -26,4 +26,5 @@ export type Present = {
   description: string;
   cover: string;
   link: string;
+  reserved: boolean;
 }

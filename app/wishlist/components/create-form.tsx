@@ -155,61 +155,6 @@ export function CreateForm({ edit, wishlist }: Props) {
             </FormItem>
           )}
         />
-          <FormField
-            control={form.control}
-            name="description"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Описание</FormLabel>
-                <FormControl>
-                  <Textarea {...field} placeholder="Что будет на празднике, программа развлечений и тд"
-                            className="resize-none h-[200px]" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        <div className='flex items-center justify-between min-h-[200px] gap-8'>
-          {imageUrl ? (
-              <div className="relative w-[200px] h-[200px] rounded-lg">
-                <Image
-                  className="rounded-lg"
-                  src={imageUrl}
-                  alt={wishlist?.title ?? 'wishlist cover'}
-                  layout="fill"
-                  objectFit="cover"
-                />
-              </div>
-            )
-            : <div className="relative w-[200px] max-w-[50%] h-[200px] rounded-lg bg-secondary flex justify-center items-center">
-              <LucideFileQuestion className='stroke-accent-foreground' size={40}/>
-            </div>
-          }
-          <div className='flex-grow'>
-            <FormField
-              control={form.control}
-              name="file"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Обложка</FormLabel>
-                  <FormControl>
-                    <Input
-                      accept=".jpg, .jpeg, .png"
-                      type="file"
-                      onChange={(e) => {
-                        handleFileChange(e)
-                        field.onChange(e.target.files ? e.target.files[0] : null)
-                      }
-                      }
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
-        </div>
         <div
           className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
                 <span className="relative z-10 bg-background px-2 text-muted-foreground">
@@ -249,6 +194,68 @@ export function CreateForm({ edit, wishlist }: Props) {
             </FormItem>
           )}
         />
+        <div
+          className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
+                <span className="relative z-10 bg-background px-2 text-muted-foreground">
+                  Детали праздника
+                </span>
+        </div>
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Описание</FormLabel>
+              <FormControl>
+                <Textarea {...field} placeholder="Что будет на празднике, программа развлечений и тд"
+                          className="resize-none h-[200px]" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <div className='flex items-center justify-between min-h-[200px] gap-8'>
+          {imageUrl ? (
+              <div className="relative w-[200px] h-[200px] rounded-lg">
+                <Image
+                  className="rounded-lg"
+                  src={imageUrl}
+                  alt={wishlist?.title ?? 'wishlist cover'}
+                  layout="fill"
+                  objectFit="cover"
+                />
+              </div>
+            )
+            : <div
+              className="relative w-[200px] max-w-[50%] h-[200px] rounded-lg bg-secondary flex justify-center items-center">
+              <LucideFileQuestion className='stroke-accent-foreground' size={40} />
+            </div>
+          }
+          <div className='flex-grow'>
+            <FormField
+              control={form.control}
+              name="file"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Обложка</FormLabel>
+                  <FormControl>
+                    <Input
+                      accept=".jpg, .jpeg, .png"
+                      type="file"
+                      onChange={(e) => {
+                        handleFileChange(e)
+                        field.onChange(e.target.files ? e.target.files[0] : null)
+                      }
+                      }
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+        </div>
         <div
           className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
                 <span className="relative z-10 bg-background px-2 text-muted-foreground">

@@ -23,7 +23,7 @@ export const useApiCreatePresent = (wishlistId: string) => {
     mutationFn: async data => {
       return api.post(`present/${wishlistId}`, data, {
         headers: {
-          "Content-Type": 'multipart/form-data',
+          'Content-Type': 'multipart/form-data',
         },
       })
     },
@@ -39,7 +39,7 @@ export const useApiEditPresent = (wishlistId: string) => {
     mutationFn: async ({ data, id }) => {
       return api.put(`present/${id}`, data, {
         headers: {
-          "Content-Type": 'multipart/form-data',
+          'Content-Type': 'multipart/form-data',
         },
       })
     },
@@ -62,4 +62,14 @@ export const useApiDeletePresent = (id: string, wishlistId: string) => {
   })
 }
 
-// export const useApi
+export const useApiReservePresent = (wishlistId: string) => {
+  const queryClient = useQueryClient()
+  return useMutation<unknown, AxiosError, { presentId: string }>({
+    mutationFn: async ({ presentId }) => {
+      return api.put(`present/reserve/${presentId}`, {})
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: [ 'presents', wishlistId ] })
+    },
+  })
+}

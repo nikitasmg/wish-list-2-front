@@ -13,7 +13,7 @@ export const Header = () => {
   const user = data?.user
   const navigate = useRouter()
   return (
-    <header className="flex justify-between items-center mb-4 md:mb-10 px-2 md:px-5">
+    <header className="flex justify-between pt-5 items-center mb-4 md:mb-10 px-2 md:px-5">
       <Logo />
       <div className="flex gap-2 items-center">
         <ModeToggle />

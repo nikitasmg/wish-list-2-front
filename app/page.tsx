@@ -7,7 +7,7 @@ export default function Home() {
   return (
     <>
       <Header />
-      <main className="max-w-screen-2xl mx-auto flex flex-col">
+      <main className="max-w-screen-2xl mx-auto flex flex-col px-4">
         <h2 className="text-3xl max-w-[570px] mb-10 md:text-5xl md:mb-16">
           Добро пожаловать в мир <span className="text-primary">вишлистов</span>
         </h2>
