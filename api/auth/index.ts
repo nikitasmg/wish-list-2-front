@@ -10,7 +10,7 @@ type AuthProps = {
 export const useApiLogin = () => {
   return useMutation<{ token: string }, AxiosError, AuthProps>({
     mutationFn: async data => {
-      return api.post<{ token: string }>('login', data)
+      return api.post<{ token: string }, AuthProps>('login', data)
     },
   })
 }
@@ -18,7 +18,7 @@ export const useApiLogin = () => {
 export const useApiRegister = () => {
   return useMutation<{ token: string }, AxiosError, AuthProps>({
     mutationFn: async data => {
-      return api.post<{ token: string }>('register', data)
+      return api.post<{ token: string }, AuthProps>('register', data)
     },
   })
 }

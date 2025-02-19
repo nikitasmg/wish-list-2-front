@@ -11,9 +11,7 @@ import * as React from 'react'
 
 export default function Page() {
   const { wishlistId } = useParams()
-  if (!wishlistId) {
-    return null
-  }
+
   const { data: presentsData } = useApiGetAllPresents(wishlistId as string)
 
   const { data } = useApiGetWishlistById(wishlistId as string)
@@ -41,7 +39,7 @@ export default function Page() {
 
             <div className="text-4xl text-card-foreground flex flex-wrap items-center">
               Приглашаю вас на свой праздник -
-              <div className="text-primary text-5xl">"{wishlist.title}"</div>
+              <div className="text-primary text-5xl">{`"${wishlist.title}"`}</div>
             </div>
           </div>
         </div>
@@ -76,10 +74,10 @@ export default function Page() {
         }
       </div>
       <div className="text-4xl text-primary font-bold mb-2">А вот и мой список подарков:</div>
-      <div className='flex flex-wrap gap-5 py-5'>
+      <div className="flex flex-wrap gap-5 py-5">
         {
           presents?.map(present =>
-            <PresentItem key={present.id} present={present} theme={wishlist.settings.colorScheme}/>
+            <PresentItem key={present.id} present={present} theme={wishlist.settings.colorScheme} />,
           )
         }
       </div>

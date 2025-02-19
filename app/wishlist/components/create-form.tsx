@@ -28,10 +28,10 @@ import {
 import { Input } from '@/components/ui/input'
 
 
-const fileSchema = z.instanceof(File)
-  .refine(file => file.size <= 2 * 1024 * 1024, { // Ограничиваем размер файла до 2MB
+const fileSchema = z.any()
+  .refine(file => file instanceof File && file.size <= 2 * 1024 * 1024, {
     message: 'Файл должен быть менее 2MB',
-  }).nullable()
+  }).nullable();
 
 const locationLink = z.string().optional().refine(value => {
   const regex = /^(https?:\/\/(go\.2gis\.com|2gis\.ru|yandex\.ru)\/[^\s]+)/ // Регулярное выражение для проверки ссылок
@@ -105,8 +105,7 @@ export function CreateForm({ edit, wishlist }: Props) {
     if (data.file) {
       formData.append('file', data.file)
     }
-    // @ts-ignore
-    // formData.append('settings', data.settings)
+
     formData.append('settings[colorScheme]', data.settings.colorScheme)
     formData.append('settings[showGiftAvailability]', String(data.settings.showGiftAvailability))
     formData.append('location[name]', data.location?.name ?? '')
@@ -116,8 +115,10 @@ export function CreateForm({ edit, wishlist }: Props) {
     }
     if (edit && wishlist) {
       if (!data.file && wishlist.cover) {
-        const file = await createFileFromUrl(wishlist.cover, wishlist.title)
-        formData.append('file', file)
+        if (typeof window !== "undefined") {
+          const file = await createFileFromUrl(wishlist.cover, wishlist.title);
+          formData.append('file', file);
+        }
       }
       editMutate(formData, {
         onSuccess: () => {

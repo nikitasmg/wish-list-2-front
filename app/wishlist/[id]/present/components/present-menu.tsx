@@ -1,5 +1,4 @@
 import { useApiDeletePresent } from '@/api/present'
-import { useApiDeleteWishlist } from '@/api/wishlist'
 import {
   DropdownMenu,
   DropdownMenuContent, DropdownMenuItem,

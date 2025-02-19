@@ -13,6 +13,7 @@ const CopyLinkButton = ({ url }: Props) => {
         title: 'Ссылка на вишлист скопирована',
       })
     } catch (error) {
+      console.log(error)
       toast({
         variant: 'destructive',
         title: 'Не удалось скопировать ссылку. Попробуйте еще раз.',

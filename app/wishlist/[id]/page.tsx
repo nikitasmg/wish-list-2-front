@@ -13,9 +13,9 @@ import Image from 'next/image'
 
 export default function Page() {
   const { id } = useParams()
-  if (!id || typeof id !== 'string') return null
-  const { data } = useApiGetWishlistById(id)
-  const { data: presents } = useApiGetAllPresents(id)
+
+  const { data } = useApiGetWishlistById(id as string)
+  const { data: presents } = useApiGetAllPresents(id as string)
   const wishlist = data?.data
 
   if (!wishlist) {
@@ -69,7 +69,7 @@ export default function Page() {
           && presents?.data.map(
             present => <PresentCard
               key={present.id}
-              wishlistId={id}
+              wishlistId={id as string}
               present={present}
             />,
           )

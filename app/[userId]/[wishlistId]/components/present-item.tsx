@@ -14,9 +14,9 @@ type Props = {
 }
 
 export const PresentItem = ({ present, theme }: Props) => {
-  const { _, wishlistId } = useParams()
+  const params = useParams()
 
-  const { mutate, isPending } = useApiReservePresent(wishlistId as string)
+  const { mutate, isPending } = useApiReservePresent(params.wishlistId as string)
   const handleReserve = () => {
     mutate({presentId: present.id })
   }

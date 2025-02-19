@@ -41,13 +41,12 @@ type Props = {
 
 export function CreateEditForm({ edit, present }: Props) {
   const { id } = useParams()
-  if (!id || typeof id !== 'string') return null
 
   const navigation = useRouter()
   const [ imageUrl, setImageUrl ] = useState<string | undefined>(present?.cover)
 
-  const { mutate: createMutate } = useApiCreatePresent(id)
-  const { mutate: editMutate } = useApiEditPresent(id)
+  const { mutate: createMutate } = useApiCreatePresent(id as string)
+  const { mutate: editMutate } = useApiEditPresent(id as string)
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -102,7 +101,6 @@ export function CreateEditForm({ edit, present }: Props) {
     }
   }
 
-  // @ts-ignore
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">

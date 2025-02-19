@@ -33,7 +33,7 @@ export const WishlistMenu = ({ wishlist }: MenuProps) => {
           <CoppyLinkButton url={`http://localhost:3000/${data?.user?.id}/${wishlist.id}`}/>
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <ShareButton title={wishlist.title} cover={wishlist.cover} url={`http://localhost:3000/${data?.user?.id}/${wishlist.id}`}>
+          <ShareButton title={wishlist.title} url={`http://localhost:3000/${data?.user?.id}/${wishlist.id}`}>
             <span>Поделиться</span>
           </ShareButton>
         </DropdownMenuItem>

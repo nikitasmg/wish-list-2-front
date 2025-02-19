@@ -4,11 +4,11 @@ import React from 'react'
 type Props = {
   title: string
   url: string
-  cover?: string
+  // cover?: string
   className?: string
 }
 
-const ShareButton = ({ title, url, className, cover, children }: Props & React.PropsWithChildren) => {
+const ShareButton = ({ title, url, className, children }: Props & React.PropsWithChildren) => {
   const handleShare = async () => {
     if (navigator.share) {
       // let file: File[] | undefined = undefined;

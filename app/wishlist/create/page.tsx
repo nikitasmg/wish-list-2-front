@@ -1,6 +1,5 @@
 'use client'
 import { CreateForm } from '@/app/wishlist/components/create-form'
-import * as React from 'react'
 
 export default function Page() {
   return (

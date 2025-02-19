@@ -22,19 +22,19 @@ class ApiHelper {
   }
 
   // Метод POST
-  public async post<T>(url: string, data: any, config?: AxiosRequestConfig): Promise<T> {
+  public async post<T, K>(url: string, data?: K, config?: AxiosRequestConfig): Promise<T> {
     const response = await this.axiosInstance.post<T>(url, data, config)
     return response.data
   }
 
   // Метод PUT
-  public async put<T>(url: string, data: any, config?: AxiosRequestConfig): Promise<T> {
+  public async put<T, K>(url: string, data?: K, config?: AxiosRequestConfig): Promise<T> {
     const response = await this.axiosInstance.put<T>(url, data, config)
     return response.data
   }
 
   // Метод PATCH
-  public async patch<T>(url: string, data: any, config?: AxiosRequestConfig): Promise<T> {
+  public async patch<T, K>(url: string, data?: K, config?: AxiosRequestConfig): Promise<T> {
     const response = await this.axiosInstance.patch<T>(url, data, config)
     return response.data
   }
