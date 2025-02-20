@@ -46,6 +46,6 @@ class ApiHelper {
   }
 }
 
-const api = new ApiHelper({ baseURL: 'http://localhost:8080/api/' })
+const api = new ApiHelper({ baseURL: 'http://62.113.97.113:8080/api/' })
 
 export default api
