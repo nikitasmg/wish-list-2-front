@@ -46,6 +46,6 @@ class ApiHelper {
   }
 }
 
-const api = new ApiHelper({ baseURL: 'http://62.113.97.113:8080/api/' })
+const api = new ApiHelper({ baseURL: 'https://api.get-my-wishlist.ru/api/' })
 
 export default api
