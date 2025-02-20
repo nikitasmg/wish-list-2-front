@@ -2,7 +2,7 @@ module.exports = {
   apps: [
     {
       name: "front", // Имя вашего приложения
-      script: "yarn", // Используем yarn для запуска команд
+      script: "pnpm", // Используем yarn для запуска команд
       args: "start", // Аргумент для yarn (yarn start)
       cwd: "/wish-list-2-front", // Путь к вашему проекту
       autorestart: true, // Автоматически перезапускать приложение при сбоях
@@ -15,8 +15,8 @@ module.exports = {
       instances: 1, // Количество инстансов
       post_update: [ // Команды, которые выполняются после git pull
         "git pull", // Обновить код из репозитория
-        "yarn install", // Установить зависимости
-        "yarn build", // Собрать проект
+        "pnpm install", // Установить зависимости
+        "pnpm run build", // Собрать проект
       ],
     },
   ],
