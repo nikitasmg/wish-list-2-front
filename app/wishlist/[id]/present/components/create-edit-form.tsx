@@ -22,10 +22,10 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 
-const fileSchema = z.instanceof(File)
-  .refine(file => file.size <= 2 * 1024 * 1024, { // Ограничиваем размер файла до 2MB
+const fileSchema = z.any()
+  .refine(file => file instanceof File && file.size <= 2 * 1024 * 1024, {
     message: 'Файл должен быть менее 2MB',
-  }).nullable()
+  }).nullable();
 
 const FormSchema = z.object({
   title: z.string().min(1, { message: 'Название обязательно' }),
