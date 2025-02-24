@@ -1,20 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 export function middleware(req: NextRequest) {
-  // Извлекаем cookie
-  const token = req.cookies.get('token');
+  const token = req.cookies.get('token')?.value;
+  console.log('Token:', token); // Логируем токен
 
-  // Проверяем наличие токена
   if (!token) {
-    // Если токен отсутствует, редиректим на страницу /login
+    console.log('Redirecting to /login'); // Логируем редирект
     return NextResponse.redirect(new URL('/login', req.url));
   }
 
-  // Если токен есть, продолжаем обработку запроса
   return NextResponse.next();
 }
 
-// Указать, для каких путей применить middleware
 export const config = {
-  matcher: ['/wishlist/:path*'], // замените на ваши пути
+  matcher: ['/wishlist/:path*'],
 };
