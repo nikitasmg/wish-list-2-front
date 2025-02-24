@@ -25,7 +25,7 @@ import { Input } from '@/components/ui/input'
 const fileSchema = z.any()
   .refine(file => file instanceof File && file.size <= 2 * 1024 * 1024, {
     message: 'Файл должен быть менее 2MB',
-  }).nullable();
+  }).optional();
 
 const FormSchema = z.object({
   title: z.string().min(1, { message: 'Название обязательно' }),

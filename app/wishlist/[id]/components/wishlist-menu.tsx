@@ -30,10 +30,10 @@ export const WishlistMenu = ({ wishlist }: MenuProps) => {
           Редактировать
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <CoppyLinkButton url={`http://localhost:3000/${data?.user?.id}/${wishlist.id}`}/>
+          <CoppyLinkButton url={`https://get-my-wishlist.ru/${data?.user?.id}/${wishlist.id}`}/>
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <ShareButton title={wishlist.title} url={`http://localhost:3000/${data?.user?.id}/${wishlist.id}`}>
+          <ShareButton title={wishlist.title} url={`https://get-my-wishlist.ru/${data?.user?.id}/${wishlist.id}`}>
             <span>Поделиться</span>
           </ShareButton>
         </DropdownMenuItem>

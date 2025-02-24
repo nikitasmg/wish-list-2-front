@@ -31,12 +31,12 @@ import { Input } from '@/components/ui/input'
 const fileSchema = z.any()
   .refine(file => file instanceof File && file.size <= 2 * 1024 * 1024, {
     message: 'Файл должен быть менее 2MB',
-  }).nullable();
+  }).optional()
 
-const locationLink = z.string().optional().refine(value => {
+const locationLink = z.string().refine(value => {
   const regex = /^(https?:\/\/(go\.2gis\.com|2gis\.ru|yandex\.ru)\/[^\s]+)/ // Регулярное выражение для проверки ссылок
   return regex.test(value ?? '')
-})
+}).optional()
 
 const FormSchema = z.object({
   title: z.string().min(1, { message: 'Название обязательно' }),

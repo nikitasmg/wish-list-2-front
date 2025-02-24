@@ -9,6 +9,9 @@ const nextConfig: NextConfig = {
         hostname: "localhost",
       },
       {
+        hostname: "get-my-wishlist.ru",
+      },
+      {
         hostname: "minio",
       }
     ]
