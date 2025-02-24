@@ -13,5 +13,5 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/wishlist/:path*'],
+  // matcher: ['/wishlist/:path*'],
 };
