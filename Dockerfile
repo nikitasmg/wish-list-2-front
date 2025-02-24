@@ -1,18 +1,18 @@
 # Этап сборки
 FROM node:18-alpine AS builder
 
-# Устанавливаем pnpm
-RUN corepack enable && corepack prepare pnpm@latest --activate
+# Устанавливаем конкретную версию pnpm
+RUN corepack enable && corepack prepare pnpm@8.14.0 --activate
 
 WORKDIR /app
 
-# Сначала копируем только файлы блокировки
+# Сначала копируем файлы блокировки и конфигурации
 COPY pnpm-lock.yaml .npmrc package.json ./
 
-# Устанавливаем зависимости
-RUN pnpm fetch && pnpm install -r --offline
+# Устанавливаем зависимости с проверкой целостности
+RUN pnpm install --frozen-lockfile
 
-# Копируем исходный код
+# Копируем остальные файлы
 COPY . .
 
 # Собираем приложение
@@ -35,4 +35,4 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 USER nextjs
 EXPOSE 3000
 
-CMD ["npm", "start"]
+CMD ["node", "server.js"]
