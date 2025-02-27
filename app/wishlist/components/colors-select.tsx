@@ -23,7 +23,7 @@ export const ColorsSelect = ({value, onChange}: Props) => {
                   <span>{name}</span>
                   <div className="flex items-center gap-2">
                     {colors.map((color) => (
-                      <div key={color} className={`w-[20px] h-[20px]`} style={{ backgroundColor: color }} />
+                      <div key={color} className={`w-[40px] h-[20px]`} style={{ backgroundColor: color }} />
                     ))}
                   </div>
                 </div>

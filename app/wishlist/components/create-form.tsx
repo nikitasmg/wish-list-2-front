@@ -29,11 +29,15 @@ import { Input } from '@/components/ui/input'
 
 
 const fileSchema = z.any()
-  .refine(file => file instanceof File && file.size <= 2 * 1024 * 1024, {
+  .refine(file => {
+    if (!file) return true
+    return file instanceof File && file.size <= 2 * 1024 * 1024
+  } , {
     message: 'Файл должен быть менее 2MB',
   }).optional()
 
 const locationLink = z.string().refine(value => {
+  if (!value) return true
   const regex = /^(https?:\/\/(go\.2gis\.com|2gis\.ru|yandex\.ru)\/[^\s]+)/ // Регулярное выражение для проверки ссылок
   return regex.test(value ?? '')
 }).optional()
@@ -106,6 +110,8 @@ export function CreateForm({ edit, wishlist }: Props) {
       formData.append('file', data.file)
     }
 
+    console.log(data.location?.link, 'location link')
+
     formData.append('settings[colorScheme]', data.settings.colorScheme)
     formData.append('settings[showGiftAvailability]', String(data.settings.showGiftAvailability))
     formData.append('location[name]', data.location?.name ?? '')
@@ -115,9 +121,9 @@ export function CreateForm({ edit, wishlist }: Props) {
     }
     if (edit && wishlist) {
       if (!data.file && wishlist.cover) {
-        if (typeof window !== "undefined") {
-          const file = await createFileFromUrl(wishlist.cover, wishlist.title);
-          formData.append('file', file);
+        if (typeof window !== 'undefined') {
+          const file = await createFileFromUrl(wishlist.cover, wishlist.title)
+          formData.append('file', file)
         }
       }
       editMutate(formData, {
@@ -215,7 +221,7 @@ export function CreateForm({ edit, wishlist }: Props) {
             </FormItem>
           )}
         />
-        <div className='flex items-center justify-between min-h-[200px] gap-8'>
+        <div className="flex items-center justify-between min-h-[200px] gap-8">
           {imageUrl ? (
               <div className="relative w-[200px] h-[200px] rounded-lg">
                 <Image
@@ -229,10 +235,10 @@ export function CreateForm({ edit, wishlist }: Props) {
             )
             : <div
               className="relative w-[200px] max-w-[50%] h-[200px] rounded-lg bg-secondary flex justify-center items-center">
-              <LucideFileQuestion className='stroke-accent-foreground' size={40} />
+              <LucideFileQuestion className="stroke-accent-foreground" size={40} />
             </div>
           }
-          <div className='flex-grow'>
+          <div className="flex-grow">
             <FormField
               control={form.control}
               name="file"
