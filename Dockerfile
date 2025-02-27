@@ -2,7 +2,7 @@
 FROM node:18-alpine AS builder
 
 # Устанавливаем конкретную версию pnpm
-RUN corepack enable && corepack prepare pnpm@8.14.0 --activate
+RUN corepack enable && corepack prepare pnpm@9.10.0 --activate
 
 WORKDIR /app
 
