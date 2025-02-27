@@ -32,6 +32,10 @@ COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
+# Копируем сгенерированные файлы sitemap и robots.txt
+COPY --from=builder /app/public/sitemap.xml ./public/sitemap.xml
+COPY --from=builder /app/public/robots.txt ./public/robots.txt
+
 USER nextjs
 EXPOSE 3000
 

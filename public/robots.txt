@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://get-my-wishlist.ru
+
+# Sitemaps
+Sitemap: https://get-my-wishlist.ru/sitemap.xml
