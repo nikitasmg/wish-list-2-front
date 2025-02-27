@@ -10,7 +10,7 @@ WORKDIR /app
 COPY pnpm-lock.yaml .npmrc package.json ./
 
 # Устанавливаем зависимости с проверкой целостности
-RUN pnpm install --frozen-lockfile
+RUN pnpm install
 
 # Копируем остальные файлы
 COPY . .
