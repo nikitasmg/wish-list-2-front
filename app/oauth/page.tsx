@@ -5,14 +5,13 @@ import { toast } from '@/hooks/use-toast'
 import { AuthProps } from '@/shared/types'
 import { useSearchParams } from 'next/navigation'
 
-import { useEffect } from 'react'
+import { Suspense, useEffect } from 'react'
 
-export default function LoginPage() {
+function Auth() {
   const params = useSearchParams()
 
   const parseAuthParams = (): null | AuthProps => {
     if (!params) return null
-
     return {
       id: params.get('id') ?? '',
       first_name: params.get('first_name') ?? '',
@@ -24,6 +23,7 @@ export default function LoginPage() {
   const { mutate } = useApiAuth()
 
   useEffect(() => {
+      parseAuthParams()
       const authData = parseAuthParams()
       if (authData) {
         mutate(authData, {
@@ -37,7 +37,7 @@ export default function LoginPage() {
           },
         })
       }
-    },
+    }, // eslint-disable-next-line react-hooks/exhaustive-deps
     [])
 
   return (
@@ -46,5 +46,14 @@ export default function LoginPage() {
         Идет авторизация, пожалуйста не перезагружайте страницу...
       </div>
     </div>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    // You could have a loading skeleton as the `fallback` too
+    <Suspense>
+      <Auth />
+    </Suspense>
   )
 }

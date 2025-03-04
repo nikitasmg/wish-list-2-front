@@ -18,10 +18,11 @@ export const TgAuthButton = () => {
     tgButtonContainerRef.current?.appendChild(script)
 
     return () => {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       tgButtonContainerRef.current?.removeChild(script) // Очистка при размонтировании
     }
   }, [])
   return (
-    <div className="w-full" ref={tgButtonContainerRef}/>
+    <div className="w-full min-h-[40px]" ref={tgButtonContainerRef}/>
   )
 }
