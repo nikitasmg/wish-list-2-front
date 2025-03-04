@@ -28,3 +28,11 @@ export type Present = {
   link: string;
   reserved: boolean;
 }
+
+export type AuthProps = {
+  id: string
+  first_name: string
+  username: string
+  auth_date: string
+  hash: string
+}

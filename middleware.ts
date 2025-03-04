@@ -6,8 +6,6 @@ export function middleware(request: NextRequest) {
   if (request.nextUrl.pathname.startsWith('/wishlist')) {
     // Получаем куку 'token'
     const token = request.cookies.get('token')?.value;
-    console.log('Token:', token); // Логируем значение куки
-    console.log('All cookies:', request.cookies.getAll()); // Логируем все куки
 
     // Если куки нет, выполняем редирект на /login
     if (!token) {

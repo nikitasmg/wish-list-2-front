@@ -2,7 +2,6 @@
 
 import { useApiLogin, useApiRegister } from '@/api/auth'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
@@ -33,7 +32,6 @@ type Props = {
 export function AuthForm({ isLogin }: Props) {
   const { mutate: login, isPending: loginLoading } = useApiLogin()
   const { mutate: register, isPending: registerLoading } = useApiRegister()
-  const navigation = useRouter()
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -46,13 +44,13 @@ export function AuthForm({ isLogin }: Props) {
     if (isLogin) {
       login(data, {
         onSuccess: () => {
-          navigation.push('wishlist')
+          window.location.replace('/wishlist')
         },
       })
     } else {
       register(data, {
         onSuccess: () => {
-          navigation.push('wishlist')
+          window.location.replace('/wishlist')
         },
       })
     }
