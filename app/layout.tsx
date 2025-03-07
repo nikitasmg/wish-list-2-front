@@ -1,4 +1,5 @@
 import { Metrika } from '@/components/metrica'
+import { Suspense } from 'react'
 import * as React from 'react'
 
 import Providers from '@/app/providers'
@@ -27,7 +28,9 @@ export default function RootLayout({
     <body
       className={`${manrope.variable} antialiased`}
     >
-    <Metrika />
+    <Suspense fallback={null}>
+      <Metrika />
+    </Suspense>
     <Providers>
       {children}
     </Providers>
