@@ -1,9 +1,10 @@
 'use client'
 import { useApiGetAllPresents } from '@/api/present'
 import { useApiGetWishlistById } from '@/api/wishlist'
+import { ShareButtons } from '@/app/wishlist/[id]/components/share-buttons'
 import { PresentCard } from '@/app/wishlist/[id]/present/components/present-card'
 import { Breadcrumbs } from '@/components/breadcrumbs'
-import { WishlistMenu } from '@/app/wishlist/[id]/components/wishlist-menu'
+import { WishlistMenu,  } from '@/app/wishlist/[id]/components/wishlist-menu'
 import { PlusCard } from '@/components/plus-card'
 import { Card, CardContent } from '@/components/ui/card'
 import { toDate } from 'date-fns'
@@ -24,11 +25,13 @@ export default function Page() {
 
   return (
     <div className="flex flex-col gap-5">
+
       <Breadcrumbs items={[ { name: 'Мои вишлисты', url: '/wishlist' } ]} page={wishlist.title} />
       <div className="flex items-center justify-between">
-        <h2 className="text-4xl">{wishlist.title}</h2>
+        <h2 className="text-4xl">{wishlist?.title ?? 'День рождения'}</h2>
         <WishlistMenu wishlist={wishlist} />
       </div>
+      <ShareButtons wishlist={wishlist} />
       <div className='flex flex-col-reverse md:flex-row gap-5'>
         {wishlist.description && (
           <Card>

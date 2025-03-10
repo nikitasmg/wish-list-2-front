@@ -3,43 +3,50 @@ import { Header } from '@/components/header'
 import Link from 'next/link'
 import React from 'react'
 import Head from 'next/head'
+import Image from 'next/image'
 
 export default function HowItWorks() {
   const steps = [
     {
       title: 'Регистрация',
       description: 'Создайте аккаунт за 30 секунд через email или социальные сети',
-      image: '/screenshots/step-1.jpg',
+      image: '/screenshots/login.png',
+      imageDark: '/screenshots/login-dark.png',
       direction: 'left',
     },
     {
       title: 'Создайте вишлист',
       description: 'Назовите ваш вишлист и придумайте описание',
-      image: '/screenshots/step-2.jpg',
+      image: '/screenshots/create-wishlist.png',
+      imageDark: '/screenshots/create-wishlist-dark.png',
       direction: 'right',
     },
     {
       title: 'Настройте оформление',
       description: 'Выберите цветовую тему, дату и время праздника',
-      image: '/screenshots/step-3.jpg',
+      image: '/screenshots/theme.png',
+      imageDark: '/screenshots/theme-dark.png',
       direction: 'left',
     },
     {
       title: 'Добавьте подарки',
       description: 'Загрузите фото и придумайте описание',
-      image: '/screenshots/step-4.jpg',
+      image: '/screenshots/gifts.png',
+      imageDark: '/screenshots/gifts-dark.png',
       direction: 'right',
     },
     {
       title: 'Поделитесь с друзьями',
       description: 'Отправьте уникальную ссылку или опубликуйте в соцсетях',
-      image: '/screenshots/step-5.jpg',
+      image: '/screenshots/share.png',
+      imageDark: '/screenshots/share-dark.png',
       direction: 'left',
     },
     {
       title: 'Наслаждайтесь',
       description: 'Получайте только нужные подарки!',
-      image: '/screenshots/step-6.jpg',
+      image: '/screenshots/wishlist-example.png',
+      imageDark: '/screenshots/wishlist-example-dark.png',
       direction: 'right',
     },
   ]
@@ -113,17 +120,22 @@ export default function HowItWorks() {
                 </div>
 
                 {/* Image */}
-                <div className="md:w-1/2">
-                  <div className="relative bg-card rounded-xl shadow-xl overflow-hidden border">
-                    {/*<img*/}
-                    {/*  src={step.image}*/}
-                    {/*  alt={`Шаг ${index + 1} - ${step.title}`}*/}
-                    {/*  className="w-full h-64 md:h-80 object-cover hover:scale-105 transition-transform"*/}
-                    {/*/>*/}
-                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-foreground/60 p-4">
-                    <span className="text-background text-sm">
-                      Пример шага {index + 1}
-                    </span>
+                <div className="w-full md:w-1/2">
+                  <div className="relative bg-accent rounded-xl shadow-xl overflow-hidden border">
+                    <div className='w-full h-[400px] md:h-[500px]'>
+                      <Image
+                        className="rounded-lg border dark:hidden dark:scale-0 dark:absolute"
+                        src={step.image}
+                        alt="example"
+                        layout="fill"
+                        objectFit="contain"
+                      />
+                      <Image
+                        className="rounded-lg border hidden dark:block absolute scale-0 dark:scale-100 dark:relative"
+                        src={step.imageDark}
+                        alt="example"
+                        layout="fill"
+                        objectFit="contain" />
                     </div>
                   </div>
                 </div>

@@ -1,5 +1,6 @@
 import { Footer } from '@/components/footer'
 import { Header } from '@/components/header'
+import { WishlistExample } from '@/components/wishlist-example'
 import { PlusIcon } from 'lucide-react'
 // import Image from 'next/image'
 import Link from 'next/link'
@@ -61,21 +62,8 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="md:w-1/2 mt-8 md:mt-0 relative">
-              <div
-                className="relative bg-card text-card-foreground p-6 rounded-2xl shadow-2xl transform rotate-2 hover:rotate-0 transition-transform duration-300">
-                {/*<img*/}
-                {/*  src="/wishlist-example.png"*/}
-                {/*  alt="Пример вишлиста"*/}
-                {/*  className="rounded-lg border"*/}
-                {/*/>*/}
-                <div
-                  className="absolute -bottom-6 -right-6 bg-chart-1 text-white px-6 py-3 rounded-xl shadow-lg flex items-center gap-2">
-                  <span className="text-xl">🎉</span>
-                  <span>Твой стиль!</span>
-                </div>
-              </div>
-
+            <div className="w-full md:w-1/2 mt-8 md:mt-0 relative">
+              <WishlistExample/>
               <div className="hidden md:block absolute -top-12 -left-20 w-48 h-48 bg-chart-4/20 rounded-full blur-xl" />
               <div
                 className="hidden md:block absolute -bottom-12 -right-20 w-48 h-48 bg-chart-5/20 rounded-full blur-xl" />
@@ -86,7 +74,7 @@ export default function Home() {
         {/* Секция преимуществ с иконками */}
         <section className="bg-popover py-16">
           <div className="container mx-auto px-4">
-            <div className="grid md:grid-cols-4 gap-8">
+            <div className="grid md:grid-cols-4 gap-4 md:gap-8">
               {[
                 { icon: '💎', title: 'Бесплатно', text: 'Никаких скрытых платежей' },
                 { icon: '🎨', title: 'Кастомизация', text: 'Несколько вариантов оформления' },
