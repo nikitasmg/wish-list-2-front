@@ -6,12 +6,11 @@ import * as React from 'react'
 
 export default function Page() {
   const {data} = useApiGetAllWishlists()
-
   return (
     <div>
       <h2 className="text-4xl mb-5">Мои вишлисты</h2>
+      <PlusCard link='/wishlist/create'/>
       <div className="flex flex-wrap gap-4 items-center">
-        <PlusCard link='/wishlist/create'/>
         {
           data?.data?.map((wishlist) => (
             <WishlistCard key={wishlist.id} wishlist={wishlist}/>

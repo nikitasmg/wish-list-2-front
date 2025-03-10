@@ -1,94 +1,201 @@
+import { Footer } from '@/components/footer'
 import { Header } from '@/components/header'
-import Image from 'next/image'
+import { PlusIcon } from 'lucide-react'
+// import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
+import Head from 'next/head'
 
 export default function Home() {
   return (
     <>
+      <Head>
+        <title>WishMaker - Создавайте красивые вишлисты бесплатно</title>
+        <meta
+          name="description"
+          content="Бесплатный сервис для создания вишлистов с индивидуальным дизайном.
+                  Добавляйте подарки, настраивайте стиль и делитесь с друзьями!"
+        />
+        <meta
+          name="keywords"
+          content="вишлист, список желаний, подарки, создать вишлист, бесплатный вишлист,
+                  онлайн вишлист, поделиться вишлистом"
+        />
+        <link rel="canonical" href='https://get-my-wishlist.ru' />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="GetWishLIst - Ваш идеальный вишлист" />
+        <meta property="og:description" content="Создайте и настройте персональный вишлист за минуту" />
+      </Head>
       <Header />
-      <main className="max-w-screen-2xl mx-auto flex flex-col px-4">
-        <h2 className="text-3xl max-w-[570px] mb-10 md:text-5xl md:mb-16">
-          Добро пожаловать в мир <span className="text-primary">вишлистов</span>
-        </h2>
-        <div className="flex flex-col gap-4 items-center justify-between mb-10 md:flex-row">
-          <Link href={'/wishlist'}
-                className="bg-primary p-5 rounded-2xl text-xl flex items-center gap-2 cursor-pointer text-gray-100 w-full justify-center md:w-auto md:justify-start">
-            <div
-              className="flex justify-center items-center text-3xl text-primary p-3 rounded-full bg-gray-300 w-[30px] h-[30px]">+
-            </div>
-            Хочу вишлист
-          </Link>
-          <div className="text-3xl max-w-[700px]">
-            <span className="text-primary font-bold">Get wishlist</span> - это бесплатный сервис по созданию вишлистов
-          </div>
-        </div>
-        <div className="flex flex-col items-start justify-between mb-10 md:flex-row md:items-center">
-          <div>
-            <h2 className="text-2xl md:text-4xl mb-5">Как это работает?</h2>
-            <div className="flex flex-col items-start gap-5 md:flex-row md:gap-10">
-              <div className="md:max-w-[180px] text-2xl md:text-xl flex md:flex-col gap-2 md:gap-4">
-                <div
-                  className="flex items-center flex-shrink-0 justify-center w-[40px] h-[40px] bg-primary text-gray-200 rounded-full font-bold">
-                  1
-                </div>
-                <div>
-                  Создай список: добавляй свои хотелки с фотографиями и описаниями
-                </div>
+      <div className="min-h-screen bg-background text-foreground font-manrope">
+        {/* Hero Section с анимацией */}
+        <section className="container mx-auto px-4 py-8 md:py-24">
+          <div className="flex flex-col md:flex-row items-center gap-8">
+            <div className="md:w-1/2">
+              <div className="flex items-center gap-3 mb-4 bg-accent/20 px-4 py-2 rounded-full w-fit">
+                <span className="text-chart-1">🎁</span>
+                <span className="text-sm font-semibold">Бесплатно навсегда!</span>
               </div>
-              <div className="md:max-w-[180px] flex md:flex-col gap-4 text-2xl md:text-xl">
-                <div
-                  className="flex items-center flex-shrink-0  justify-center w-[40px] h-[40px] bg-primary text-gray-200 rounded-full font-bold">
-                  2
-                </div>
-                <div>
-                  Поделись ссылкой в соцсетях или мессенджерах
-                </div>
-              </div>
-              <div className="md:max-w-[180px] flex md:flex-col gap-4 text-2xl md:text-xl">
-                <div
-                  className="flex items-center flex-shrink-0  justify-center w-[40px] h-[40px] bg-primary text-gray-200 rounded-full font-bold">
-                  3
-                </div>
-                <div>
-                  Получай подарки: друзья смогут выбрать и купить их прямо из твоего списка
-                </div>
+              <h1 className="text-4xl md:text-6xl font-bold text-primary mb-6 leading-tight">
+                Создавай вишлисты,<br />
+                <span className="bg-gradient-to-r from-chart-1 to-chart-5 bg-clip-text text-transparent">
+                которые хочется исполнить
+              </span>
+              </h1>
+              <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl">
+                Персонализируй список желаний, добавляй подарки из любых магазинов и
+                делись с друзьями красивой страницей. Мечты должны сбываться!
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Link
+                  href='/wishlist'
+                  className="flex items-center gap-2 bg-primary text-primary-foreground px-8 py-4 rounded-lg font-semibold transition-all hover:bg-primary/90 hover:scale-105 shadow-lg">
+                  Создать
+                  <PlusIcon />
+                </Link>
+                <Link
+                  href='/how-it-works'
+                  className="border-2 border-primary text-primary px-8 py-4 rounded-lg font-semibold hover:bg-accent/50 transition-colors flex items-center gap-2">
+                  <span>Как это работает?</span>
+                </Link>
               </div>
             </div>
+
+            <div className="md:w-1/2 mt-8 md:mt-0 relative">
+              <div
+                className="relative bg-card text-card-foreground p-6 rounded-2xl shadow-2xl transform rotate-2 hover:rotate-0 transition-transform duration-300">
+                {/*<img*/}
+                {/*  src="/wishlist-example.png"*/}
+                {/*  alt="Пример вишлиста"*/}
+                {/*  className="rounded-lg border"*/}
+                {/*/>*/}
+                <div
+                  className="absolute -bottom-6 -right-6 bg-chart-1 text-white px-6 py-3 rounded-xl shadow-lg flex items-center gap-2">
+                  <span className="text-xl">🎉</span>
+                  <span>Твой стиль!</span>
+                </div>
+              </div>
+
+              <div className="hidden md:block absolute -top-12 -left-20 w-48 h-48 bg-chart-4/20 rounded-full blur-xl" />
+              <div
+                className="hidden md:block absolute -bottom-12 -right-20 w-48 h-48 bg-chart-5/20 rounded-full blur-xl" />
+            </div>
           </div>
-          <Image className="m-auto" src="/present-2.png" alt="present" width={400} height={150} />
-        </div>
-        <div className="flex flex-col-reverse justify-between mb-10 md:flex-row mditems-center">
-          <Image className="m-auto" src="/people.png" alt="present" width={400} height={150} />
-          <div>
-            <h2 className="text-4xl mb-4">Почему это круто?</h2>
-            <div className="flex flex-col items-start gap-4 md:flex-row md:items-start md:gap-16">
-              <div className="md:max-w-[220px]">
-                <span className="text-3xl text-primary">Удобство - </span> <br />
-                все желания <br /> в одном клике!
-              </div>
-              <div className="md:max-w-[220px]">
-                <span className="text-3xl text-primary">Точность - </span> <br />
-                никаких больше <br /> ненужных подарков!
-              </div>
-              <div className="md:max-w-[220px]">
-                <span className="text-3xl text-primary">Организация - </span> <br />
-                планируй покупки и события легко!
+        </section>
+
+        {/* Секция преимуществ с иконками */}
+        <section className="bg-popover py-16">
+          <div className="container mx-auto px-4">
+            <div className="grid md:grid-cols-4 gap-8">
+              {[
+                { icon: '💎', title: 'Бесплатно', text: 'Никаких скрытых платежей' },
+                { icon: '🎨', title: 'Кастомизация', text: 'Несколько вариантов оформления' },
+                { icon: '🔗', title: 'Простая ссылка', text: 'Делитесь одним кликом' },
+                { icon: '🛍️', title: 'Интеграции', text: 'Добавляйте из любых магазинов' },
+              ].map((feature, index) => (
+                <div key={index} className="text-center p-6">
+                  <div className="text-4xl mb-4">{feature.icon}</div>
+                  <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
+                  <p className="text-muted-foreground">{feature.text}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Секция примеров */}
+        {/*<section className="py-16 md:py-24">*/}
+        {/*  <div className="container mx-auto px-4">*/}
+        {/*    <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">*/}
+        {/*      Примеры вишлистов*/}
+        {/*    </h2>*/}
+        {/*    <div className="grid md:grid-cols-3 gap-8">*/}
+        {/*      {[ 1, 2, 3 ].map((i) => (*/}
+        {/*        <div key={i} className="group relative overflow-hidden rounded-2xl shadow-lg">*/}
+        {/*          <img*/}
+        {/*            src={`/examples/example-${i}.jpg`}*/}
+        {/*            className="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-105"*/}
+        {/*            alt={`Пример вишлиста ${i}`}*/}
+        {/*          />*/}
+        {/*          <div*/}
+        {/*            className="absolute inset-0 bg-gradient-to-t from-foreground/60 to-transparent flex items-end p-6">*/}
+        {/*            <div className="text-background">*/}
+        {/*              <h3 className="font-bold text-lg mb-2">Тематический пример #{i}</h3>*/}
+        {/*              <button*/}
+        {/*                className="border-2 border-background px-4 py-2 rounded-lg hover:bg-background/20 transition-colors">*/}
+        {/*                Посмотреть пример*/}
+        {/*              </button>*/}
+        {/*            </div>*/}
+        {/*          </div>*/}
+        {/*        </div>*/}
+        {/*      ))}*/}
+        {/*    </div>*/}
+        {/*  </div>*/}
+        {/*</section>*/}
+
+        {/* Секция отзывов */}
+        {/*<section className="bg-card py-16">*/}
+        {/*  <div className="container mx-auto px-4">*/}
+        {/*    <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">*/}
+        {/*      Отзывы пользователей*/}
+        {/*    </h2>*/}
+        {/*    <div className="grid md:grid-cols-2 gap-8">*/}
+        {/*      {[*/}
+        {/*        {*/}
+        {/*          name: 'Анна, 28 лет',*/}
+        {/*          text: 'С помощью WishMaker смогла организовать свой идеальный свадебный вишлист. Все гости были в восторге от удобства!',*/}
+        {/*          avatar: 1*/}
+        {/*        },*/}
+        {/*        {*/}
+        {/*          name: 'Максим, 35 лет',*/}
+        {/*          text: 'Лучший сервис для создания списков подарков на день рождения. Теперь друзья всегда знают, что подарить!',*/}
+        {/*          avatar: 2*/}
+        {/*        },*/}
+        {/*      ].map((review, index) => (*/}
+        {/*        <div key={index} className="bg-popover p-8 rounded-xl">*/}
+        {/*          <div className="flex items-center gap-4 mb-4">*/}
+        {/*            <img*/}
+        {/*              src={`/avatars/user-${review.avatar}.jpg`}*/}
+        {/*              className="w-12 h-12 rounded-full"*/}
+        {/*              alt={review.name}*/}
+        {/*            />*/}
+        {/*            <div>*/}
+        {/*              <h4 className="font-bold">{review.name}</h4>*/}
+        {/*              <div className="flex text-chart-5">*/}
+        {/*                ★★★★★*/}
+        {/*              </div>*/}
+        {/*            </div>*/}
+        {/*          </div>*/}
+        {/*          <p className="text-muted-foreground">{review.text}</p>*/}
+        {/*        </div>*/}
+        {/*      ))}*/}
+        {/*    </div>*/}
+        {/*  </div>*/}
+        {/*</section>*/}
+
+        {/* Финальный CTA */}
+        <section className="py-16 md:py-24 bg-gradient-to-r from-chart-2 to-chart-4">
+          <div className="container mx-auto px-4 text-center">
+            <div className="max-w-2xl mx-auto text-background">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                Начни прямо сейчас!
+              </h2>
+              <p className="mb-8 text-lg">
+                Создай свой первый вишлист бесплатно — это займет меньше минуты
+              </p>
+              <Link
+                href='/wishlist'
+                className="bg-background text-foreground px-12 py-4 rounded-xl font-bold text-lg hover:bg-background/90 transition-colors shadow-xl">
+                Попробовать бесплатно →
+              </Link>
+              <div className="mt-4 text-sm opacity-80">
+                Без кредитной карты • Бесплатно навсегда
               </div>
             </div>
           </div>
-        </div>
-        <div className="text-2xl mx-auto mb-10">
-          Присоединяйся и преврати свои мечты в реальность с легкостью и радостью!
-          <br />
-          <span className="text-primary">
-            Пусть твои друзья сделают выбор за тебя
-          </span>
-        </div>
-        <Link href={'/wishlist'} className="bg-primary text-gray-200 text-xl max-w-[300px] p-4 rounded-xl mx-auto">
-          Вперед за вишлистом!
-        </Link>
-      </main>
+        </section>
+        <Footer/>
+      </div>
     </>
   )
 }

@@ -21,6 +21,7 @@ export default function Page() {
   if (!wishlist) {
     return null
   }
+
   return (
     <div className="flex flex-col gap-5">
       <Breadcrumbs items={[ { name: 'Мои вишлисты', url: '/wishlist' } ]} page={wishlist.title} />
@@ -28,7 +29,7 @@ export default function Page() {
         <h2 className="text-4xl">{wishlist.title}</h2>
         <WishlistMenu wishlist={wishlist} />
       </div>
-      <div className='flex flex-col md:flex-row gap-5'>
+      <div className='flex flex-col-reverse md:flex-row gap-5'>
         {wishlist.description && (
           <Card>
             <CardContent className="text-xl whitespace-pre-wrap mb-5 py-2 px-5">
@@ -36,9 +37,10 @@ export default function Page() {
             </CardContent>
           </Card>
         )}
-        {wishlist.cover && <div className='relative w-full min-h-[400px] md:w-1/2'>
-          <Image src={wishlist.cover} alt={wishlist.title} fill/>
-        </div>}
+        {
+          wishlist?.cover &&
+          <Image className="rounded-2xl" src={wishlist.cover} alt="wishlist-cover" width={400} height={400} />
+        }
       </div>
 
       {
@@ -62,8 +64,8 @@ export default function Page() {
         )
       }
       <h3 className="text-2xl mb-5">Список подарков:</h3>
+      <PlusCard link={`/wishlist/${id}/present/create`} />
       <div className="flex flex-col gap-4 md:flex-row md:flex-wrap">
-        <PlusCard link={`/wishlist/${id}/present/create`} />
         {
           presents && presents.data.length > 0
           && presents?.data.map(

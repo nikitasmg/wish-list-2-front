@@ -9,6 +9,7 @@ export type Wishlist = {
   description: string;
   cover: string;
   presentsCount: number;
+  userId: string
   settings: {
     colorScheme: string
     showGiftAvailability: boolean
@@ -16,8 +17,10 @@ export type Wishlist = {
   location: {
     name: string,
     link?: string,
-    time?: Date
+    time?: string
   }
+  createdAt: string,
+  updatedAt: string,
 }
 
 export type Present = {
@@ -27,6 +30,9 @@ export type Present = {
   cover: string;
   link: string;
   reserved: boolean;
+  createdAt: string,
+  updatedAt: string,
+  wishlistId: string
 }
 
 export type AuthProps = {

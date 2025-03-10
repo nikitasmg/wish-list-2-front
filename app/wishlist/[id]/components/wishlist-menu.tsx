@@ -22,7 +22,7 @@ export const WishlistMenu = ({ wishlist }: MenuProps) => {
   const { mutate } = useApiDeleteWishlist(wishlist.id)
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>
+      <DropdownMenuTrigger className='relative z-10'>
         <Ellipsis />
       </DropdownMenuTrigger>
       <DropdownMenuContent>
