@@ -23,6 +23,6 @@ export const TgAuthButton = () => {
     }
   }, [])
   return (
-    <div className="w-full min-h-[40px]" ref={tgButtonContainerRef}/>
+    <div className="w-full min-h-[40px] flex items-center justify-center" ref={tgButtonContainerRef}/>
   )
 }

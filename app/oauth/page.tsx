@@ -23,7 +23,6 @@ function Auth() {
   const { mutate } = useApiAuth()
 
   useEffect(() => {
-      parseAuthParams()
       const authData = parseAuthParams()
       if (authData) {
         mutate(authData, {
@@ -31,10 +30,11 @@ function Auth() {
           onError: () => {
             toast({
               variant: 'destructive',
-              title: 'Что-то пошло не так',
-            })
-            window.location.replace('/login')
-          },
+              title: 'Ошибка авторизации',
+              duration: 2000, // Показывать 2 секунды
+            });
+            setTimeout(() => window.location.replace('/login'), 2000);
+          }
         })
       }
     }, // eslint-disable-next-line react-hooks/exhaustive-deps
