@@ -30,7 +30,7 @@ export const UserAvatar = ({ user }: Props) => {
   const navigation = useRouter()
   const logout = () => {
     logoutMutate()
-    navigation.push('/')
+    window.location.replace('/login')
   }
 
   return (
