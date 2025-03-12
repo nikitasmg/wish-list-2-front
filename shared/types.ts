@@ -36,9 +36,10 @@ export type Present = {
 }
 
 export type AuthProps = {
-  id: string
+  id: number
   first_name: string
+  last_name: string
   username: string
-  auth_date: string
+  auth_date: number
   hash: string
 }

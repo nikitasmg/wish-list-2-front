@@ -13,10 +13,11 @@ function Auth() {
   const parseAuthParams = (): null | AuthProps => {
     if (!params) return null
     return {
-      id: params.get('id') ?? '',
+      id: Number(params.get('id')) ?? '',
       first_name: params.get('first_name') ?? '',
+      last_name: params.get('last_name') ?? '',
       username: params.get('username') ?? '',
-      auth_date: params.get('auth_date') ?? '',
+      auth_date: Number(params.get('auth_date')) ?? '',
       hash: params.get('hash') ?? '',
     }
   }
