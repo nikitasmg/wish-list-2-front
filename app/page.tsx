@@ -72,7 +72,7 @@ export default function Home() {
         </section>
 
         {/* Секция преимуществ с иконками */}
-        <section className="bg-popover py-16">
+        <section className="bg-popover py-4 md:py-16">
           <div className="container mx-auto px-4">
             <div className="grid md:grid-cols-4 gap-4 md:gap-8">
               {[
@@ -81,7 +81,7 @@ export default function Home() {
                 { icon: '🔗', title: 'Простая ссылка', text: 'Делитесь одним кликом' },
                 { icon: '🛍️', title: 'Интеграции', text: 'Добавляйте из любых магазинов' },
               ].map((feature, index) => (
-                <div key={index} className="text-center p-6">
+                <div key={index} className="text-center p-2 md:p-6">
                   <div className="text-4xl mb-4">{feature.icon}</div>
                   <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
                   <p className="text-muted-foreground">{feature.text}</p>
@@ -174,11 +174,8 @@ export default function Home() {
               <Link
                 href='/wishlist'
                 className="bg-background text-foreground px-12 py-4 rounded-xl font-bold text-lg hover:bg-background/90 transition-colors shadow-xl">
-                Попробовать бесплатно →
+                Попробовать бесплатно  →
               </Link>
-              <div className="mt-4 text-sm opacity-80">
-                Без кредитной карты • Бесплатно навсегда
-              </div>
             </div>
           </div>
         </section>

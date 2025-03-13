@@ -5,7 +5,7 @@ import * as React from 'react'
 export const WishlistExample = () => {
   return (
     <div
-      className="relative w-full md:w-[400px] h-[500px] bg-card text-card-foreground p-6 rounded-2xl shadow-2xl transform rotate-2 hover:rotate-0 transition-transform duration-300">
+      className="relative w-full md:w-[400px] h-[500px] bg-card text-card-foreground p-6 rounded-2xl shadow-2xl transform md:rotate-2 hover:rotate-0 transition-transform duration-300">
       <Image
         className="rounded-lg border dark:scale-0 dark:absolute"
         src="/screenshots/wishlist-example.png"
