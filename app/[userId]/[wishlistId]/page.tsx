@@ -17,12 +17,12 @@ export default function Page() {
 
   const { data } = useApiGetWishlistById(wishlistId as string)
 
-  const {data: userData} = useApiGetMe()
+  const { data: userData } = useApiGetMe()
 
   const wishlist = data?.data
   const presents = presentsData?.data
-  const isMe = !!userData?.user
-  const isPresentHidden = (isMe && !data?.data?.settings.showGiftAvailability)
+  const isMyWishlist = userData?.user.id === wishlist?.userId
+  const isPresentHidden = (isMyWishlist && !wishlist?.settings.showGiftAvailability)
 
   if (!wishlist) {
     return null
