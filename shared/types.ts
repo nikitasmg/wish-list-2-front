@@ -41,5 +41,6 @@ export type AuthProps = {
   last_name: string
   username: string
   auth_date: number
+  photo_url: string
   hash: string
 }

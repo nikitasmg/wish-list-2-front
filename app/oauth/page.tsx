@@ -18,6 +18,7 @@ function Auth() {
       last_name: params.get('last_name') ?? '',
       username: params.get('username') ?? '',
       auth_date: Number(params.get('auth_date')) ?? '',
+      photo_url: params.get('photo_url') ?? '',
       hash: params.get('hash') ?? '',
     }
   }
