@@ -11,9 +11,10 @@ import * as React from 'react'
 type Props = {
   present: Present
   theme: string
+  isHidden: boolean
 }
 
-export const PresentItem = ({ present, theme }: Props) => {
+export const PresentItem = ({ present, theme, isHidden }: Props) => {
   const params = useParams()
 
   const { mutate, isPending } = useApiReservePresent(params.wishlistId as string)
@@ -37,13 +38,14 @@ export const PresentItem = ({ present, theme }: Props) => {
         <div className="line-clamp-3 text-foreground">{present.description}
         </div>
         <div className="flex items-center justify-between flex-row gap-2 mt-auto">
-          <ConfirmReserveModal theme={theme} disabled={present.reserved} onClick={handleReserve}>
-            <Button className="grow"
-                    loading={isPending}
-                    variant={present.reserved ? 'destructive' : 'default'}
-                    disabled={present.reserved}
-            >{present.reserved ? 'Уже забрали' : 'Забронировать'}</Button>
-          </ConfirmReserveModal>
+          {!isHidden && <ConfirmReserveModal theme={theme} disabled={present.reserved} onClick={handleReserve}>
+              <Button className="grow"
+                      loading={isPending}
+                      variant={present.reserved ? 'destructive' : 'default'}
+                      disabled={present.reserved}
+              >{present.reserved ? 'Уже забрали' : 'Забронировать'}</Button>
+            </ConfirmReserveModal>
+          }
           <a href={present.link} target="_blank" className="flex text-primary gap-2 hover:underline">В
             магазин <ExternalLink /></a>
         </div>

@@ -1,6 +1,7 @@
 'use client'
 
 import { useApiGetAllPresents } from '@/api/present'
+import { useApiGetMe } from '@/api/user'
 import { useApiGetWishlistById } from '@/api/wishlist'
 import { PresentItem } from '@/app/[userId]/[wishlistId]/components/present-item'
 import { cn } from '@/lib/utils'
@@ -16,8 +17,12 @@ export default function Page() {
 
   const { data } = useApiGetWishlistById(wishlistId as string)
 
+  const {data: userData} = useApiGetMe()
+
   const wishlist = data?.data
   const presents = presentsData?.data
+  const isMe = !!userData?.user
+  const isPresentHidden = (isMe && !data?.data?.settings.showGiftAvailability)
 
   if (!wishlist) {
     return null
@@ -77,7 +82,12 @@ export default function Page() {
       <div className="flex flex-wrap gap-5 py-5">
         {
           presents?.map(present =>
-            <PresentItem key={present.id} present={present} theme={wishlist.settings.colorScheme} />,
+            <PresentItem
+              key={present.id}
+              present={present}
+              theme={wishlist.settings.colorScheme}
+              isHidden={isPresentHidden}
+            />,
           )
         }
       </div>
