@@ -42,8 +42,10 @@ export const PresentItem = ({ present, theme, isHidden }: Props) => {
             >{present.reserved ? 'Уже забрали' : 'Забронировать'}</Button>
           </ConfirmReserveModal>
           }
-          <a href={present.link} target="_blank" className="flex text-primary gap-2 hover:underline">В
-            магазин <ExternalLink /></a>
+          {
+            present.link && <a href={present.link} target="_blank" className="flex text-primary gap-2 hover:underline">В
+              магазин <ExternalLink /></a>
+          }
         </div>
       </div>
     </div>
