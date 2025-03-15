@@ -26,14 +26,20 @@ const fileSchema = z.any()
   .refine(file => {
     if (!file) return true
     return file instanceof File && file.size <= 2 * 1024 * 1024
-  } , {
+  }, {
     message: 'Файл должен быть менее 2MB',
   }).optional()
 
 const FormSchema = z.object({
   title: z.string().min(1, { message: 'Название обязательно' }),
   description: z.string().optional(),
-  link: z.string().url({ message: 'Не верный формат ссылки' }).min(1, { message: 'Ссылка обязательна' }),
+  link: z
+    .string()
+    .refine(
+      (value) => value === undefined || value === '' || z.string().url().safeParse(value).success, // Кастомная проверка
+      { message: 'Некорректный URL' }
+    ),
+  price: z.string().optional().refine((value) => value === undefined || value === '' || !isNaN(parseFloat(value))),
   file: fileSchema,
 })
 
@@ -57,6 +63,7 @@ export function CreateEditForm({ edit, present }: Props) {
       title: edit ? present?.title : '',
       description: edit ? present?.description : '',
       link: edit ? present?.link : '',
+      price: edit ? `${present?.price}` : undefined,
       file: null,
     },
   })
@@ -78,12 +85,17 @@ export function CreateEditForm({ edit, present }: Props) {
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     const formData = new FormData()
     formData.append('title', data.title)
-    formData.append('link', data.link)
+    if (data.link) {
+      formData.append('link', data.link)
+    }
     if (data.description) {
       formData.append('description', data.description)
     }
     if (data.file) {
       formData.append('file', data.file)
+    }
+    if (data.price) {
+      formData.append('price', `${data.price}`)
     }
     if (edit && present) {
       if (!data.file && present.cover) {
@@ -129,6 +141,26 @@ export function CreateEditForm({ edit, present }: Props) {
               <FormControl>
                 <Textarea {...field} placeholder="Описание"
                           className="resize-none h-[200px]" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="price"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Цена</FormLabel>
+              <FormControl>
+                <div className="flex items-center gap-2">
+                  <Input value={field.value ?? ''}
+                         onChange={field.onChange}
+                         className="w-1/2 md:w-1/4"
+                         type="number"
+                  />
+                  ₽
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>

@@ -28,7 +28,8 @@ export type Present = {
   title: string;
   description: string;
   cover: string;
-  link: string;
+  link?: string;
+  price?: number;
   reserved: boolean;
   createdAt: string,
   updatedAt: string,
