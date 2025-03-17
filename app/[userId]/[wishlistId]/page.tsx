@@ -7,8 +7,10 @@ import { PresentItem } from '@/app/[userId]/[wishlistId]/components/present-item
 import { cn } from '@/lib/utils'
 import { toDate } from 'date-fns'
 import Image from 'next/image'
+import Link from 'next/link'
 import { useParams } from 'next/navigation'
-import {MapPinIcon, CalendarIcon} from 'lucide-react'
+import { MapPinIcon, CalendarIcon } from 'lucide-react'
+import { useEffect } from 'react'
 import * as React from 'react'
 
 export default function Page() {
@@ -24,6 +26,19 @@ export default function Page() {
   const presents = presentsData?.data
   const isMyWishlist = userData?.user.id === wishlist?.userId
   const isPresentHidden = (isMyWishlist && !wishlist?.settings.showGiftAvailability)
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && document.body.classList) {
+      const colorScheme = wishlist?.settings?.colorScheme;
+      if (colorScheme) {
+        document.body.classList.add(colorScheme)
+      }
+      return () => {
+        if (colorScheme)
+        document.body.classList.remove(colorScheme)
+      };
+    }
+  }, [wishlist]);
 
   if (!wishlist) {
     return null
@@ -134,6 +149,18 @@ export default function Page() {
           </div>
         </div>
       </div>
+      <footer className="bg-secondary text-secondary-foreground py-3">
+        <div className="mx-auto flex items-center justify-between container px-4 text-center w-full">
+          <div className="flex-col border-t border-secondary/20 text-xs md:text-xl">
+            <p>Создано с помощью сервиса <Link href='/' className='underline'>GetWishlist</Link></p>
+          </div>
+          <Link
+            href='/'
+            className="bg-background text-foreground px-12 py-4 rounded-xl font-bold text-lg hover:bg-background/90 transition-colors shadow-xl">
+            Хочу такой же вишлист!
+          </Link>
+        </div>
+      </footer>
     </div>
   )
 }

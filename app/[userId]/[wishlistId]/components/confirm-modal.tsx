@@ -17,7 +17,7 @@ type Props = {
 export function ConfirmReserveModal({ theme, disabled,  onClick, children }: Props) {
   return (
     <AlertDialog>
-      <AlertDialogTrigger disabled={disabled}>{children}</AlertDialogTrigger>
+      <AlertDialogTrigger asChild disabled={disabled}>{children}</AlertDialogTrigger>
       <AlertDialogContent className={theme}>
         <AlertDialogHeader>
           <AlertDialogTitle className='text-primary'>Вы уверены что хотите забронировать подарок?</AlertDialogTitle>
