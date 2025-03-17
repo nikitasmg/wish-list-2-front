@@ -35,7 +35,7 @@ export const PresentItem = ({ present, theme, isHidden }: Props) => {
           present.price &&
           <div className='text-right font-bold text-l italic text-foreground mt-auto'>{present.price.toLocaleString()} ₽</div>
         }
-        <div className="flex items-center justify-between flex-row gap-2 mt-auto">
+        <div className="flex items-center justify-between flex-row gap-6 mt-auto">
           {!isHidden && <ConfirmReserveModal theme={theme} disabled={present.reserved} onClick={handleReserve}>
             <Button className="grow"
                     loading={isPending}

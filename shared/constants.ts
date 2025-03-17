@@ -48,4 +48,14 @@ export const colorSchema = [
     value: "dark-brown",
     colors: ["#3F3D34", "hsl(25, 40%, 55%)"],
   },
+  {
+    name: "Фиолетовый",
+    value: "rainbow",
+    colors: ["hsl(285 31% 96%)", "hsl(285 39% 12%)"],
+  },
+  {
+    name: "Темно-фиолетовый",
+    value: "dark-rainbow",
+    colors: ["hsl(285 31% 10%)", "hsl(285 31% 90%)"],
+  },
 ];
