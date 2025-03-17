@@ -27,7 +27,10 @@ export default function TermsOfServicePage() {
             </p>
 
             <p className="mb-6 text-gray-600">
-              Сайт GetWishlist не является средством массовой информации. Используя сайт, Вы соглашаетесь с условиями
+              Сайт <a
+              href="https://get-my-wishlist.ru"
+              className="text-blue-600 hover:underline">get-my-wishlist.ru</a> не является средством массовой
+              информации. Используя сайт, Вы соглашаетесь с условиями
               данного соглашения.
             </p>
 
