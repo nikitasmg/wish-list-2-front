@@ -1,3 +1,4 @@
+import { GoogleMetric } from '@/components/google-metric'
 import { Metrika } from '@/components/metrica'
 import { Suspense } from 'react'
 import * as React from 'react'
@@ -30,6 +31,9 @@ export default function RootLayout({
     >
     <Suspense fallback={null}>
       <Metrika />
+    </Suspense>
+    <Suspense fallback={null}>
+      <GoogleMetric />
     </Suspense>
     <Providers>
       {children}

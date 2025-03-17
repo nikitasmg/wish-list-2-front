@@ -56,7 +56,7 @@ export default function Page() {
             </h1>
 
             <div className="text-2xl md:text-3xl font-medium text-muted-foreground max-w-2xl">
-              Приглашаю вас на праздник —<br />
+              Приглашаю вас на праздник <br />
               <span className="text-primary font-bold italic text-4xl md:text-5xl">&#34;{wishlist.title}&#34;</span>
             </div>
           </div>
@@ -149,14 +149,14 @@ export default function Page() {
           </div>
         </div>
       </div>
-      <footer className="bg-secondary text-secondary-foreground py-3">
-        <div className="mx-auto flex items-center justify-between container px-4 text-center w-full">
-          <div className="flex-col border-t border-secondary/20 text-xs md:text-xl">
+      <footer className="bg-secondary text-secondary-foreground py-4">
+        <div className="mx-auto flex items-center justify-between container px-4 text-center w-full gap-4">
+          <div className="flex-col border-t border-secondary/20 text-sm md:text-xl">
             <p>Создано с помощью сервиса <Link href='/' className='underline'>GetWishlist</Link></p>
           </div>
           <Link
             href='/'
-            className="bg-background text-foreground px-12 py-4 rounded-xl font-bold text-lg hover:bg-background/90 transition-colors shadow-xl">
+            className="bg-background text-foreground p-2 md:px-12 md:py-4 rounded-xl font-bold text-sm md:text-lg hover:bg-background/90 transition-colors shadow-xl">
             Хочу такой же вишлист!
           </Link>
         </div>
