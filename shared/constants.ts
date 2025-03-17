@@ -36,7 +36,7 @@ export const colorSchema = [
   {
     name: "Темно-синий",
     value: "dark-blue",
-    colors: ["hsl(220 20% 10%)", "#30B2D3"],
+    colors: ["hsl(220 20% 10%)", "hsl(220 40% 60%)"],
   },
   {
     name: "Монохромный",
@@ -51,11 +51,11 @@ export const colorSchema = [
   {
     name: "Фиолетовый",
     value: "rainbow",
-    colors: ["hsl(285 31% 96%)", "hsl(285 39% 12%)"],
+    colors: ["hsl(285 31% 96%)", "hsl(279 58% 85%)"],
   },
   {
     name: "Темно-фиолетовый",
     value: "dark-rainbow",
-    colors: ["hsl(285 31% 10%)", "hsl(285 31% 90%)"],
+    colors: ["hsl(285 31% 10%)", "hsl(279 58% 25%)"],
   },
 ];
