@@ -12,21 +12,21 @@ export default function TermsOfServicePage() {
         <meta httpEquiv="X-UA-Compatible" content="ie=edge" />
       </Head>
 
-      <div className="min-h-screen bg-gray-50 py-8">
+      <div className="min-h-screen py-8">
         <div className="container mx-auto px-4 py-8 max-w-4xl">
-          <div className="bg-white rounded-lg shadow-md p-6 md:p-8">
-            <h1 className="text-2xl font-bold mb-6 text-gray-800 border-b pb-4">
+          <div className="bg-card rounded-lg shadow-md p-6 md:p-8">
+            <h1 className="text-2xl font-bold mb-6 text-foreground border-b pb-4">
               Пользовательское Соглашение
             </h1>
 
-            <p className="mb-6 text-gray-600">
+            <p className="mb-6 text-foreground">
               Настоящее Пользовательское Соглашение (Далее - Соглашение) регулирует отношения между владельцем <a
               href="https://get-my-wishlist.ru"
               className="text-blue-600 hover:underline">get-my-wishlist.ru</a> с одной стороны и Пользователем сайта с
               другой.
             </p>
 
-            <p className="mb-6 text-gray-600">
+            <p className="mb-6 text-foreground">
               Сайт <a
               href="https://get-my-wishlist.ru"
               className="text-blue-600 hover:underline">get-my-wishlist.ru</a> не является средством массовой
@@ -35,8 +35,8 @@ export default function TermsOfServicePage() {
             </p>
 
             <section className="mb-8">
-              <h2 className="text-xl font-semibold mb-4 text-gray-800">Термины:</h2>
-              <ul className="list-disc pl-6 space-y-3 text-gray-600">
+              <h2 className="text-xl font-semibold mb-4 text-foreground">Термины:</h2>
+              <ul className="list-disc pl-6 space-y-3 text-foreground">
                 <li>
                   <span className="font-medium">Пользовательское соглашение</span> – предложение Администрации заключить
                   договор на изложенных в данном документе условиях.
@@ -78,8 +78,8 @@ export default function TermsOfServicePage() {
             </section>
 
             <section className="mb-8">
-              <h2 className="text-xl font-semibold mb-4 text-gray-800">1. Общие положения</h2>
-              <div className="space-y-4 text-gray-600">
+              <h2 className="text-xl font-semibold mb-4 text-foreground">1. Общие положения</h2>
+              <div className="space-y-4 text-foreground">
                 <p>1.1. Администрация предоставляет Пользователю на условиях простой (неисключительной) безвозмездной
                   лицензии возможность пользоваться интерфейсом Сайта по размещению:</p>
                 <ul className="list-disc pl-6 space-y-2">
@@ -95,8 +95,8 @@ export default function TermsOfServicePage() {
             </section>
 
             <section className="mb-8">
-              <h2 className="text-xl font-semibold mb-4 text-gray-800">2. Регистрация</h2>
-              <div className="space-y-4 text-gray-600">
+              <h2 className="text-xl font-semibold mb-4 text-foreground">2. Регистрация</h2>
+              <div className="space-y-4 text-foreground">
                 <p>2.1. Пользователь регистрируется на Сайте и заполняет следующие сведения:</p>
                 <ul className="list-disc pl-6 space-y-2">
                   <li>Адрес электронной почты/телефон/username.</li>
@@ -115,8 +115,8 @@ export default function TermsOfServicePage() {
               </div>
             </section>
             <section className="mb-8">
-              <h2 className="text-xl font-semibold mb-4 text-gray-800">3. Работа с Сайтом</h2>
-              <div className="space-y-4 text-gray-600">
+              <h2 className="text-xl font-semibold mb-4 text-foreground">3. Работа с Сайтом</h2>
+              <div className="space-y-4 text-foreground">
                 <p>3.1. После регистрации Пользователь получает доступ к возможностям Сайта по созданию вишлистов.</p>
                 <p>3.2. После регистрации Пользователь получает право самостоятельно в личных целях создавать,
                   использовать и
@@ -151,8 +151,8 @@ export default function TermsOfServicePage() {
               </div>
             </section>
             <section className="mb-8">
-              <h2 className="text-xl font-semibold mb-4 text-gray-800">4. Доступ к сайту, удаление аккаунта</h2>
-              <div className="space-y-4 text-gray-600">
+              <h2 className="text-xl font-semibold mb-4 text-foreground">4. Доступ к сайту, удаление аккаунта</h2>
+              <div className="space-y-4 text-foreground">
                 <p>4.1. Администрация оставляет за собой право изменять или прекращать действие Сайта.</p>
                 <p>4.2. Администрация вправе заблокировать аккаунт Пользователя при нарушении условий Соглашения, в
                   частности
@@ -166,8 +166,8 @@ export default function TermsOfServicePage() {
               </div>
             </section>
             <section className="mb-8">
-              <h2 className="text-xl font-semibold mb-4 text-gray-800">5. Авторское право</h2>
-              <div className="space-y-4 text-gray-600">
+              <h2 className="text-xl font-semibold mb-4 text-foreground">5. Авторское право</h2>
+              <div className="space-y-4 text-foreground">
                 <p>
                   5.1. При размещении ссылок на фото и видеоизображения (далее – изображения) в своем аккаунте
                   Пользователь
@@ -192,8 +192,8 @@ export default function TermsOfServicePage() {
               </div>
             </section>
             <section className="mb-8">
-              <h2 className="text-xl font-semibold mb-4 text-gray-800">6. Ответственность</h2>
-              <div className="space-y-4 text-gray-600">
+              <h2 className="text-xl font-semibold mb-4 text-foreground">6. Ответственность</h2>
+              <div className="space-y-4 text-foreground">
                 <p>
                   6.1. Сайт предоставляет Пользователю безвозмездную возможность создавать и публиковать свои вишлисты и
                   иные
@@ -245,8 +245,8 @@ export default function TermsOfServicePage() {
               </div>
             </section>
             <section className="mb-8">
-              <h2 className="text-xl font-semibold mb-4 text-gray-800"> 7. Разрешение споров</h2>
-              <div className="space-y-4 text-gray-600">
+              <h2 className="text-xl font-semibold mb-4 text-foreground"> 7. Разрешение споров</h2>
+              <div className="space-y-4 text-foreground">
                 <p>
                   7.1. Все претензии направляются Пользователем с адреса электронной почты, которую он указал при
                   регистрации, на
@@ -258,8 +258,8 @@ export default function TermsOfServicePage() {
               </div>
             </section>
             <section className="mb-8">
-              <h2 className="text-xl font-semibold mb-4 text-gray-800"> 8. Изменение соглашения</h2>
-              <div className="space-y-4 text-gray-600">
+              <h2 className="text-xl font-semibold mb-4 text-foreground"> 8. Изменение соглашения</h2>
+              <div className="space-y-4 text-foreground">
                 <p>
                   8.1. Администрация вправе в любое врем изменить условия Соглашения. Все изменения публикуются в соответствующем
                   разделе Сайта «Пользовательское соглашение».

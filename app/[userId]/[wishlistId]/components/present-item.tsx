@@ -1,7 +1,7 @@
 import { useApiReservePresent } from '@/api/present'
 import { ConfirmReserveModal } from '@/app/[userId]/[wishlistId]/components/confirm-modal'
 import { CardCover } from '@/components/card-cover'
-
+import { toast } from '@/hooks/use-toast'
 import { Button } from '@/components/ui/button'
 import { Present } from '@/shared/types'
 import { ExternalLink } from 'lucide-react'
@@ -19,7 +19,11 @@ export const PresentItem = ({ present, theme, isHidden }: Props) => {
 
   const { mutate, isPending } = useApiReservePresent(params.wishlistId as string)
   const handleReserve = () => {
-    mutate({presentId: present.id })
+    mutate({presentId: present.id }, {
+      onSuccess: () => {
+        toast({title: 'Подарок забронирован!', variant: 'success'})
+      }
+    })
   }
   return (
     <div className="w-full md:max-w-[350px] bg-card rounded-2xl flex flex-col gap-2 ">
@@ -41,7 +45,7 @@ export const PresentItem = ({ present, theme, isHidden }: Props) => {
                     loading={isPending}
                     variant={present.reserved ? 'destructive' : 'default'}
                     disabled={present.reserved}
-            >{present.reserved ? 'Уже забрали' : 'Забронировать'}</Button>
+            >{present.reserved ? 'Забронирован' : 'Забронировать'}</Button>
           </ConfirmReserveModal>
           }
           {
