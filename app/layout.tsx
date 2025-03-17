@@ -1,8 +1,7 @@
-import { GoogleMetric } from '@/components/google-metric'
 import { Metrika } from '@/components/metrica'
 import { Suspense } from 'react'
 import * as React from 'react'
-
+import { GoogleTagManager } from '@next/third-parties/google'
 import Providers from '@/app/providers'
 import { Toaster } from '@/components/ui/toaster'
 import type { Metadata } from 'next'
@@ -32,9 +31,7 @@ export default function RootLayout({
     <Suspense fallback={null}>
       <Metrika />
     </Suspense>
-    <Suspense fallback={null}>
-      <GoogleMetric />
-    </Suspense>
+    <GoogleTagManager gtmId="GTM-P7BZ6ZCM" />
     <Providers>
       {children}
     </Providers>
