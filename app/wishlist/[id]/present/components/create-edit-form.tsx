@@ -22,40 +22,48 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 
-const fileSchema = z.any()
-  .refine(file => {
-    if (!file) return true
-    return file instanceof File && file.size <= 2 * 1024 * 1024
-  }, {
-    message: 'Файл должен быть менее 2MB',
-  }).optional()
-
-const FormSchema = z.object({
-  title: z.string().min(1, { message: 'Название обязательно' }),
-  description: z.string().optional(),
-  link: z
-    .string()
-    .refine(
-      (value) => value === undefined || value === '' || z.string().url().safeParse(value).success, // Кастомная проверка
-      { message: 'Некорректный URL' }
-    ),
-  price: z.string().optional().refine((value) => value === undefined || value === '' || !isNaN(parseFloat(value))),
-  file: fileSchema,
-})
-
 type Props = {
   edit?: boolean
   present?: Present
 }
 
 export function CreateEditForm({ edit, present }: Props) {
+
+  const fileSchema = z.any()
+    .refine(file => {
+      if (edit) {
+        return true
+      }
+      return !!file
+    }, { message: 'Обложка обязательна' })
+    .refine(file => {
+      return file instanceof File && file.size <= 2 * 1024 * 1024
+    }, {
+      message: 'Файл должен быть менее 2MB',
+    })
+
+  const FormSchema = z.object({
+    title: z.string().min(1, { message: 'Название обязательно' }),
+    description: z.string().optional(),
+    link: z
+      .string()
+      .refine(
+        (value) => value === undefined || value === '' || z.string().url().safeParse(value).success, // Кастомная проверка
+        { message: 'Некорректный URL' },
+      ),
+    price: z.string()
+      .refine((value) => value === undefined || value === '' || !isNaN(parseFloat(value)), { message: 'Значение не число' })
+      .optional(),
+    file: fileSchema,
+  })
+
   const { id } = useParams()
 
   const navigation = useRouter()
   const [ imageUrl, setImageUrl ] = useState<string | undefined>(present?.cover)
 
-  const { mutate: createMutate } = useApiCreatePresent(id as string)
-  const { mutate: editMutate } = useApiEditPresent(id as string)
+  const { mutate: createMutate, isPending: createLoading } = useApiCreatePresent(id as string)
+  const { mutate: editMutate, isPending: editLoading } = useApiEditPresent(id as string)
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -212,7 +220,10 @@ export function CreateEditForm({ edit, present }: Props) {
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full">
+        <Button type="submit"
+                className="w-full"
+                loading={createLoading || editLoading}
+                disabled={createLoading || editLoading}>
           {edit ? 'Сохранить' : 'Создать'}
         </Button>
       </form>

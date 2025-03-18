@@ -27,35 +27,11 @@ import {
 
 import { Input } from '@/components/ui/input'
 
-
-const fileSchema = z.any()
-  .refine(file => {
-    if (!file) return true
-    return file instanceof File && file.size <= 2 * 1024 * 1024
-  } , {
-    message: 'Файл должен быть менее 2MB',
-  }).optional()
-
 const locationLink = z.string().refine(value => {
   if (!value) return true
   const regex = /^(https?:\/\/(go\.2gis\.com|2gis\.ru|yandex\.ru)\/[^\s]+)/ // Регулярное выражение для проверки ссылок
   return regex.test(value ?? '')
-}).optional()
-
-const FormSchema = z.object({
-  title: z.string().min(1, { message: 'Название обязательно' }),
-  description: z.string(),
-  file: fileSchema,
-  settings: z.object({
-    colorScheme: z.string(),
-    showGiftAvailability: z.boolean(),
-  }),
-  location: z.object({
-    name: z.string().optional(),
-    link: locationLink,
-    time: z.date().optional(),
-  }).optional(),
-})
+}, { message: 'Некорректная ссылка' }).optional()
 
 type Props = {
   edit?: boolean
@@ -63,6 +39,34 @@ type Props = {
 }
 
 export function CreateForm({ edit, wishlist }: Props) {
+  const fileSchema = z.any()
+    .refine(file => {
+      if (edit) {
+        return true
+      }
+      return !!file
+    }, { message: 'Обложка обязательна' })
+    .refine(file => {
+      return file instanceof File && file.size <= 2 * 1024 * 1024
+    }, {
+      message: 'Файл должен быть менее 2MB',
+    })
+
+  const FormSchema = z.object({
+    title: z.string().min(1, { message: 'Название обязательно' }),
+    description: z.string(),
+    file: fileSchema,
+    settings: z.object({
+      colorScheme: z.string(),
+      showGiftAvailability: z.boolean(),
+    }),
+    location: z.object({
+      name: z.string().optional(),
+      link: locationLink,
+      time: z.date().optional(),
+    }).optional(),
+  })
+
   const { mutate: createMutate } = useApiCreateWishlist()
   const { mutate: editMutate } = useApiEditWishlist(wishlist?.id ?? '')
   const navigation = useRouter()
@@ -109,8 +113,6 @@ export function CreateForm({ edit, wishlist }: Props) {
     if (data.file) {
       formData.append('file', data.file)
     }
-
-    console.log(data.location?.link, 'location link')
 
     formData.append('settings[colorScheme]', data.settings.colorScheme)
     formData.append('settings[showGiftAvailability]', String(data.settings.showGiftAvailability))
