@@ -22,10 +22,11 @@ export default function Home() {
           content="вишлист, список желаний, подарки, создать вишлист, бесплатный вишлист,
                   онлайн вишлист, поделиться вишлистом"
         />
-        <link rel="canonical" href='https://get-my-wishlist.ru' />
+        <link rel="canonical" href="https://get-my-wishlist.ru" />
         <meta property="og:type" content="website" />
         <meta property="og:title" content="GetWishLIst - Ваш идеальный вишлист" />
         <meta property="og:description" content="Создайте и настройте персональный вишлист за минуту" />
+        <meta name="google-site-verification" content="TCCUJdCGgoWQ8fzYxNHPw0CIz_7g880Qb6hEZiWGUd0" />
       </Head>
       <Header />
       <div className="min-h-screen bg-background text-foreground font-manrope">
