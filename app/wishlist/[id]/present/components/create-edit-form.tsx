@@ -4,6 +4,7 @@ import { useApiCreatePresent, useApiEditPresent } from '@/api/present'
 import { Textarea } from '@/components/ui/textarea'
 import { createFileFromUrl } from '@/lib/utils'
 import { Present } from '@/shared/types'
+import { fileSchema } from '@/shared/validate'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Image from 'next/image'
 import { useParams, useRouter } from 'next/navigation'
@@ -29,19 +30,6 @@ type Props = {
 
 export function CreateEditForm({ edit, present }: Props) {
 
-  const fileSchema = z.any()
-    .refine(file => {
-      if (edit) {
-        return true
-      }
-      return !!file
-    }, { message: 'Обложка обязательна' })
-    .refine(file => {
-      return file instanceof File && file.size <= 2 * 1024 * 1024
-    }, {
-      message: 'Файл должен быть менее 2MB',
-    })
-
   const FormSchema = z.object({
     title: z.string().min(1, { message: 'Название обязательно' }),
     description: z.string().optional(),
@@ -54,7 +42,7 @@ export function CreateEditForm({ edit, present }: Props) {
     price: z.string()
       .refine((value) => value === undefined || value === '' || !isNaN(parseFloat(value)), { message: 'Значение не число' })
       .optional(),
-    file: fileSchema,
+    file: fileSchema(edit),
   })
 
   const { id } = useParams()

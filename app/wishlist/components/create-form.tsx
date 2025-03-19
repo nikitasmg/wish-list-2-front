@@ -7,6 +7,7 @@ import { Switch } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
 import { createFileFromUrl } from '@/lib/utils'
 import { Wishlist } from '@/shared/types'
+import { fileSchema } from '@/shared/validate'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { LucideFileQuestion } from 'lucide-react'
 import Image from 'next/image'
@@ -39,23 +40,10 @@ type Props = {
 }
 
 export function CreateForm({ edit, wishlist }: Props) {
-  const fileSchema = z.any()
-    .refine(file => {
-      if (edit) {
-        return true
-      }
-      return !!file
-    }, { message: 'Обложка обязательна' })
-    .refine(file => {
-      return file instanceof File && file.size <= 2 * 1024 * 1024
-    }, {
-      message: 'Файл должен быть менее 2MB',
-    })
-
   const FormSchema = z.object({
     title: z.string().min(1, { message: 'Название обязательно' }),
     description: z.string(),
-    file: fileSchema,
+    file: fileSchema(edit),
     settings: z.object({
       colorScheme: z.string(),
       showGiftAvailability: z.boolean(),
