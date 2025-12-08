@@ -1,5 +1,5 @@
 # Этап сборки
-FROM node:18-alpine AS builder
+FROM node:20-alpine AS builder
 
 # Устанавливаем конкретную версию pnpm
 RUN corepack enable && corepack prepare pnpm@9.10.0 --activate
@@ -19,7 +19,7 @@ COPY . .
 RUN pnpm run build
 
 # Этап запуска
-FROM node:18-alpine AS runner
+FROM node:20-alpine AS runner
 
 WORKDIR /app
 
