@@ -43,3 +43,7 @@ next-env.d.ts
 node_modules
 Dockerfile
 .dockerignore
+
+# git worktrees
+.worktrees/
+.superpowers/
