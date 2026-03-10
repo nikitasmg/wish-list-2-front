@@ -54,21 +54,7 @@ export const useApiEditWishlist = (id: string) => {
   })
 }
 
-// Updates title, cover, settings for a constructor wishlist (multipart, reuses existing PUT endpoint)
-export const useApiUpdateConstructorMeta = (id: string) => {
-  const queryClient = useQueryClient()
-  return useMutation<{ data: Wishlist }, AxiosError, FormData>({
-    mutationFn: async (data) => {
-      return api.put(`wishlists/${id}`, data, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      })
-    },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ['wishlist', id] })
-      await queryClient.invalidateQueries({ queryKey: ['wishlists'] })
-    },
-  })
-}
+export const useApiUpdateConstructorMeta = useApiEditWishlist
 
 type CreateConstructorInput = {
   title: string
