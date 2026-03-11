@@ -11,7 +11,7 @@ type LoginProps = {
 export const useApiLogin = () => {
   return useMutation<{ token: string }, AxiosError, LoginProps>({
     mutationFn: async data => {
-      return api.post<{ token: string }, LoginProps>('login', data)
+      return api.post<{ token: string }, LoginProps>('auth/login', data)
     },
   })
 }
@@ -19,7 +19,7 @@ export const useApiLogin = () => {
 export const useApiRegister = () => {
   return useMutation<{ token: string }, AxiosError, LoginProps>({
     mutationFn: async data => {
-      return api.post<{ token: string }, LoginProps>('register', data)
+      return api.post<{ token: string }, LoginProps>('auth/register', data)
     },
   })
 }
@@ -27,7 +27,7 @@ export const useApiRegister = () => {
 export const useApiAuth = () => {
   return useMutation<{ token: string }, AxiosError, AuthProps>({
     mutationFn: async data => {
-      return api.post<{ token: string }, AuthProps>('auth', data)
+      return api.post<{ token: string }, AuthProps>('auth/telegram', data)
     },
   })
 }

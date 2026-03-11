@@ -6,14 +6,14 @@ import { AxiosError } from 'axios'
 export const useApiGetAllPresents = (wishlistId: string) => {
   return useQuery({
     queryKey: [ 'presents', wishlistId ],
-    queryFn: async () => api.get<{ data: Present[] }>(`wishlist/${wishlistId}/presents`),
+    queryFn: async () => api.get<{ data: Present[] }>(`wishlists/${wishlistId}/presents`),
   })
 }
 
 export const useApiGetPresentById = (id: string) => {
   return useQuery<{ data: Present }>({
     queryKey: [ 'present', id ],
-    queryFn: async () => api.get<{ data: Present }>(`present/${id}`),
+    queryFn: async () => api.get<{ data: Present }>(`presents/${id}`),
   })
 }
 
@@ -21,7 +21,7 @@ export const useApiCreatePresent = (wishlistId: string) => {
   const queryClient = useQueryClient()
   return useMutation<{ data: Present }, AxiosError, FormData>({
     mutationFn: async data => {
-      return api.post(`present/${wishlistId}`, data, {
+      return api.post(`wishlists/${wishlistId}/presents`, data, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -37,7 +37,7 @@ export const useApiEditPresent = (wishlistId: string) => {
   const queryClient = useQueryClient()
   return useMutation<{ data: Present }, AxiosError, { data: FormData, id: string }>({
     mutationFn: async ({ data, id }) => {
-      return api.put(`present/${id}`, data, {
+      return api.put(`presents/${id}`, data, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -54,7 +54,7 @@ export const useApiDeletePresent = (id: string, wishlistId: string) => {
   const queryClient = useQueryClient()
   return useMutation<{ data: Present }, AxiosError>({
     mutationFn: async () => {
-      return api.delete(`present/${wishlistId}/${id}`)
+      return api.delete(`wishlists/${wishlistId}/presents/${id}`)
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: [ 'presents', wishlistId ] })
@@ -66,7 +66,7 @@ export const useApiReservePresent = (wishlistId: string) => {
   const queryClient = useQueryClient()
   return useMutation<unknown, AxiosError, { presentId: string }>({
     mutationFn: async ({ presentId }) => {
-      return api.put(`present/reserve/${presentId}`, {})
+      return api.put(`presents/${presentId}/reserve`, {})
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: [ 'presents', wishlistId ] })

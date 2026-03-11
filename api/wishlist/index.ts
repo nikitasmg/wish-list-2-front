@@ -62,6 +62,7 @@ type CreateConstructorInput = {
   coverUrl?: string
   colorScheme?: string
   showGiftAvailability?: boolean
+  presentsLayout?: string
   locationName?: string
   locationLink?: string
   locationTime?: string
@@ -78,6 +79,7 @@ export const useApiCreateConstructorWishlist = () => {
         cover_url: input.coverUrl ?? '',
         color_scheme: input.colorScheme ?? 'main',
         show_gift_availability: input.showGiftAvailability ?? false,
+        presents_layout: input.presentsLayout ?? 'list',
         location_name: input.locationName ?? '',
         location_link: input.locationLink ?? '',
         location_time: input.locationTime ?? '',

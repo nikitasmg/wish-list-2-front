@@ -27,11 +27,15 @@ export function ConstructorHeader({ wishlist }: Props) {
   const [showGiftAvailability, setShowGiftAvailability] = useState(
     wishlist.settings.showGiftAvailability
   )
+  const [presentsLayout, setPresentsLayout] = useState(
+    wishlist.settings.presentsLayout ?? 'list'
+  )
 
   const saveMeta = (overrides: {
     title?: string
     colorScheme?: string
     showGiftAvailability?: boolean
+    presentsLayout?: string
     coverFile?: File | null
     coverUrl?: string | null
   } = {}) => {
@@ -41,6 +45,7 @@ export function ConstructorHeader({ wishlist }: Props) {
       fd.append('title', overrides.title ?? title)
       fd.append('settings[colorScheme]', overrides.colorScheme ?? colorScheme)
       fd.append('settings[showGiftAvailability]', String(overrides.showGiftAvailability ?? showGiftAvailability))
+      fd.append('settings[presentsLayout]', overrides.presentsLayout ?? presentsLayout)
       if (overrides.coverFile) {
         fd.append('file', overrides.coverFile)
       } else if (overrides.coverUrl) {
@@ -57,6 +62,7 @@ export function ConstructorHeader({ wishlist }: Props) {
   useEffect(() => { setTitle(wishlist.title) }, [wishlist.title])
   useEffect(() => { setColorScheme(wishlist.settings.colorScheme) }, [wishlist.settings.colorScheme])
   useEffect(() => { setShowGiftAvailability(wishlist.settings.showGiftAvailability) }, [wishlist.settings.showGiftAvailability])
+  useEffect(() => { setPresentsLayout(wishlist.settings.presentsLayout ?? 'list') }, [wishlist.settings.presentsLayout])
 
   return (
     <div className="rounded-xl border bg-card p-6 space-y-4 mb-6">
@@ -108,6 +114,25 @@ export function ConstructorHeader({ wishlist }: Props) {
                     </div>
                   </SelectItem>
                 ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-1.5">
+            <Label>Раскладка подарков</Label>
+            <Select
+              value={presentsLayout}
+              onValueChange={(v) => {
+                setPresentsLayout(v)
+                saveMeta({ presentsLayout: v })
+              }}
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="list">Список</SelectItem>
+                <SelectItem value="grid2">Сетка 2 колонки</SelectItem>
+                <SelectItem value="grid3">Сетка 3 колонки</SelectItem>
               </SelectContent>
             </Select>
           </div>

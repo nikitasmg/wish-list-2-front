@@ -5,12 +5,12 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 export const useApiGetMe = () => {
   return useQuery<{user: User}>({
     queryKey: ['me'],
-    queryFn: async () => api.get<{user: User}>('me')
+    queryFn: async () => api.get<{user: User}>('auth/me')
   })
 }
 
 export const useApiLogout = () => {
   return useMutation({
-    mutationFn: async () => api.get('logout'),
+    mutationFn: async () => api.post('auth/logout', {}),
   })
 }

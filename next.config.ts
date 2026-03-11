@@ -2,18 +2,13 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output: 'standalone',
-  /* config options here */
   images: {
-    remotePatterns:[
-      {
-        hostname: "localhost",
-      },
-      {
-        hostname: "get-my-wishlist.ru",
-      },
-      {
-        hostname: "minio",
-      }
+    remotePatterns: [
+      { hostname: "localhost" },
+      { hostname: "get-my-wishlist.ru" },
+      { hostname: "minio" },
+      { protocol: "https", hostname: "**" },
+      { protocol: "http", hostname: "**" },
     ]
   }
 };

@@ -46,6 +46,6 @@ class ApiHelper {
   }
 }
 
-const api = new ApiHelper({ baseURL: 'https://api.get-my-wishlist.ru/' })
+const api = new ApiHelper({ baseURL: process.env.NEXT_PUBLIC_API_URL ?? 'https://api.get-my-wishlist.ru/api/v1/' })
 
 export default api
