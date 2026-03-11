@@ -31,7 +31,7 @@ export function BlockCanvas({ initialBlocks, onBlocksChange }: Props) {
   const [blocks, setBlocks] = useState<Block[]>(initialBlocks)
   const [viewMode, setViewMode] = useState<ViewMode>('desktop')
 
-  const sensors = useSensors(useSensor(PointerSensor))
+  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }))
 
   const syncBlocks = useCallback(
     (next: Block[]) => {
@@ -49,14 +49,14 @@ export function BlockCanvas({ initialBlocks, onBlocksChange }: Props) {
         )
       : blocks
 
-  const handleDragEnd = (event: DragEndEvent) => {
+  const handleDragEnd = useCallback((event: DragEndEvent) => {
     const { active, over } = event
     if (!over || active.id === over.id) return
 
     if (viewMode === 'mobile') {
-      // active.id/over.id are indices into displayBlocks (sorted by mobilePosition)
-      const oldIdx = Number(active.id)
-      const newIdx = Number(over.id)
+      // active.id/over.id are positions from displayBlocks (sorted by mobilePosition)
+      const oldIdx = displayBlocks.findIndex((b) => String(b.position) === String(active.id))
+      const newIdx = displayBlocks.findIndex((b) => String(b.position) === String(over.id))
       const reordered = arrayMove(displayBlocks, oldIdx, newIdx).map((b, i) => ({
         ...b,
         mobilePosition: i,
@@ -68,11 +68,11 @@ export function BlockCanvas({ initialBlocks, onBlocksChange }: Props) {
       })
       syncBlocks(next)
     } else {
-      const oldIndex = Number(active.id)
-      const newIndex = Number(over.id)
+      const oldIndex = blocks.findIndex((b) => String(b.position) === String(active.id))
+      const newIndex = blocks.findIndex((b) => String(b.position) === String(over.id))
       syncBlocks(arrayMove(blocks, oldIndex, newIndex))
     }
-  }
+  }, [blocks, displayBlocks, syncBlocks, viewMode])
 
   const handleAdd = (block: Block) => {
     syncBlocks([...blocks, block])
@@ -90,7 +90,7 @@ export function BlockCanvas({ initialBlocks, onBlocksChange }: Props) {
     syncBlocks(blocks.filter((_, i) => i !== index))
   }
 
-  const ids = displayBlocks.map((_, i) => String(i))
+  const ids = displayBlocks.map((b) => String(b.position))
 
   return (
     <div className="flex gap-6 items-start">
@@ -140,10 +140,10 @@ export function BlockCanvas({ initialBlocks, onBlocksChange }: Props) {
                     : 'flex flex-col gap-3 max-w-sm'
                 }
               >
-                {displayBlocks.map((block, i) => (
+                {displayBlocks.map((block) => (
                   <BlockItem
                     key={viewMode === 'desktop' ? block.position : (block.mobilePosition ?? block.position)}
-                    id={String(i)}
+                    id={String(block.position)}
                     block={viewMode === 'mobile' ? { ...block, colSpan: 1, rowSpan: 1 } : block}
                     onUpdate={(data) => handleUpdate(
                       blocks.findIndex((b) => b.position === block.position),

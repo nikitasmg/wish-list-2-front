@@ -18,6 +18,10 @@ const BLOCK_LABELS: Record<string, string> = {
   timing: 'Таймер',
 }
 
+/**
+ * onUpdate — replaces the entire block.data object.
+ * The caller (BlockEditorModal.onSave) must always provide the full data object.
+ */
 type Props = {
   block: Block
   id: string
@@ -52,7 +56,10 @@ export function BlockItem({ block, id, onUpdate, onResize, onDelete }: Props) {
         }`}
         onClick={() => setFocused((v) => !v)}
         onBlur={(e) => {
-          if (!e.currentTarget.contains(e.relatedTarget)) setFocused(false)
+          const related = e.relatedTarget
+          if (!e.currentTarget.contains(related)) {
+            setTimeout(() => setFocused(false), 0)
+          }
         }}
         tabIndex={0}
       >
