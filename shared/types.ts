@@ -11,24 +11,38 @@ export type BlockType =
   | 'location'
   | 'color_scheme'
   | 'timing'
+  | 'agenda'
+  | 'gallery'
+  | 'quote'
+  | 'divider'
+  | 'contact'
+  | 'video'
+  | 'checklist'
 
 export type Block = {
   type: BlockType
   position: number
   mobilePosition?: number
-  colSpan?: 1 | 2         // grid columns occupied, default 1
-  rowSpan?: 1 | 2 | 3    // grid rows occupied, default 1
+  colSpan?: 1 | 2
+  rowSpan?: 1 | 2 | 3
   data: Record<string, unknown>
 }
 
 // Block data shapes per type:
-// text:         { content: string }
+// text:         { html: string }  (fallback: content: string for legacy)
 // text_image:   { content: string; imageUrl: string }
 // image:        { url: string }
 // date:         { datetime: string; label?: string }
 // location:     { name: string; link?: string }
-// color_scheme: { scheme: string }
+// color_scheme: { colors: string[]; label?: string }
 // timing:       { start: string; end?: string }
+// agenda:       { items: { time: string; text: string }[] }
+// gallery:      { images: string[] }
+// quote:        { text: string; author?: string }
+// divider:      { style: 'line' | 'dots' | 'wave' }
+// contact:      { name: string; role?: string; telegram?: string; phone?: string }
+// video:        { url: string; title?: string }
+// checklist:    { title?: string; items: string[] }
 
 export type Wishlist = {
   id: string;
