@@ -5,7 +5,7 @@ import { useApiUpdateWishlistBlocks } from '@/api/wishlist'
 import { BlockCanvas } from '@/app/wishlist/components/constructor/block-canvas'
 import { ConstructorHeader } from '@/app/wishlist/components/constructor/constructor-header'
 import { Block, Wishlist } from '@/shared/types'
-import { useCallback, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import React from 'react'
 import { useToast } from '@/hooks/use-toast'
 
@@ -17,6 +17,8 @@ export function ConstructorEditor({ wishlist }: Props) {
   const { mutate } = useApiUpdateWishlistBlocks(wishlist.id)
   const { toast } = useToast()
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => () => { if (debounceRef.current) clearTimeout(debounceRef.current) }, [])
 
   const handleBlocksChange = useCallback(
     (blocks: Block[]) => {

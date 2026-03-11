@@ -19,6 +19,8 @@ export function ConstructorHeader({ wishlist }: Props) {
   const { toast } = useToast()
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
+  useEffect(() => () => { if (debounceRef.current) clearTimeout(debounceRef.current) }, [])
+
   const [title, setTitle] = useState(wishlist.title)
   const [showSettings, setShowSettings] = useState(false)
   const [colorScheme, setColorScheme] = useState(wishlist.settings.colorScheme)
