@@ -1,4 +1,5 @@
-import { useApiGetMe } from '@/api/user'
+'use client'
+
 import { Button } from '@/components/ui/button'
 import { toast } from '@/hooks/use-toast'
 import { Wishlist } from '@/shared/types'
@@ -9,43 +10,32 @@ type Props = {
   wishlist: Wishlist
 }
 
-export const ShareButtons = ({ wishlist }: Props) => {
-  const { data } = useApiGetMe()
+const getShareUrl = (wishlist: Wishlist) =>
+  `https://get-my-wishlist.ru/s/${wishlist.shortId}`
 
+export const ShareButtons = ({ wishlist }: Props) => {
   const handleShare = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: wishlist.title,
-          url: `https://get-my-wishlist.ru/${data?.user?.id}/${wishlist.id}`,
-        });
-      } catch (error) {
-        console.error('Ошибка при попытке поделиться:', error);
-      }
-    } else {
-      console.error('API обмена не поддерживается на этом устройстве.');
+    if (!navigator.share) return
+    try {
+      await navigator.share({ title: wishlist.title, url: getShareUrl(wishlist) })
+    } catch (error) {
+      console.error('Share error:', error)
     }
-  };
+  }
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(`https://get-my-wishlist.ru/${data?.user?.id}/${wishlist.id}`)
-      toast({
-        title: 'Ссылка на вишлист скопирована',
-      })
-    } catch (error) {
-      console.log(error)
-      toast({
-        variant: 'destructive',
-        title: 'Не удалось скопировать ссылку. Попробуйте еще раз.',
-      })
+      await navigator.clipboard.writeText(getShareUrl(wishlist))
+      toast({ title: 'Ссылка на вишлист скопирована' })
+    } catch {
+      toast({ variant: 'destructive', title: 'Не удалось скопировать ссылку. Попробуйте еще раз.' })
     }
   }
 
   return (
     <div className="flex flex-col gap-5 md:flex-row mb-2">
       <Button size="lg" onClick={handleShare}>Поделиться <Share2 /></Button>
-      <Button size="lg" variant='outline' onClick={handleCopy}>Скопировать ссылку <Copy /> </Button>
+      <Button size="lg" variant="outline" onClick={handleCopy}>Скопировать ссылка <Copy /></Button>
     </div>
   )
 }
