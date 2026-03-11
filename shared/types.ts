@@ -40,6 +40,7 @@ export type Wishlist = {
   settings: {
     colorScheme: string
     showGiftAvailability: boolean
+    presentsLayout?: 'list' | 'grid3' | 'grid2'
   }
   location: {
     name: string,
