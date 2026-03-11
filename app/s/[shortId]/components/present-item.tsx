@@ -1,5 +1,5 @@
 import { useApiReservePresent } from '@/api/present'
-import { ConfirmReserveModal } from '@/app/[userId]/[wishlistId]/components/confirm-modal'
+import { ConfirmReserveModal } from '@/app/s/[shortId]/components/confirm-modal'
 import { CardCover } from '@/components/card-cover'
 import { toast } from '@/hooks/use-toast'
 import { Button } from '@/components/ui/button'
