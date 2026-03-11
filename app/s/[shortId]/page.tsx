@@ -29,7 +29,7 @@ export default function Page() {
     const scheme = wishlist.settings.colorScheme
     document.body.classList.add(scheme)
     return () => { document.body.classList.remove(scheme) }
-  }, [wishlist])
+  }, [wishlist?.settings?.colorScheme])
 
   if (!wishlist) return null
 

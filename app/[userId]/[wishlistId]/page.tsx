@@ -3,7 +3,7 @@
 import { useApiGetAllPresents } from '@/api/present'
 import { useApiGetMe } from '@/api/user'
 import { useApiGetWishlistById } from '@/api/wishlist'
-import { BlockRenderer } from '@/app/[userId]/[wishlistId]/components/blocks/block-renderer'
+import { BlockRenderer } from '@/app/s/[shortId]/components/blocks/block-renderer'
 import { PresentItem } from '@/app/[userId]/[wishlistId]/components/present-item'
 import { cn } from '@/lib/utils'
 import Image from 'next/image'
