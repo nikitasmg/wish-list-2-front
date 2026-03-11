@@ -24,7 +24,7 @@ const BLOCK_LABELS: Record<string, string> = {
   image: 'Картинка',
   date: 'Дата',
   location: 'Место',
-  color_scheme: 'Цветовая схема',
+  color_scheme: 'Дресс-код / Цвета',
   timing: 'Таймер',
 }
 
