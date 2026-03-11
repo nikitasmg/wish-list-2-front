@@ -1,4 +1,3 @@
-import { useApiGetMe } from '@/api/user'
 import { useApiDeleteWishlist } from '@/api/wishlist'
 import CoppyLinkButton from '@/components/copy-link-button'
 import ShareButton from '@/components/share-button'
@@ -18,7 +17,6 @@ type MenuProps = {
 
 export const WishlistMenu = ({ wishlist }: MenuProps) => {
   const navigate = useRouter()
-  const { data } = useApiGetMe()
   const { mutate } = useApiDeleteWishlist(wishlist.id)
   return (
     <DropdownMenu>
@@ -30,10 +28,10 @@ export const WishlistMenu = ({ wishlist }: MenuProps) => {
           Редактировать
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <CoppyLinkButton url={`https://get-my-wishlist.ru/${data?.user?.id}/${wishlist.id}`}/>
+          <CoppyLinkButton url={`https://get-my-wishlist.ru/s/${wishlist.shortId}`}/>
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <ShareButton title={wishlist.title} url={`https://get-my-wishlist.ru/${data?.user?.id}/${wishlist.id}`}>
+          <ShareButton title={wishlist.title} url={`https://get-my-wishlist.ru/s/${wishlist.shortId}`}>
             <span>Поделиться</span>
           </ShareButton>
         </DropdownMenuItem>

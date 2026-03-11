@@ -35,7 +35,7 @@ export const ShareButtons = ({ wishlist }: Props) => {
   return (
     <div className="flex flex-col gap-5 md:flex-row mb-2">
       <Button size="lg" onClick={handleShare}>Поделиться <Share2 /></Button>
-      <Button size="lg" variant="outline" onClick={handleCopy}>Скопировать ссылка <Copy /></Button>
+      <Button size="lg" variant="outline" onClick={handleCopy}>Скопировать ссылку <Copy /></Button>
     </div>
   )
 }
