@@ -18,7 +18,9 @@ export default function Page() {
       { title: 'Новый вишлист', blocks: [] },
       {
         onSuccess: (res) => {
-          router.push(`/wishlist/edit/${res.data.id}`)
+          if (res.data?.id) {
+            router.push(`/wishlist/edit/${res.data.id}`)
+          }
         },
       }
     )

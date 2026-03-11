@@ -12,6 +12,8 @@ import { Check, Copy } from 'lucide-react'
 import { QRCodeSVG } from 'qrcode.react'
 import React, { useState } from 'react'
 
+const isDev = process.env.NODE_ENV === 'development'
+
 type Props = {
   wishlist: Wishlist
   open: boolean
@@ -24,12 +26,14 @@ export function ShareSheet({ wishlist, open, onClose }: Props) {
   const base = process.env.NEXT_PUBLIC_APP_URL ?? 'https://get-my-wishlist.ru'
   const shareUrl = `${base}/${wishlist.userId}/${wishlist.id}`
 
-  const isDev = process.env.NODE_ENV === 'development'
-
   const handleCopy = async () => {
-    await navigator.clipboard.writeText(shareUrl)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
+    try {
+      await navigator.clipboard.writeText(shareUrl)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch {
+      // clipboard not available (non-HTTPS or permission denied)
+    }
   }
 
   return (
