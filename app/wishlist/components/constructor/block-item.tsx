@@ -14,14 +14,17 @@ const BLOCK_LABELS: Record<string, string> = {
   image: 'Картинка',
   date: 'Дата',
   location: 'Место',
-  color_scheme: 'Цветовая схема',
+  color_scheme: 'Дресс-код / Цвета',
   timing: 'Таймер',
+  agenda: 'Программа вечера',
+  gallery: 'Галерея',
+  quote: 'Цитата',
+  divider: 'Разделитель',
+  contact: 'Контакт',
+  video: 'Видео',
+  checklist: 'Чеклист',
 }
 
-/**
- * onUpdate — replaces the entire block.data object.
- * The caller (BlockEditorModal.onSave) must always provide the full data object.
- */
 type Props = {
   block: Block
   id: string
@@ -63,7 +66,6 @@ export function BlockItem({ block, id, onUpdate, onResize, onDelete }: Props) {
         }}
         tabIndex={0}
       >
-        {/* Contextual toolbar — visible when focused */}
         {focused && (
           <BlockToolbar
             block={block}
@@ -78,7 +80,7 @@ export function BlockItem({ block, id, onUpdate, onResize, onDelete }: Props) {
         <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1">
           {BLOCK_LABELS[block.type] ?? block.type}
         </p>
-        <p className="text-sm text-foreground line-clamp-3">{preview}</p>
+        <div className="text-sm text-foreground line-clamp-3">{preview}</div>
       </div>
 
       <BlockEditorModal
@@ -91,16 +93,65 @@ export function BlockItem({ block, id, onUpdate, onResize, onDelete }: Props) {
   )
 }
 
-function getPreview(block: Block): string {
+function getPreview(block: Block): React.ReactNode {
   const d = block.data
   switch (block.type) {
-    case 'text': return (d.content as string) || 'Нет текста'
-    case 'text_image': return (d.content as string) || 'Текст + картинка'
-    case 'image': return (d.url as string) ? 'Картинка загружена' : 'Нет картинки'
-    case 'date': return (d.datetime as string) || 'Дата не указана'
-    case 'location': return (d.name as string) || 'Место не указано'
-    case 'color_scheme': return (d.scheme as string) || 'main'
-    case 'timing': return (d.start as string) || 'Время не указано'
-    default: return ''
+    case 'text':
+      return (d.html as string)
+        ? <span className="text-muted-foreground italic text-xs">Текст (HTML)</span>
+        : ((d.content as string) || 'Нет текста')
+    case 'text_image':
+      return (d.content as string) || 'Текст + картинка'
+    case 'image':
+      return (d.url as string)
+        ? <img src={d.url as string} alt="preview" className="w-full h-20 object-cover rounded mt-1" />
+        : <span className="text-muted-foreground">Нет картинки</span>
+    case 'date':
+      return (d.datetime as string) || 'Дата не указана'
+    case 'location':
+      return (d.name as string) || 'Место не указано'
+    case 'color_scheme': {
+      const colors = d.colors as string[] | undefined
+      if (!colors?.length) return <span className="text-muted-foreground">Нет цветов</span>
+      return (
+        <div className="flex gap-1 flex-wrap mt-1">
+          {colors.map((c, i) => (
+            <div key={i} className="w-5 h-5 rounded-full border border-border" style={{ background: c }} />
+          ))}
+        </div>
+      )
+    }
+    case 'timing':
+      return (d.start as string) ? `До: ${new Date(d.start as string).toLocaleString('ru-RU')}` : 'Время не указано'
+    case 'agenda': {
+      const items = d.items as { time: string; text: string }[] | undefined
+      return items?.length ? `${items.length} пунктов программы` : 'Нет пунктов'
+    }
+    case 'gallery': {
+      const imgs = d.images as string[] | undefined
+      if (!imgs?.length) return <span className="text-muted-foreground">Нет фото</span>
+      return (
+        <div className="flex gap-1 mt-1">
+          {imgs.slice(0, 4).map((url, i) => (
+            <img key={i} src={url} alt="" className="w-10 h-10 object-cover rounded" />
+          ))}
+          {imgs.length > 4 && <span className="text-xs text-muted-foreground self-center">+{imgs.length - 4}</span>}
+        </div>
+      )
+    }
+    case 'quote':
+      return (d.text as string) || 'Нет текста'
+    case 'divider':
+      return `Разделитель: ${(d.style as string) || 'line'}`
+    case 'contact':
+      return (d.name as string) || 'Нет имени'
+    case 'video':
+      return (d.url as string) ? `Видео: ${d.url as string}` : 'Нет ссылки'
+    case 'checklist': {
+      const items = d.items as string[] | undefined
+      return items?.length ? `${items.length} пунктов` : 'Нет пунктов'
+    }
+    default:
+      return ''
   }
 }
