@@ -20,11 +20,13 @@ export const Breadcrumbs = ({ page, items }: Props) => {
         <BreadcrumbItem>
           <BreadcrumbLink href="/">Главная</BreadcrumbLink>
         </BreadcrumbItem>
-        <BreadcrumbSeparator />
         {items.map(({ name, url }) => (
-          <BreadcrumbItem key={name}>
-            <BreadcrumbLink href={url}>{name}</BreadcrumbLink>
-          </BreadcrumbItem>
+          <React.Fragment key={name}>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink href={url}>{name}</BreadcrumbLink>
+            </BreadcrumbItem>
+          </React.Fragment>
         ))}
         <BreadcrumbSeparator />
         <BreadcrumbItem>
