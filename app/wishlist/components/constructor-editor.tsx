@@ -5,6 +5,7 @@ import { useApiUpdateWishlistBlocks } from '@/api/wishlist'
 import { useApiGetAllPresents } from '@/api/present'
 import { BlockCanvas } from '@/app/wishlist/components/constructor/block-canvas'
 import { ConstructorHeader } from '@/app/wishlist/components/constructor/constructor-header'
+import { CoverSection } from '@/app/wishlist/components/constructor/cover-section'
 import { WishlistLanding } from '@/app/s/[shortId]/components/wishlist-landing'
 import { PresentCard } from '@/app/wishlist/[id]/present/components/present-card'
 import { PlusCard } from '@/components/plus-card'
@@ -70,6 +71,7 @@ export function ConstructorEditor({ wishlist }: Props) {
       {mode === 'editor' && (
         <div className="space-y-6">
           <ConstructorHeader wishlist={wishlist} />
+          <CoverSection wishlist={wishlist} />
           <BlockCanvas
             initialBlocks={wishlist.blocks ?? []}
             onBlocksChange={handleBlocksChange}
