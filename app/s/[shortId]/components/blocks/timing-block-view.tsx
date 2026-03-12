@@ -15,39 +15,29 @@ function getTimeLeft(target: Date) {
 }
 
 export function TimingBlockView({ block }: { block: Block }) {
-  const start = block.data.start as string
   const end = block.data.end as string | undefined
   const [timeLeft, setTimeLeft] = useState<ReturnType<typeof getTimeLeft>>(null)
-  const [status, setStatus] = useState<'upcoming' | 'ongoing' | 'past'>('upcoming')
+  const [past, setPast] = useState(false)
 
   useEffect(() => {
-    if (!start) return
-    const startDate = new Date(start)
-    const endDate = end ? new Date(end) : null
+    if (!end) return
+    const endDate = new Date(end)
 
     const tick = () => {
-      const now = Date.now()
-      if (now < startDate.getTime()) {
-        setStatus('upcoming')
-        setTimeLeft(getTimeLeft(startDate))
-      } else if (endDate && now < endDate.getTime()) {
-        setStatus('ongoing')
-        setTimeLeft(null)
-      } else {
-        setStatus('past')
-        setTimeLeft(null)
-      }
+      const tl = getTimeLeft(endDate)
+      setTimeLeft(tl)
+      setPast(tl === null)
     }
 
     tick()
     const id = setInterval(tick, 1000)
     return () => clearInterval(id)
-  }, [start, end])
+  }, [end])
 
-  if (!start) return null
+  if (!end) return null
 
-  const startDate = new Date(start)
-  const formattedDate = startDate.toLocaleString('ru-RU', {
+  const endDate = new Date(end)
+  const formattedDate = endDate.toLocaleString('ru-RU', {
     day: 'numeric', month: 'long', year: 'numeric',
     hour: '2-digit', minute: '2-digit',
   })
@@ -61,7 +51,7 @@ export function TimingBlockView({ block }: { block: Block }) {
         <p className="text-sm text-muted-foreground">{formattedDate}</p>
       </div>
 
-      {status === 'upcoming' && timeLeft && (
+      {!past && timeLeft && (
         <div className="flex gap-3 flex-wrap">
           {[
             { value: timeLeft.days, label: 'дней' },
@@ -77,11 +67,7 @@ export function TimingBlockView({ block }: { block: Block }) {
         </div>
       )}
 
-      {status === 'ongoing' && (
-        <p className="text-lg font-semibold text-primary">Уже идёт! 🎉</p>
-      )}
-
-      {status === 'past' && (
+      {past && (
         <p className="text-lg font-semibold text-muted-foreground">Уже прошло</p>
       )}
     </div>

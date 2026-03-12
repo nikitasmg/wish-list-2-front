@@ -35,7 +35,7 @@ export type Block = {
 // date:         { datetime: string; label?: string }
 // location:     { name: string; link?: string }
 // color_scheme: { colors: string[]; label?: string }
-// timing:       { start: string; end?: string }
+// timing:       { end: string }
 // agenda:       { items: { time: string; text: string }[] }
 // gallery:      { images: string[] }
 // quote:        { text: string; author?: string }
