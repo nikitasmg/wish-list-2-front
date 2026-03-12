@@ -64,12 +64,12 @@ export function BlockEditorModal({ block, open, onClose, onSave }: Props) {
 
   return (
     <Dialog open={open} onOpenChange={(o) => { if (!o) onClose() }}>
-      <DialogContent className="max-w-lg">
+      <DialogContent className="max-w-lg overflow-hidden">
         <DialogHeader>
           <DialogTitle>Редактировать: {BLOCK_LABELS[block.type] ?? block.type}</DialogTitle>
         </DialogHeader>
 
-        <div className="py-4">
+        <div className="py-4 max-h-[60vh] overflow-y-auto">
           {block.type === 'text' && <TextBlockEditor data={data} onChange={setData} />}
           {block.type === 'text_image' && <TextImageBlockEditor data={data} onChange={setData} />}
           {block.type === 'image' && <ImageBlockEditor data={data} onChange={setData} />}
