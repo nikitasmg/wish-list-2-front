@@ -22,7 +22,7 @@ export function ImageBlockEditor({ data, onChange }: Props) {
     <ImageUpload
       label="Картинка"
       onChange={handleChange}
-      previewUrl={data.url as string | undefined}
+      previewUrl={(data.url as string) || undefined}
     />
   )
 }

@@ -22,6 +22,7 @@ export function TextBlockEditor({ data, onChange }: Props) {
   const initialContent = (data.html as string) ?? (data.content as string) ?? ''
 
   const editor = useEditor({
+    immediatelyRender: false,
     extensions: [StarterKit, Underline],
     content: initialContent,
     onUpdate: ({ editor }) => {

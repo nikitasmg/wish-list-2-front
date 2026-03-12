@@ -33,7 +33,7 @@ export function TextImageBlockEditor({ data, onChange }: Props) {
       <ImageUpload
         label="Картинка"
         onChange={handleImage}
-        previewUrl={data.imageUrl as string | undefined}
+        previewUrl={(data.imageUrl as string) || undefined}
       />
     </div>
   )
