@@ -285,8 +285,20 @@
   * {
     @apply border-border;
   }
-  
+
   body {
     @apply bg-background text-foreground font-manrope;
+  }
+}
+
+/* Block grid layout for landing page */
+.block-grid-item {
+  order: var(--mobile-order, 0);
+}
+@media (min-width: 768px) {
+  .block-grid-item {
+    grid-column: var(--col-span, span 1);
+    grid-row: var(--row-span, span 1);
+    order: unset;
   }
 }
