@@ -15,7 +15,7 @@ export function TextImageBlockView({ block }: { block: Block }) {
       )}
       {imageUrl && (
         <div className="rounded-2xl overflow-hidden">
-          <Image src={imageUrl} alt="block image" width={600} height={400} className="w-full object-cover" />
+          <Image src={imageUrl} alt="block image" width={600} height={400} className="w-full object-cover" unoptimized />
         </div>
       )}
     </div>
