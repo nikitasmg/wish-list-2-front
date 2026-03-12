@@ -6,21 +6,25 @@ import { useApiGetAllPresents } from '@/api/present'
 import { BlockCanvas } from '@/app/wishlist/components/constructor/block-canvas'
 import { ConstructorHeader } from '@/app/wishlist/components/constructor/constructor-header'
 import { WishlistLanding } from '@/app/s/[shortId]/components/wishlist-landing'
+import { PresentCard } from '@/app/wishlist/[id]/present/components/present-card'
+import { PlusCard } from '@/components/plus-card'
 import { Block, Wishlist } from '@/shared/types'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import React from 'react'
 import { useToast } from '@/hooks/use-toast'
-import { Eye, Pencil } from 'lucide-react'
+import { Eye, Pencil, Gift } from 'lucide-react'
 
 type Props = {
   wishlist: Wishlist
 }
 
+type Mode = 'editor' | 'preview' | 'presents'
+
 export function ConstructorEditor({ wishlist }: Props) {
   const { mutate } = useApiUpdateWishlistBlocks(wishlist.id)
   const { toast } = useToast()
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const [mode, setMode] = useState<'editor' | 'preview'>('editor')
+  const [mode, setMode] = useState<Mode>('editor')
 
   const { data: presentsData } = useApiGetAllPresents(wishlist.id)
   const presents = presentsData?.data ?? []
@@ -41,35 +45,29 @@ export function ConstructorEditor({ wishlist }: Props) {
     [mutate, toast]
   )
 
+  const tabClass = (tab: Mode) =>
+    `flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+      mode === tab
+        ? 'bg-primary text-primary-foreground'
+        : 'bg-muted text-muted-foreground hover:bg-accent'
+    }`
+
   return (
     <div className="space-y-4">
       {/* Mode toggle */}
       <div className="flex items-center gap-2">
-        <button
-          type="button"
-          onClick={() => setMode('editor')}
-          className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-            mode === 'editor'
-              ? 'bg-primary text-primary-foreground'
-              : 'bg-muted text-muted-foreground hover:bg-accent'
-          }`}
-        >
+        <button type="button" onClick={() => setMode('editor')} className={tabClass('editor')}>
           <Pencil size={14} /> Редактор
         </button>
-        <button
-          type="button"
-          onClick={() => setMode('preview')}
-          className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-            mode === 'preview'
-              ? 'bg-primary text-primary-foreground'
-              : 'bg-muted text-muted-foreground hover:bg-accent'
-          }`}
-        >
+        <button type="button" onClick={() => setMode('preview')} className={tabClass('preview')}>
           <Eye size={14} /> Превью
+        </button>
+        <button type="button" onClick={() => setMode('presents')} className={tabClass('presents')}>
+          <Gift size={14} /> Подарки
         </button>
       </div>
 
-      {mode === 'editor' ? (
+      {mode === 'editor' && (
         <div className="space-y-6">
           <ConstructorHeader wishlist={wishlist} />
           <BlockCanvas
@@ -77,9 +75,29 @@ export function ConstructorEditor({ wishlist }: Props) {
             onBlocksChange={handleBlocksChange}
           />
         </div>
-      ) : (
+      )}
+
+      {mode === 'preview' && (
         <div className="rounded-xl border overflow-hidden">
           <WishlistLanding wishlist={wishlist} presents={presents} isMyWishlist={false} disableBodyTheme />
+        </div>
+      )}
+
+      {mode === 'presents' && (
+        <div className="space-y-4">
+          <PlusCard link={`/wishlist/${wishlist.id}/present/create`} />
+          <div className="flex flex-col gap-4 md:flex-row md:flex-wrap">
+            {presents.map((present) => (
+              <PresentCard
+                key={present.id}
+                present={present}
+                wishlistId={wishlist.id}
+              />
+            ))}
+          </div>
+          {presents.length === 0 && (
+            <p className="text-muted-foreground text-sm">Подарков пока нет. Добавь первый!</p>
+          )}
         </div>
       )}
     </div>
