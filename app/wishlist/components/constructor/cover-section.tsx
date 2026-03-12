@@ -42,8 +42,6 @@ export function CoverSection({ wishlist }: Props) {
     const file = e.target.files?.[0]
     if (!file) return
 
-    // Revoke previous preview before creating new one
-    if (previewUrl) URL.revokeObjectURL(previewUrl)
     const url = URL.createObjectURL(file)
     setPreviewUrl(url)
 
