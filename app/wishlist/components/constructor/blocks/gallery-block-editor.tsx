@@ -14,9 +14,7 @@ export function GalleryBlockEditor({ data, onChange }: Props) {
   const images = (data.images as string[]) ?? []
 
   const updateImage = (index: number, val: ImageUploadValue | null) => {
-    let url = ''
-    if (val?.type === 'url') url = val.value
-    else if (val?.type === 'file') url = URL.createObjectURL(val.value)
+    const url = val?.type === 'url' ? val.value : ''
     const next = images.map((img, i) => (i === index ? url : img))
     onChange({ ...data, images: next })
   }

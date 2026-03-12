@@ -14,8 +14,6 @@ export function TextImageBlockEditor({ data, onChange }: Props) {
   const handleImage = (val: ImageUploadValue | null) => {
     if (val?.type === 'url') {
       onChange({ ...data, imageUrl: val.value })
-    } else if (val?.type === 'file') {
-      onChange({ ...data, imageUrl: URL.createObjectURL(val.value) })
     }
   }
 
