@@ -23,9 +23,17 @@ export function BlockRenderer({ blocks }: Props) {
   const sorted = [...blocks].sort((a, b) => a.position - b.position)
 
   return (
-    <div className="space-y-12">
-      {sorted.map((block, i) => (
-        <div key={i}>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:auto-rows-[minmax(100px,auto)]">
+      {sorted.map((block) => (
+        <div
+          key={block.position}
+          className="block-grid-item"
+          style={{
+            '--mobile-order': block.mobilePosition ?? block.position,
+            '--col-span': `span ${block.colSpan ?? 1}`,
+            '--row-span': `span ${block.rowSpan ?? 1}`,
+          } as React.CSSProperties}
+        >
           {block.type === 'text' && <TextBlockView block={block} />}
           {block.type === 'text_image' && <TextImageBlockView block={block} />}
           {block.type === 'image' && <ImageBlockView block={block} />}
