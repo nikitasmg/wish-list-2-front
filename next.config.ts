@@ -2,6 +2,14 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output: 'standalone',
+  async rewrites() {
+    return [
+      {
+        source: '/minio/:path*',
+        destination: 'http://localhost:9000/:path*',
+      },
+    ]
+  },
   images: {
     remotePatterns: [
       { hostname: "localhost" },
