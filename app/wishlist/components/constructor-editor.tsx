@@ -79,7 +79,7 @@ export function ConstructorEditor({ wishlist }: Props) {
         </div>
       ) : (
         <div className="rounded-xl border overflow-hidden">
-          <WishlistLanding wishlist={wishlist} presents={presents} isMyWishlist={false} />
+          <WishlistLanding wishlist={wishlist} presents={presents} isMyWishlist={false} disableBodyTheme />
         </div>
       )}
     </div>

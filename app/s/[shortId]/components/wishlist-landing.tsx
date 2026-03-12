@@ -15,19 +15,21 @@ type Props = {
   wishlist: Wishlist
   presents: Present[]
   isMyWishlist: boolean
+  disableBodyTheme?: boolean
 }
 
-export function WishlistLanding({ wishlist, presents, isMyWishlist }: Props) {
+export function WishlistLanding({ wishlist, presents, isMyWishlist, disableBodyTheme }: Props) {
   const config = getSchemeConfig(wishlist.settings.colorScheme)
   const isPresentHidden = isMyWishlist && !wishlist.settings.showGiftAvailability
   const layout = wishlist.settings.presentsLayout ?? 'list'
 
   useEffect(() => {
+    if (disableBodyTheme) return
     const scheme = wishlist.settings.colorScheme
     if (!scheme) return
     document.body.classList.add(scheme)
     return () => { document.body.classList.remove(scheme) }
-  }, [wishlist.settings.colorScheme])
+  }, [wishlist.settings.colorScheme, disableBodyTheme])
 
   return (
     <div className={cn('min-h-screen bg-background', wishlist.settings.colorScheme)}>
