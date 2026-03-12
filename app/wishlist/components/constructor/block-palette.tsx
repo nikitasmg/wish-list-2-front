@@ -55,12 +55,13 @@ const PALETTE_ITEMS: PaletteItem[] = [
   },
   {
     type: 'color_scheme',
-    label: 'Цветовая схема',
+    label: 'Дресс-код',
     preview: (
-      <div className="flex gap-1">
-        {['bg-violet-500', 'bg-pink-500', 'bg-blue-500', 'bg-green-500'].map((c) => (
+      <div className="flex gap-1.5 items-center">
+        {['bg-violet-400', 'bg-pink-400', 'bg-sky-400', 'bg-emerald-400'].map((c) => (
           <div key={c} className={`w-4 h-4 rounded-full ${c}`} />
         ))}
+        <span className="text-xs text-muted-foreground ml-1">цвета образа</span>
       </div>
     ),
   },
@@ -68,7 +69,97 @@ const PALETTE_ITEMS: PaletteItem[] = [
     type: 'timing',
     label: 'Таймер',
     preview: (
-      <p className="text-xs text-primary font-medium">⏱ 18:00 — 23:00</p>
+      <div className="flex gap-1.5">
+        {['22д', '04ч', '33м'].map((t) => (
+          <div key={t} className="bg-muted rounded px-1.5 py-0.5 text-xs font-mono text-primary">{t}</div>
+        ))}
+      </div>
+    ),
+  },
+  {
+    type: 'agenda',
+    label: 'Программа',
+    preview: (
+      <div className="space-y-1">
+        {[['18:00', 'Сбор гостей'], ['19:00', 'Торжественная часть']].map(([time, text]) => (
+          <div key={time} className="flex gap-2 text-xs">
+            <span className="text-muted-foreground font-mono w-10 shrink-0">{time}</span>
+            <span className="text-foreground">{text}</span>
+          </div>
+        ))}
+      </div>
+    ),
+  },
+  {
+    type: 'gallery',
+    label: 'Галерея',
+    preview: (
+      <div className="grid grid-cols-3 gap-1">
+        {[0, 1, 2].map((i) => (
+          <div key={i} className="aspect-square rounded bg-muted" />
+        ))}
+      </div>
+    ),
+  },
+  {
+    type: 'quote',
+    label: 'Цитата',
+    preview: (
+      <div className="border-l-2 border-accent pl-2">
+        <p className="text-xs italic text-muted-foreground leading-snug">«Лучшее ещё впереди»</p>
+        <p className="text-xs text-muted-foreground/60 mt-0.5">— Автор</p>
+      </div>
+    ),
+  },
+  {
+    type: 'divider',
+    label: 'Разделитель',
+    preview: (
+      <div className="flex items-center gap-2">
+        <div className="flex-1 h-px bg-border" />
+        <div className="flex gap-1">
+          {[0, 1, 2].map((i) => (
+            <div key={i} className="w-1 h-1 rounded-full bg-muted-foreground/40" />
+          ))}
+        </div>
+        <div className="flex-1 h-px bg-border" />
+      </div>
+    ),
+  },
+  {
+    type: 'contact',
+    label: 'Контакт',
+    preview: (
+      <div className="text-xs space-y-0.5">
+        <p className="font-medium text-foreground">Иван Иванов</p>
+        <p className="text-muted-foreground">+7 999 123 45 67</p>
+      </div>
+    ),
+  },
+  {
+    type: 'video',
+    label: 'Видео',
+    preview: (
+      <div className="w-full h-10 rounded bg-muted flex items-center justify-center gap-2">
+        <div className="w-4 h-4 rounded-full bg-muted-foreground/30 flex items-center justify-center">
+          <div className="w-0 h-0 border-y-[4px] border-y-transparent border-l-[6px] border-l-muted-foreground/60 ml-0.5" />
+        </div>
+        <span className="text-xs text-muted-foreground">YouTube / VK</span>
+      </div>
+    ),
+  },
+  {
+    type: 'checklist',
+    label: 'Чеклист',
+    preview: (
+      <div className="space-y-1">
+        {['Паспорт', 'Хорошее настроение'].map((item) => (
+          <div key={item} className="flex items-center gap-1.5 text-xs">
+            <div className="w-3 h-3 rounded border border-muted-foreground/40 shrink-0" />
+            <span className="text-muted-foreground">{item}</span>
+          </div>
+        ))}
+      </div>
     ),
   },
 ]

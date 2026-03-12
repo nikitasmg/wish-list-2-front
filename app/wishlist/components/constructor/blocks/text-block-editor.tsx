@@ -34,7 +34,7 @@ export function TextBlockEditor({ data, onChange }: Props) {
     if (!editor) return
     const incoming = (data.html as string) ?? (data.content as string) ?? ''
     if (editor.getHTML() !== incoming) {
-      editor.commands.setContent(incoming, false)
+      editor.commands.setContent(incoming)
     }
   }, [data.html, data.content]) // eslint-disable-line react-hooks/exhaustive-deps
 
