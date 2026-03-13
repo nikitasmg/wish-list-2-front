@@ -3,16 +3,16 @@ import type { NextRequest } from "next/server";
 
 export function middleware(request: NextRequest) {
   // Проверяем, начинается ли путь с /wishlist
-  // if (request.nextUrl.pathname.startsWith('/wishlist')) {
-  //   // Получаем куку 'token'
-  //   const token = request.cookies.get('token')?.value;
+  if (request.nextUrl.pathname.startsWith("/wishlist")) {
+    // Получаем куку 'token'
+    const token = request.cookies.get("token")?.value;
 
-  //   // Если куки нет, выполняем редирект на /login
-  //   if (!token) {
-  //     const loginUrl = new URL('/login', request.url);
-  //     return NextResponse.redirect(loginUrl);
-  //   }
-  // }
+    // Если куки нет, выполняем редирект на /login
+    if (!token) {
+      const loginUrl = new URL("/login", request.url);
+      return NextResponse.redirect(loginUrl);
+    }
+  }
 
   // Если кука есть или путь не начинается с /wishlist, продолжаем выполнение
   return NextResponse.next();
