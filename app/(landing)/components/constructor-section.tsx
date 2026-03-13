@@ -30,16 +30,16 @@ export function ConstructorSection() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
 
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-2">
             {BLOCKS.map((block, i) => (
               <AnimatedContent key={block.label} direction="horizontal" reverse={false} delay={i * 0.06}>
                 <GlareHover
                   className="rounded-xl w-full cursor-default"
                   style={{ background: block.bg, border: `1px solid ${block.border}` }}
                 >
-                  <div className="flex items-center gap-3 px-4 py-3">
-                    <span className="text-lg">{block.icon}</span>
-                    <span className="text-sm font-semibold" style={{ color: block.text }}>{block.label}</span>
+                  <div className="flex items-center gap-3 px-3 py-2">
+                    <span className="text-sm">{block.icon}</span>
+                    <span className="text-xs font-semibold" style={{ color: block.text }}>{block.label}</span>
                   </div>
                 </GlareHover>
               </AnimatedContent>
