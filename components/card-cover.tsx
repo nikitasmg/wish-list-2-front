@@ -16,8 +16,9 @@ export const CardCover = ({ cover, title, className}: Props) => {
         <Image
           src={cover}
           alt="Background"
-          layout="fill"
-          objectFit="cover"
+          fill
+          unoptimized
+          style={{ objectFit: 'cover' }}
           className="object-center"
         />
       </div>
@@ -28,8 +29,9 @@ export const CardCover = ({ cover, title, className}: Props) => {
           className="rounded-t-md"
           src={cover}
           alt={title ?? 'wishlist cover'}
-          layout="fill"
-          objectFit="contain"
+          fill
+          unoptimized
+          style={{ objectFit: 'contain' }}
         />
       </div>
     </div>

@@ -54,10 +54,14 @@ This is a **Next.js 16 App Router** project — a wishlist service (get-my-wishl
 
 Docker with standalone Next.js output (`output: 'standalone'` in `next.config.ts`). Images served from `get-my-wishlist.ru` and `minio` (MinIO object storage).
 
+## Commits
+
+Never add `Co-Authored-By` trailer to commit messages. Commits are made on behalf of the user (Смагин Никита, yaover72@gmail.com).
+
 ## Permissions
 
 The following commands can be run **without user approval**:
-- All read-only git commands: `git log`, `git diff`, `git status`, `git show`, `git branch`, `git stash list`, etc.
+- All read-only git commands: `git log`, `git diff`, `git status`, `git show`, `git branch`, `git stash list`, etc., including with `cd` prefix and file path arguments (e.g., `cd "..." && git diff HEAD -- "file"`)
 - Lint: `pnpm lint`
 
 ## Backend

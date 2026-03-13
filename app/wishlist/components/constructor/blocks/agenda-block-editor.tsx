@@ -15,6 +15,7 @@ type Props = {
 
 export function AgendaBlockEditor({ data, onChange }: Props) {
   const items = (data.items as AgendaItem[]) ?? []
+  const title = (data.title as string) ?? ''
 
   const update = (index: number, field: keyof AgendaItem, value: string) => {
     const next = items.map((item, i) =>
@@ -33,6 +34,14 @@ export function AgendaBlockEditor({ data, onChange }: Props) {
 
   return (
     <div className="space-y-3">
+      <div className="space-y-1.5">
+        <Label>Заголовок (необязательно)</Label>
+        <Input
+          placeholder="Программа вечера"
+          value={title}
+          onChange={(e) => onChange({ ...data, title: e.target.value })}
+        />
+      </div>
       <Label>Пункты программы</Label>
       {items.map((item, i) => (
         <div key={i} className="flex gap-2 items-start">

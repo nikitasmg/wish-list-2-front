@@ -2,13 +2,11 @@
 
 import { useApiCreatePresent, useApiEditPresent } from '@/api/present'
 import { Textarea } from '@/components/ui/textarea'
-import { createFileFromUrl } from '@/lib/utils'
+import { ImageUpload, ImageUploadValue } from '@/components/image-upload'
 import { Present } from '@/shared/types'
-import { fileSchema } from '@/shared/validate'
 import { zodResolver } from '@hookform/resolvers/zod'
-import Image from 'next/image'
 import { useParams, useRouter } from 'next/navigation'
-import React, { useState } from 'react'
+import React from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
@@ -36,19 +34,18 @@ export function CreateEditForm({ edit, present }: Props) {
     link: z
       .string()
       .refine(
-        (value) => value === undefined || value === '' || z.string().url().safeParse(value).success, // Кастомная проверка
+        (value) => value === undefined || value === '' || z.string().url().safeParse(value).success,
         { message: 'Некорректный URL' },
       ),
     price: z.string()
       .refine((value) => value === undefined || value === '' || !isNaN(parseFloat(value)), { message: 'Значение не число' })
       .optional(),
-    file: fileSchema(edit),
+    coverUrl: z.string().optional(),
   })
 
   const { id } = useParams()
 
   const navigation = useRouter()
-  const [ imageUrl, setImageUrl ] = useState<string | undefined>(present?.cover)
 
   const { mutate: createMutate, isPending: createLoading } = useApiCreatePresent(id as string)
   const { mutate: editMutate, isPending: editLoading } = useApiEditPresent(id as string)
@@ -60,23 +57,9 @@ export function CreateEditForm({ edit, present }: Props) {
       description: edit ? present?.description : '',
       link: edit ? present?.link : '',
       price: edit ? `${present?.price}` : undefined,
-      file: null,
+      coverUrl: edit ? present?.cover : undefined,
     },
   })
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0] // Получаем первый файл из списка
-
-    if (file) {
-      const url = URL.createObjectURL(file) // Создаем временный URL для файла
-      setImageUrl(url)
-
-      // Освобождаем память после использования URL (это важно)
-      file.arrayBuffer().then(() => {
-        URL.revokeObjectURL(url)
-      })
-    }
-  }
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     const formData = new FormData()
@@ -87,17 +70,13 @@ export function CreateEditForm({ edit, present }: Props) {
     if (data.description) {
       formData.append('description', data.description)
     }
-    if (data.file) {
-      formData.append('file', data.file)
+    if (data.coverUrl) {
+      formData.append('cover_url', data.coverUrl)
     }
     if (data.price) {
       formData.append('price', `${data.price}`)
     }
     if (edit && present) {
-      if (!data.file && present.cover) {
-        const file = await createFileFromUrl(present.cover, present.title)
-        formData.append('file', file)
-      }
       editMutate({ data: formData, id: present.id }, {
         onSuccess: () => {
           navigation.push(`/wishlist/${id}`)
@@ -175,33 +154,17 @@ export function CreateEditForm({ edit, present }: Props) {
             </FormItem>
           )}
         />
-        {imageUrl && (
-          <div className="relative w-[200px] h-full">
-            <Image
-              src={imageUrl}
-              alt={present?.title ?? 'present cover'}
-              layout="responsive"
-              width={200}
-              height={300}
-              objectFit="contain"
-            />
-          </div>
-        )}
         <FormField
           control={form.control}
-          name="file"
+          name="coverUrl"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Обложка</FormLabel>
               <FormControl>
-                <Input
-                  accept=".jpg, .jpeg, .png, .webp"
-                  type="file"
-                  onChange={(e) => {
-                    handleFileChange(e)
-                    field.onChange(e.target.files ? e.target.files[0] : null)
-                  }
-                  }
+                <ImageUpload
+                  previewUrl={field.value}
+                  onChange={(val: ImageUploadValue | null) => {
+                    field.onChange(val?.type === 'url' ? val.value : undefined)
+                  }}
                 />
               </FormControl>
               <FormMessage />
