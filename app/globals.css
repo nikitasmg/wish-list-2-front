@@ -6,279 +6,294 @@
   
   @layer base {
     :root {
-      /* Ваши существующие CSS переменные */
-      --background: 0 0% 100%;
-      --foreground: 224 71.4% 4.1%;
-      --card: 0 0% 100%;
-      --card-foreground: 224 71.4% 4.1%;
-      --popover: 0 0% 100%;
-      --popover-foreground: 224 71.4% 4.1%;
-      --primary: 262.1 83.3% 57.8%;
-      --primary-foreground: 210 20% 98%;
-      --secondary: 220 14.3% 95.9%;
-      --secondary-foreground: 220.9 39.3% 11%;
-      --muted: 220 14.3% 95.9%;
-      --muted-foreground: 220 8.9% 46.1%;
-      --accent: 220 14.3% 95.9%;
-      --accent-foreground: 220.9 39.3% 11%;
-      --destructive: 0 84.2% 60.2%;
-      --destructive-foreground: 210 20% 98%;
-      --border: 220 13% 91%;
-      --input: 220 13% 91%;
-      --ring: 262.1 83.3% 57.8%;
+      /* Cloud — light */
+      --background: 204 100% 97%;
+      --foreground: 210 50% 15%;
+      --card: 204 100% 99%;
+      --card-foreground: 210 50% 15%;
+      --popover: 204 100% 97%;
+      --popover-foreground: 210 50% 15%;
+      --primary: 201 98% 40%;
+      --primary-foreground: 0 0% 100%;
+      --secondary: 204 70% 90%;
+      --secondary-foreground: 210 50% 20%;
+      --muted: 204 70% 93%;
+      --muted-foreground: 210 30% 45%;
+      --accent: 204 70% 90%;
+      --accent-foreground: 210 50% 20%;
+      --destructive: 0 84% 60%;
+      --destructive-foreground: 0 0% 98%;
+      --border: 204 40% 85%;
+      --input: 204 40% 85%;
+      --ring: 201 98% 40%;
       --radius: 1rem;
-      --chart-1: 12 76% 61%;
-      --chart-2: 173 58% 39%;
-      --chart-3: 197 37% 24%;
-      --chart-4: 43 74% 66%;
-      --chart-5: 27 87% 67%;
+      --chart-1: 201 98% 40%;
+      --chart-2: 191 95% 43%;
+      --chart-3: 270 80% 55%;
+      --chart-4: 160 84% 39%;
+      --chart-5: 25 95% 53%;
     }
     
     .dark {
-      --background: 224 71.4% 4.1%;
-      --foreground: 210 20% 98%;
-      --card: 224 71.4% 4.1%;
-      --card-foreground: 210 20% 98%;
-      --popover: 224 71.4% 4.1%;
-      --popover-foreground: 210 20% 98%;
-      --primary: 263.4 70% 50.4%;
-      --primary-foreground: 210 20% 98%;
-      --secondary: 215 27.9% 16.9%;
-      --secondary-foreground: 210 20% 98%;
-      --muted: 215 27.9% 16.9%;
-      --muted-foreground: 217.9 10.6% 64.9%;
-      --accent: 215 27.9% 16.9%;
-      --accent-foreground: 210 20% 98%;
-      --destructive: 0 62.8% 30.6%;
-      --destructive-foreground: 210 20% 98%;
-      --border: 215 27.9% 16.9%;
-      --input: 215 27.9% 16.9%;
-      --ring: 263.4 70% 50.4%;
-      --chart-1: 220 70% 50%;
-      --chart-2: 160 60% 45%;
-      --chart-3: 30 80% 55%;
-      --chart-4: 280 65% 60%;
-      --chart-5: 340 75% 55%;
+      /* Aurora — dark */
+      --background: 210 100% 5%;
+      --foreground: 210 40% 96%;
+      --card: 210 80% 8%;
+      --card-foreground: 210 40% 96%;
+      --popover: 210 80% 8%;
+      --popover-foreground: 210 40% 96%;
+      --primary: 191 95% 43%;
+      --primary-foreground: 210 100% 5%;
+      --secondary: 210 50% 15%;
+      --secondary-foreground: 210 40% 96%;
+      --muted: 210 50% 15%;
+      --muted-foreground: 210 20% 55%;
+      --accent: 270 80% 55%;
+      --accent-foreground: 210 40% 96%;
+      --destructive: 0 63% 31%;
+      --destructive-foreground: 210 40% 96%;
+      --border: 210 50% 15%;
+      --input: 210 50% 15%;
+      --ring: 191 95% 43%;
+      --radius: 1rem;
+      --chart-1: 191 95% 43%;
+      --chart-2: 270 80% 55%;
+      --chart-3: 160 84% 39%;
+      --chart-4: 25 95% 53%;
+      --chart-5: 347 77% 60%;
     }
     
-    .pink {
-      --background: 340 100% 97%; /* Очень светлый розовый фон, чуть мягче */
-      --foreground: 340 90% 25%; /* Темный розовый текст, чуть светлее для лучшей читаемости */
-      --card: 340 100% 92%; /* Цвет карточки, чуть мягче */
-      --card-foreground: 340 90% 20%; /* Цвет текста на карточке, чуть темнее */
-      --popover: 340 100% 97%; /* Цвет поповера, совпадает с фоном */
-      --popover-foreground: 340 90% 25%; /* Цвет текста на поповере */
-      --primary: 350 100% 65%; /* Основной цвет, чуть менее насыщенный */
-      --primary-foreground: 0 0% 98%; /* Светлый текст для основного цвета */
-      --secondary: 350 80% 85%; /* Вторичный цвет, более мягкий */
-      --secondary-foreground: 340 90% 25%; /* Цвет текста для вторичного цвета */
-      --muted: 340 50% 90%; /* Приглушенный цвет, более светлый */
-      --muted-foreground: 340 70% 35%; /* Цвет текста для слабо заметного цвета */
-      --accent: 340 100% 55%; /* Акцентный цвет, менее яркий */
-      --accent-foreground: 0 0% 98%; /* Светлый текст для акцентного цвета */
-      --destructive: 0 100% 50%; /* Деструктивный цвет, яркий, но не слишком агрессивный */
-      --destructive-foreground: 0 0% 98%; /* Светлый текст для деструктивного цвета */
-      --border: 340 70% 85%; /* Цвет границы, более мягкий */
-      --input: 340 70% 96%; /* Цвет фона инпутов, более светлый */
-      --ring: 340 100% 60%; /* Кольцо, яркое, но не слишком */
-      --radius: 1rem; /* Радиус скругления */
-      --chart-1: 340 90% 60%; /* Цвет графика 1, менее насыщенный */
-      --chart-2: 120 80% 55%; /* Зеленый для графика 2, более мягкий */
-      --chart-3: 210 90% 50%; /* Синий для графика 3, менее яркий */
-      --chart-4: 30 90% 55%; /* Желтый для графика 4, менее насыщенный */
-      --chart-5: 60 90% 55%; /* Оранжевый для графика 5, более мягкий */
-    }
-    
-    .green {
-      --background: 120 100% 98%; /* Очень светлый зеленый фон */
-      --foreground: 120 30% 15%; /* Темный зеленый текст */
-      --card: 120 100% 95%; /* Цвет карточки */
-      --card-foreground: 120 30% 10%; /* Цвет текста на карточке */
-      --popover: 120 100% 98%; /* Цвет поповера */
-      --popover-foreground: 120 30% 25%; /* Цвет текста на поповере */
-      --primary: 120 70% 50%; /* Основной яркий цвет */
-      --primary-foreground: 0 0% 90%; /* Цвет текста для основного цвета */
-      --secondary: 120 60% 85%; /* Вторичный цвет */
-      --secondary-foreground: 0 0% 10%; /* Темный текст для вторичного цвета */
-      --muted: 120 50% 80%; /* Приглушенный цвет, но все еще заметный */
-      --muted-foreground: 120 50% 20%; /* Цвет текста для слабо заметного цвета */
-      --accent: 120 100% 50%; /* Яркий акцентный цвет */
-      --accent-foreground: 0 0% 5%; /* Темный текст для акцентного цвета */
-      --destructive: 0 100% 45%; /* Яркий деструктивный цвет (красный) */
-      --destructive-foreground: 210 20% 95%; /* Светлый текст для деструктивного цвета */
-      --border: 120 70% 75%; /* Цвет границы */
-      --input: 120 80% 96%; /* Цвет фона инпутов */
-      --ring: 120 100% 40%; /* Яркое кольцо */
-      --radius: 1rem; /* Радиус скругления */
-      --chart-1: 120 85% 60%; /* Цвет графика 1 */
-      --chart-2: 100 80% 45%; /* Яркий зеленый для графика 2 */
-      --chart-3: 210 90% 40%; /* Яркий синий для графика 3 */
-      --chart-4: 30 90% 60%; /* Яркий желтый для графика 4 */
-      --chart-5: 60 90% 50%; /* Яркий оранжевый для графика 5 */
-    }
-    
-    .blue {
-      --background: 210 100% 95%; /* Очень светлый голубой фон */
-      --foreground: 210 50% 20%; /* Темный голубой текст */
-      --card: 210 100% 90%; /* Цвет карточки */
-      --card-foreground: 210 50% 15%; /* Цвет текста на карточке */
-      --popover: 210 100% 95%; /* Цвет поповера */
-      --popover-foreground: 210 50% 25%; /* Цвет текста на поповере */
-      --primary: 210 100% 70%; /* Основной яркий цвет */
-      --primary-foreground: 0 0% 95%; /* Цвет текста для основного цвета */
-      --secondary: 200 80% 90%; /* Вторичный цвет */
-      --secondary-foreground: 0 0% 10%; /* Темный текст для вторичного цвета */
-      --muted: 210 50% 85%; /* Приглушенный цвет, но все еще заметный */
-      --muted-foreground: 210 70% 30%; /* Цвет текста для слабо заметного цвета */
-      --accent: 210 100% 60%; /* Яркий акцентный цвет */
-      --accent-foreground: 0 0% 5%; /* Темный текст для акцентного цвета */
-      --destructive: 0 100% 45%; /* Яркий деструктивный цвет (красный) */
-      --destructive-foreground: 210 20% 95%; /* Светлый текст для деструктивного цвета */
-      --border: 210 70% 80%; /* Цвет границы */
-      --input: 210 70% 98%; /* Цвет фона инпутов */
-      --ring: 210 100% 50%; /* Яркое кольцо */
-      --radius: 1rem; /* Радиус скругления */
-      --chart-1: 210 90% 65%; /* Цвет графика 1 */
-      --chart-2: 120 80% 50%; /* Яркий зеленый для графика 2 */
-      --chart-3: 0 80% 45%; /* Яркий красный для графика 3 */
-      --chart-4: 30 90% 60%; /* Яркий желтый для графика 4 */
-      --chart-5: 60 90% 50%; /* Яркий оранжевый для графика 5 */
-    }
-    
-    .dark-blue {
-      --background: 220 20% 10%; /* Темный фон */
-      --foreground: 210 20% 90%; /* Светлый текст */
-      --card: 220 20% 15%; /* Цвет карточек */
-      --card-foreground: 210 20% 95%; /* Цвет текста в карточках */
-      --popover: 220 20% 15%; /* Цвет поповеров */
-      --popover-foreground: 210 20% 95%; /* Цвет текста в поповерах */
-      --primary: 190 80% 40%; /* Основной акцент */
-      --primary-foreground: 210 20% 95%; /* Цвет текста для основного акцента */
-      --secondary: 220 40% 60%; /* Вторичный цвет */
-      --secondary-foreground: 210 20% 95%; /* Цвет текста для вторичного цвета */
-      --muted: 0 20% 20%; /* Приглушенный цвет */
-      --muted-foreground: 30 70% 80%; /* Цвет текста для приглушенного цвета */
-      --accent: 160 20% 40%; /* Акцентный цвет */
-      --accent-foreground: 210 20% 95%; /* Цвет текста для акцентного цвета */
-      --destructive: 0 70% 40%; /* Цвет для разрушительных действий */
-      --destructive-foreground: 210 20% 95%; /* Цвет текста для разрушительных действий */
-      --border: 0 0% 40%; /* Цвет рамок */
-      --input: 0 0% 30%; /* Цвет фона ввода */
-      --ring: 190 70% 50%; /* Цвет для колец */
-      --chart-1: 200 70% 50%; /* Цвет графиков */
-      --chart-2: 80 60% 40%; /* Цвет графиков */
-      --chart-3: 30 80% 40%; /* Цвет графиков */
-      --chart-4: 270 70% 60%; /* Цвет графиков */
-      --chart-5: 350 70% 55%; /* Цвет графиков */
-    }
-    
-    .monochrome {
-      --background: 210 0% 98%; /* Очень светлый серый фон */
-      --foreground: 210 0% 10%; /* Темный текст */
-      --card: 210 0% 94%; /* Цвет карточки */
-      --card-foreground: 210 0% 15%; /* Цвет текста на карточке */
-      --popover: 210 0% 98%; /* Цвет поповера */
-      --popover-foreground: 210 0% 25%; /* Цвет текста на поповере */
-      --primary: 210 0% 50%; /* Основной серый цвет */
-      --primary-foreground: 210 0% 90%; /* Светлый текст для основного цвета */
-      --secondary: 210 0% 80%; /* Вторичный светло-серый */
-      --secondary-foreground: 210 0% 20%; /* Темный текст для вторичного цвета */
-      --muted: 210 0% 70%; /* Приглушенный серый */
-      --muted-foreground: 210 0% 25%; /* Цвет текста для слабо заметного цвета */
-      --accent: 210 0% 40%; /* Яркий акцентный серый */
-      --accent-foreground: 210 0% 95%; /* Светлый текст для акцентного цвета */
-      --destructive: 0 0% 45%; /* Темный деструктивный цвет (по сути, черный) */
-      --destructive-foreground: 210 0% 95%; /* Светлый текст для деструктивного цвета */
-      --border: 210 0% 75%; /* Цвет границы */
-      --input: 210 0% 96%; /* Цвет фона инпутов */
-      --ring: 210 0% 30%; /* Яркое кольцо */
-      --radius: 1rem; /* Радиус скругления */
-      --chart-1: 210 0% 60%; /* Цвет графика 1 */
-      --chart-2: 210 0% 50%; /* Цвет графика 2 */
-      --chart-3: 210 0% 40%; /* Цвет графика 3 */
-      --chart-4: 210 0% 30%; /* Цвет графика 4 */
-      --chart-5: 210 0% 20%; /* Цвет графика 5 */
-    }
-    
-    .dark-brown {
-      --background: 30, 20%, 15%; /* Темный коричневый фон */
-      --foreground: 30, 30%, 90%; /* Светлый текст на фоне */
-      --card: 25, 30%, 20%; /* Темный коричневый для карточек */
-      --card-foreground: 30, 60%, 85%; /* Светлый текст на карточках */
-      --popover: 30, 20%, 20%; /* Темная поповер */
-      --popover-foreground: 30, 50%, 90%; /* Цвет текста на поповере */
-      --primary: 25, 40%, 55%; /* Основной пастельный коричневый */
-      --primary-foreground: 30, 80%, 95%; /* Светлый текст для основного цвета */
-      --secondary: 20, 30%, 35%; /* Вторичный коричневый цвет */
-      --secondary-foreground: 30, 80%, 90%; /* Светлый текст для вторичного цвета */
-      --muted: 25, 30%, 40%; /* Приглушенный коричневый */
-      --muted-foreground: 30, 70%, 90%; /* Цвет текста для приглушенного цвета */
-      --accent: 28, 60%, 50%; /* Яркий коричневый акцентный цвет */
-      --accent-foreground: 30, 20%, 95%; /* Светлый текст для акцентного цвета */
-      --destructive: 0, 80%, 50%; /* Красный цвет для деструктивного действия */
-      --destructive-foreground: 0, 80%, 90%; /* Светлый текст для деструктивного цвета */
-      --border: 30, 30%, 25%; /* Цвет границы */
-      --input: 30, 30%, 40%; /* Цвет фона инпутов */
-      --ring: 30, 30%, 35%; /* Яркое кольцо */
-      --radius: 0.8rem; /* Радиус скругления */
-    }
-    
-    .rainbow {
-      --background: 285 31% 96%;
-      --foreground: 285 39% 12%;
-      --card: 0 0% 99%;
-      --card-foreground: 285 39% 12%;
-      --popover: 285 31% 96%;
-      --popover-foreground: 285 39% 12%;
-      --primary: 292 71% 59%;
-      --primary-foreground: 0 0% 100%;
-      --secondary: 279 58% 85%;
-      --secondary-foreground: 280 40% 20%;
-      --muted: 279 28% 90%;
-      --muted-foreground: 285 12% 42%;
-      --accent: 327 87% 72%;
-      --accent-foreground: 325 80% 20%;
-      --destructive: 0 84% 60%;
-      --destructive-foreground: 0 0% 100%;
-      --border: 279 18% 80%;
-      --input: 279 18% 80%;
-      --ring: 292 71% 59%;
-      
-      --chart-1: 292 71% 59%;  /* Основной фиолетовый */
-      --chart-2: 327 87% 72%;  /* Розовый акцент */
-      --chart-3: 279 58% 75%;  /* Лавандовый */
-      --chart-4: 275 100% 85%; /* Пастельный фиолетовый */
-      --chart-5: 315 100% 80%; /* Нежно-розовый */
-    }
-    
-    .dark-rainbow {
-      --background: 285 31% 10%;
-      --foreground: 285 31% 90%;
-      --card: 285 31% 15%;
-      --card-foreground: 285 31% 90%;
-      --popover: 285 31% 10%;
-      --popover-foreground: 285 31% 90%;
-      --primary: 292 71% 59%;
-      --primary-foreground: 285 31% 10%;
-      --secondary: 279 58% 25%;
-      --secondary-foreground: 279 58% 85%;
-      --muted: 285 31% 30%;
-      --muted-foreground: 285 31% 70%;
-      --accent: 327 87% 65%;
-      --accent-foreground: 327 87% 95%;
-      --destructive: 0 84% 45%;
-      --destructive-foreground: 0 0% 100%;
-      --border: 285 31% 30%;
-      --input: 285 31% 30%;
-      --ring: 292 71% 59%;
-      
-      --chart-1: 292 71% 59%;  /* Яркий неоновый фиолетовый */
-      --chart-2: 327 87% 65%;  /* Глубокий фуксия */
-      --chart-3: 279 58% 55%;  /* Электрическая лаванда */
-      --chart-4: 275 100% 65%; /* Пурпурное сияние */
-      --chart-5: 315 100% 70%; /* Неоновый розовый */
-    }
   }
+}
+
+.aurora {
+  --background: 210 100% 5%;
+  --foreground: 210 40% 96%;
+  --card: 210 80% 8%;
+  --card-foreground: 210 40% 96%;
+  --popover: 210 80% 8%;
+  --popover-foreground: 210 40% 96%;
+  --primary: 191 95% 43%;
+  --primary-foreground: 210 100% 5%;
+  --secondary: 210 50% 15%;
+  --secondary-foreground: 210 40% 96%;
+  --muted: 210 50% 15%;
+  --muted-foreground: 210 20% 55%;
+  --accent: 270 80% 55%;
+  --accent-foreground: 210 40% 96%;
+  --destructive: 0 63% 31%;
+  --destructive-foreground: 210 40% 96%;
+  --border: 210 50% 15%;
+  --input: 210 50% 15%;
+  --ring: 191 95% 43%;
+  --radius: 1rem;
+}
+
+.cloud {
+  --background: 204 100% 97%;
+  --foreground: 210 50% 15%;
+  --card: 204 100% 99%;
+  --card-foreground: 210 50% 15%;
+  --popover: 204 100% 97%;
+  --popover-foreground: 210 50% 15%;
+  --primary: 201 98% 40%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 204 70% 90%;
+  --secondary-foreground: 210 50% 20%;
+  --muted: 204 70% 93%;
+  --muted-foreground: 210 30% 45%;
+  --accent: 204 70% 90%;
+  --accent-foreground: 210 50% 20%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 204 40% 85%;
+  --input: 204 40% 85%;
+  --ring: 201 98% 40%;
+  --radius: 1rem;
+}
+
+.cosmic {
+  --background: 270 100% 5%;
+  --foreground: 270 40% 95%;
+  --card: 270 80% 8%;
+  --card-foreground: 270 40% 95%;
+  --popover: 270 80% 8%;
+  --popover-foreground: 270 40% 95%;
+  --primary: 262 83% 58%;
+  --primary-foreground: 270 100% 5%;
+  --secondary: 270 50% 15%;
+  --secondary-foreground: 270 40% 95%;
+  --muted: 270 50% 15%;
+  --muted-foreground: 270 20% 55%;
+  --accent: 262 83% 58%;
+  --accent-foreground: 270 40% 95%;
+  --destructive: 0 63% 31%;
+  --destructive-foreground: 270 40% 95%;
+  --border: 270 50% 18%;
+  --input: 270 50% 18%;
+  --ring: 262 83% 58%;
+  --radius: 1rem;
+}
+
+.lavender {
+  --background: 270 100% 98%;
+  --foreground: 270 50% 15%;
+  --card: 270 100% 99%;
+  --card-foreground: 270 50% 15%;
+  --popover: 270 100% 98%;
+  --popover-foreground: 270 50% 15%;
+  --primary: 262 83% 46%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 270 70% 90%;
+  --secondary-foreground: 270 50% 20%;
+  --muted: 270 50% 93%;
+  --muted-foreground: 270 25% 45%;
+  --accent: 270 70% 90%;
+  --accent-foreground: 270 50% 20%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 270 40% 88%;
+  --input: 270 40% 88%;
+  --ring: 262 83% 46%;
+  --radius: 1rem;
+}
+
+.forest {
+  --background: 140 90% 4%;
+  --foreground: 140 30% 95%;
+  --card: 140 70% 7%;
+  --card-foreground: 140 30% 95%;
+  --popover: 140 70% 7%;
+  --popover-foreground: 140 30% 95%;
+  --primary: 160 84% 39%;
+  --primary-foreground: 140 90% 4%;
+  --secondary: 140 50% 12%;
+  --secondary-foreground: 140 30% 95%;
+  --muted: 140 50% 12%;
+  --muted-foreground: 140 20% 55%;
+  --accent: 160 84% 39%;
+  --accent-foreground: 140 30% 95%;
+  --destructive: 0 63% 31%;
+  --destructive-foreground: 140 30% 95%;
+  --border: 140 50% 16%;
+  --input: 140 50% 16%;
+  --ring: 160 84% 39%;
+  --radius: 1rem;
+}
+
+.mint {
+  --background: 138 100% 97%;
+  --foreground: 140 50% 12%;
+  --card: 138 100% 99%;
+  --card-foreground: 140 50% 12%;
+  --popover: 138 100% 97%;
+  --popover-foreground: 140 50% 12%;
+  --primary: 142 76% 36%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 138 60% 90%;
+  --secondary-foreground: 140 50% 15%;
+  --muted: 138 50% 93%;
+  --muted-foreground: 140 25% 42%;
+  --accent: 138 60% 90%;
+  --accent-foreground: 140 50% 15%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 138 40% 85%;
+  --input: 138 40% 85%;
+  --ring: 142 76% 36%;
+  --radius: 1rem;
+}
+
+.ember {
+  --background: 25 100% 4%;
+  --foreground: 25 40% 96%;
+  --card: 25 80% 8%;
+  --card-foreground: 25 40% 96%;
+  --popover: 25 80% 8%;
+  --popover-foreground: 25 40% 96%;
+  --primary: 25 95% 53%;
+  --primary-foreground: 25 100% 4%;
+  --secondary: 25 60% 14%;
+  --secondary-foreground: 25 40% 96%;
+  --muted: 25 60% 14%;
+  --muted-foreground: 25 25% 55%;
+  --accent: 25 95% 53%;
+  --accent-foreground: 25 40% 96%;
+  --destructive: 0 63% 31%;
+  --destructive-foreground: 25 40% 96%;
+  --border: 25 60% 18%;
+  --input: 25 60% 18%;
+  --ring: 25 95% 53%;
+  --radius: 1rem;
+}
+
+.sand {
+  --background: 48 100% 96%;
+  --foreground: 30 50% 15%;
+  --card: 48 100% 98%;
+  --card-foreground: 30 50% 15%;
+  --popover: 48 100% 96%;
+  --popover-foreground: 30 50% 15%;
+  --primary: 38 92% 50%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 48 70% 88%;
+  --secondary-foreground: 30 50% 18%;
+  --muted: 48 55% 92%;
+  --muted-foreground: 30 30% 42%;
+  --accent: 48 70% 88%;
+  --accent-foreground: 30 50% 18%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 48 40% 83%;
+  --input: 48 40% 83%;
+  --ring: 38 92% 50%;
+  --radius: 1rem;
+}
+
+.crimson {
+  --background: 310 100% 4%;
+  --foreground: 350 30% 96%;
+  --card: 310 80% 7%;
+  --card-foreground: 350 30% 96%;
+  --popover: 310 80% 7%;
+  --popover-foreground: 350 30% 96%;
+  --primary: 347 77% 60%;
+  --primary-foreground: 310 100% 4%;
+  --secondary: 310 60% 13%;
+  --secondary-foreground: 350 30% 96%;
+  --muted: 310 60% 13%;
+  --muted-foreground: 330 20% 55%;
+  --accent: 347 77% 60%;
+  --accent-foreground: 350 30% 96%;
+  --destructive: 0 63% 31%;
+  --destructive-foreground: 350 30% 96%;
+  --border: 310 50% 17%;
+  --input: 310 50% 17%;
+  --ring: 347 77% 60%;
+  --radius: 1rem;
+}
+
+.blush {
+  --background: 356 100% 97%;
+  --foreground: 350 50% 15%;
+  --card: 356 100% 99%;
+  --card-foreground: 350 50% 15%;
+  --popover: 356 100% 97%;
+  --popover-foreground: 350 50% 15%;
+  --primary: 347 85% 50%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 356 70% 91%;
+  --secondary-foreground: 350 50% 18%;
+  --muted: 356 55% 94%;
+  --muted-foreground: 350 25% 43%;
+  --accent: 356 70% 91%;
+  --accent-foreground: 350 50% 18%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 356 40% 87%;
+  --input: 356 40% 87%;
+  --ring: 347 85% 50%;
+  --radius: 1rem;
 }
 
 @layer base {
