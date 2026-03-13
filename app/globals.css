@@ -3,8 +3,6 @@
 @tailwind utilities;
 
 @layer base {
-  
-  @layer base {
     :root {
       /* Cloud — light */
       --background: 204 100% 97%;
@@ -62,8 +60,7 @@
       --chart-4: 25 95% 53%;
       --chart-5: 347 77% 60%;
     }
-    
-  }
+
 }
 
 .aurora {

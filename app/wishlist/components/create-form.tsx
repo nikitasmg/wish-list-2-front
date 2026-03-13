@@ -64,7 +64,7 @@ export function CreateForm({ edit, wishlist }: Props) {
       title: edit ? wishlist?.title : '',
       description: edit ? wishlist?.description : '',
       settings: {
-        colorScheme: edit ? wishlist?.settings.colorScheme : 'main',
+        colorScheme: edit ? wishlist?.settings.colorScheme : 'aurora',
         showGiftAvailability: edit ? wishlist?.settings.showGiftAvailability : false,
         presentsLayout: (edit ? wishlist?.settings.presentsLayout : undefined) ?? 'list',
       },
