@@ -67,7 +67,7 @@ export function HeroSection() {
         {/* Subtext */}
         <p className="text-base md:text-lg text-[#94a3b8] max-w-md leading-relaxed">
           Собери всё что хочешь — и просто отправь ссылку.{' '}
-          <span className="text-[#64748b]">Никаких неловких разговоров о подарках.</span>
+          <span className="text-[#94a3b8]">Никаких неловких разговоров о подарках.</span>
         </p>
 
         {/* CTAs */}
@@ -93,6 +93,17 @@ export function HeroSection() {
           >
             Смотреть пример
           </Link>
+        </div>
+
+        {/* Scroll indicator */}
+        <div className="flex flex-col items-center gap-2 mt-6 pointer-events-none select-none">
+          <div
+            className="w-px h-8 animate-pulse"
+            style={{ background: 'linear-gradient(to bottom, rgba(6,182,212,0.6), transparent)' }}
+          />
+          <span className="text-[10px] tracking-widest uppercase" style={{ color: '#1e3a4a' }}>
+            листай вниз
+          </span>
         </div>
       </div>
 
