@@ -8,54 +8,14 @@ export const icons = {
 }
 
 export const colorSchema = [
-  {
-    name: "Основной",
-    value: "main",
-    colors: ["hsl(0 0% 100%)", "#A40E67"],
-  },
-  {
-    name: "Темный",
-    value: "dark",
-    colors: ["#1A2D4A", "#5F2A86"],
-  },
-  {
-    name: "Розовый",
-    value: "pink",
-    colors: ["#FCD0D0", "#FF4C4C"],
-  },
-  {
-    name: "Зеленый",
-    value: "green",
-    colors: ["#D9F7D9", "#4CAF50"],
-  },
-  {
-    name: "Синий",
-    value: "blue",
-    colors: ["#E1F5FE", "#00BFFF"],
-  },
-  {
-    name: "Темно-синий",
-    value: "dark-blue",
-    colors: ["hsl(220 20% 10%)", "hsl(220 40% 60%)"],
-  },
-  {
-    name: "Монохромный",
-    value: "monochrome",
-    colors: ["#F0F4F8", "#7E9AB0"],
-  },
-  {
-    name: "Темно-коричневый",
-    value: "dark-brown",
-    colors: ["#3F3D34", "hsl(25, 40%, 55%)"],
-  },
-  {
-    name: "Фиолетовый",
-    value: "rainbow",
-    colors: ["hsl(285 31% 96%)", "hsl(279 58% 85%)"],
-  },
-  {
-    name: "Темно-фиолетовый",
-    value: "dark-rainbow",
-    colors: ["hsl(285 31% 10%)", "hsl(279 58% 25%)"],
-  },
+  { name: "Aurora",   value: "aurora",   colors: ["#000d1a", "#06b6d4"] },
+  { name: "Cloud",    value: "cloud",    colors: ["#f0f9ff", "#0284c7"] },
+  { name: "Cosmic",   value: "cosmic",   colors: ["#08001a", "#8b5cf6"] },
+  { name: "Lavender", value: "lavender", colors: ["#faf5ff", "#7c3aed"] },
+  { name: "Forest",   value: "forest",   colors: ["#010f06", "#10b981"] },
+  { name: "Mint",     value: "mint",     colors: ["#f0fdf4", "#16a34a"] },
+  { name: "Ember",    value: "ember",    colors: ["#120700", "#f97316"] },
+  { name: "Sand",     value: "sand",     colors: ["#fffbeb", "#d97706"] },
+  { name: "Crimson",  value: "crimson",  colors: ["#120008", "#f43f5e"] },
+  { name: "Blush",    value: "blush",    colors: ["#fff1f2", "#e11d48"] },
 ];

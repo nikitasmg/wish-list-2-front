@@ -17,16 +17,16 @@ const defaultConfig: SchemeConfig = {
 }
 
 const schemeConfigs: Record<string, SchemeConfig> = {
-  main:         { ...defaultConfig, decorativeEmoji: '🎉' },
-  dark:         { ...defaultConfig, heroOverlay: 'from-background via-background/70 to-transparent', decorativeEmoji: '✨' },
-  pink:         { ...defaultConfig, decorativeEmoji: '🌸', cardRounded: 'rounded-3xl' },
-  green:        { ...defaultConfig, decorativeEmoji: '🌿' },
-  blue:         { ...defaultConfig, decorativeEmoji: '💙' },
-  'dark-blue':  { ...defaultConfig, heroOverlay: 'from-background via-background/70 to-transparent', decorativeEmoji: '🌊' },
-  monochrome:   { ...defaultConfig, cardRounded: 'rounded-none', decorativeEmoji: '◼' },
-  'dark-brown': { ...defaultConfig, heroOverlay: 'from-background via-background/75 to-transparent', decorativeEmoji: '☕' },
-  rainbow:      { ...defaultConfig, decorativeEmoji: '🌈', cardRounded: 'rounded-3xl' },
-  'dark-rainbow': { ...defaultConfig, heroOverlay: 'from-background via-background/70 to-transparent', decorativeEmoji: '🌈' },
+  aurora:   { ...defaultConfig, heroOverlay: 'from-background via-background/70 to-transparent', decorativeEmoji: '🌌' },
+  cloud:    { ...defaultConfig, decorativeEmoji: '☁️' },
+  cosmic:   { ...defaultConfig, heroOverlay: 'from-background via-background/70 to-transparent', decorativeEmoji: '💜' },
+  lavender: { ...defaultConfig, decorativeEmoji: '🪻', cardRounded: 'rounded-3xl' },
+  forest:   { ...defaultConfig, heroOverlay: 'from-background via-background/75 to-transparent', decorativeEmoji: '🌿' },
+  mint:     { ...defaultConfig, decorativeEmoji: '🌱' },
+  ember:    { ...defaultConfig, heroOverlay: 'from-background via-background/70 to-transparent', decorativeEmoji: '🔥' },
+  sand:     { ...defaultConfig, decorativeEmoji: '🏜️' },
+  crimson:  { ...defaultConfig, heroOverlay: 'from-background via-background/70 to-transparent', decorativeEmoji: '🌹' },
+  blush:    { ...defaultConfig, decorativeEmoji: '🌸', cardRounded: 'rounded-3xl' },
 }
 
 export const getSchemeConfig = (scheme: string): SchemeConfig =>
