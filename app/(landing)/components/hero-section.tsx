@@ -30,7 +30,7 @@ export function HeroSection() {
       />
 
       {/* Splash cursor — global fixed overlay */}
-      <SplashCursor />
+      <SplashCursor SPLAT_RADIUS={0.1} SPLAT_FORCE={2500} DENSITY_DISSIPATION={3.5} />
 
       {/* Content */}
       <div className="relative z-10 flex flex-col items-center gap-6 text-center max-w-3xl mx-auto">
