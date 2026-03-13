@@ -4,7 +4,7 @@ import { CardCover } from '@/components/card-cover'
 import { toast } from '@/hooks/use-toast'
 import { Button } from '@/components/ui/button'
 import { Present } from '@/shared/types'
-import { ExternalLink } from 'lucide-react'
+import { ExternalLink, Heart } from 'lucide-react'
 import * as React from 'react'
 
 type Props = {
@@ -25,7 +25,12 @@ export const PresentItem = ({ present, theme, isHidden, wishlistId }: Props) => 
   }
   return (
     <div className="w-full md:max-w-[350px] bg-card rounded-2xl flex flex-col gap-2 ">
-        <CardCover cover={present.cover} className='h-[300px]'/>
+        {present.cover
+          ? <CardCover cover={present.cover} className='h-[300px]' />
+          : <div className="flex justify-center items-center bg-primary w-full h-[300px] rounded-t-2xl">
+              <Heart size={50} />
+            </div>
+        }
       <div className="grow flex flex-col gap-2 p-3">
         <div
           className="text-2xl text-secondary-foreground font-bold line-clamp-2 min-h-[65px]">

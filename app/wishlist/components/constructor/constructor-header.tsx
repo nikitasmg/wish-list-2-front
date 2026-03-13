@@ -122,7 +122,7 @@ export function ConstructorHeader({ wishlist }: Props) {
             <Select
               value={presentsLayout}
               onValueChange={(v) => {
-                setPresentsLayout(v)
+                setPresentsLayout(v as 'list' | 'grid3' | 'grid2')
                 saveMeta({ presentsLayout: v })
               }}
             >

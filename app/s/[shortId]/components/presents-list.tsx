@@ -63,7 +63,7 @@ function PresentRow({
     )}>
       <div className={cn('w-16 h-16 flex-shrink-0 overflow-hidden bg-muted', config.cardRounded)}>
         {present.cover ? (
-          <Image src={present.cover} alt={present.title} width={64} height={64} className="w-full h-full object-cover" />
+          <Image src={present.cover} alt={present.title} width={64} height={64} unoptimized className="w-full h-full object-cover" />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-2xl">🎁</div>
         )}

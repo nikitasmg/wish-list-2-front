@@ -52,7 +52,7 @@ export function TimingBlockView({ block }: { block: Block }) {
       </div>
 
       {!past && timeLeft && (
-        <div className="flex gap-3 flex-wrap">
+        <div className="grid grid-cols-4 gap-2">
           {[
             { value: timeLeft.days, label: 'дней' },
             { value: timeLeft.hours, label: 'часов' },

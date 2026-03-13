@@ -42,7 +42,7 @@ export default function Page() {
         )}
         {
           wishlist?.cover &&
-          <Image className="rounded-2xl" src={wishlist.cover} alt="wishlist-cover" width={400} height={400} />
+          <Image className="rounded-2xl" src={wishlist.cover} alt="wishlist-cover" width={400} height={400} unoptimized />
         }
       </div>
 

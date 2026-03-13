@@ -22,6 +22,7 @@ export function HeroHeader({ wishlist, config }: Props) {
           alt={wishlist.title}
           fill
           priority
+          unoptimized
           className="object-cover"
         />
       ) : (

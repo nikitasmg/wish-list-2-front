@@ -5,11 +5,16 @@ type AgendaItem = { time: string; text: string }
 
 export function AgendaBlockView({ block }: { block: Block }) {
   const items = block.data.items as AgendaItem[] | undefined
+  const title = block.data.title as string | undefined
 
   if (!items?.length) return null
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
+      {title && (
+        <h3 className="text-xl font-semibold">{title}</h3>
+      )}
+      <div className="space-y-3">
       {items.map((item, i) => (
         <div key={i} className="flex gap-4 items-baseline">
           <span className="text-sm font-mono text-muted-foreground shrink-0 w-16 text-right">
@@ -21,6 +26,7 @@ export function AgendaBlockView({ block }: { block: Block }) {
           </div>
         </div>
       ))}
+      </div>
     </div>
   )
 }

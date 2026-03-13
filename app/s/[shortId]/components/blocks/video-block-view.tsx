@@ -12,7 +12,7 @@ function getEmbedUrl(url: string): string | null {
       if (videoId) return `https://www.youtube.com/embed/${videoId}`
     }
     // VK Video
-    if (u.hostname.includes('vk.com') && u.pathname.includes('video')) {
+    if ((u.hostname.includes('vk.com') || u.hostname.includes('vkvideo.ru')) && u.pathname.includes('video')) {
       const match = u.pathname.match(/video(-?\d+)_(\d+)/)
       if (match) return `https://vk.com/video_ext.php?oid=${match[1]}&id=${match[2]}`
     }
