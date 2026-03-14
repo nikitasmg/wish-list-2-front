@@ -1,12 +1,13 @@
 'use client'
 
 import { WishlistMenu } from '@/app/wishlist/[id]/components/wishlist-menu'
-import { CardCover } from '@/components/card-cover'
-import { ShareSheet } from '@/components/share-sheet'
+import { ShareButtons } from '@/components/share-button'
 import { Button } from '@/components/ui/button'
+import { colorSchema } from '@/shared/constants'
 import { Wishlist } from '@/shared/types'
 import { toDate } from 'date-fns'
-import { Gift, Share2 } from 'lucide-react'
+import { ExternalLink } from 'lucide-react'
+import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import * as React from 'react'
 
@@ -14,74 +15,80 @@ interface WishlistCardProps {
   wishlist: Wishlist
 }
 
+function WishlistCoverPlaceholder({ colorScheme }: { colorScheme: string }) {
+  const scheme = colorSchema.find((s) => s.value === colorScheme) ?? colorSchema[0]
+  const [bg, accent] = scheme.colors
+  return (
+    <div
+      className="w-full h-[110px] rounded-t-xl"
+      style={{
+        backgroundImage: [
+          `radial-gradient(circle, ${accent}26 1px, transparent 1px)`,
+          `linear-gradient(135deg, ${accent}40 0%, ${bg}26 100%)`,
+        ].join(', '),
+        backgroundSize: '18px 18px, 100% 100%',
+        backgroundColor: bg,
+      }}
+    />
+  )
+}
+
 export const WishlistCard = ({ wishlist }: WishlistCardProps) => {
-  const navigate = useRouter()
-  const [shareOpen, setShareOpen] = React.useState(false)
+  const router = useRouter()
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? ''
+  const shareUrl = wishlist.shortId ? `${appUrl}/s/${wishlist.shortId}` : ''
 
   return (
-    <>
-      <div className="group w-[350px] relative border text-card-foreground rounded-xl shadow-lg hover:shadow-xl">
-        <CardCover className="h-[200px]" cover={wishlist.cover} title={wishlist.title} />
-        {/* Контент */}
-        <div className="p-4">
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-2 min-w-0">
-              <h3 className="text-lg font-semibold line-clamp-1">{wishlist.title}</h3>
-              {Array.isArray(wishlist.blocks) && (
-                <span className="shrink-0 text-xs font-medium bg-primary/10 text-primary px-2 py-0.5 rounded-full">
-                  Конструктор
-                </span>
-              )}
-            </div>
-            <WishlistMenu wishlist={wishlist} />
-          </div>
-          <p className="text-sm text-muted-foreground line-clamp-2 mb-4">{wishlist.description}</p>
+    <div className="group relative border text-card-foreground rounded-xl shadow hover:shadow-md transition-shadow bg-card flex flex-col">
+      {/* Обложка */}
+      {wishlist.cover ? (
+        <div className="relative h-[110px] rounded-t-xl overflow-hidden">
+          <Image
+            src={wishlist.cover}
+            alt={wishlist.title}
+            fill
+            className="object-cover"
+            sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+          />
+        </div>
+      ) : (
+        <WishlistCoverPlaceholder colorScheme={wishlist.settings.colorScheme} />
+      )}
 
-          <div className="flex gap-2 mb-4">
-            <Button
-              className="flex-1"
-              onClick={() => navigate.push(`/wishlist/${wishlist.id}`)}
-            >
-              Добавить подарки <Gift className="ml-2" size={16} />
-            </Button>
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => setShareOpen(true)}
-              title="Поделиться"
-            >
-              <Share2 size={16} />
-            </Button>
-          </div>
+      {/* Контент */}
+      <div className="p-3 flex flex-col flex-1">
+        <div className="flex items-start justify-between gap-1 mb-1">
+          <h3 className="text-sm font-semibold line-clamp-2 leading-snug flex-1">
+            {wishlist.title}
+          </h3>
+          <WishlistMenu wishlist={wishlist} />
+        </div>
 
-          {/* Дополнительная информация */}
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            {wishlist.location.time && (
-              <span className="flex items-center gap-1">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                {toDate(wishlist.location.time).toLocaleDateString()}
-              </span>
-            )}
-            <span>•</span>
-            <span className="flex items-center gap-1">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-              </svg>
-              {wishlist.presentsCount} подарков
-            </span>
-          </div>
+        <p className="text-xs text-muted-foreground mb-3">
+          {wishlist.presentsCount} подарков
+          {wishlist.location.time && (
+            <> · {toDate(wishlist.location.time).toLocaleDateString('ru-RU')}</>
+          )}
+        </p>
+
+        <div className="flex gap-1.5 mt-auto flex-wrap">
+          {shareUrl && (
+            <ShareButtons
+              title={wishlist.title}
+              url={shareUrl}
+              className="flex gap-1"
+            />
+          )}
+          <Button
+            size="sm"
+            className="flex-1"
+            onClick={() => router.push(`/wishlist/edit/${wishlist.id}`)}
+          >
+            <ExternalLink size={13} className="mr-1" />
+            Открыть
+          </Button>
         </div>
       </div>
-
-      <ShareSheet
-        wishlist={wishlist}
-        open={shareOpen}
-        onClose={() => setShareOpen(false)}
-      />
-    </>
+    </div>
   )
 }
