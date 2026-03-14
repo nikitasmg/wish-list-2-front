@@ -1,6 +1,4 @@
 import { useApiDeleteWishlist } from '@/api/wishlist'
-import CoppyLinkButton from '@/components/copy-link-button'
-import ShareButton from '@/components/share-button'
 import {
   DropdownMenu,
   DropdownMenuContent, DropdownMenuItem,
@@ -26,14 +24,6 @@ export const WishlistMenu = ({ wishlist }: MenuProps) => {
       <DropdownMenuContent>
         <DropdownMenuItem onClick={() => navigate.push(`/wishlist/edit/${wishlist.id}`)}>
           Редактировать
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <CoppyLinkButton url={`https://get-my-wishlist.ru/s/${wishlist.shortId}`}/>
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <ShareButton title={wishlist.title} url={`https://get-my-wishlist.ru/s/${wishlist.shortId}`}>
-            <span>Поделиться</span>
-          </ShareButton>
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => mutate()}>
           Удалить
