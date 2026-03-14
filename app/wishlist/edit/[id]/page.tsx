@@ -1,7 +1,6 @@
 'use client'
 
 import { useApiGetWishlistById } from '@/api/wishlist'
-import { CreateForm } from '@/app/wishlist/components/create-form'
 import { ConstructorEditor } from '@/app/wishlist/components/constructor-editor'
 import { Breadcrumbs } from '@/components/breadcrumbs'
 import { useParams } from 'next/navigation'
@@ -16,23 +15,13 @@ export default function Page() {
     return null
   }
 
-  const isConstructor = Array.isArray(wishlist.blocks)
-
   return (
     <>
       <Breadcrumbs
-        items={[
-          { name: 'Мои вишлисты', url: '/wishlist' },
-          { name: wishlist.title, url: `/wishlist/${id}` },
-        ]}
-        page="Конструктор"
+        items={[{ name: 'Мои вишлисты', url: '/wishlist' }]}
+        page={wishlist.title}
       />
-      <h2 className='text-4xl mb-5'>{wishlist.title}</h2>
-      {isConstructor ? (
-        <ConstructorEditor wishlist={wishlist} />
-      ) : (
-        <CreateForm edit wishlist={wishlist} />
-      )}
+      <ConstructorEditor wishlist={wishlist} />
     </>
   )
 }
