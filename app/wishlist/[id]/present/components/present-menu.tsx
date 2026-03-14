@@ -1,20 +1,20 @@
 import { useApiDeletePresent } from '@/api/present'
 import {
   DropdownMenu,
-  DropdownMenuContent, DropdownMenuItem,
+  DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Ellipsis } from 'lucide-react'
-import { useRouter } from 'next/navigation'
 import * as React from 'react'
 
 type MenuProps = {
   id: string
   wishlistId: string
+  onEdit: () => void
 }
 
-export const PresentMenu = ({ id, wishlistId }: MenuProps) => {
-  const navigate = useRouter()
+export const PresentMenu = ({ id, wishlistId, onEdit }: MenuProps) => {
   const { mutate } = useApiDeletePresent(id, wishlistId)
   return (
     <DropdownMenu>
@@ -22,7 +22,7 @@ export const PresentMenu = ({ id, wishlistId }: MenuProps) => {
         <Ellipsis />
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuItem onClick={() => navigate.push(`/wishlist/${wishlistId}/present/edit/${id}`)}>
+        <DropdownMenuItem onClick={onEdit}>
           Редактировать
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => mutate()}>

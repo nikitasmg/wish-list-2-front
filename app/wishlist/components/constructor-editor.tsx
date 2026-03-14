@@ -1,4 +1,3 @@
-// app/wishlist/components/constructor-editor.tsx
 'use client'
 
 import { useApiUpdateWishlistBlocks } from '@/api/wishlist'
@@ -8,12 +7,13 @@ import { ConstructorHeader } from '@/app/wishlist/components/constructor/constru
 import { CoverSection } from '@/app/wishlist/components/constructor/cover-section'
 import { WishlistLanding } from '@/app/s/[shortId]/components/wishlist-landing'
 import { PresentCard } from '@/app/wishlist/[id]/present/components/present-card'
-import { PlusCard } from '@/components/plus-card'
+import { PresentModal } from '@/app/wishlist/components/present-modal'
+import { Button } from '@/components/ui/button'
 import { Block, Wishlist } from '@/shared/types'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import React from 'react'
 import { useToast } from '@/hooks/use-toast'
-import { Eye, Pencil, Gift } from 'lucide-react'
+import { Eye, Pencil, Gift, Plus } from 'lucide-react'
 
 type Props = {
   wishlist: Wishlist
@@ -26,6 +26,7 @@ export function ConstructorEditor({ wishlist }: Props) {
   const { toast } = useToast()
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const [mode, setMode] = useState<Mode>('editor')
+  const [presentModalOpen, setPresentModalOpen] = useState(false)
 
   const { data: presentsData } = useApiGetAllPresents(wishlist.id)
   const presents = presentsData?.data ?? []
@@ -65,6 +66,11 @@ export function ConstructorEditor({ wishlist }: Props) {
         </button>
         <button type="button" onClick={() => setMode('presents')} className={tabClass('presents')}>
           <Gift size={14} /> Подарки
+          {presents.length > 0 && (
+            <span className="ml-1 text-xs bg-primary/20 text-primary px-1.5 py-0.5 rounded-full">
+              {presents.length}
+            </span>
+          )}
         </button>
       </div>
 
@@ -87,7 +93,14 @@ export function ConstructorEditor({ wishlist }: Props) {
 
       {mode === 'presents' && (
         <div className="space-y-4">
-          <PlusCard link={`/wishlist/${wishlist.id}/present/create`} />
+          <Button
+            variant="outline"
+            className="w-full border-dashed"
+            onClick={() => setPresentModalOpen(true)}
+          >
+            <Plus size={16} className="mr-2" />
+            Добавить подарок
+          </Button>
           <div className="flex flex-col gap-4 md:flex-row md:flex-wrap">
             {presents.map((present) => (
               <PresentCard
@@ -102,6 +115,12 @@ export function ConstructorEditor({ wishlist }: Props) {
           )}
         </div>
       )}
+
+      <PresentModal
+        wishlistId={wishlist.id}
+        open={presentModalOpen}
+        onOpenChange={setPresentModalOpen}
+      />
     </div>
   )
 }
