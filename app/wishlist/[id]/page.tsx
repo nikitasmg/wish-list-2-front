@@ -2,17 +2,20 @@
 import { useApiGetAllPresents } from '@/api/present'
 import { useApiGetWishlistById } from '@/api/wishlist'
 import { PresentCard } from '@/app/wishlist/[id]/present/components/present-card'
+import { PresentModal } from '@/app/wishlist/components/present-modal'
 import { Breadcrumbs } from '@/components/breadcrumbs'
-import { WishlistMenu,  } from '@/app/wishlist/[id]/components/wishlist-menu'
-import { PlusCard } from '@/components/plus-card'
+import { WishlistMenu } from '@/app/wishlist/[id]/components/wishlist-menu'
+import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { toDate } from 'date-fns'
+import Image from 'next/image'
+import { Plus } from 'lucide-react'
 import { useParams } from 'next/navigation'
 import * as React from 'react'
-import Image from 'next/image'
 
 export default function Page() {
   const { id } = useParams()
+  const [presentModalOpen, setPresentModalOpen] = React.useState(false)
 
   const { data } = useApiGetWishlistById(id as string)
   const { data: presents } = useApiGetAllPresents(id as string)
@@ -65,19 +68,29 @@ export default function Page() {
         )
       }
       <h3 className="text-2xl mb-5">Список подарков:</h3>
-      <PlusCard link={`/wishlist/${id}/present/create`} />
+      <Button
+        variant="outline"
+        className="w-full border-dashed mb-4"
+        onClick={() => setPresentModalOpen(true)}
+      >
+        <Plus size={16} className="mr-2" />
+        Добавить подарок
+      </Button>
       <div className="flex flex-col gap-4 md:flex-row md:flex-wrap">
-        {
-          presents && presents.data.length > 0
-          && presents?.data.map(
-            present => <PresentCard
-              key={present.id}
-              wishlistId={id as string}
-              present={present}
-            />,
-          )
-        }
+        {presents?.data.map((present) => (
+          <PresentCard
+            key={present.id}
+            wishlistId={id as string}
+            present={present}
+          />
+        ))}
       </div>
+
+      <PresentModal
+        wishlistId={id as string}
+        open={presentModalOpen}
+        onOpenChange={setPresentModalOpen}
+      />
     </div>
   )
 }
