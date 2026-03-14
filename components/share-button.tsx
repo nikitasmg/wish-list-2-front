@@ -1,44 +1,52 @@
-import { cn } from '@/lib/utils'
+'use client'
+
+import { Button } from '@/components/ui/button'
+import { useToast } from '@/hooks/use-toast'
+import { Copy, Share2 } from 'lucide-react'
 import React from 'react'
 
 type Props = {
   title: string
   url: string
-  // cover?: string
   className?: string
 }
 
-const ShareButton = ({ title, url, className, children }: Props & React.PropsWithChildren) => {
+export function ShareButtons({ title, url, className }: Props) {
+  const { toast } = useToast()
+
   const handleShare = async () => {
     if (navigator.share) {
-      // let file: File[] | undefined = undefined;
-      // if (cover) {
-      //   file = [await createFileFromUrl(cover, 'Обложка')];  // Дождитесь завершения
-      // }
       try {
-        await navigator.share({
-          title: title,
-          url: url,
-          // files: file,
-          // text: 'Тескст после ссылки',
-        });
-      } catch (error) {
-        console.error('Ошибка при попытке поделиться:', error);
+        await navigator.share({ title, url })
+      } catch {
+        // пользователь отменил — ничего не делаем
       }
     } else {
-      console.error('API обмена не поддерживается на этом устройстве.');
+      await copyToClipboard()
     }
-  };
+  }
 
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(url)
+      toast({ title: 'Ссылка скопирована' })
+    } catch {
+      toast({ title: 'Не удалось скопировать', variant: 'destructive' })
+    }
+  }
 
   return (
-    <button
-      onClick={handleShare}
-      className={cn('flex items-center justify-between rounded w-full', className)}
-    >
-      {children}
-    </button>
+    <div className={className}>
+      <Button variant="outline" size="sm" onClick={handleShare}>
+        <Share2 size={14} className="mr-1.5" />
+        Поделиться
+      </Button>
+      <Button variant="ghost" size="sm" onClick={copyToClipboard}>
+        <Copy size={14} className="mr-1.5" />
+        Скопировать
+      </Button>
+    </div>
   )
 }
 
-export default ShareButton
+export default ShareButtons
