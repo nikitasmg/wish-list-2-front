@@ -48,7 +48,11 @@ export default function Page() {
             Создай первый вишлист и поделись им с теми, кто хочет сделать тебе подарок
           </p>
           <Button onClick={handleCreate} disabled={isPending}>
-            {isPending ? <Loader2 className="mr-2 animate-spin" size={18} /> : null}
+            {isPending ? (
+              <Loader2 className="mr-2 animate-spin" size={18} />
+            ) : (
+              <LayoutTemplate className="mr-2" size={18} />
+            )}
             Создать первый вишлист
           </Button>
         </div>
