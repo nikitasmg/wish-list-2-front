@@ -13,7 +13,8 @@ import * as React from 'react'
 
 function ExampleCoverPlaceholder({ colorScheme }: { colorScheme: string }) {
   const scheme = colorSchema.find((s) => s.value === colorScheme) ?? colorSchema[0]
-  const [bg, accent] = scheme.colors
+  const bg = scheme.colors[0] ?? '#ffffff'
+  const accent = scheme.colors[1] ?? '#000000'
   return (
     <div
       className="w-full h-[140px] rounded-t-xl"
