@@ -24,7 +24,7 @@ export const PresentItem = ({ present, theme, isHidden, wishlistId }: Props) => 
     })
   }
   return (
-    <div className="w-full md:max-w-[350px] bg-card rounded-2xl flex flex-col gap-2 ">
+    <div className="w-full bg-card rounded-2xl flex flex-col gap-2">
         {present.cover
           ? <CardCover cover={present.cover} className='h-[300px]' />
           : <div className="flex justify-center items-center bg-primary w-full h-[300px] rounded-t-2xl">
@@ -42,7 +42,7 @@ export const PresentItem = ({ present, theme, isHidden, wishlistId }: Props) => 
           present.price &&
           <div className='text-right font-bold text-l italic text-foreground mt-auto'>{present.price.toLocaleString()} ₽</div>
         }
-        <div className="flex items-center justify-between flex-row gap-6 mt-auto">
+        <div className="flex items-center justify-between flex-col sm:flex-row gap-3 mt-auto">
           {!isHidden && <ConfirmReserveModal theme={theme} disabled={present.reserved} onClick={handleReserve}>
             <Button className="grow"
                     loading={isPending}
