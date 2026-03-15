@@ -10,12 +10,13 @@ import * as React from 'react'
 
 type Props = {
   page: string
-  items: { name: string, url: string }[],
-};
+  items: { name: string; url: string }[]
+  className?: string
+}
 
-export const Breadcrumbs = ({ page, items }: Props) => {
+export const Breadcrumbs = ({ page, items, className }: Props) => {
   return (
-    <Breadcrumb>
+    <Breadcrumb className={className}>
       <BreadcrumbList>
         <BreadcrumbItem>
           <BreadcrumbLink href="/">Главная</BreadcrumbLink>
