@@ -38,12 +38,12 @@ export function ShareButtons({ title, url, className }: Props) {
   return (
     <div className={className}>
       <Button variant="outline" size="sm" onClick={handleShare}>
-        <Share2 size={14} className="mr-1.5" />
-        Поделиться
+        <Share2 size={14} />
+        <span className="hidden sm:inline ml-1.5">Поделиться</span>
       </Button>
       <Button variant="ghost" size="sm" onClick={copyToClipboard}>
-        <Copy size={14} className="mr-1.5" />
-        Скопировать
+        <Copy size={14} />
+        <span className="hidden sm:inline ml-1.5">Скопировать</span>
       </Button>
     </div>
   )
