@@ -2,6 +2,7 @@
 
 import { examples, ExampleData } from '@/app/example/data'
 import { WishlistLanding } from '@/app/s/[shortId]/components/wishlist-landing'
+import { Breadcrumbs } from '@/components/breadcrumbs'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -51,6 +52,7 @@ export default function ExamplePage() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-12 space-y-8">
+      <Breadcrumbs items={[]} page="Примеры вишлистов" />
       <div className="space-y-2">
         <h1 className="text-4xl font-bold">Примеры вишлистов</h1>
         <p className="text-muted-foreground">
