@@ -132,7 +132,7 @@ export function BlockCanvas({ initialBlocks, onBlocksChange }: Props) {
         {/* Grid / list */}
         {blocks.length === 0 ? (
           <div className="border-2 border-dashed border-border rounded-lg p-12 text-center text-muted-foreground text-sm">
-            Добавь блоки из панели слева
+            Добавь блоки из палитры
           </div>
         ) : (
           <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
