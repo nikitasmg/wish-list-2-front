@@ -66,6 +66,6 @@ The following commands can be run **without user approval**:
 
 ## Backend
 
-The backend source code is located at `C:\Users\nvsma\OneDrive\Документы\projects\wish-list-2-back`.
+The backend source code is located at `C:\Users\nvsma\OneDrive\Документы\projects\wish-list-2-back`. or `/Users/nvsmagin/GolandProjects/wishlist`
 
 When implementing API calls or features on the frontend, refer to the backend implementation to understand the exact endpoint contracts, request/response shapes, and business logic. Always check the backend source before making assumptions about API behavior.

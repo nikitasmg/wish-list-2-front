@@ -89,7 +89,7 @@ export function HeroSection() {
             Создать вишлист ✦
           </Link>
           <Link
-            href="/s/example"
+            href="/example"
             className="px-8 py-3.5 rounded-xl font-semibold text-base transition-all hover:text-[#c4b5fd]"
             style={{
               background: "rgba(255,255,255,0.05)",

@@ -28,7 +28,7 @@ export default function Page() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col gap-2 items-center justify-between mb-6 lg:flex-row">
         <h2 className="text-4xl">Мои вишлисты</h2>
         <Button onClick={handleCreate} disabled={isPending}>
           {isPending ? (

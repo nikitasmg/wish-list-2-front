@@ -84,9 +84,8 @@ export function ConstructorSection() {
                 delay={i * 0.06}
               >
                 <GlareHover
-                  width="300px"
                   height="100px"
-                  className="rounded-xl w-full cursor-default"
+                  className="rounded-xl max-w-full cursor-default lg:max-w-[300px]"
                   style={{
                     background: block.bg,
                     border: `1px solid ${block.border}`,

@@ -9,7 +9,7 @@ export default function Layout({
   return (
     <>
       <Header />
-      <div className='p-5 max-w-7xl mx-auto'>
+      <div className='p-5 max-w-[90rem] mx-auto'>
         {children}
       </div>
     </>

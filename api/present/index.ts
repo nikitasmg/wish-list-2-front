@@ -3,6 +3,24 @@ import { Present } from '@/shared/types'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
 
+export type ParseResult = {
+  title: string
+  description: string
+  price: number | null
+  image_url: string
+  category: string
+  brand: string
+  source: string
+}
+
+export const useApiParseUrl = () => {
+  return useMutation<{ data: ParseResult }, AxiosError, string>({
+    mutationFn: async (url: string) => {
+      return api.get(`parse?url=${encodeURIComponent(url)}`)
+    },
+  })
+}
+
 export const useApiGetAllPresents = (wishlistId: string) => {
   return useQuery({
     queryKey: [ 'presents', wishlistId ],

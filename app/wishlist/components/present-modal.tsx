@@ -19,11 +19,9 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { useToast } from '@/hooks/use-toast'
 import { Present } from '@/shared/types'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useQueryClient } from '@tanstack/react-query'
-import { ExternalLink } from 'lucide-react'
 import React from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -56,7 +54,6 @@ type Props = {
 
 export function PresentModal({ wishlistId, present, open, onOpenChange }: Props) {
   const isEdit = !!present
-  const { toast } = useToast()
   const queryClient = useQueryClient()
 
   const { mutate: createMutate, isPending: createPending } = useApiCreatePresent(wishlistId)
@@ -107,57 +104,12 @@ export function PresentModal({ wishlistId, present, open, onOpenChange }: Props)
     }
   }
 
-  const handleParserClick = () => {
-    toast({ title: 'Скоро появится 🚀', description: 'Автозаполнение с маркетплейсов в разработке' })
-  }
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{isEdit ? 'Редактировать подарок' : 'Новый подарок'}</DialogTitle>
         </DialogHeader>
-
-        {/* Парсер ссылки */}
-        <div className="rounded-xl border border-dashed border-muted-foreground/30 bg-muted/30 p-3 space-y-2">
-          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-            Заполнить с маркетплейса
-          </p>
-          <div className="flex gap-2">
-            <Input
-              placeholder="Вставить ссылку с Ozon, Wildberries, Яндекс Маркет..."
-              className="text-xs h-8"
-              readOnly
-              onClick={handleParserClick}
-            />
-            <Button
-              size="sm"
-              variant="secondary"
-              type="button"
-              onClick={handleParserClick}
-              className="shrink-0 h-8 text-xs"
-            >
-              <ExternalLink size={12} className="mr-1" />
-              Найти
-            </Button>
-          </div>
-          <div className="flex gap-1.5">
-            {['Ozon', 'Wildberries', 'Яндекс Маркет'].map((store) => (
-              <span
-                key={store}
-                className="text-[10px] px-2 py-0.5 rounded-full bg-muted text-muted-foreground font-medium"
-              >
-                {store}
-              </span>
-            ))}
-          </div>
-        </div>
-
-        <div className="relative flex items-center gap-2 my-1">
-          <div className="flex-1 h-px bg-border" />
-          <span className="text-xs text-muted-foreground">или заполни вручную</span>
-          <div className="flex-1 h-px bg-border" />
-        </div>
 
         {/* Форма */}
         <Form {...form}>
