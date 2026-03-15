@@ -8,6 +8,7 @@ import {
   DndContext,
   DragEndEvent,
   PointerSensor,
+  TouchSensor,
   closestCenter,
   useSensor,
   useSensors,
@@ -31,7 +32,10 @@ export function BlockCanvas({ initialBlocks, onBlocksChange }: Props) {
   const [blocks, setBlocks] = useState<Block[]>(initialBlocks)
   const [viewMode, setViewMode] = useState<ViewMode>('desktop')
 
-  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }))
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 250, tolerance: 8 } }),
+  )
 
   const syncBlocks = useCallback(
     (next: Block[]) => {
@@ -93,7 +97,7 @@ export function BlockCanvas({ initialBlocks, onBlocksChange }: Props) {
   const ids = displayBlocks.map((b) => String(b.position))
 
   return (
-    <div className="flex gap-6 items-start">
+    <div className="flex flex-col gap-4 items-start md:flex-row md:gap-6">
       {/* Left palette */}
       <BlockPalette onAdd={handleAdd} existingCount={blocks.length} />
 

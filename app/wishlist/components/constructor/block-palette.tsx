@@ -175,8 +175,8 @@ export function BlockPalette({ onAdd, existingCount }: Props) {
   }
 
   return (
-    <div className="w-56 shrink-0 space-y-2">
-      <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3">
+    <div className="w-full overflow-x-auto flex flex-row gap-2 pb-2 md:w-56 md:shrink-0 md:flex-col md:overflow-x-visible md:pb-0">
+      <h3 className="hidden md:block text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3">
         Блоки
       </h3>
       {PALETTE_ITEMS.map((item) => (
@@ -184,7 +184,7 @@ export function BlockPalette({ onAdd, existingCount }: Props) {
           key={item.type}
           type="button"
           onClick={() => handleAdd(item.type)}
-          className="w-full text-left rounded-lg border bg-card p-3 hover:border-primary/50 hover:bg-accent/30 transition-colors space-y-1.5"
+          className="shrink-0 w-28 md:w-full text-left rounded-lg border bg-card p-3 hover:border-primary/50 hover:bg-accent/30 transition-colors space-y-1.5"
         >
           <span className="text-xs font-semibold text-foreground">{item.label}</span>
           <div>{item.preview}</div>
