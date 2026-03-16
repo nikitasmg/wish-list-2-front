@@ -21,9 +21,11 @@ New domain starting from scratch (previous domain expired). The goal is to rank 
 |---|---|
 | `<html lang="en">` в `app/layout.tsx` | → `lang="ru"` |
 | Root layout title "Get wishlist - Бесплатный сервис по созданию вишлистов" | → "Просто намекни — Создай вишлист и отправь ссылку" |
+| `Manrope` шрифт с `subsets: ['latin']` | → `subsets: ['latin', 'cyrillic']` |
 | `how-it-works/page.tsx` использует `<Head>` из Pages Router | → заменить на `export const metadata: Metadata` |
-| `terms-of-service/page.tsx` использует `<Head>` из Pages Router | → заменить на `export const metadata: Metadata` |
+| `terms-of-service/page.tsx` использует `<Head>` из Pages Router | → заменить на `export const metadata: Metadata`, добавить `robots: noindex` |
 | Неверное название бренда "WishMaker" в `how-it-works` | → "Просто намекни" |
+| H1 на `/how-it-works` — "Как это работает" | → "Как создать вишлист" (согласно целевому запросу) |
 
 ### 1.2 Root metadata (`app/layout.tsx`)
 
@@ -40,23 +42,46 @@ export const metadata: Metadata = {
     locale: 'ru_RU',
     url: 'https://prosto-namekni.ru',
     siteName: 'Просто намекни',
-    images: [{ url: '/og-image.png', width: 1200, height: 630 }],
+    // images: [{ url: '/og-image.png', width: 1200, height: 630 }],
+    // ↑ Раскомментировать ТОЛЬКО после создания и деплоя public/og-image.png
   },
   twitter: {
     card: 'summary_large_image',
   },
+  // Токены подставить после регистрации в поисковиках
+  verification: {
+    yandex: '<yandex-verification-token>',
+    google: '<google-verification-token>',
+  },
 }
 ```
 
-### 1.3 Публичные вишлисты (`app/s/[shortId]/page.tsx`)
+**Важно:** поле `images` в `openGraph` добавлять только после того, как `public/og-image.png` создан и задеплоен — иначе поисковики получат битую OG-картинку.
 
-- Конвертировать из `'use client'` в серверный компонент с `generateMetadata`
-- Добавить `robots: { index: false, follow: false }`
-- Добавить в `next-sitemap.config.js` в `exclude: ['/s/*']`
+### 1.3 Публичные вишлисты (`/s/[shortId]`) — noindex без рефакторинга
+
+`app/s/[shortId]/page.tsx` — клиентский компонент с тремя хуками (`useApiGetWishlistByShortId`, `useApiGetAllPresents`, `useApiGetMe`). Конвертировать в серверный компонент нельзя без бэкенд-изменений.
+
+Правильный подход — создать серверный layout-файл для сегмента:
+
+```ts
+// app/s/[shortId]/layout.tsx  (НОВЫЙ файл)
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+}
+
+export default function Layout({ children }: { children: React.ReactNode }) {
+  return <>{children}</>
+}
+```
+
+`page.tsx` при этом не трогаем.
 
 ### 1.4 Главная страница (`app/page.tsx`)
 
-Расширить metadata:
+Текущий title уже корректный. Нужно только расширить description и добавить OG-теги:
 
 ```ts
 export const metadata: Metadata = {
@@ -66,7 +91,8 @@ export const metadata: Metadata = {
     title: 'Просто намекни — Создай вишлист онлайн',
     description: 'Создай вишлист за минуту и поделись с друзьями. Бесплатно.',
     url: 'https://prosto-namekni.ru',
-    images: [{ url: '/og-image.png', width: 1200, height: 630 }],
+    // images: [{ url: '/og-image.png', width: 1200, height: 630 }],
+    // ↑ Раскомментировать ТОЛЬКО после создания и деплоя public/og-image.png
   },
   alternates: {
     canonical: 'https://prosto-namekni.ru',
@@ -131,6 +157,7 @@ export const metadata: Metadata = {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
   "name": "Просто намекни",
+  "url": "https://prosto-namekni.ru",
   "applicationCategory": "LifestyleApplication",
   "operatingSystem": "Web",
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "RUB" },
@@ -138,7 +165,16 @@ export const metadata: Metadata = {
 }
 ```
 
-Дополнительно `WebSite` со `SearchAction` (sitelinks search box).
+Дополнительно `WebSite` — без `SearchAction` (внутреннего поиска на сайте нет, добавлять некорректный SearchAction создаст ошибки в Search Console):
+
+```json
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Просто намекни",
+  "url": "https://prosto-namekni.ru"
+}
+```
 
 ### 3.2 `/how-it-works`
 
@@ -163,6 +199,8 @@ export const metadata: Metadata = {
 
 Для occasion-страниц — вариации с названием праздника (опционально, второй приоритет).
 
+**Порядок:** OG-изображение создаётся ДО добавления `images` в metadata. Не добавлять OG-image в код до тех пор, пока файл не создан и не задеплоен.
+
 ---
 
 ## Блок 5 — Sitemap + robots.txt
@@ -173,25 +211,58 @@ export const metadata: Metadata = {
 module.exports = {
   siteUrl: 'https://prosto-namekni.ru',
   generateRobotsTxt: true,
-  exclude: ['/oauth', '/wishlist/*', '/s/*'],
-  // Приоритеты через transform:
-  // / → priority 1.0, changefreq: weekly
-  // /wishlist-for/* → priority 0.9, changefreq: monthly
-  // /blog/* → priority 0.8, changefreq: monthly
-  // /how-it-works → priority 0.7
+  exclude: ['/oauth', '/wishlist/*', '/s/*', '/login', '/registration'],
+  transform: async (config, path) => {
+    let priority = 0.7
+    let changefreq = 'monthly'
+
+    if (path === '/') {
+      priority = 1.0
+      changefreq = 'weekly'
+    } else if (path.startsWith('/wishlist-for/')) {
+      priority = 0.9
+      changefreq = 'monthly'
+    } else if (path.startsWith('/blog/')) {
+      priority = 0.8
+      changefreq = 'monthly'
+    } else if (path === '/how-it-works') {
+      priority = 0.7
+      changefreq = 'monthly'
+    }
+
+    return {
+      loc: path,
+      changefreq,
+      priority,
+      lastmod: new Date().toISOString(),
+    }
+  },
 }
 ```
 
 ### 5.2 `robots.txt`
 
-Добавить явный `Disallow: /s/` чтобы краулеры не тратили краулинговый бюджет на личные страницы.
+Добавить явный `Disallow: /s/` чтобы краулеры не тратили краулинговый бюджет на личные страницы:
+
+```
+User-agent: *
+Allow: /
+Disallow: /s/
+Disallow: /wishlist/
+Disallow: /oauth/
+Disallow: /login/
+Disallow: /registration/
+
+Host: https://prosto-namekni.ru
+Sitemap: https://prosto-namekni.ru/sitemap.xml
+```
 
 ---
 
 ## Блок 6 — Регистрация в поисковиках (после деплоя)
 
-1. **Яндекс Вебмастер** — добавить сайт, подтвердить через meta-тег или DNS, отправить sitemap.xml
-2. **Google Search Console** — добавить ресурс, подтвердить, отправить sitemap.xml
+1. **Google Search Console** — добавить ресурс, получить verification token, вставить в `metadata.verification.google` в `layout.tsx`, задеплоить, подтвердить. Отправить sitemap.xml.
+2. **Яндекс Вебмастер** — добавить сайт, получить verification token, вставить в `metadata.verification.yandex` в `layout.tsx`, задеплоить, подтвердить. Отправить sitemap.xml.
 3. **Яндекс Метрика** — настроить цель "Регистрация" (событие на кнопку "Создать аккаунт")
 4. **Google Analytics** — аналогично
 
@@ -200,39 +271,41 @@ module.exports = {
 ## Порядок реализации (параллельно)
 
 ### Высокий приоритет (делать сразу)
-1. `lang="ru"` в layout
-2. Root metadata рефакторинг (layout.tsx + page.tsx)
-3. Фикс `how-it-works` и `terms-of-service` (Pages Router → App Router metadata)
-4. noindex для `/s/[shortId]`
-5. JSON-LD на главной (`SoftwareApplication` + `WebSite`)
-6. OG-изображение (статик)
-7. Sitemap/robots.txt обновление
+1. `lang="ru"` и `subsets: ['latin', 'cyrillic']` в `layout.tsx`
+2. Root metadata рефакторинг (`layout.tsx`)
+3. Фикс `how-it-works` (Pages Router → App Router metadata, H1, бренд)
+4. Фикс `terms-of-service` (Pages Router → App Router metadata, noindex)
+5. Создать `app/s/[shortId]/layout.tsx` с `robots: noindex`
+6. JSON-LD на главной (`SoftwareApplication` + `WebSite`)
+7. Создать `public/og-image.png`
+8. Добавить OG-теги в layout и главную (после п.7)
+9. Sitemap/robots.txt обновление
 
 ### Средний приоритет
-8. `/how-it-works` — добавить `HowTo` JSON-LD
-9. Occasion-лендинги (7 страниц)
-10. Регистрация в Search Console и Вебмастере
+10. `/how-it-works` — добавить `HowTo` JSON-LD
+11. Occasion-лендинги (7 страниц)
+12. Регистрация в Search Console и Вебмастере (после деплоя)
 
 ### Низкий приоритет (контент)
-11. Блог-инфраструктура (MDX setup)
-12. 5 стартовых статей
-13. JSON-LD на блог-статьях и occasion-страницах
+13. Блог-инфраструктура (MDX setup)
+14. 5 стартовых статей
+15. JSON-LD на блог-статьях и occasion-страницах
 
 ---
 
 ## Файлы для создания/изменения
 
 **Изменить:**
-- `app/layout.tsx` — lang, metadata, OG
-- `app/page.tsx` — расширить metadata, добавить JSON-LD
-- `app/how-it-works/page.tsx` — Head → metadata, HowTo JSON-LD, исправить бренд
-- `app/terms-of-service/page.tsx` — Head → metadata
-- `app/s/[shortId]/page.tsx` — добавить noindex через generateMetadata
-- `next-sitemap.config.js` — exclude /s/*, приоритеты
-- `public/robots.txt` — Disallow /s/
+- `app/layout.tsx` — lang, cyrillic subset, metadata, OG, verification
+- `app/page.tsx` — расширить description/OG (title уже корректный)
+- `app/how-it-works/page.tsx` — Head → metadata, H1, бренд, HowTo JSON-LD
+- `app/terms-of-service/page.tsx` — Head → metadata, noindex
+- `next-sitemap.config.js` — exclude /s/*, /login, /registration; transform с приоритетами
+- `public/robots.txt` — Disallow /s/, /login/, /registration/
 
 **Создать:**
-- `public/og-image.png`
+- `app/s/[shortId]/layout.tsx` — noindex layout
+- `public/og-image.png` — 1200×630
 - `app/wishlist-for/[occasion]/page.tsx` + `content/occasions/*.ts`
 - `app/blog/page.tsx` + `app/blog/[slug]/page.tsx`
 - `content/blog/*.mdx` (5 статей)
