@@ -1,43 +1,10 @@
 import { Block } from '@/shared/types'
 
 /**
- * Migrate legacy blocks (position-based) to coordinate model (row, col).
+ * Ensure blocks have valid coordinates. Returns as-is since legacy is not in prod.
  */
-export function migrateBlocks(blocks: Block[]): Block[] {
-  if (blocks.length === 0) return []
-  if (blocks[0].row !== undefined && blocks[0].row !== null) return blocks
-
-  const sorted = [...blocks].sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
-  const occupied = new Set<string>()
-
-  return sorted.map((block) => {
-    const cs = block.colSpan ?? 1
-
-    if (cs === 2) {
-      let row = 0
-      while (occupied.has(`${row},0`) || occupied.has(`${row},1`)) row++
-      occupied.add(`${row},0`)
-      occupied.add(`${row},1`)
-      return { ...block, row, col: 0 as const, colSpan: 2 as const }
-    }
-
-    const wantRight = block.columnStart === 2
-    let row = 0
-    let col: 0 | 1 = wantRight ? 1 : 0
-
-    if (wantRight) {
-      while (occupied.has(`${row},1`)) row++
-      col = 1
-    } else {
-      while (occupied.has(`${row},${col}`)) {
-        col = col === 0 ? 1 : 0
-        if (col === 0) row++
-      }
-    }
-
-    occupied.add(`${row},${col}`)
-    return { ...block, row, col, colSpan: 1 as const }
-  })
+export function ensureCoords(blocks: Block[]): Block[] {
+  return blocks
 }
 
 export function getMaxRow(blocks: Block[]): number {

@@ -37,19 +37,21 @@ const birthday: OccasionData = {
     blocks: [
       {
         type: 'text',
-        position: 0,
+        row: 0,
+        col: 0,
         colSpan: 2,
         data: {
           html: '<p>Привет! Мы приглашаем тебя на праздник 🎉 Сашке исполняется <strong>7 лет</strong> — это особенный день! Приходи с хорошим настроением, остальное мы уже организовали.</p>',
         },
       },
-      { type: 'date', position: 1, data: { datetime: '2026-04-07T12:00:00', label: 'День рождения' } },
-      { type: 'location', position: 2, data: { name: 'ТЦ Мега Химки, детский развлекательный центр «Джунгли»', link: 'https://yandex.ru/maps' } },
-      { type: 'timing', position: 3, colSpan: 2, data: { end: '2026-04-07T12:00:00' } },
-      { type: 'divider', position: 4, colSpan: 2, data: { style: 'dots' } },
+      { type: 'date', row: 1, col: 0, colSpan: 1, data: { datetime: '2026-04-07T12:00:00', label: 'День рождения' } },
+      { type: 'location', row: 1, col: 1, colSpan: 1, data: { name: 'ТЦ Мега Химки, детский развлекательный центр «Джунгли»', link: 'https://yandex.ru/maps' } },
+      { type: 'timing', row: 2, col: 0, colSpan: 2, data: { end: '2026-04-07T12:00:00' } },
+      { type: 'divider', row: 3, col: 0, colSpan: 2, data: { style: 'dots' } },
       {
         type: 'agenda',
-        position: 5,
+        row: 4,
+        col: 0,
         colSpan: 2,
         data: {
           items: [
@@ -64,14 +66,16 @@ const birthday: OccasionData = {
       },
       {
         type: 'checklist',
-        position: 6,
+        row: 5,
+        col: 0,
+        colSpan: 1,
         data: {
           title: 'Что взять с собой',
           items: ['Хорошее настроение', 'Сменную обувь для зала', 'Подарок (список ниже 👇)', 'Подтвердить присутствие заранее'],
         },
       },
-      { type: 'divider', position: 7, colSpan: 2, data: { style: 'line' } },
-      { type: 'contact', position: 8, data: { name: 'Наташа', role: 'Мама именинника', telegram: '@natasha_birthday', phone: '+7 916 123-45-67' } },
+      { type: 'divider', row: 6, col: 0, colSpan: 2, data: { style: 'line' } },
+      { type: 'contact', row: 7, col: 0, colSpan: 1, data: { name: 'Наташа', role: 'Мама именинника', telegram: '@natasha_birthday', phone: '+7 916 123-45-67' } },
     ],
   },
   presents: [
@@ -109,18 +113,20 @@ const newYear: OccasionData = {
     blocks: [
       {
         type: 'text',
-        position: 0,
+        row: 0,
+        col: 0,
         colSpan: 2,
         data: {
           html: '<p>Привет! 🎄 Новый год уже скоро, и чтобы вам было проще выбрать подарок — я собрала свои пожелания в один список. Выбирайте что по душе, а главное — приходите с хорошим настроением!</p>',
         },
       },
-      { type: 'date', position: 1, data: { datetime: '2026-12-31T22:00:00', label: 'Новый год' } },
-      { type: 'timing', position: 2, colSpan: 2, data: { end: '2026-12-31T22:00:00' } },
-      { type: 'divider', position: 3, colSpan: 2, data: { style: 'dots' } },
+      { type: 'date', row: 1, col: 0, colSpan: 1, data: { datetime: '2026-12-31T22:00:00', label: 'Новый год' } },
+      { type: 'timing', row: 2, col: 0, colSpan: 2, data: { end: '2026-12-31T22:00:00' } },
+      { type: 'divider', row: 3, col: 0, colSpan: 2, data: { style: 'dots' } },
       {
         type: 'quote',
-        position: 4,
+        row: 4,
+        col: 0,
         colSpan: 2,
         data: {
           text: 'Новый год — это не только подарки, но с ними определённо приятнее!',
@@ -129,7 +135,9 @@ const newYear: OccasionData = {
       },
       {
         type: 'checklist',
-        position: 5,
+        row: 5,
+        col: 0,
+        colSpan: 1,
         data: {
           title: 'Напоминание',
           items: ['Поделись ссылкой до 20 декабря', 'Отметь подарок, если уже купил', 'Приходи к 22:00!'],
@@ -171,29 +179,32 @@ const wedding: OccasionData = {
     blocks: [
       {
         type: 'quote',
-        position: 0,
+        row: 0,
+        col: 0,
         colSpan: 2,
         data: {
           text: 'Любовь — это не глядеть друг на друга, а смотреть вместе в одном направлении.',
           author: 'Антуан де Сент-Экзюпери',
         },
       },
-      { type: 'date', position: 1, data: { datetime: '2026-06-14T15:00:00', label: 'День свадьбы' } },
-      { type: 'location', position: 2, data: { name: 'Ресторан «Турандот», Тверской бульвар, 26/5с1, Москва', link: 'https://yandex.ru/maps' } },
-      { type: 'timing', position: 3, colSpan: 2, data: { end: '2026-06-14T15:00:00' } },
+      { type: 'date', row: 1, col: 0, colSpan: 1, data: { datetime: '2026-06-14T15:00:00', label: 'День свадьбы' } },
+      { type: 'location', row: 1, col: 1, colSpan: 1, data: { name: 'Ресторан «Турандот», Тверской бульвар, 26/5с1, Москва', link: 'https://yandex.ru/maps' } },
+      { type: 'timing', row: 2, col: 0, colSpan: 2, data: { end: '2026-06-14T15:00:00' } },
       {
         type: 'color_scheme',
-        position: 4,
+        row: 3,
+        col: 0,
         colSpan: 2,
         data: {
           label: 'Дресс-код — пастельные оттенки',
           colors: ['#fce4ec', '#f8bbd9', '#e1bee7', '#e8eaf6', '#e0f2fe'],
         },
       },
-      { type: 'divider', position: 5, colSpan: 2, data: { style: 'wave' } },
+      { type: 'divider', row: 4, col: 0, colSpan: 2, data: { style: 'wave' } },
       {
         type: 'agenda',
-        position: 6,
+        row: 5,
+        col: 0,
         colSpan: 2,
         data: {
           items: [
@@ -208,7 +219,9 @@ const wedding: OccasionData = {
       },
       {
         type: 'checklist',
-        position: 7,
+        row: 6,
+        col: 0,
+        colSpan: 1,
         data: {
           title: 'Важно знать',
           items: [
@@ -219,9 +232,9 @@ const wedding: OccasionData = {
           ],
         },
       },
-      { type: 'divider', position: 8, colSpan: 1, data: { style: 'dots' } },
-      { type: 'contact', position: 9, data: { name: 'Анастасия', role: 'Организатор свадьбы', telegram: '@anastasia_events', phone: '+7 926 456-78-90' } },
-      { type: 'contact', position: 10, data: { name: 'Дима', role: 'Жених', telegram: '@dima_groom', phone: '+7 903 321-65-43' } },
+      { type: 'divider', row: 6, col: 1, colSpan: 1, data: { style: 'dots' } },
+      { type: 'contact', row: 7, col: 0, colSpan: 1, data: { name: 'Анастасия', role: 'Организатор свадьбы', telegram: '@anastasia_events', phone: '+7 926 456-78-90' } },
+      { type: 'contact', row: 7, col: 1, colSpan: 1, data: { name: 'Дима', role: 'Жених', telegram: '@dima_groom', phone: '+7 903 321-65-43' } },
     ],
   },
   presents: [
@@ -259,18 +272,20 @@ const valentines: OccasionData = {
     blocks: [
       {
         type: 'quote',
-        position: 0,
+        row: 0,
+        col: 0,
         colSpan: 2,
         data: {
           text: 'Любовь — это когда кто-то знает, чего ты хочешь, ещё до того, как ты сам это понял.',
         },
       },
-      { type: 'date', position: 1, data: { datetime: '2027-02-14T19:00:00', label: 'День Валентина' } },
-      { type: 'timing', position: 2, colSpan: 2, data: { end: '2027-02-14T19:00:00' } },
-      { type: 'divider', position: 3, colSpan: 2, data: { style: 'line' } },
+      { type: 'date', row: 1, col: 0, colSpan: 1, data: { datetime: '2027-02-14T19:00:00', label: 'День Валентина' } },
+      { type: 'timing', row: 2, col: 0, colSpan: 2, data: { end: '2027-02-14T19:00:00' } },
+      { type: 'divider', row: 3, col: 0, colSpan: 2, data: { style: 'line' } },
       {
         type: 'text',
-        position: 4,
+        row: 4,
+        col: 0,
         colSpan: 2,
         data: {
           html: '<p>Не обязательно дарить что-то из списка — главное, что мы вместе 💕 Но если хочешь порадовать — вот подсказки!</p>',
@@ -312,17 +327,20 @@ const march8: OccasionData = {
     blocks: [
       {
         type: 'text',
-        position: 0,
+        row: 0,
+        col: 0,
         colSpan: 2,
         data: {
           html: '<p>Каждый год одно и то же — «что тебе подарить?» 🙈 В этом году я облегчила задачу! Выбирайте из списка или вдохновляйтесь. Буду рада любому вниманию.</p>',
         },
       },
-      { type: 'date', position: 1, data: { datetime: '2027-03-08T10:00:00', label: '8 марта' } },
-      { type: 'divider', position: 2, colSpan: 2, data: { style: 'wave' } },
+      { type: 'date', row: 1, col: 0, colSpan: 1, data: { datetime: '2027-03-08T10:00:00', label: '8 марта' } },
+      { type: 'divider', row: 2, col: 0, colSpan: 2, data: { style: 'wave' } },
       {
         type: 'checklist',
-        position: 3,
+        row: 3,
+        col: 0,
+        colSpan: 1,
         data: {
           title: 'Важно',
           items: ['Размер одежды: S/42', 'Аллергия на лилии', 'Люблю запахи: ваниль, жасмин'],
@@ -364,18 +382,20 @@ const christmas: OccasionData = {
     blocks: [
       {
         type: 'quote',
-        position: 0,
+        row: 0,
+        col: 0,
         colSpan: 2,
         data: {
           text: 'Рождество — это время, когда хочется подарить тепло и получить его в ответ.',
         },
       },
-      { type: 'date', position: 1, data: { datetime: '2026-12-25T18:00:00', label: 'Рождество' } },
-      { type: 'location', position: 2, data: { name: 'Дом бабушки, посёлок Лесной, Подмосковье' } },
-      { type: 'divider', position: 3, colSpan: 2, data: { style: 'dots' } },
+      { type: 'date', row: 1, col: 0, colSpan: 1, data: { datetime: '2026-12-25T18:00:00', label: 'Рождество' } },
+      { type: 'location', row: 1, col: 1, colSpan: 1, data: { name: 'Дом бабушки, посёлок Лесной, Подмосковье' } },
+      { type: 'divider', row: 2, col: 0, colSpan: 2, data: { style: 'dots' } },
       {
         type: 'agenda',
-        position: 4,
+        row: 3,
+        col: 0,
         colSpan: 2,
         data: {
           items: [
@@ -422,18 +442,20 @@ const party: OccasionData = {
     blocks: [
       {
         type: 'text',
-        position: 0,
+        row: 0,
+        col: 0,
         colSpan: 2,
         data: {
           html: '<p>Народ, всё серьёзно 🕺 Собираемся у меня в пятницу вечером. Место знаете — этаж 4, домофон 14. Если ещё не были — пишите, встречу у подъезда.</p><p>Список желаний ниже — берите что хотите или просто приходите с собой 😎</p>',
         },
       },
-      { type: 'date', position: 1, data: { datetime: '2026-03-21T20:00:00', label: 'Вечеринка' } },
-      { type: 'location', position: 2, data: { name: 'ул. Пречистенка, д. 36, кв. 14, Москва', link: 'https://yandex.ru/maps' } },
-      { type: 'divider', position: 3, colSpan: 2, data: { style: 'line' } },
+      { type: 'date', row: 1, col: 0, colSpan: 1, data: { datetime: '2026-03-21T20:00:00', label: 'Вечеринка' } },
+      { type: 'location', row: 1, col: 1, colSpan: 1, data: { name: 'ул. Пречистенка, д. 36, кв. 14, Москва', link: 'https://yandex.ru/maps' } },
+      { type: 'divider', row: 2, col: 0, colSpan: 2, data: { style: 'line' } },
       {
         type: 'agenda',
-        position: 4,
+        row: 3,
+        col: 0,
         colSpan: 2,
         data: {
           items: [
@@ -447,15 +469,17 @@ const party: OccasionData = {
       },
       {
         type: 'checklist',
-        position: 5,
+        row: 4,
+        col: 0,
+        colSpan: 1,
         data: {
           title: 'Что взять с собой',
           items: ['Хорошее настроение (обязательно!)', 'Что-нибудь из вишлиста 👇', 'Сменку, если планируешь остаться', 'Снеки или что-то вкусное'],
         },
       },
-      { type: 'divider', position: 6, colSpan: 2, data: { style: 'dots' } },
-      { type: 'contact', position: 7, data: { name: 'Макс', role: 'Хозяин вечеринки', telegram: '@max_party', phone: '+7 999 876-54-32' } },
-      { type: 'quote', position: 8, data: { text: 'Лучшие вечеринки — те, о которых потом рассказывают.', author: 'Народная мудрость' } },
+      { type: 'divider', row: 5, col: 0, colSpan: 2, data: { style: 'dots' } },
+      { type: 'contact', row: 6, col: 0, colSpan: 1, data: { name: 'Макс', role: 'Хозяин вечеринки', telegram: '@max_party', phone: '+7 999 876-54-32' } },
+      { type: 'quote', row: 6, col: 1, colSpan: 1, data: { text: 'Лучшие вечеринки — те, о которых потом рассказывают.', author: 'Народная мудрость' } },
     ],
   },
   presents: [

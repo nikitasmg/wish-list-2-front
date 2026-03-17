@@ -4,7 +4,7 @@ import { BlockItem } from '@/app/wishlist/components/constructor/block-item'
 import { BlockPalette } from '@/app/wishlist/components/constructor/block-palette'
 import { EmptyCell } from '@/app/wishlist/components/constructor/empty-cell'
 import {
-  migrateBlocks,
+  ensureCoords,
   getGridRowCount,
   findFirstEmptyCell,
   moveBlock,
@@ -29,7 +29,7 @@ type Props = {
 }
 
 export function BlockCanvas({ initialBlocks, onBlocksChange }: Props) {
-  const [blocks, setBlocks] = useState<Block[]>(() => migrateBlocks(initialBlocks))
+  const [blocks, setBlocks] = useState<Block[]>(() => ensureCoords(initialBlocks))
   const [isDragActive, setIsDragActive] = useState(false)
   const [focusedId, setFocusedId] = useState<string | null>(null)
 

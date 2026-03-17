@@ -20,18 +20,18 @@ type Props = {
 }
 
 export function BlockRenderer({ blocks }: Props) {
-  const sorted = [...blocks].sort((a, b) => a.position - b.position)
+  const sorted = [...blocks].sort((a, b) => a.row - b.row || a.col - b.col)
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:auto-rows-[minmax(100px,auto)]">
-      {sorted.map((block) => (
+      {sorted.map((block, idx) => (
         <div
-          key={block.position}
+          key={`${block.row}-${block.col}`}
           className="block-grid-item"
           style={{
-            '--mobile-order': block.mobilePosition ?? block.position,
-            '--col-span': `span ${block.colSpan ?? 1}`,
-            '--row-span': `span ${block.rowSpan ?? 1}`,
+            '--mobile-order': idx,
+            '--col-span': `${block.col + 1} / span ${block.colSpan ?? 1}`,
+            '--row-span': `${block.row + 1}`,
           } as React.CSSProperties}
         >
           {block.type === 'text' && <TextBlockView block={block} />}

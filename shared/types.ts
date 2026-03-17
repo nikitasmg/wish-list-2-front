@@ -25,11 +25,6 @@ export type Block = {
   col: 0 | 1
   colSpan: 1 | 2
   data: Record<string, unknown>
-  // Legacy fields kept for migration compatibility (read-only)
-  position?: number
-  mobilePosition?: number
-  columnStart?: 1 | 2
-  rowSpan?: 1 | 2 | 3
 }
 
 // Block data shapes per type:
