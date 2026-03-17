@@ -17,6 +17,7 @@ export const metadata: Metadata = {
     title: 'Просто намекни — Создай вишлист онлайн',
     description: 'Создай вишлист за минуту и поделись с друзьями. Бесплатно.',
     url: 'https://prosto-namekni.ru',
+    images: [{ url: '/og-image.png', width: 1200, height: 630 }],
   },
   alternates: {
     canonical: 'https://prosto-namekni.ru',
