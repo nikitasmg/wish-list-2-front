@@ -19,8 +19,8 @@ const SIZES: Size[] = [
 
 type Props = {
   block: Block
-  dragListeners: ReturnType<typeof useSortable>['listeners']
-  dragAttributes: ReturnType<typeof useSortable>['attributes']
+  dragListeners: ReturnType<typeof useSortable>['listeners'] | undefined
+  dragAttributes: ReturnType<typeof useSortable>['attributes'] | undefined
   onResize: (colSpan: 1 | 2, rowSpan: 1 | 2 | 3) => void
   onEdit: () => void
   onDelete: () => void
@@ -31,7 +31,7 @@ export function BlockToolbar({ block, dragListeners, dragAttributes, onResize, o
   const currentRow = (block.rowSpan ?? 1) as 1 | 2 | 3
 
   return (
-    <div className="absolute -top-9 left-0 z-20 flex items-center gap-1 bg-popover border border-border rounded-lg px-2 py-1 shadow-md">
+    <div className="absolute -top-9 right-0 z-20 flex items-center gap-1 bg-popover border border-border rounded-lg px-2 py-1 shadow-md">
       {/* Drag handle */}
       <button
         type="button"

@@ -1,5 +1,5 @@
 module.exports = {
-  siteUrl: 'https://get-my-wishlist.ru', // Замените на ваш домен
+  siteUrl: 'https://prosto-namekni.ru',
   generateRobotsTxt: true, // Генерация robots.txt
   sitemapSize: 7000, // Размер sitemap (по умолчанию 5000)
   exclude: [

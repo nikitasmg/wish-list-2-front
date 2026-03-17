@@ -13,7 +13,7 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       { hostname: "localhost" },
-      { hostname: "get-my-wishlist.ru" },
+      { hostname: "prosto-namekni.ru" },
       { hostname: "minio" },
       { protocol: "https", hostname: "**" },
       { protocol: "http", hostname: "**" },

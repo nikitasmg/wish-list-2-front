@@ -22,7 +22,7 @@ export function CtaSection() {
           className="text-3xl md:text-4xl font-black tracking-tight"
           style={{ color: '#f0f9ff' }}
         >
-          Готов создать свой вишлист?
+          Готов намекнуть?
         </h2>
 
         <p className="text-[#475569] text-base">

@@ -10,8 +10,8 @@ import { FeaturesSection } from '@/app/(landing)/components/features-section'
 import { CtaSection } from '@/app/(landing)/components/cta-section'
 
 export const metadata: Metadata = {
-  title: 'GetMyWishlist — Создавайте красивые вишлисты бесплатно',
-  description: 'Собери всё что хочешь в красивый список и просто отправь ссылку. Никаких неловких разговоров о подарках.',
+  title: 'Просто намекни — Создай вишлист и отправь ссылку',
+  description: 'Намекни на то, чего хочешь. Собери желания в красивый список и просто отправь ссылку. Никаких неловких разговоров о подарках.',
 }
 
 export default function Home() {

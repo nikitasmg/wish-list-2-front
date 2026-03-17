@@ -81,7 +81,7 @@ export function WishlistLanding({ wishlist, presents, isMyWishlist, disableBodyT
       <footer className="bg-secondary text-secondary-foreground py-4">
         <div className="mx-auto flex items-center justify-between container px-4 gap-4">
           <p className="text-sm md:text-base">
-            Создано с помощью сервиса <Link href="/" className="underline">GetWishlist</Link>
+            Создано с помощью сервиса <Link href="/" className="underline">Просто намекни</Link>
           </p>
           <Link href="/" className="bg-background text-foreground px-4 py-2 md:px-8 md:py-3 rounded-xl font-bold text-sm md:text-base hover:bg-background/90 transition-colors shadow-lg">
             Хочу такой же!

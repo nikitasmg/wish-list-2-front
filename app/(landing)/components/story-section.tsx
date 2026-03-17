@@ -36,10 +36,10 @@ export function StorySection() {
             <span className="text-4xl flex-shrink-0 mt-1">✨</span>
             <div>
               <h3 className="text-xl font-bold mb-2" style={{ color: '#a5f3fc' }}>
-                Собери мечты — отправь ссылку
+                Просто намекни — и всё
               </h3>
               <p className="text-[#94a3b8] leading-relaxed">
-                GetMyWishlist — это красивая страница с твоими желаниями.{' '}
+                Собери желания в красивый список и отправь ссылку.{' '}
                 Друзья сами выбирают что подарить.
               </p>
             </div>

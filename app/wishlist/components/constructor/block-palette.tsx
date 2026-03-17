@@ -43,14 +43,14 @@ const PALETTE_ITEMS: PaletteItem[] = [
     type: 'date',
     label: 'Дата',
     preview: (
-      <p className="text-xs text-primary font-medium">📅 15 марта 2025, 18:00</p>
+      <p className="text-xs text-primary font-medium truncate">📅 15 марта 2025, 18:00</p>
     ),
   },
   {
     type: 'location',
     label: 'Место',
     preview: (
-      <p className="text-xs text-primary font-medium">📍 Кафе «Уют», Москва</p>
+      <p className="text-xs text-primary font-medium truncate">📍 Кафе «Уют», Москва</p>
     ),
   },
   {
@@ -81,10 +81,10 @@ const PALETTE_ITEMS: PaletteItem[] = [
     label: 'Программа',
     preview: (
       <div className="space-y-1">
-        {[['18:00', 'Сбор гостей'], ['19:00', 'Торжественная часть']].map(([time, text]) => (
+        {[['18:00', 'Сбор гостей'], ['19:00', 'Торжество']].map(([time, text]) => (
           <div key={time} className="flex gap-2 text-xs">
             <span className="text-muted-foreground font-mono w-10 shrink-0">{time}</span>
-            <span className="text-foreground">{text}</span>
+            <span className="text-foreground truncate">{text}</span>
           </div>
         ))}
       </div>
@@ -184,7 +184,7 @@ export function BlockPalette({ onAdd, existingCount }: Props) {
           key={item.type}
           type="button"
           onClick={() => handleAdd(item.type)}
-          className="shrink-0 w-28 md:w-full text-left rounded-lg border bg-card p-3 hover:border-primary/50 hover:bg-accent/30 transition-colors space-y-1.5"
+          className="shrink-0 w-28 md:w-full text-left rounded-lg border bg-card p-3 hover:border-primary/50 hover:bg-accent/30 transition-colors space-y-1.5 overflow-hidden"
         >
           <span className="text-xs font-semibold text-foreground">{item.label}</span>
           <div>{item.preview}</div>

@@ -70,7 +70,7 @@ export function HeroSection() {
 
         {/* Subtext */}
         <p className="text-base md:text-lg text-[#94a3b8] max-w-md leading-relaxed">
-          Собери всё что хочешь — и просто отправь ссылку.{" "}
+          Намекни на то, чего хочешь — собери в список и отправь ссылку.{" "}
           <span className="text-[#94a3b8]">
             Никаких неловких разговоров о подарках.
           </span>

@@ -6,8 +6,8 @@ export default function TermsOfServicePage() {
     <>
       <Header/>
       <Head>
-        <title>Пользовательское соглашение GetWishlist</title>
-        <meta name="description" content="Пользовательское соглашение сервиса GetWishlist" />
+        <title>Пользовательское соглашение — Просто намекни</title>
+        <meta name="description" content="Пользовательское соглашение сервиса Просто намекни" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta httpEquiv="X-UA-Compatible" content="ie=edge" />
       </Head>
@@ -21,15 +21,15 @@ export default function TermsOfServicePage() {
 
             <p className="mb-6 text-foreground">
               Настоящее Пользовательское Соглашение (Далее - Соглашение) регулирует отношения между владельцем <a
-              href="https://get-my-wishlist.ru"
-              className="text-blue-600 hover:underline">get-my-wishlist.ru</a> с одной стороны и Пользователем сайта с
+              href="https://prosto-namekni.ru"
+              className="text-blue-600 hover:underline">prosto-namekni.ru</a> с одной стороны и Пользователем сайта с
               другой.
             </p>
 
             <p className="mb-6 text-foreground">
               Сайт <a
-              href="https://get-my-wishlist.ru"
-              className="text-blue-600 hover:underline">get-my-wishlist.ru</a> не является средством массовой
+              href="https://prosto-namekni.ru"
+              className="text-blue-600 hover:underline">prosto-namekni.ru</a> не является средством массовой
               информации. Используя сайт, Вы соглашаетесь с условиями
               данного соглашения.
             </p>
@@ -42,15 +42,15 @@ export default function TermsOfServicePage() {
                   договор на изложенных в данном документе условиях.
                 </li>
                 <li>
-                  <span className="font-medium">Администрация/ GetWishlist</span>.
+                  <span className="font-medium">Администрация/ Просто намекни</span>.
                 </li>
                 <li>
                   <span className="font-medium">Пользователь</span> – Посетитель Сайта.
                 </li>
                 <li>
                   <span className="font-medium">Сайт</span> – интернет-сайт по адресу <a
-                  href="https://get-my-wishlist.ru"
-                  className="text-blue-600 hover:underline">https://get-my-wishlist.ru</a>.
+                  href="https://prosto-namekni.ru"
+                  className="text-blue-600 hover:underline">https://prosto-namekni.ru</a>.
                 </li>
                 <li>
                   <span className="font-medium">Профиль/личный кабинет</span> – персональная страница пользователя,

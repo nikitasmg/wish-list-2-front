@@ -6,6 +6,7 @@ import { BlockToolbar } from '@/app/wishlist/components/constructor/block-toolba
 import { Block } from '@/shared/types'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
+import { GripVertical, Pencil, Trash2 } from 'lucide-react'
 import React, { useState } from 'react'
 
 const BLOCK_LABELS: Record<string, string> = {
@@ -28,14 +29,18 @@ const BLOCK_LABELS: Record<string, string> = {
 type Props = {
   block: Block
   id: string
+  viewMode: 'desktop' | 'mobile'
+  isMobileDevice: boolean
+  focused: boolean
+  onFocusChange: (focused: boolean) => void
   onUpdate: (data: Record<string, unknown>) => void
   onResize: (colSpan: 1 | 2, rowSpan: 1 | 2 | 3) => void
   onDelete: () => void
+  gridStyle?: React.CSSProperties
 }
 
-export function BlockItem({ block, id, onUpdate, onResize, onDelete }: Props) {
+export function BlockItem({ block, id, viewMode, isMobileDevice, focused, onFocusChange, onUpdate, onResize, onDelete, gridStyle }: Props) {
   const [editOpen, setEditOpen] = useState(false)
-  const [focused, setFocused] = useState(false)
 
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id })
 
@@ -43,12 +48,84 @@ export function BlockItem({ block, id, onUpdate, onResize, onDelete }: Props) {
     transform: CSS.Transform.toString(transform),
     transition,
     opacity: isDragging ? 0.4 : 1,
-    gridColumn: `span ${block.colSpan ?? 1}`,
-    gridRow: `span ${block.rowSpan ?? 1}`,
+    ...gridStyle,
   }
 
   const preview = getPreview(block)
+  const label = BLOCK_LABELS[block.type] ?? block.type
 
+  // ── Mobile device layout (both tabs) ────────────────────────────
+  // Long-press anywhere → drag. Quick tap → focus (compact inline toolbar).
+  if (isMobileDevice) {
+    return (
+      <>
+        <div
+          ref={setNodeRef}
+          style={style}
+          className={`rounded-lg border bg-card overflow-hidden touch-none select-none transition-shadow ${
+            focused
+              ? 'border-primary shadow-md'
+              : isDragging
+                ? 'border-primary/60 shadow-lg'
+                : 'border-border'
+          }`}
+          onClick={() => onFocusChange(!focused)}
+          {...attributes}
+          {...listeners}
+        >
+          {/* Compact inline toolbar — tap to show */}
+          {focused && (
+            <div
+              className="flex items-center gap-1 px-2 py-1.5 border-b border-border/60 bg-muted/40"
+              onClick={(e) => e.stopPropagation()}
+              onPointerDown={(e) => e.stopPropagation()}
+            >
+              <button
+                type="button"
+                onClick={() => { setEditOpen(true); onFocusChange(false) }}
+                className="flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+              >
+                <Pencil size={12} />
+                Изменить
+              </button>
+              <div className="w-px h-4 bg-border/60" />
+              <button
+                type="button"
+                onClick={() => { onDelete(); onFocusChange(false) }}
+                className="flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-medium text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+              >
+                <Trash2 size={12} />
+                Удалить
+              </button>
+            </div>
+          )}
+
+          {/* Card content */}
+          <div className="flex items-start gap-2 px-3 py-2.5">
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1 truncate">
+                {label}
+              </p>
+              <div className="text-sm text-foreground line-clamp-2">{preview}</div>
+            </div>
+            {!focused && (
+              <GripVertical size={16} className="text-muted-foreground/60 shrink-0 mt-0.5" />
+            )}
+          </div>
+        </div>
+
+        <BlockEditorModal
+          block={block}
+          open={editOpen}
+          onClose={() => setEditOpen(false)}
+          onSave={onUpdate}
+        />
+      </>
+    )
+  }
+
+  // ── Desktop device layout ───────────────────────────────────────
+  // Click to focus → floating toolbar appears above the card.
   return (
     <>
       <div
@@ -57,11 +134,11 @@ export function BlockItem({ block, id, onUpdate, onResize, onDelete }: Props) {
         className={`relative rounded-lg border bg-card p-4 min-h-[80px] cursor-pointer transition-shadow ${
           focused ? 'border-primary shadow-md' : 'border-border hover:border-primary/50'
         }`}
-        onClick={() => setFocused((v) => !v)}
+        onClick={() => onFocusChange(!focused)}
         onBlur={(e) => {
           const related = e.relatedTarget
           if (!e.currentTarget.contains(related)) {
-            setTimeout(() => setFocused(false), 0)
+            setTimeout(() => onFocusChange(false), 0)
           }
         }}
         tabIndex={0}
@@ -72,13 +149,13 @@ export function BlockItem({ block, id, onUpdate, onResize, onDelete }: Props) {
             dragListeners={listeners}
             dragAttributes={attributes}
             onResize={onResize}
-            onEdit={() => { setEditOpen(true); setFocused(false) }}
+            onEdit={() => { setEditOpen(true); onFocusChange(false) }}
             onDelete={onDelete}
           />
         )}
 
         <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1">
-          {BLOCK_LABELS[block.type] ?? block.type}
+          {label}
         </p>
         <div className="text-sm text-foreground line-clamp-3">{preview}</div>
       </div>

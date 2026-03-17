@@ -12,7 +12,7 @@ export const TgAuthButton = () => {
     script.async = true
     script.setAttribute('data-telegram-login', 'Getwishlist_bot')
     script.setAttribute('data-size', 'large')
-    script.setAttribute('data-auth-url', 'https://get-my-wishlist.ru/oauth')
+    script.setAttribute('data-auth-url', 'https://prosto-namekni.ru/oauth')
     script.setAttribute('data-request-access', 'write')
 
     tgButtonContainerRef.current?.appendChild(script)

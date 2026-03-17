@@ -99,7 +99,9 @@ export function ConstructorHeader({ wishlist }: Props) {
               }}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Выберите цветовую схему" />
+                <SelectValue placeholder="Выберите цветовую схему">
+                  {colorSchema.find(s => s.value === colorScheme)?.name ?? 'Выберите цветовую схему'}
+                </SelectValue>
               </SelectTrigger>
               <SelectContent>
                 {colorSchema.map(({ value, name, colors }) => (

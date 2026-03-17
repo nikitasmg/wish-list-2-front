@@ -25,6 +25,7 @@ export type Block = {
   mobilePosition?: number
   colSpan?: 1 | 2
   rowSpan?: 1 | 2 | 3
+  columnStart?: 1 | 2
   data: Record<string, unknown>
 }
 

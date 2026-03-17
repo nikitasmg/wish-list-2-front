@@ -15,7 +15,7 @@ Package manager: **pnpm** (v8.14.0). Do not use npm or yarn.
 
 ## Architecture
 
-This is a **Next.js 16 App Router** project — a wishlist service (get-my-wishlist.ru) where users create and share wishlists with presents.
+This is a **Next.js 16 App Router** project — a wishlist service (prosto-namekni.ru) where users create and share wishlists with presents.
 
 ### Directory Structure
 
@@ -31,7 +31,7 @@ This is a **Next.js 16 App Router** project — a wishlist service (get-my-wishl
   - `user/` — User queries
 - `components/` — Shared UI components; `components/ui/` contains shadcn/ui primitives
 - `hooks/` — Custom React hooks (e.g., `use-toast.ts`)
-- `lib/api.ts` — Axios wrapper (`ApiHelper` class), base URL: `https://api.get-my-wishlist.ru/`
+- `lib/api.ts` — Axios wrapper (`ApiHelper` class), base URL: `https://api.prosto-namekni.ru/`
 - `shared/` — Shared types (`types.ts`), constants (`constants.ts`), validation (`validate.ts`)
 - `store/useUserStore.ts` — Zustand store for current user state
 
@@ -52,7 +52,7 @@ This is a **Next.js 16 App Router** project — a wishlist service (get-my-wishl
 
 ### Deployment
 
-Docker with standalone Next.js output (`output: 'standalone'` in `next.config.ts`). Images served from `get-my-wishlist.ru` and `minio` (MinIO object storage).
+Docker with standalone Next.js output (`output: 'standalone'` in `next.config.ts`). Images served from `prosto-namekni.ru` and `minio` (MinIO object storage).
 
 ## Commits
 

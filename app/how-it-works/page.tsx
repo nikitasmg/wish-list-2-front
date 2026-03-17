@@ -65,7 +65,7 @@ export default function HowItWorks() {
           content="как создать вишлист, инструкция вишлист, настройка вишлиста,
                   шаги создания вишлиста, руководство WishMaker"
         />
-        <link rel="canonical" href='https://get-my-wishlist.ru/how-it-works' />
+        <link rel="canonical" href='https://prosto-namekni.ru/how-it-works' />
         <meta property="og:type" content="article" />
         <meta property="og:title" content="Пошаговая инструкция по созданию вишлиста" />
         <meta property="og:description" content="6 простых шагов к идеальному списку желаний" />
