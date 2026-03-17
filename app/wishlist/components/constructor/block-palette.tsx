@@ -171,7 +171,7 @@ type Props = {
 
 export function BlockPalette({ onAdd, existingCount }: Props) {
   const handleAdd = (type: BlockType) => {
-    onAdd({ type, position: existingCount, colSpan: 1, rowSpan: 1, data: {} })
+    onAdd({ type, row: 0, col: 0, colSpan: 1, data: {} })
   }
 
   return (
