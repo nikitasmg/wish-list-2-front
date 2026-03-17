@@ -1,6 +1,11 @@
 # *
 User-agent: *
 Allow: /
+Disallow: /s/
+Disallow: /wishlist/
+Disallow: /oauth/
+Disallow: /login/
+Disallow: /registration/
 
 # Host
 Host: https://prosto-namekni.ru

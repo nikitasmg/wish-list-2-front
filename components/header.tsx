@@ -44,7 +44,7 @@ export const Header = () => {
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => navigate.push('/example')}
+          onClick={() => navigate.push('/wishlist-for')}
           className="gap-1.5"
         >
           <Sparkles size={16} />

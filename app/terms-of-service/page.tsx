@@ -1,16 +1,16 @@
 import { Header } from '@/components/header'
-import Head from 'next/head'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Пользовательское соглашение',
+  description: 'Пользовательское соглашение сервиса Просто намекни',
+  robots: { index: false, follow: true },
+}
 
 export default function TermsOfServicePage() {
   return (
     <>
       <Header/>
-      <Head>
-        <title>Пользовательское соглашение — Просто намекни</title>
-        <meta name="description" content="Пользовательское соглашение сервиса Просто намекни" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta httpEquiv="X-UA-Compatible" content="ie=edge" />
-      </Head>
 
       <div className="min-h-screen py-8">
         <div className="container mx-auto px-4 py-8 max-w-4xl">

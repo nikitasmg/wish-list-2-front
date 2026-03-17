@@ -10,12 +10,29 @@ import './globals.css'
 
 const manrope = Manrope({
   variable: '--font-manrope',
-  subsets: [ 'latin' ],
+  subsets: ['latin', 'cyrillic'],
 })
 
 export const metadata: Metadata = {
-  title: 'Get wishlist - Бесплатный сервис по созданию вишлистов',
-  description: 'Создай свой вишлист и делись с друзьями',
+  metadataBase: new URL('https://prosto-namekni.ru'),
+  title: {
+    default: 'Просто намекни — Создай вишлист и отправь ссылку',
+    template: '%s | Просто намекни',
+  },
+  description: 'Создай красивый вишлист онлайн и просто отправь ссылку друзьям. Бесплатно, без скачиваний.',
+  openGraph: {
+    type: 'website',
+    locale: 'ru_RU',
+    url: 'https://prosto-namekni.ru',
+    siteName: 'Просто намекни',
+  },
+  twitter: {
+    card: 'summary_large_image',
+  },
+  verification: {
+    yandex: 'REPLACE_WITH_YANDEX_TOKEN',
+    google: 'REPLACE_WITH_GOOGLE_TOKEN',
+  },
 }
 
 export default function RootLayout({
@@ -24,7 +41,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="ru" suppressHydrationWarning>
     <body
       className={`${manrope.variable} antialiased`}
     >

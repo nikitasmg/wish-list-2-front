@@ -1,6 +1,10 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next'
+import createMDX from '@next/mdx'
+
+const withMDX = createMDX({})
 
 const nextConfig: NextConfig = {
+  pageExtensions: ['js', 'jsx', 'ts', 'tsx', 'md', 'mdx'],
   output: 'standalone',
   async rewrites() {
     return [
@@ -12,13 +16,13 @@ const nextConfig: NextConfig = {
   },
   images: {
     remotePatterns: [
-      { hostname: "localhost" },
-      { hostname: "prosto-namekni.ru" },
-      { hostname: "minio" },
-      { protocol: "https", hostname: "**" },
-      { protocol: "http", hostname: "**" },
-    ]
-  }
-};
+      { hostname: 'localhost' },
+      { hostname: 'prosto-namekni.ru' },
+      { hostname: 'minio' },
+      { protocol: 'https', hostname: '**' },
+      { protocol: 'http', hostname: '**' },
+    ],
+  },
+}
 
-export default nextConfig;
+export default withMDX(nextConfig)
