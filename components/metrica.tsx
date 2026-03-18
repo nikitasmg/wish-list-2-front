@@ -11,7 +11,7 @@ export function Metrika() {
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error
-    ym(100150140, "hit", window.location.href);
+    ym(108083039, "hit", window.location.href);
   }, [pathName, searchParams]);
 
   return (
@@ -23,11 +23,16 @@ export function Metrika() {
         k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
         (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
 
-        ym(100150140, "init", {
+        ym(108083039, "init", {
+          ssr: true,
           defer: true,
-          clickmap:true,
-          trackLinks:true,
-          accurateTrackBounce:true
+          webvisor: true,
+          clickmap: true,
+          trackLinks: true,
+          accurateTrackBounce: true,
+          ecommerce: "dataLayer",
+          referrer: document.referrer,
+          url: location.href
         });    
       `}
     </Script>
