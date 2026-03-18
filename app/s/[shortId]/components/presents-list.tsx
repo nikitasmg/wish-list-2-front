@@ -10,6 +10,7 @@ import { cn } from '@/lib/utils'
 import { ExternalLinkIcon } from 'lucide-react'
 import Image from 'next/image'
 import * as React from 'react'
+import { useState } from 'react'
 
 type Props = {
   presents: Present[]
@@ -17,9 +18,10 @@ type Props = {
   theme: string
   config: SchemeConfig
   isHidden: boolean
+  isExample?: boolean
 }
 
-export function PresentsList({ presents, wishlistId, theme, config, isHidden }: Props) {
+export function PresentsList({ presents, wishlistId, theme, config, isHidden, isExample }: Props) {
   if (!presents.length) return null
 
   return (
@@ -32,6 +34,7 @@ export function PresentsList({ presents, wishlistId, theme, config, isHidden }: 
           theme={theme}
           config={config}
           isHidden={isHidden}
+          isExample={isExample}
         />
       ))}
     </div>
@@ -39,17 +42,26 @@ export function PresentsList({ presents, wishlistId, theme, config, isHidden }: 
 }
 
 function PresentRow({
-  present, wishlistId, theme, config, isHidden,
+  present, wishlistId, theme, config, isHidden, isExample,
 }: {
   present: Present
   wishlistId: string
   theme: string
   config: SchemeConfig
   isHidden: boolean
+  isExample?: boolean
 }) {
   const { mutate, isPending } = useApiReservePresent(wishlistId)
+  const [exampleReserved, setExampleReserved] = useState(present.reserved)
+
+  const reserved = isExample ? exampleReserved : present.reserved
 
   const handleReserve = () => {
+    if (isExample) {
+      setExampleReserved(true)
+      toast({ title: 'Подарок забронирован!', variant: 'success' })
+      return
+    }
     mutate({ presentId: present.id }, {
       onSuccess: () => toast({ title: 'Подарок забронирован!', variant: 'success' }),
     })
@@ -58,7 +70,7 @@ function PresentRow({
   return (
     <div className={cn(
       'flex items-center gap-4 bg-card p-4 border border-border/40',
-      present.reserved && 'opacity-60',
+      reserved && 'opacity-60',
       config.cardRounded,
     )}>
       <div className={cn('w-16 h-16 flex-shrink-0 overflow-hidden bg-muted', config.cardRounded)}>
@@ -89,14 +101,14 @@ function PresentRow({
           </span>
         )}
         {!isHidden && (
-          <ConfirmReserveModal theme={theme} disabled={present.reserved} onClick={handleReserve}>
+          <ConfirmReserveModal theme={theme} disabled={reserved} onClick={handleReserve}>
             <Button
               size="sm"
               loading={isPending}
-              variant={present.reserved ? 'destructive' : 'default'}
-              disabled={present.reserved}
+              variant={reserved ? 'destructive' : 'default'}
+              disabled={reserved}
             >
-              {present.reserved ? 'Забронирован' : 'Забронировать'}
+              {reserved ? 'Забронирован' : 'Забронировать'}
             </Button>
           </ConfirmReserveModal>
         )}

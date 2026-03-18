@@ -1,6 +1,7 @@
 "use client";
 
 import BounceCards from "@/components/ui/bounce-cards";
+import { useTheme } from "next-themes";
 
 const THEME_IMAGES = [
   "https://placehold.co/160x200/1a0040/c4b5fd?text=Cosmos",
@@ -9,16 +10,24 @@ const THEME_IMAGES = [
 ];
 
 export function ThemesSection() {
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme !== "light";
+
   return (
-    <section className="relative py-24 px-4" style={{ background: "#050b15" }}>
+    <section
+      className="relative py-24 px-4"
+      style={{ background: isDark ? "#050b15" : "#faf8ff" }}
+    >
       <div className="max-w-4xl mx-auto text-center">
         <h2
           className="text-3xl md:text-4xl font-black tracking-tight mb-2"
-          style={{ color: "#c4b5fd" }}
+          style={{ color: isDark ? "#c4b5fd" : "#7c3aed" }}
         >
           Красивые темы для любого случая
         </h2>
-        <p className="text-[#475569] mb-12">10 цветовых схем — найди свою</p>
+        <p style={{ color: isDark ? "#475569" : "#64748b" }} className="mb-12">
+          10 цветовых схем — найди свою
+        </p>
 
         <div className="flex justify-center">
           <BounceCards

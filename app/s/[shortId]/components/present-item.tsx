@@ -6,17 +6,28 @@ import { Button } from '@/components/ui/button'
 import { Present } from '@/shared/types'
 import { ExternalLink, Heart } from 'lucide-react'
 import * as React from 'react'
+import { useState } from 'react'
 
 type Props = {
   present: Present
   theme: string
   isHidden: boolean
   wishlistId: string
+  isExample?: boolean
 }
 
-export const PresentItem = ({ present, theme, isHidden, wishlistId }: Props) => {
+export const PresentItem = ({ present, theme, isHidden, wishlistId, isExample }: Props) => {
   const { mutate, isPending } = useApiReservePresent(wishlistId)
+  const [exampleReserved, setExampleReserved] = useState(present.reserved)
+
+  const reserved = isExample ? exampleReserved : present.reserved
+
   const handleReserve = () => {
+    if (isExample) {
+      setExampleReserved(true)
+      toast({ title: 'Подарок забронирован!', variant: 'success' })
+      return
+    }
     mutate({presentId: present.id }, {
       onSuccess: () => {
         toast({title: 'Подарок забронирован!', variant: 'success'})
@@ -43,12 +54,12 @@ export const PresentItem = ({ present, theme, isHidden, wishlistId }: Props) => 
           <div className='text-right font-bold text-l italic text-foreground mt-auto'>{present.price.toLocaleString()} ₽</div>
         }
         <div className="flex items-center justify-between flex-col sm:flex-row gap-3 mt-auto">
-          {!isHidden && <ConfirmReserveModal theme={theme} disabled={present.reserved} onClick={handleReserve}>
+          {!isHidden && <ConfirmReserveModal theme={theme} disabled={reserved} onClick={handleReserve}>
             <Button className="grow"
                     loading={isPending}
-                    variant={present.reserved ? 'destructive' : 'default'}
-                    disabled={present.reserved}
-            >{present.reserved ? 'Забронирован' : 'Забронировать'}</Button>
+                    variant={reserved ? 'destructive' : 'default'}
+                    disabled={reserved}
+            >{reserved ? 'Забронирован' : 'Забронировать'}</Button>
           </ConfirmReserveModal>
           }
           {

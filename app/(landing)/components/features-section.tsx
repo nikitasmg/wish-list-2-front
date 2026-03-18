@@ -2,6 +2,7 @@
 
 import FadeContent from '@/components/ui/fade-content'
 import AnimatedContent from '@/components/ui/animated-content'
+import { useTheme } from 'next-themes'
 
 const FEATURES = [
   {
@@ -10,7 +11,10 @@ const FEATURES = [
     desc: 'Для каждого случая',
     bg: 'rgba(6,182,212,0.07)',
     border: 'rgba(6,182,212,0.18)',
+    lightBg: 'rgba(6,182,212,0.08)',
+    lightBorder: 'rgba(6,182,212,0.3)',
     text: '#a5f3fc',
+    lightText: '#0891b2',
   },
   {
     icon: '🔗',
@@ -18,7 +22,10 @@ const FEATURES = [
     desc: 'Один клик — и готово',
     bg: 'rgba(139,92,246,0.07)',
     border: 'rgba(139,92,246,0.18)',
+    lightBg: 'rgba(139,92,246,0.08)',
+    lightBorder: 'rgba(139,92,246,0.3)',
     text: '#c4b5fd',
+    lightText: '#7c3aed',
   },
   {
     icon: '✅',
@@ -26,7 +33,10 @@ const FEATURES = [
     desc: 'Друзья не задвоят',
     bg: 'rgba(16,185,129,0.07)',
     border: 'rgba(16,185,129,0.18)',
+    lightBg: 'rgba(16,185,129,0.08)',
+    lightBorder: 'rgba(16,185,129,0.3)',
     text: '#6ee7b7',
+    lightText: '#059669',
   },
   {
     icon: '⚡',
@@ -34,21 +44,27 @@ const FEATURES = [
     desc: 'До готового вишлиста',
     bg: 'rgba(217,70,239,0.07)',
     border: 'rgba(217,70,239,0.18)',
+    lightBg: 'rgba(217,70,239,0.08)',
+    lightBorder: 'rgba(217,70,239,0.3)',
     text: '#f5d0fe',
+    lightText: '#a21caf',
   },
 ]
 
 export function FeaturesSection() {
+  const { resolvedTheme } = useTheme()
+  const isDark = resolvedTheme !== 'light'
+
   return (
     <section
       className="relative py-24 px-4"
-      style={{ background: '#040f0a' }}
+      style={{ background: isDark ? '#040f0a' : '#f0fdf4' }}
     >
       <div className="max-w-3xl mx-auto">
         <AnimatedContent direction="vertical" reverse={false} delay={0}>
           <h2
             className="text-3xl md:text-4xl font-black tracking-tight text-center mb-12"
-            style={{ color: '#6ee7b7' }}
+            style={{ color: isDark ? '#6ee7b7' : '#059669' }}
           >
             Всё что нужно
           </h2>
@@ -59,13 +75,24 @@ export function FeaturesSection() {
             <FadeContent key={f.title} duration={600} delay={i * 100}>
               <div
                 className="rounded-2xl p-5"
-                style={{ background: f.bg, border: `1px solid ${f.border}` }}
+                style={{
+                  background: isDark ? f.bg : f.lightBg,
+                  border: `1px solid ${isDark ? f.border : f.lightBorder}`,
+                }}
               >
                 <span className="text-2xl">{f.icon}</span>
-                <p className="text-sm font-bold mt-2" style={{ color: f.text }}>
+                <p
+                  className="text-sm font-bold mt-2"
+                  style={{ color: isDark ? f.text : f.lightText }}
+                >
                   {f.title}
                 </p>
-                <p className="text-xs mt-1 text-[#334155]">{f.desc}</p>
+                <p
+                  className="text-xs mt-1"
+                  style={{ color: isDark ? '#334155' : '#64748b' }}
+                >
+                  {f.desc}
+                </p>
               </div>
             </FadeContent>
           ))}

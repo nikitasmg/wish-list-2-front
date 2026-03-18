@@ -3,16 +3,25 @@
 import Link from 'next/link'
 import StarBorder from '@/components/ui/star-border'
 import ClickSpark from '@/components/ui/click-spark'
+import { useTheme } from 'next-themes'
 
 export function CtaSection() {
+  const { resolvedTheme } = useTheme()
+  const isDark = resolvedTheme !== 'light'
+
   return (
     <section
       className="relative py-32 px-4 text-center overflow-hidden"
       style={{
-        background: [
-          'radial-gradient(ellipse at 50% 50%, rgba(139,92,246,0.18) 0%, transparent 60%)',
-          'linear-gradient(135deg, #000d1a, #0d0030, #001a2e)',
-        ].join(', '),
+        background: isDark
+          ? [
+              'radial-gradient(ellipse at 50% 50%, rgba(139,92,246,0.18) 0%, transparent 60%)',
+              'linear-gradient(135deg, #000d1a, #0d0030, #001a2e)',
+            ].join(', ')
+          : [
+              'radial-gradient(ellipse at 50% 50%, rgba(139,92,246,0.08) 0%, transparent 60%)',
+              'linear-gradient(135deg, #faf8ff, #f0f9ff, #f5f3ff)',
+            ].join(', '),
       }}
     >
       <div className="relative z-10 max-w-2xl mx-auto flex flex-col items-center gap-4">
@@ -20,12 +29,12 @@ export function CtaSection() {
 
         <h2
           className="text-3xl md:text-4xl font-black tracking-tight"
-          style={{ color: '#f0f9ff' }}
+          style={{ color: isDark ? '#f0f9ff' : '#0f172a' }}
         >
           Готов намекнуть?
         </h2>
 
-        <p className="text-[#475569] text-base">
+        <p style={{ color: isDark ? '#475569' : '#64748b' }} className="text-base">
           Бесплатно. Красиво. Навсегда.
         </p>
 

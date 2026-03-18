@@ -2,6 +2,7 @@
 import { useApiGetMe } from '@/api/user'
 import { Logo } from '@/components/logo'
 import { UserAvatar } from '@/components/user-avatar'
+import { ThemeToggle } from '@/components/theme-toggle'
 import { Button } from '@/components/ui/button'
 import { useRouter } from 'next/navigation'
 import { LayoutList, Sparkles } from 'lucide-react'
@@ -52,8 +53,9 @@ export const Header = () => {
         </Button>
       </nav>
 
-      {/* Auth */}
+      {/* Auth + Theme */}
       <div className="flex gap-2 items-center">
+        <ThemeToggle />
         {user ? (
           <UserAvatar user={user} />
         ) : (
