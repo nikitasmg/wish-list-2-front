@@ -4,6 +4,7 @@ import * as React from 'react'
 import { GoogleTagManager } from '@next/third-parties/google'
 import Providers from '@/app/providers'
 import { Toaster } from '@/components/ui/toaster'
+import { CookieBanner } from '@/components/cookie-banner'
 import type { Metadata } from 'next'
 import { Manrope } from 'next/font/google'
 import './globals.css'
@@ -54,6 +55,7 @@ export default function RootLayout({
       {children}
     </Providers>
     <Toaster />
+    <CookieBanner />
     </body>
     </html>
   )
