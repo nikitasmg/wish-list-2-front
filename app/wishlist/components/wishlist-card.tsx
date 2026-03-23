@@ -47,8 +47,8 @@ export const WishlistCard = ({ wishlist }: WishlistCardProps) => {
             src={wishlist.cover}
             alt={wishlist.title}
             fill
+            unoptimized
             className="object-cover"
-            sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
           />
         </div>
       ) : (
