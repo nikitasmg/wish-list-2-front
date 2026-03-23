@@ -17,7 +17,7 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       { hostname: 'localhost' },
-      { hostname: 'prosto-namekni.ru' },
+      { hostname: 'files.prosto-namekni.ru' },
       { hostname: 'minio' },
       { protocol: 'https', hostname: '**' },
       { protocol: 'http', hostname: '**' },
