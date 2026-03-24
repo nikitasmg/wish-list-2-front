@@ -50,7 +50,7 @@ export default function RootLayout({
     <Suspense fallback={null}>
       <Metrika />
     </Suspense>
-    <GoogleTagManager gtmId="GTM-P7BZ6ZCM" />
+    <GoogleTagManager gtmId="GTM-K4T9P9B5" />
     <Providers>
       {children}
     </Providers>
