@@ -103,7 +103,7 @@ export function ImageUpload({ label = 'Обложка', onChange, previewUrl }: 
         <p className="text-sm text-muted-foreground">
           {isUploading ? 'Загружается...' : 'Перетащи или нажми для выбора файла'}
         </p>
-        <p className="text-xs text-muted-foreground mt-1">JPG, PNG до 2MB</p>
+        <p className="text-xs text-muted-foreground mt-1">JPG, PNG до 10MB</p>
         <input
           ref={inputRef}
           type="file"
@@ -112,8 +112,8 @@ export function ImageUpload({ label = 'Обложка', onChange, previewUrl }: 
           onChange={(e) => {
             const file = e.target.files?.[0]
             if (!file) return
-            if (file.size > 2 * 1024 * 1024) {
-              alert('Файл должен быть менее 2MB')
+            if (file.size > 10 * 1024 * 1024) {
+              alert('Файл должен быть менее 10MB')
               return
             }
             handleFile(file)
