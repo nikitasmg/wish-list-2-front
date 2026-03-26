@@ -84,7 +84,7 @@ export function ConstructorSection() {
 
   return (
     <section
-      className="relative py-24 px-4"
+      className="relative py-24 px-4 overflow-x-hidden"
       style={{ background: isDark ? "#040e1a" : "#f0f9ff" }}
     >
       <div className="max-w-5xl mx-auto">

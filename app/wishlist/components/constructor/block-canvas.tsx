@@ -9,12 +9,12 @@ import {
   findFirstEmptyCell,
   moveBlock,
   buildCellMap,
+  pushBlocksDown,
 } from '@/app/wishlist/components/constructor/grid-helpers'
 import { Block } from '@/shared/types'
 import {
   DndContext,
   DragEndEvent,
-  DragStartEvent,
   PointerSensor,
   TouchSensor,
   closestCenter,
@@ -58,7 +58,7 @@ export function BlockCanvas({ initialBlocks, onBlocksChange }: Props) {
     return cells
   }, [rowCount, cellMap])
 
-  const handleDragStart = useCallback((_event: DragStartEvent) => {
+  const handleDragStart = useCallback(() => {
     setIsDragActive(true)
   }, [])
 
@@ -111,8 +111,14 @@ export function BlockCanvas({ initialBlocks, onBlocksChange }: Props) {
   const handleResize = useCallback(
     (index: number, colSpan: 1 | 2) => {
       const block = blocks[index]
-      const updated = { ...block, colSpan, col: colSpan === 2 ? (0 as const) : block.col }
-      syncBlocks(blocks.map((b, i) => (i === index ? updated : b)))
+      if (colSpan === 2) {
+        const others = blocks.filter((_, i) => i !== index)
+        const rowHasOtherBlock = others.some((b) => b.row === block.row)
+        const shifted = rowHasOtherBlock ? pushBlocksDown(others, block.row) : others
+        syncBlocks([...shifted, { ...block, colSpan: 2 as const, col: 0 as const }])
+      } else {
+        syncBlocks(blocks.map((b, i) => (i === index ? { ...b, colSpan: 1 as const } : b)))
+      }
     },
     [blocks, syncBlocks],
   )

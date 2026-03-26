@@ -31,10 +31,6 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
   },
-  verification: {
-    yandex: 'REPLACE_WITH_YANDEX_TOKEN',
-    google: 'REPLACE_WITH_GOOGLE_TOKEN',
-  },
 }
 
 export default function RootLayout({

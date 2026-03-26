@@ -15,7 +15,7 @@ export function ThemesSection() {
 
   return (
     <section
-      className="relative py-24 px-4"
+      className="relative py-24 px-4 overflow-x-hidden"
       style={{ background: isDark ? "#050b15" : "#faf8ff" }}
     >
       <div className="max-w-4xl mx-auto text-center">
@@ -30,14 +30,16 @@ export function ThemesSection() {
         </p>
 
         <div className="flex justify-center">
-          <BounceCards
-            images={THEME_IMAGES}
-            containerWidth={500}
-            containerHeight={250}
-            animationDelay={0.1}
-            animationStagger={0.08}
-            enableHover
-          />
+          <div className="scale-[0.65] sm:scale-100 origin-center -my-11 sm:my-0">
+            <BounceCards
+              images={THEME_IMAGES}
+              containerWidth={500}
+              containerHeight={250}
+              animationDelay={0.1}
+              animationStagger={0.08}
+              enableHover
+            />
+          </div>
         </div>
       </div>
     </section>
