@@ -1,36 +1,21 @@
 'use client'
 
 import { Block } from '@/shared/types'
-import { Pencil, Trash2, GripVertical } from 'lucide-react'
+import { Pencil, Trash2 } from 'lucide-react'
 import React from 'react'
-import { useDraggable } from '@dnd-kit/core'
 
 type Props = {
   block: Block
-  dragListeners: ReturnType<typeof useDraggable>['listeners'] | undefined
-  dragAttributes: ReturnType<typeof useDraggable>['attributes'] | undefined
   onResize: (colSpan: 1 | 2) => void
   onEdit: () => void
   onDelete: () => void
 }
 
-export function BlockToolbar({ block, dragListeners, dragAttributes, onResize, onEdit, onDelete }: Props) {
+export function BlockToolbar({ block, onResize, onEdit, onDelete }: Props) {
   const currentCol = block.colSpan ?? 1
 
   return (
     <div className="absolute -top-9 right-0 z-20 flex items-center gap-1 bg-popover border border-border rounded-lg px-2 py-1 shadow-md">
-      {/* Drag handle */}
-      <button
-        type="button"
-        className="cursor-grab text-muted-foreground hover:text-foreground p-0.5"
-        {...dragAttributes}
-        {...dragListeners}
-      >
-        <GripVertical size={14} />
-      </button>
-
-      <div className="w-px h-4 bg-border mx-1" />
-
       {/* Width toggle */}
       {([1, 2] as const).map((cs) => {
         const active = cs === currentCol

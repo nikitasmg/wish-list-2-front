@@ -4,7 +4,6 @@ import { BlockEditorModal } from '@/app/wishlist/components/constructor/block-ed
 import { BlockToolbar } from '@/app/wishlist/components/constructor/block-toolbar'
 import { Block } from '@/shared/types'
 import { useDraggable, useDroppable } from '@dnd-kit/core'
-import { Pencil, Trash2 } from 'lucide-react'
 import React, { useState } from 'react'
 
 const BLOCK_LABELS: Record<string, string> = {
@@ -64,7 +63,7 @@ export function BlockItem({ block, id, index, focused, onFocusChange, onUpdate, 
       <div
         ref={(node) => { setDragRef(node); setDropRef(node) }}
         style={style}
-        className={`relative rounded-lg border bg-card p-4 min-h-[80px] cursor-pointer transition-all ${
+        className={`relative rounded-lg border bg-card p-4 min-h-[80px] cursor-pointer transition-all select-none ${
           isDragging
             ? 'shadow-lg border-primary/60'
             : isOver
@@ -80,13 +79,12 @@ export function BlockItem({ block, id, index, focused, onFocusChange, onUpdate, 
             setTimeout(() => onFocusChange(false), 0)
           }
         }}
-        tabIndex={0}
+        {...listeners}
+        {...attributes}
       >
         {focused && (
           <BlockToolbar
             block={block}
-            dragListeners={listeners}
-            dragAttributes={attributes}
             onResize={onResize}
             onEdit={() => { setEditOpen(true); onFocusChange(false) }}
             onDelete={onDelete}
