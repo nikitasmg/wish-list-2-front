@@ -74,6 +74,7 @@ export function BlockItem({ block, id, index, focused, onFocusChange, onUpdate, 
         }`}
         onClick={() => onFocusChange(!focused)}
         onBlur={(e) => {
+          if (isDragging) return
           const related = e.relatedTarget
           if (!e.currentTarget.contains(related)) {
             setTimeout(() => onFocusChange(false), 0)
