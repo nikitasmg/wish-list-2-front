@@ -1,8 +1,8 @@
 module.exports = {
   siteUrl: 'https://prosto-namekni.ru',
-  generateRobotsTxt: true,
+  generateRobotsTxt: false,
   sitemapSize: 7000,
-  exclude: ['/oauth', '/wishlist/*', '/s/*', '/login', '/registration'],
+  exclude: ['/oauth', '/wishlist', '/wishlist/*', '/s/*', '/login', '/registration'],
   robotsTxtOptions: {
     policies: [
       {

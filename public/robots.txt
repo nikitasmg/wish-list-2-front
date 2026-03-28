@@ -8,7 +8,7 @@ Disallow: /login/
 Disallow: /registration/
 
 # Host
-Host: https://prosto-namekni.ru
+Host: prosto-namekni.ru
 
 # Sitemaps
 Sitemap: https://prosto-namekni.ru/sitemap.xml
