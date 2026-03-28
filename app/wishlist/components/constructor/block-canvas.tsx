@@ -35,7 +35,7 @@ export function BlockCanvas({ initialBlocks, onBlocksChange }: Props) {
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
-    useSensor(TouchSensor, { activationConstraint: { delay: 250, tolerance: 8 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 500, tolerance: 8 } }),
   )
 
   const syncBlocks = useCallback(
@@ -60,11 +60,14 @@ export function BlockCanvas({ initialBlocks, onBlocksChange }: Props) {
 
   const handleDragStart = useCallback(() => {
     setIsDragActive(true)
+    navigator.vibrate?.(40)
+    document.body.style.overflow = 'hidden'
   }, [])
 
   const handleDragEnd = useCallback(
     (event: DragEndEvent) => {
       setIsDragActive(false)
+      document.body.style.overflow = ''
       const { active, over } = event
       if (!over) return
 
@@ -91,6 +94,11 @@ export function BlockCanvas({ initialBlocks, onBlocksChange }: Props) {
     },
     [blocks, syncBlocks],
   )
+
+  const handleDragCancel = useCallback(() => {
+    setIsDragActive(false)
+    document.body.style.overflow = ''
+  }, [])
 
   const handleAdd = useCallback(
     (block: Block) => {
@@ -145,6 +153,7 @@ export function BlockCanvas({ initialBlocks, onBlocksChange }: Props) {
             collisionDetection={closestCenter}
             onDragStart={handleDragStart}
             onDragEnd={handleDragEnd}
+            onDragCancel={handleDragCancel}
           >
             <div
               className="grid grid-cols-2 gap-3"
