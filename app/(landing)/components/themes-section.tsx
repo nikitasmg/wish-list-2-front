@@ -15,7 +15,7 @@ export function ThemesSection() {
 
   return (
     <section
-      className="relative py-24 px-4 overflow-x-hidden"
+      className="relative py-12 md:py-24 px-4 overflow-x-hidden"
       style={{ background: isDark ? "#050b15" : "#faf8ff" }}
     >
       <div className="max-w-4xl mx-auto text-center">
@@ -25,7 +25,7 @@ export function ThemesSection() {
         >
           Красивые темы для любого случая
         </h2>
-        <p style={{ color: isDark ? "#475569" : "#64748b" }} className="mb-12">
+        <p style={{ color: isDark ? "#475569" : "#64748b" }} className="mb-8 md:mb-12">
           10 цветовых схем — найди свою
         </p>
 

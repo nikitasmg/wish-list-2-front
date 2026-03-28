@@ -57,13 +57,13 @@ export function FeaturesSection() {
 
   return (
     <section
-      className="relative py-24 px-4"
+      className="relative py-12 md:py-24 px-4"
       style={{ background: isDark ? '#040f0a' : '#f0fdf4' }}
     >
       <div className="max-w-3xl mx-auto">
         <AnimatedContent direction="vertical" reverse={false} delay={0}>
           <h2
-            className="text-3xl md:text-4xl font-black tracking-tight text-center mb-12"
+            className="text-3xl md:text-4xl font-black tracking-tight text-center mb-8 md:mb-12"
             style={{ color: isDark ? '#6ee7b7' : '#059669' }}
           >
             Всё что нужно

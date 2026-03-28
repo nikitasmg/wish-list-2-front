@@ -11,7 +11,7 @@ export function HeroSection() {
   const isDark = resolvedTheme !== "light";
 
   return (
-    <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden px-4">
+    <section className="relative min-h-screen flex flex-col overflow-hidden px-4 pt-16 md:pt-24">
       {/* Background */}
       <div
         className="absolute inset-0"
@@ -33,12 +33,13 @@ export function HeroSection() {
       />
 
       {/* Particles — behind content */}
-      <Particles
-        className="absolute inset-0 z-0"
-        particleCount={80}
-        particleColors={isDark ? ["#a5f3fc", "#c4b5fd"] : ["#06b6d4", "#8b5cf6"]}
-        particleBaseSize={60}
-      />
+      <div className="absolute inset-0 z-0">
+        <Particles
+          particleCount={300}
+          particleColors={isDark ? ["#a5f3fc", "#c4b5fd"] : ["#06b6d4", "#8b5cf6"]}
+          particleBaseSize={60}
+        />
+      </div>
 
       {/* Splash cursor — global fixed overlay */}
       <SplashCursor
@@ -48,7 +49,7 @@ export function HeroSection() {
       />
 
       {/* Content */}
-      <div className="relative z-10 flex flex-col items-center gap-6 text-center max-w-3xl mx-auto">
+      <div className="relative z-10 flex flex-col items-center gap-4 md:gap-6 text-center max-w-3xl mx-auto w-full">
         {/* Badge */}
         <div
           className="inline-flex items-center px-4 py-1.5 rounded-full text-xs tracking-widest font-medium"
@@ -89,7 +90,7 @@ export function HeroSection() {
         </p>
 
         {/* CTAs */}
-        <div className="flex flex-col sm:flex-row gap-3 mt-2">
+        <div className="flex flex-col sm:flex-row gap-3">
           <Link
             href="/wishlist"
             className="px-8 py-3.5 rounded-xl font-bold text-white text-base transition-transform hover:scale-[1.03]"
@@ -116,7 +117,7 @@ export function HeroSection() {
         </div>
 
         {/* Scroll indicator */}
-        <div className="flex flex-col items-center gap-2 mt-6 pointer-events-none select-none">
+        <div className="flex flex-col items-center gap-2 mt-2 pointer-events-none select-none">
           <div
             className="w-px h-8 animate-pulse"
             style={{

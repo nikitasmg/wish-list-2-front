@@ -9,7 +9,7 @@ export function StorySection() {
 
   return (
     <section
-      className="relative py-24 px-4"
+      className="relative py-12 md:py-24 px-4"
       style={{
         background: isDark
           ? 'linear-gradient(180deg, #000d1a 0%, #05111f 50%, #0a0020 100%)'

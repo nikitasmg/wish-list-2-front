@@ -11,7 +11,7 @@ export function CtaSection() {
 
   return (
     <section
-      className="relative py-32 px-4 text-center overflow-hidden"
+      className="relative py-16 md:py-32 px-4 text-center overflow-hidden"
       style={{
         background: isDark
           ? [

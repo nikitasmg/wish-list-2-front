@@ -84,12 +84,12 @@ export function ConstructorSection() {
 
   return (
     <section
-      className="relative py-24 px-4 overflow-x-hidden"
+      className="relative py-12 md:py-24 px-4 overflow-x-hidden"
       style={{ background: isDark ? "#040e1a" : "#f0f9ff" }}
     >
       <div className="max-w-5xl mx-auto">
         <AnimatedContent direction="vertical" reverse={false} delay={0}>
-          <div className="text-center mb-12">
+          <div className="text-center mb-8 md:mb-12">
             <h2
               className="text-3xl md:text-4xl font-black tracking-tight mb-2"
               style={{ color: isDark ? "#a5f3fc" : "#0891b2" }}
