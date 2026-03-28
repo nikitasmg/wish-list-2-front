@@ -15,7 +15,7 @@ import { Block } from '@/shared/types'
 import {
   DndContext,
   DragEndEvent,
-  PointerSensor,
+  MouseSensor,
   TouchSensor,
   closestCenter,
   useSensor,
@@ -34,7 +34,7 @@ export function BlockCanvas({ initialBlocks, onBlocksChange }: Props) {
   const [focusedId, setFocusedId] = useState<string | null>(null)
 
   const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(MouseSensor, { activationConstraint: { distance: 8 } }),
     useSensor(TouchSensor, { activationConstraint: { delay: 500, tolerance: 8 } }),
   )
 
