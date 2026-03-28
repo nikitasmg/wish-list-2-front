@@ -85,11 +85,9 @@ export function ConstructorEditor({ wishlist }: Props) {
         </div>
       )}
 
-      {mode === 'preview' && (
-        <div className="rounded-xl border overflow-hidden">
-          <WishlistLanding wishlist={wishlist} presents={presents} isMyWishlist={false} disableBodyTheme />
-        </div>
-      )}
+      <div className={mode === 'preview' ? 'rounded-xl border overflow-hidden' : 'hidden'}>
+        <WishlistLanding wishlist={wishlist} presents={presents} isMyWishlist={false} disableBodyTheme />
+      </div>
 
       {mode === 'presents' && (
         <div className="space-y-4">
