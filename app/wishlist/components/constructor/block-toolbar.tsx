@@ -8,10 +8,10 @@ type Props = {
   block: Block
   onResize: (colSpan: 1 | 2) => void
   onEdit: () => void
-  onDelete: () => void
+  onDeleteRequest: () => void
 }
 
-export function BlockToolbar({ block, onResize, onEdit, onDelete }: Props) {
+export function BlockToolbar({ block, onResize, onEdit, onDeleteRequest }: Props) {
   const currentCol = block.colSpan ?? 1
 
   return (
@@ -38,13 +38,13 @@ export function BlockToolbar({ block, onResize, onEdit, onDelete }: Props) {
       <div className="w-px h-4 bg-border mx-1" />
 
       {/* Edit */}
-      <button type="button" onClick={onEdit} className="p-0.5 text-muted-foreground hover:text-foreground">
-        <Pencil size={14} />
+      <button type="button" onClick={onEdit} className="p-1.5 text-muted-foreground hover:text-foreground">
+        <Pencil size={16} />
       </button>
 
       {/* Delete */}
-      <button type="button" onClick={onDelete} className="p-0.5 text-muted-foreground hover:text-destructive">
-        <Trash2 size={14} />
+      <button type="button" onClick={onDeleteRequest} className="p-1.5 text-muted-foreground hover:text-destructive">
+        <Trash2 size={16} />
       </button>
     </div>
   )
