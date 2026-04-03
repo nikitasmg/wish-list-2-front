@@ -74,7 +74,7 @@ export function BlockItem({ block, id, index, focused, onFocusChange, onUpdate, 
       <div
         ref={(node) => { setDragRef(node); setDropRef(node) }}
         style={style}
-        className={`relative rounded-lg border bg-card p-4 min-h-[80px] transition-all select-none md:cursor-grab ${
+        className={`relative rounded-lg border bg-card p-4 min-h-[80px] transition-all select-none md:cursor-grab outline-none ${
           isDragging
             ? 'cursor-grabbing shadow-lg border-primary/60'
             : isOver
