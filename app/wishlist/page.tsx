@@ -1,41 +1,27 @@
 'use client'
 
-import { useApiCreateConstructorWishlist, useApiGetAllWishlists } from '@/api/wishlist'
+import { useApiGetAllWishlists } from '@/api/wishlist'
 import { WishlistCard } from '@/app/wishlist/components/wishlist-card'
 import { Button } from '@/components/ui/button'
-import { LayoutTemplate, Loader2 } from 'lucide-react'
+import { LayoutTemplate } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import * as React from 'react'
 
 export default function Page() {
   const { data } = useApiGetAllWishlists()
-  const { mutate: createConstructor, isPending } = useApiCreateConstructorWishlist()
   const router = useRouter()
   const wishlists = data?.data ?? []
 
   const handleCreate = () => {
-    createConstructor(
-      { title: 'Новый вишлист', blocks: [] },
-      {
-        onSuccess: (res) => {
-          if (res.data?.id) {
-            router.push(`/wishlist/edit/${res.data.id}`)
-          }
-        },
-      }
-    )
+    router.push('/wishlist/create')
   }
 
   return (
     <div>
       <div className="flex flex-col gap-2 items-center justify-between mb-6 lg:flex-row">
         <h2 className="text-4xl">Мои вишлисты</h2>
-        <Button onClick={handleCreate} disabled={isPending}>
-          {isPending ? (
-            <Loader2 className="mr-2 animate-spin" size={18} />
-          ) : (
-            <LayoutTemplate className="mr-2" size={18} />
-          )}
+        <Button onClick={handleCreate}>
+          <LayoutTemplate className="mr-2" size={18} />
           Создать вишлист
         </Button>
       </div>
@@ -47,12 +33,8 @@ export default function Page() {
           <p className="text-muted-foreground text-sm max-w-xs">
             Создай первый вишлист и поделись им с теми, кто хочет сделать тебе подарок
           </p>
-          <Button onClick={handleCreate} disabled={isPending}>
-            {isPending ? (
-              <Loader2 className="mr-2 animate-spin" size={18} />
-            ) : (
-              <LayoutTemplate className="mr-2" size={18} />
-            )}
+          <Button onClick={handleCreate}>
+            <LayoutTemplate className="mr-2" size={18} />
             Создать первый вишлист
           </Button>
         </div>
