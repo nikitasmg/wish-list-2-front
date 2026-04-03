@@ -5,6 +5,16 @@ import { BlockToolbar } from '@/app/wishlist/components/constructor/block-toolba
 import { Block } from '@/shared/types'
 import { useDraggable, useDroppable } from '@dnd-kit/core'
 import React, { useState } from 'react'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
 
 const BLOCK_LABELS: Record<string, string> = {
   text: 'Текст',
@@ -36,6 +46,7 @@ type Props = {
 
 export function BlockItem({ block, id, index, focused, onFocusChange, onUpdate, onResize, onDelete }: Props) {
   const [editOpen, setEditOpen] = useState(false)
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false)
 
   const { attributes, listeners, setNodeRef: setDragRef, transform, isDragging } = useDraggable({
     id,
@@ -88,7 +99,7 @@ export function BlockItem({ block, id, index, focused, onFocusChange, onUpdate, 
             block={block}
             onResize={onResize}
             onEdit={() => { setEditOpen(true); onFocusChange(false) }}
-            onDelete={onDelete}
+            onDeleteRequest={() => setDeleteConfirmOpen(true)}
           />
         )}
 
@@ -104,6 +115,24 @@ export function BlockItem({ block, id, index, focused, onFocusChange, onUpdate, 
         onClose={() => setEditOpen(false)}
         onSave={onUpdate}
       />
+
+      <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Удалить блок?</AlertDialogTitle>
+            <AlertDialogDescription>Это действие нельзя отменить.</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Отмена</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => { onDelete(); setDeleteConfirmOpen(false) }}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Удалить
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   )
 }
