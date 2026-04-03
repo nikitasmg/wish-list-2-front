@@ -140,12 +140,30 @@ export function BlockItem({ block, id, index, focused, onFocusChange, onUpdate, 
 function getPreview(block: Block): React.ReactNode {
   const d = block.data
   switch (block.type) {
-    case 'text':
-      return (d.html as string)
-        ? <span className="text-muted-foreground italic text-xs">Текст (HTML)</span>
-        : ((d.content as string) || 'Нет текста')
-    case 'text_image':
-      return (d.content as string) || 'Текст + картинка'
+    case 'text': {
+      if (d.html as string) {
+        const plain = (d.html as string).replace(/<[^>]*>/g, '').trim()
+        return plain || 'Нет текста'
+      }
+      return (d.content as string) || 'Нет текста'
+    }
+    case 'text_image': {
+      const plain = d.html
+        ? (d.html as string).replace(/<[^>]*>/g, '').trim()
+        : (d.content as string) ?? ''
+      return (
+        <div className="flex items-start gap-2">
+          {d.imageUrl && (
+            <img
+              src={d.imageUrl as string}
+              alt=""
+              className="w-10 h-10 object-cover rounded flex-shrink-0"
+            />
+          )}
+          <span>{plain || 'Текст + картинка'}</span>
+        </div>
+      )
+    }
     case 'image':
       return (d.url as string)
         ? <img src={d.url as string} alt="preview" className="w-full h-20 object-cover rounded mt-1" />
