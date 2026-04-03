@@ -124,6 +124,7 @@ export function BlockItem({ block, id, index, focused, onFocusChange, onUpdate, 
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Отмена</AlertDialogCancel>
+            {/* AlertDialogAction closes the dialog automatically via onOpenChange — no need to call setDeleteConfirmOpen */}
             <AlertDialogAction
               onClick={onDelete}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
@@ -184,7 +185,7 @@ function getPreview(block: Block): React.ReactNode {
       )
     }
     case 'timing':
-      return (d.start as string) ? `До: ${new Date(d.start as string).toLocaleString('ru-RU')}` : 'Время не указано'
+      return (d.end as string) ? `До: ${new Date(d.end as string).toLocaleString('ru-RU')}` : 'Время не указано'
     case 'agenda': {
       const items = d.items as { time: string; text: string }[] | undefined
       return items?.length ? `${items.length} пунктов программы` : 'Нет пунктов'
