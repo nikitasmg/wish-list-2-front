@@ -303,6 +303,11 @@
   }
 }
 
+/* Suppress Tiptap's default ProseMirror focus outline */
+.ProseMirror-focused {
+  outline: none;
+}
+
 /* Block grid layout for landing page */
 .block-grid-item {
   order: var(--mobile-order, 0);

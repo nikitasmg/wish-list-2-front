@@ -97,7 +97,7 @@ export function TextImageBlockEditor({ data, onChange }: Props) {
             </div>
             <EditorContent
               editor={editor}
-              className="min-h-[120px] border rounded-lg p-3 prose prose-sm dark:prose-invert max-w-none focus-within:outline-none focus-within:ring-1 focus-within:ring-ring"
+              className="min-h-[120px] border rounded-lg p-3 prose prose-sm dark:prose-invert max-w-none focus-within:border-ring"
             />
           </>
         )}
