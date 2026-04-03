@@ -175,7 +175,7 @@ function getPreview(block: Block): React.ReactNode {
       const content = (d.content as string) || ''
       return (
         <div className="flex items-start gap-2">
-          {d.imageUrl && (
+          {!!(d.imageUrl as string) && (
             <img
               src={d.imageUrl as string}
               alt=""
