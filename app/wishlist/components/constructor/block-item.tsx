@@ -125,7 +125,7 @@ export function BlockItem({ block, id, index, focused, onFocusChange, onUpdate, 
           <AlertDialogFooter>
             <AlertDialogCancel>Отмена</AlertDialogCancel>
             <AlertDialogAction
-              onClick={() => { onDelete(); setDeleteConfirmOpen(false) }}
+              onClick={onDelete}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
               Удалить
