@@ -57,7 +57,7 @@ export function ConstructorEditor({ wishlist }: Props) {
   return (
     <div className="space-y-4">
       {/* Mode toggle */}
-      <div className="sticky top-[52px] z-40 bg-background/95 backdrop-blur-sm py-2 -mx-5 px-5 border-b border-border/40 flex items-center gap-2">
+      <div className="sticky top-[68px] z-40 bg-background/95 backdrop-blur-sm py-2 -mx-5 px-5 border-b border-border/40 flex items-center gap-2">
         <button type="button" onClick={() => setMode('editor')} className={tabClass('editor')}>
           <Pencil size={14} /> Редактор
         </button>
