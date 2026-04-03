@@ -143,15 +143,18 @@ function getPreview(block: Block): React.ReactNode {
   switch (block.type) {
     case 'text': {
       if (d.html as string) {
-        const plain = (d.html as string).replace(/<[^>]*>/g, '').trim()
-        return plain || 'Нет текста'
+        return (
+          <div
+            className="prose prose-sm dark:prose-invert max-w-none max-h-20 overflow-hidden [&>*:first-child]:mt-0 [&>*:last-child]:mb-0"
+            dangerouslySetInnerHTML={{ __html: d.html as string }}
+          />
+        )
       }
       return (d.content as string) || 'Нет текста'
     }
     case 'text_image': {
-      const plain = d.html
-        ? (d.html as string).replace(/<[^>]*>/g, '').trim()
-        : (d.content as string) ?? ''
+      const html = (d.html as string) || ''
+      const content = (d.content as string) || ''
       return (
         <div className="flex items-start gap-2">
           {d.imageUrl && (
@@ -161,7 +164,14 @@ function getPreview(block: Block): React.ReactNode {
               className="w-10 h-10 object-cover rounded flex-shrink-0"
             />
           )}
-          <span>{plain || 'Текст + картинка'}</span>
+          {html ? (
+            <div
+              className="prose prose-sm dark:prose-invert max-w-none max-h-20 overflow-hidden [&>*:first-child]:mt-0 [&>*:last-child]:mb-0 min-w-0"
+              dangerouslySetInnerHTML={{ __html: html }}
+            />
+          ) : (
+            <span>{content || 'Текст + картинка'}</span>
+          )}
         </div>
       )
     }
