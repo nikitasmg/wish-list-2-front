@@ -144,10 +144,13 @@ function getPreview(block: Block): React.ReactNode {
     case 'text': {
       if (d.html as string) {
         return (
-          <div
-            className="prose prose-sm dark:prose-invert max-w-none max-h-20 overflow-hidden [&>*:first-child]:mt-0 [&>*:last-child]:mb-0"
-            dangerouslySetInnerHTML={{ __html: d.html as string }}
-          />
+          <div className="relative max-h-20 overflow-hidden">
+            <div
+              className="[&_p]:mb-1 [&_p:last-child]:mb-0 [&_strong]:font-semibold [&_b]:font-semibold [&_em]:italic [&_i]:italic [&_u]:underline [&_h2]:text-base [&_h2]:font-bold [&_h2]:mb-1 [&_h3]:text-sm [&_h3]:font-semibold [&_h3]:mb-1"
+              dangerouslySetInnerHTML={{ __html: d.html as string }}
+            />
+            <div className="absolute bottom-0 left-0 right-0 h-6 bg-gradient-to-t from-card to-transparent pointer-events-none" />
+          </div>
         )
       }
       return (d.content as string) || 'Нет текста'
@@ -165,10 +168,13 @@ function getPreview(block: Block): React.ReactNode {
             />
           )}
           {html ? (
-            <div
-              className="prose prose-sm dark:prose-invert max-w-none max-h-20 overflow-hidden [&>*:first-child]:mt-0 [&>*:last-child]:mb-0 min-w-0"
-              dangerouslySetInnerHTML={{ __html: html }}
-            />
+            <div className="relative max-h-20 overflow-hidden min-w-0 flex-1">
+              <div
+                className="[&_p]:mb-1 [&_p:last-child]:mb-0 [&_strong]:font-semibold [&_b]:font-semibold [&_em]:italic [&_i]:italic [&_u]:underline"
+                dangerouslySetInnerHTML={{ __html: html }}
+              />
+              <div className="absolute bottom-0 left-0 right-0 h-6 bg-gradient-to-t from-card to-transparent pointer-events-none" />
+            </div>
           ) : (
             <span>{content || 'Текст + картинка'}</span>
           )}
