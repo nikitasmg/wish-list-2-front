@@ -84,6 +84,7 @@ export function BlockItem({ block, id, index, focused, onFocusChange, onUpdate, 
                 : 'border-border hover:border-primary/50'
         }`}
         onClick={() => onFocusChange(!focused)}
+        onDoubleClick={() => { setEditOpen(true); onFocusChange(false) }}
         onBlur={(e) => {
           if (isDragging) return
           const related = e.relatedTarget
