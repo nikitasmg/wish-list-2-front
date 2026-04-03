@@ -4,7 +4,7 @@ import { BlockEditorModal } from '@/app/wishlist/components/constructor/block-ed
 import { BlockToolbar } from '@/app/wishlist/components/constructor/block-toolbar'
 import { Block } from '@/shared/types'
 import { useDraggable, useDroppable } from '@dnd-kit/core'
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -47,6 +47,21 @@ type Props = {
 export function BlockItem({ block, id, index, focused, onFocusChange, onUpdate, onResize, onDelete }: Props) {
   const [editOpen, setEditOpen] = useState(false)
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false)
+  const clickTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const handleClick = () => {
+    if (clickTimerRef.current) {
+      clearTimeout(clickTimerRef.current)
+      clickTimerRef.current = null
+      setEditOpen(true)
+      onFocusChange(false)
+    } else {
+      clickTimerRef.current = setTimeout(() => {
+        clickTimerRef.current = null
+        onFocusChange(!focused)
+      }, 250)
+    }
+  }
 
   const { attributes, listeners, setNodeRef: setDragRef, transform, isDragging } = useDraggable({
     id,
@@ -83,8 +98,7 @@ export function BlockItem({ block, id, index, focused, onFocusChange, onUpdate, 
                 ? 'border-primary shadow-md'
                 : 'border-border hover:border-primary/50'
         }`}
-        onClick={() => onFocusChange(!focused)}
-        onDoubleClick={() => { setEditOpen(true); onFocusChange(false) }}
+        onClick={handleClick}
         onBlur={(e) => {
           if (isDragging) return
           const related = e.relatedTarget
