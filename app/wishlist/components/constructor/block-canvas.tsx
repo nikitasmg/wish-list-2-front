@@ -18,6 +18,7 @@ import {
   MouseSensor,
   TouchSensor,
   closestCenter,
+  pointerWithin,
   useSensor,
   useSensors,
 } from '@dnd-kit/core'
@@ -62,7 +63,9 @@ export function BlockCanvas({ initialBlocks, onBlocksChange }: Props) {
 
   const handleDragStart = useCallback(() => {
     setIsDragActive(true)
-    haptic([{ duration: 10 }], { intensity: 0.7 })
+    haptic([
+      { duration: 25 },
+    ], { intensity: 0.7 })
     document.body.style.overflow = 'hidden'
   }, [haptic])
 
@@ -92,7 +95,9 @@ export function BlockCanvas({ initialBlocks, onBlocksChange }: Props) {
 
       const newBlocks = moveBlock(blocks, blockIndex, targetRow, targetCol)
       syncBlocks(newBlocks)
-      haptic([{ duration: 15 }], { intensity: 0.4 })
+      haptic([
+        { duration: 15 },
+      ], { intensity: 0.4 })
       setFocusedId(null)
     },
     [blocks, syncBlocks, haptic],
@@ -153,7 +158,10 @@ export function BlockCanvas({ initialBlocks, onBlocksChange }: Props) {
         ) : (
           <DndContext
             sensors={sensors}
-            collisionDetection={closestCenter}
+            collisionDetection={(args) => {
+                const hits = pointerWithin(args)
+                return hits.length > 0 ? hits : closestCenter(args)
+              }}
             onDragStart={handleDragStart}
             onDragEnd={handleDragEnd}
             onDragCancel={handleDragCancel}
