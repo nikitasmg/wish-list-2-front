@@ -23,7 +23,7 @@ const birthday: OccasionData = {
     id: 'example-birthday',
     title: 'День рождения Саши 🎂',
     description: 'Сашке исполняется 7 лет! Он обожает конструкторы, активный отдых и книги про волшебников.',
-    cover: '',
+    cover: '/wishlist-covers/birthday.png',
     presentsCount: 6,
     userId: 'example',
     settings: {
@@ -99,7 +99,7 @@ const newYear: OccasionData = {
     id: 'example-new-year',
     title: 'Новогодние желания Лены 🎄',
     description: 'Друзья, вот мой список желаний на Новый год! Выбирайте что понравится — буду рада любому подарку из списка.',
-    cover: '',
+    cover: '/wishlist-covers/new-year.png',
     presentsCount: 5,
     userId: 'example',
     settings: {
@@ -165,7 +165,7 @@ const wedding: OccasionData = {
     id: 'example-wedding',
     title: 'Свадьба Кати и Димы 💍',
     description: 'Мы женимся! Если хочешь сделать нам подарок — здесь собрали всё самое нужное для нашего нового дома.',
-    cover: '',
+    cover: '/wishlist-covers/wedding.png',
     presentsCount: 6,
     userId: 'example',
     settings: {
@@ -258,7 +258,7 @@ const valentines: OccasionData = {
     id: 'example-valentines',
     title: 'Валентинка для Маши 💝',
     description: 'Дорогой, вот мои пожелания на День Валентина. Выбирай что угодно — или просто проведи со мной вечер.',
-    cover: '',
+    cover: '/wishlist-covers/valentines.png',
     presentsCount: 5,
     userId: 'example',
     settings: {
@@ -313,7 +313,7 @@ const march8: OccasionData = {
     id: 'example-march-8',
     title: 'Хочу на 8 марта 🌷',
     description: 'Мальчики, вот подсказки! Не надо гадать — всё расписано. Спасибо заранее!',
-    cover: '',
+    cover: '/wishlist-covers/8-march.png',
     presentsCount: 5,
     userId: 'example',
     settings: {
@@ -368,7 +368,7 @@ const christmas: OccasionData = {
     id: 'example-christmas',
     title: 'Рождественские пожелания семьи Петровых ✨',
     description: 'Наш семейный список пожеланий на Рождество. Пусть каждый найдёт что-то по душе!',
-    cover: '',
+    cover: '/wishlist-covers/christmas.png',
     presentsCount: 5,
     userId: 'example',
     settings: {
@@ -428,7 +428,7 @@ const party: OccasionData = {
     id: 'example-party',
     title: 'Вечеринка у Макса 🎉',
     description: 'Собираемся в эту пятницу! Принесите что-нибудь из списка — сделаем вечер незабываемым.',
-    cover: '',
+    cover: '/wishlist-covers/party.png',
     presentsCount: 5,
     userId: 'example',
     settings: {

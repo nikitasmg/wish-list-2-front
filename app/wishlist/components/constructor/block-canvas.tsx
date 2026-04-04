@@ -21,6 +21,7 @@ import {
   useSensor,
   useSensors,
 } from '@dnd-kit/core'
+import { useWebHaptics } from 'web-haptics/react'
 import React, { useCallback, useMemo, useState } from 'react'
 
 type Props = {
@@ -32,6 +33,7 @@ export function BlockCanvas({ initialBlocks, onBlocksChange }: Props) {
   const [blocks, setBlocks] = useState<Block[]>(() => ensureCoords(initialBlocks))
   const [isDragActive, setIsDragActive] = useState(false)
   const [focusedId, setFocusedId] = useState<string | null>(null)
+  const { trigger: haptic } = useWebHaptics()
 
   const sensors = useSensors(
     useSensor(MouseSensor, { activationConstraint: { distance: 8 } }),
@@ -60,9 +62,9 @@ export function BlockCanvas({ initialBlocks, onBlocksChange }: Props) {
 
   const handleDragStart = useCallback(() => {
     setIsDragActive(true)
-    navigator.vibrate?.(40)
+    haptic('medium')
     document.body.style.overflow = 'hidden'
-  }, [])
+  }, [haptic])
 
   const handleDragEnd = useCallback(
     (event: DragEndEvent) => {
@@ -90,9 +92,10 @@ export function BlockCanvas({ initialBlocks, onBlocksChange }: Props) {
 
       const newBlocks = moveBlock(blocks, blockIndex, targetRow, targetCol)
       syncBlocks(newBlocks)
+      haptic('light')
       setFocusedId(null)
     },
-    [blocks, syncBlocks],
+    [blocks, syncBlocks, haptic],
   )
 
   const handleDragCancel = useCallback(() => {
