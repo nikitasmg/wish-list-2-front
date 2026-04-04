@@ -13,11 +13,11 @@ export function TemplateCard({ template, onClick }: Props) {
 
   return (
     <div
-      className="rounded-2xl overflow-hidden cursor-pointer transition-transform duration-150"
+      className="rounded-2xl overflow-hidden cursor-pointer transition-transform duration-150 flex flex-col h-full"
       style={{
         boxShadow: hovered
           ? `0 6px 16px ${template.accentColor}40`
-          : '0 1px 4px rgba(0,0,0,0.08)',
+          : '0 1px 4px rgba(0,0,0,0.15)',
         transform: hovered ? 'translateY(-2px)' : 'none',
       }}
       onMouseEnter={() => setHovered(true)}
@@ -36,11 +36,11 @@ export function TemplateCard({ template, onClick }: Props) {
         </div>
       </div>
       <div
-        className="bg-white px-3.5 py-3"
+        className="bg-card px-3.5 py-3 flex-1"
         style={{ borderTop: `2px solid ${template.accentColor}` }}
       >
-        <div className="font-bold text-sm mb-0.5">{template.label}</div>
-        <div className="text-xs text-muted-foreground leading-relaxed">{template.description}</div>
+        <div className="font-bold text-sm mb-0.5 text-card-foreground">{template.label}</div>
+        <div className="text-xs text-muted-foreground leading-relaxed line-clamp-1">{template.description}</div>
       </div>
     </div>
   )

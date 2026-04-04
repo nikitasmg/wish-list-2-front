@@ -73,14 +73,14 @@ export default function Page() {
         {templates.map((template) => (
           <TemplateCard key={template.id} template={template} onClick={handleTemplateClick} />
         ))}
-        <div className="rounded-2xl overflow-hidden opacity-60 cursor-default">
+        <div className="rounded-2xl overflow-hidden opacity-60 cursor-default flex flex-col h-full">
           <div className="bg-gradient-to-br from-muted to-muted/60 px-4 pt-5 pb-3.5 text-center">
             <div className="text-4xl mb-1 opacity-40">✨</div>
             <div className="text-[10px] uppercase tracking-widest font-semibold text-muted-foreground">
               Скоро
             </div>
           </div>
-          <div className="bg-muted/30 px-3.5 py-3 border-t-2 border-muted">
+          <div className="bg-muted/30 px-3.5 py-3 border-t-2 border-muted flex-1">
             <div className="font-bold text-sm mb-0.5 text-muted-foreground">Больше шаблонов</div>
             <div className="text-xs text-muted-foreground/60">Новый год, юбилей…</div>
           </div>

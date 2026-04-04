@@ -177,7 +177,7 @@ export const templates: WishlistTemplate[] = [
     colorScheme: 'sand',
     accentColor: '#d97706',
     gradientFrom: '#fffbeb',
-    description: 'Дата, место, программа, контакты пары',
+    description: 'Дата, место, программа, контакты',
     buildBlocks: (title, date) => {
       const dt = toLocalIso(date)
       return [
