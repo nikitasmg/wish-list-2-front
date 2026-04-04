@@ -62,7 +62,7 @@ export function BlockCanvas({ initialBlocks, onBlocksChange }: Props) {
 
   const handleDragStart = useCallback(() => {
     setIsDragActive(true)
-    haptic('medium')
+    haptic([{ duration: 10 }], { intensity: 0.7 })
     document.body.style.overflow = 'hidden'
   }, [haptic])
 
@@ -92,7 +92,7 @@ export function BlockCanvas({ initialBlocks, onBlocksChange }: Props) {
 
       const newBlocks = moveBlock(blocks, blockIndex, targetRow, targetCol)
       syncBlocks(newBlocks)
-      haptic('light')
+      haptic([{ duration: 15 }], { intensity: 0.4 })
       setFocusedId(null)
     },
     [blocks, syncBlocks, haptic],
