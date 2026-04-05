@@ -4,6 +4,7 @@ import { PALETTE_ITEMS } from '@/app/wishlist/components/constructor/block-palet
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
@@ -21,6 +22,9 @@ export function BlockPickerModal({ open, onClose, onSelect }: Props) {
       <DialogContent className="max-w-lg max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Выберите блок</DialogTitle>
+          <DialogDescription className="sr-only">
+            Выберите тип блока для добавления на холст
+          </DialogDescription>
         </DialogHeader>
         <div className="grid grid-cols-2 gap-3 mt-2">
           {PALETTE_ITEMS.map((item) => (
