@@ -2,6 +2,7 @@
 
 import { BlockItem } from '@/app/wishlist/components/constructor/block-item'
 import { BlockPalette } from '@/app/wishlist/components/constructor/block-palette'
+import { BlockPickerModal } from '@/app/wishlist/components/constructor/block-picker-modal'
 import { EmptyCell } from '@/app/wishlist/components/constructor/empty-cell'
 import {
   ensureCoords,
@@ -11,7 +12,7 @@ import {
   buildCellMap,
   pushBlocksDown,
 } from '@/app/wishlist/components/constructor/grid-helpers'
-import { Block } from '@/shared/types'
+import { Block, BlockType } from '@/shared/types'
 import {
   DndContext,
   DragEndEvent,
@@ -34,6 +35,7 @@ export function BlockCanvas({ initialBlocks, onBlocksChange }: Props) {
   const [blocks, setBlocks] = useState<Block[]>(() => ensureCoords(initialBlocks))
   const [isDragActive, setIsDragActive] = useState(false)
   const [focusedId, setFocusedId] = useState<string | null>(null)
+  const [pickerTarget, setPickerTarget] = useState<{ row: number; col: 0 | 1 } | null>(null)
   const haptic = useHaptic()
 
   const sensors = useSensors(
@@ -108,6 +110,14 @@ export function BlockCanvas({ initialBlocks, onBlocksChange }: Props) {
     (block: Block) => {
       const { row, col } = findFirstEmptyCell(blocks)
       const newBlock: Block = { ...block, row, col, colSpan: block.colSpan ?? 1 }
+      syncBlocks([...blocks, newBlock])
+    },
+    [blocks, syncBlocks],
+  )
+
+  const handleAddAt = useCallback(
+    (blockType: BlockType, row: number, col: 0 | 1) => {
+      const newBlock: Block = { type: blockType, row, col, colSpan: 1, data: {} }
       syncBlocks([...blocks, newBlock])
     },
     [blocks, syncBlocks],
@@ -188,12 +198,24 @@ export function BlockCanvas({ initialBlocks, onBlocksChange }: Props) {
                   row={row}
                   col={col}
                   isDragActive={isDragActive}
+                  onAdd={() => setPickerTarget({ row, col })}
                 />
               ))}
             </div>
           </DndContext>
         )}
       </div>
+
+      <BlockPickerModal
+        open={pickerTarget !== null}
+        onClose={() => setPickerTarget(null)}
+        onSelect={(type) => {
+          if (pickerTarget) {
+            handleAddAt(type, pickerTarget.row, pickerTarget.col)
+            setPickerTarget(null)
+          }
+        }}
+      />
     </div>
   )
 }
