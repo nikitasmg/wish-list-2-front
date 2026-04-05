@@ -156,56 +156,50 @@ export function BlockCanvas({ initialBlocks, onBlocksChange }: Props) {
 
   return (
     <div className="flex flex-col gap-4 md:flex-row md:gap-6">
-      <BlockPalette onAdd={handleAdd} existingCount={blocks.length} />
+      <BlockPalette onAdd={handleAdd} />
 
       <div className="flex-1">
-        {blocks.length === 0 ? (
-          <div className="border-2 border-dashed border-border rounded-lg p-12 text-center text-muted-foreground text-sm">
-            Добавь блоки из палитры
-          </div>
-        ) : (
-          <DndContext
-            sensors={sensors}
-            collisionDetection={(args) => {
-                const hits = pointerWithin(args)
-                return hits.length > 0 ? hits : closestCenter(args)
-              }}
-            onDragStart={handleDragStart}
-            onDragEnd={handleDragEnd}
-            onDragCancel={handleDragCancel}
+        <DndContext
+          sensors={sensors}
+          collisionDetection={(args) => {
+              const hits = pointerWithin(args)
+              return hits.length > 0 ? hits : closestCenter(args)
+            }}
+          onDragStart={handleDragStart}
+          onDragEnd={handleDragEnd}
+          onDragCancel={handleDragCancel}
+        >
+          <div
+            className="grid grid-cols-2 gap-3"
+            style={{ gridAutoRows: 'minmax(80px, auto)' }}
           >
-            <div
-              className="grid grid-cols-2 gap-3"
-              style={{ gridAutoRows: 'minmax(80px, auto)' }}
-            >
-              {blocks.map((block, index) => (
-                <BlockItem
-                  key={`${block.row}-${block.col}`}
-                  id={`${block.row}-${block.col}`}
-                  block={block}
-                  index={index}
-                  focused={focusedId === `${block.row}-${block.col}`}
-                  onFocusChange={(v) =>
-                    setFocusedId(v ? `${block.row}-${block.col}` : null)
-                  }
-                  onUpdate={(data) => handleUpdate(index, data)}
-                  onResize={(cs) => handleResize(index, cs)}
-                  onDelete={() => handleDelete(index)}
-                />
-              ))}
+            {blocks.map((block, index) => (
+              <BlockItem
+                key={`${block.row}-${block.col}`}
+                id={`${block.row}-${block.col}`}
+                block={block}
+                index={index}
+                focused={focusedId === `${block.row}-${block.col}`}
+                onFocusChange={(v) =>
+                  setFocusedId(v ? `${block.row}-${block.col}` : null)
+                }
+                onUpdate={(data) => handleUpdate(index, data)}
+                onResize={(cs) => handleResize(index, cs)}
+                onDelete={() => handleDelete(index)}
+              />
+            ))}
 
-              {emptyCells.map(({ row, col }) => (
-                <EmptyCell
-                  key={`empty-${row}-${col}`}
-                  row={row}
-                  col={col}
-                  isDragActive={isDragActive}
-                  onAdd={() => setPickerTarget({ row, col })}
-                />
-              ))}
-            </div>
-          </DndContext>
-        )}
+            {emptyCells.map(({ row, col }) => (
+              <EmptyCell
+                key={`empty-${row}-${col}`}
+                row={row}
+                col={col}
+                isDragActive={isDragActive}
+                onAdd={() => setPickerTarget({ row, col })}
+              />
+            ))}
+          </div>
+        </DndContext>
       </div>
 
       <BlockPickerModal

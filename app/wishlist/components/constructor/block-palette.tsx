@@ -166,10 +166,9 @@ export const PALETTE_ITEMS: PaletteItem[] = [
 
 type Props = {
   onAdd: (block: Block) => void
-  existingCount: number
 }
 
-export function BlockPalette({ onAdd, existingCount }: Props) {
+export function BlockPalette({ onAdd }: Props) {
   const handleAdd = (type: BlockType) => {
     onAdd({ type, row: 0, col: 0, colSpan: 1, data: {} })
   }
