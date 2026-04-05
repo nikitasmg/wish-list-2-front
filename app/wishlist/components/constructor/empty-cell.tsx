@@ -35,7 +35,7 @@ export function EmptyCell({ row, col, isDragActive, onAdd }: Props) {
         <button
           type="button"
           onClick={onAdd}
-          className="absolute inset-0 flex items-center justify-center w-full h-full rounded-lg cursor-pointer"
+          className="absolute inset-0 flex items-center justify-center rounded-lg cursor-pointer"
           aria-label="Добавить блок"
         >
           <Plus className="w-5 h-5 text-muted-foreground/40 group-hover:text-primary transition-colors" />
