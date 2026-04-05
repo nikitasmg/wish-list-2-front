@@ -8,6 +8,7 @@ import {
   ensureCoords,
   getGridRowCount,
   findFirstEmptyCell,
+  isCellOccupied,
   moveBlock,
   buildCellMap,
   pushBlocksDown,
@@ -117,6 +118,7 @@ export function BlockCanvas({ initialBlocks, onBlocksChange }: Props) {
 
   const handleAddAt = useCallback(
     (blockType: BlockType, row: number, col: 0 | 1) => {
+      if (isCellOccupied(blocks, row, col)) return
       const newBlock: Block = { type: blockType, row, col, colSpan: 1, data: {} }
       syncBlocks([...blocks, newBlock])
     },
