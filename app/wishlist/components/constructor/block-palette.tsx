@@ -10,7 +10,7 @@ type PaletteItem = {
   preview: React.ReactNode
 }
 
-const PALETTE_ITEMS: PaletteItem[] = [
+export const PALETTE_ITEMS: PaletteItem[] = [
   {
     type: 'text',
     label: 'Текст',
