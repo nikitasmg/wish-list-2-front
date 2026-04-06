@@ -14,6 +14,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import React from 'react'
 import { useToast } from '@/hooks/use-toast'
 import { Eye, Pencil, Gift, Plus } from 'lucide-react'
+import { useConstructorTour } from '@/hooks/use-constructor-tour'
 
 type Props = {
   wishlist: Wishlist
@@ -32,6 +33,8 @@ export function ConstructorEditor({ wishlist }: Props) {
   const presents = presentsData?.data ?? []
 
   useEffect(() => () => { if (debounceRef.current) clearTimeout(debounceRef.current) }, [])
+
+  useConstructorTour()
 
   const handleBlocksChange = useCallback(
     (blocks: Block[]) => {
