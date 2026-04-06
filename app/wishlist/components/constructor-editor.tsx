@@ -61,25 +61,27 @@ export function ConstructorEditor({ wishlist }: Props) {
     <div className="space-y-4">
       {/* Mode toggle */}
       <div className="sticky top-[68px] z-40 bg-background/95 backdrop-blur-sm py-2 -mx-5 px-5 border-b border-border/40 flex items-center gap-2">
-        <button type="button" onClick={() => setMode('editor')} className={tabClass('editor')}>
-          <Pencil size={14} /> Редактор
-        </button>
-        <button type="button" onClick={() => setMode('preview')} className={tabClass('preview')}>
-          <Eye size={14} /> Превью
-        </button>
-        <button data-tour="tab-presents" type="button" onClick={() => setMode('presents')} className={tabClass('presents')}>
-          <Gift size={14} /> Подарки
-          {presents.length > 0 && (
-            <span className="ml-1 text-xs bg-primary/20 text-primary px-1.5 py-0.5 rounded-full">
-              {presents.length}
-            </span>
-          )}
-        </button>
+        <div className="flex items-center gap-2 flex-1 overflow-x-auto">
+          <button type="button" onClick={() => setMode('editor')} className={tabClass('editor')}>
+            <Pencil size={14} /> Редактор
+          </button>
+          <button type="button" onClick={() => setMode('preview')} className={tabClass('preview')}>
+            <Eye size={14} /> Превью
+          </button>
+          <button data-tour="tab-presents" type="button" onClick={() => setMode('presents')} className={tabClass('presents')}>
+            <Gift size={14} /> Подарки
+            {presents.length > 0 && (
+              <span className="ml-1 text-xs bg-primary/20 text-primary px-1.5 py-0.5 rounded-full">
+                {presents.length}
+              </span>
+            )}
+          </button>
+        </div>
         <button
           type="button"
           onClick={startTour}
           title="Помощь"
-          className="ml-auto p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+          className="shrink-0 p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
         >
           <CircleHelp size={16} />
         </button>
