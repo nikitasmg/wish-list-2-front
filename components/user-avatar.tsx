@@ -9,7 +9,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
   DropdownMenu,
   DropdownMenuContent, DropdownMenuItem,
@@ -23,6 +23,18 @@ import * as React from 'react'
 type Props = {
   user: User
 };
+
+const getInitials = (user: User) => {
+  if (user.displayName) {
+    return user.displayName
+      .split(' ')
+      .slice(0, 2)
+      .map((w) => w[0])
+      .join('')
+      .toUpperCase()
+  }
+  return user.username?.at(0)?.toUpperCase() ?? '?'
+}
 
 export const UserAvatar = ({ user }: Props) => {
   const [ isConfirmModalOpen, setIsConfirmModalOpen ] = React.useState(false)
@@ -38,13 +50,16 @@ export const UserAvatar = ({ user }: Props) => {
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger>
           <Avatar>
-            <AvatarFallback>{user.username?.at(0)}</AvatarFallback>
+            {user.avatar && <AvatarImage src={user.avatar} alt={user.displayName ?? user.username} />}
+            <AvatarFallback>{getInitials(user)}</AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuLabel>Мой аккаунт</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => navigation.push('/wishlist')}>Мои вишлисты</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigation.push('/wishlist/settings')}>Настройки профиля</DropdownMenuItem>
+          <DropdownMenuSeparator />
           <DropdownMenuItem
             className="text-destructive"
             onClick={() => setIsConfirmModalOpen(true)}

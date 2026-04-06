@@ -4,19 +4,24 @@ import * as React from 'react'
 import { useRouter } from 'next/navigation'
 import { Loader2, LayoutTemplate } from 'lucide-react'
 import { useApiGetPublicTemplates, useApiCreateWishlistFromTemplate } from '@/api/template'
+import { useApiGetMe } from '@/api/user'
 import { Template } from '@/shared/types'
-import { useUserStore } from '@/store/useUserStore'
 import { Button } from '@/components/ui/button'
 import { FromUserTemplateDialog } from '@/app/wishlist/create/components/from-user-template-dialog'
+import { TemplatePreviewSheet } from './components/template-preview-sheet'
 
 export default function Page() {
   const router = useRouter()
-  const user = useUserStore((s) => s.user)
+  const { data: meData } = useApiGetMe()
+  const user = meData?.user
   const [cursor, setCursor] = React.useState<string | undefined>(undefined)
   const [allTemplates, setAllTemplates] = React.useState<Template[]>([])
 
   const { data, isFetching } = useApiGetPublicTemplates(cursor)
   const { mutate: createFromTemplate, isPending: isCreating } = useApiCreateWishlistFromTemplate()
+
+  const [previewTemplate, setPreviewTemplate] = React.useState<Template | null>(null)
+  const [previewOpen, setPreviewOpen] = React.useState(false)
 
   const [selectedTemplate, setSelectedTemplate] = React.useState<Template | null>(null)
   const [dialogOpen, setDialogOpen] = React.useState(false)
@@ -30,11 +35,17 @@ export default function Page() {
     }
   }, [data])
 
+  const openPreview = (template: Template) => {
+    setPreviewTemplate(template)
+    setPreviewOpen(true)
+  }
+
   const handleUse = (template: Template) => {
     if (!user) {
       router.push('/login')
       return
     }
+    setPreviewOpen(false)
     setSelectedTemplate(template)
     setDialogOpen(true)
   }
@@ -53,13 +64,13 @@ export default function Page() {
 
   return (
     <div className="max-w-5xl mx-auto p-5">
-      <div className="flex items-center gap-3 mb-2">
-        <LayoutTemplate size={28} />
-        <h1 className="text-4xl">Пользовательские шаблоны</h1>
+      <div className="mb-8">
+        <LayoutTemplate size={24} className="mb-3 text-muted-foreground" />
+        <h1 className="text-3xl sm:text-4xl font-bold mb-2">Пользовательские шаблоны</h1>
+        <p className="text-muted-foreground">
+          Шаблоны от сообщества — бери готовую структуру и создавай свой вишлист
+        </p>
       </div>
-      <p className="text-muted-foreground mb-8">
-        Шаблоны от сообщества — бери готовую структуру и создавай свой вишлист
-      </p>
 
       {allTemplates.length === 0 && !isFetching && (
         <div className="text-center py-24 text-muted-foreground">
@@ -71,7 +82,8 @@ export default function Page() {
         {allTemplates.map((template) => (
           <div
             key={template.id}
-            className="rounded-2xl border border-border overflow-hidden flex flex-col"
+            className="rounded-2xl border border-border overflow-hidden flex flex-col cursor-pointer hover:border-primary transition-colors"
+            onClick={() => openPreview(template)}
           >
             <div className="px-4 pt-5 pb-4 bg-muted/40 flex-1">
               <p className="font-semibold text-base mb-1">{template.name}</p>
@@ -88,7 +100,10 @@ export default function Page() {
               <Button
                 size="sm"
                 className="w-full"
-                onClick={() => handleUse(template)}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  handleUse(template)
+                }}
                 disabled={isCreating}
               >
                 Использовать
@@ -109,6 +124,14 @@ export default function Page() {
           </Button>
         </div>
       )}
+
+      <TemplatePreviewSheet
+        template={previewTemplate}
+        open={previewOpen}
+        onOpenChange={setPreviewOpen}
+        onUse={handleUse}
+        isPending={isCreating}
+      />
 
       <FromUserTemplateDialog
         template={selectedTemplate}

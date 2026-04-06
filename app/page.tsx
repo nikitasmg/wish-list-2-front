@@ -8,6 +8,7 @@ import { StorySection } from '@/app/(landing)/components/story-section'
 import { ConstructorSection } from '@/app/(landing)/components/constructor-section'
 import { ThemesSection } from '@/app/(landing)/components/themes-section'
 import { FeaturesSection } from '@/app/(landing)/components/features-section'
+import { TemplatesSection } from '@/app/(landing)/components/templates-section'
 import { CtaSection } from '@/app/(landing)/components/cta-section'
 
 export const metadata: Metadata = {
@@ -51,6 +52,7 @@ export default function Home() {
         <ConstructorSection />
         <ThemesSection />
         <FeaturesSection />
+        <TemplatesSection />
         <CtaSection />
       </main>
       <Footer />

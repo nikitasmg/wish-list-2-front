@@ -5,7 +5,7 @@ import { UserAvatar } from '@/components/user-avatar'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { Button } from '@/components/ui/button'
 import { useRouter } from 'next/navigation'
-import { LayoutList, Sparkles } from 'lucide-react'
+import { LayoutList, LayoutTemplate, Sparkles } from 'lucide-react'
 import * as React from 'react'
 
 export const Header = () => {
@@ -50,6 +50,15 @@ export const Header = () => {
         >
           <Sparkles size={16} />
           <span className="hidden md:inline">Примеры</span>
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => navigate.push('/templates')}
+          className="gap-1.5"
+        >
+          <LayoutTemplate size={16} />
+          <span className="hidden md:inline">Шаблоны</span>
         </Button>
       </nav>
 

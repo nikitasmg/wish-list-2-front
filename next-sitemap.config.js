@@ -29,6 +29,9 @@ module.exports = {
     } else if (path === '/how-it-works') {
       priority = 0.7
       changefreq = 'monthly'
+    } else if (path === '/templates') {
+      priority = 0.8
+      changefreq = 'weekly'
     }
 
     return {
