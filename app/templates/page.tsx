@@ -2,8 +2,13 @@
 
 import * as React from 'react'
 import { useRouter } from 'next/navigation'
-import { Loader2, LayoutTemplate } from 'lucide-react'
-import { useApiGetPublicTemplates, useApiCreateWishlistFromTemplate } from '@/api/template'
+import { Loader2, LayoutTemplate, Heart } from 'lucide-react'
+import {
+  useApiGetPublicTemplates,
+  useApiCreateWishlistFromTemplate,
+  useApiLikeTemplate,
+  useApiUnlikeTemplate,
+} from '@/api/template'
 import { useApiGetMe } from '@/api/user'
 import { Template } from '@/shared/types'
 import { Button } from '@/components/ui/button'
@@ -14,11 +19,13 @@ export default function Page() {
   const router = useRouter()
   const { data: meData } = useApiGetMe()
   const user = meData?.user
-  const [cursor, setCursor] = React.useState<string | undefined>(undefined)
+  const [page, setPage] = React.useState(1)
   const [allTemplates, setAllTemplates] = React.useState<Template[]>([])
 
-  const { data, isFetching } = useApiGetPublicTemplates(cursor)
+  const { data, isFetching } = useApiGetPublicTemplates(page)
   const { mutate: createFromTemplate, isPending: isCreating } = useApiCreateWishlistFromTemplate()
+  const { mutate: likeTemplate } = useApiLikeTemplate()
+  const { mutate: unlikeTemplate } = useApiUnlikeTemplate()
 
   const [previewTemplate, setPreviewTemplate] = React.useState<Template | null>(null)
   const [previewOpen, setPreviewOpen] = React.useState(false)
@@ -62,6 +69,33 @@ export default function Page() {
     )
   }
 
+  const handleLike = (e: React.MouseEvent, template: Template) => {
+    e.stopPropagation()
+    if (!user) {
+      router.push('/login')
+      return
+    }
+    if (template.likedByMe) {
+      unlikeTemplate(template.id)
+      setAllTemplates((prev) =>
+        prev.map((t) =>
+          t.id === template.id
+            ? { ...t, likesCount: Math.max(0, t.likesCount - 1), likedByMe: false }
+            : t,
+        ),
+      )
+    } else {
+      likeTemplate(template.id)
+      setAllTemplates((prev) =>
+        prev.map((t) =>
+          t.id === template.id
+            ? { ...t, likesCount: t.likesCount + 1, likedByMe: true }
+            : t,
+        ),
+      )
+    }
+  }
+
   return (
     <div className="max-w-5xl mx-auto p-5">
       <div className="mb-8">
@@ -96,10 +130,23 @@ export default function Page() {
                 </p>
               )}
             </div>
-            <div className="px-4 py-3 border-t border-border">
+            <div className="px-4 py-3 border-t border-border flex items-center gap-2">
+              <button
+                className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                onClick={(e) => handleLike(e, template)}
+                aria-label={template.likedByMe ? 'Убрать лайк' : 'Поставить лайк'}
+              >
+                <Heart
+                  size={16}
+                  className={template.likedByMe ? 'fill-current text-rose-500' : ''}
+                />
+                {template.likesCount > 0 && (
+                  <span>{template.likesCount}</span>
+                )}
+              </button>
+              <div className="flex-1" />
               <Button
                 size="sm"
-                className="w-full"
                 onClick={(e) => {
                   e.stopPropagation()
                   handleUse(template)
@@ -113,11 +160,11 @@ export default function Page() {
         ))}
       </div>
 
-      {data?.nextCursor && (
+      {data?.hasMore && (
         <div className="flex justify-center">
           <Button
             variant="outline"
-            onClick={() => setCursor(data.nextCursor!)}
+            onClick={() => setPage((p) => p + 1)}
             disabled={isFetching}
           >
             {isFetching ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Загрузить ещё'}
