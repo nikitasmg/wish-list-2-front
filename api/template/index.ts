@@ -1,6 +1,6 @@
 import api from '@/lib/api'
 import { Template, Wishlist } from '@/shared/types'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { QueryKey, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
 
 type PublicTemplatesResponse = { data: Template[]; hasMore: boolean }
@@ -69,12 +69,17 @@ export const useApiCreateWishlistFromTemplate = () => {
   })
 }
 
+type MutationContext = {
+  previousData: [QueryKey, PublicTemplatesResponse | undefined][]
+}
+
 export const useApiLikeTemplate = () => {
   const queryClient = useQueryClient()
   return useMutation<
     { data: { likesCount: number; likedByMe: boolean } },
     AxiosError,
-    string
+    string,
+    MutationContext
   >({
     mutationFn: async (templateId) => api.post(`templates/${templateId}/like`),
     onMutate: async (templateId) => {
@@ -100,9 +105,11 @@ export const useApiLikeTemplate = () => {
     },
     onError: (_err, _id, context) => {
       context?.previousData.forEach(([queryKey, data]) => {
-        queryClient.setQueryData(queryKey, data)
+        if (data !== undefined) {
+          queryClient.setQueryData(queryKey, data)
+        }
       })
-    },
+    }
   })
 }
 
@@ -111,7 +118,8 @@ export const useApiUnlikeTemplate = () => {
   return useMutation<
     { data: { likesCount: number; likedByMe: boolean } },
     AxiosError,
-    string
+    string,
+    MutationContext
   >({
     mutationFn: async (templateId) => api.delete(`templates/${templateId}/like`),
     onMutate: async (templateId) => {
