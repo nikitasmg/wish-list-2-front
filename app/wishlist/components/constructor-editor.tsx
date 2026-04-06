@@ -90,7 +90,7 @@ export function ConstructorEditor({ wishlist }: Props) {
         type="button"
         onClick={startTour}
         title="Помощь"
-        className="md:hidden fixed bottom-6 right-6 z-50 w-11 h-11 rounded-full bg-primary text-primary-foreground shadow-lg flex items-center justify-center hover:opacity-90 transition-opacity"
+        className="md:hidden fixed bottom-6 right-6 z-50 w-8 h-8 rounded-full bg-primary text-primary-foreground shadow-lg flex items-center justify-center hover:opacity-90 transition-opacity"
       >
         <CircleHelp size={18} />
       </button>
