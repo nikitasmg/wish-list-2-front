@@ -72,6 +72,7 @@ export function ConstructorHeader({ wishlist }: Props) {
       <div>
         <p className="text-xs text-muted-foreground mb-1 uppercase tracking-wide">Название</p>
         <input
+          data-tour="title"
           className="w-full text-2xl font-bold bg-transparent border-0 border-b border-dashed border-border focus:border-primary focus:outline-none pb-1 transition-colors"
           value={title}
           placeholder="Новый вишлист"

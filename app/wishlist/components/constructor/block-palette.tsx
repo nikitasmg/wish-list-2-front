@@ -174,7 +174,7 @@ export function BlockPalette({ onAdd }: Props) {
   }
 
   return (
-    <div className="w-full overflow-x-auto flex flex-row gap-2 pb-2 md:w-56 md:shrink-0 md:flex-col md:overflow-x-visible md:pb-0">
+    <div data-tour="block-palette" className="w-full overflow-x-auto flex flex-row gap-2 pb-2 md:w-56 md:shrink-0 md:flex-col md:overflow-x-visible md:pb-0">
       <h3 className="hidden md:block text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3">
         Блоки
       </h3>

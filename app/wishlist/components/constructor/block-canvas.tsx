@@ -170,6 +170,7 @@ export function BlockCanvas({ initialBlocks, onBlocksChange }: Props) {
           onDragCancel={handleDragCancel}
         >
           <div
+            data-tour="block-canvas"
             className="grid grid-cols-2 gap-3"
             style={{ gridAutoRows: 'minmax(80px, auto)' }}
           >

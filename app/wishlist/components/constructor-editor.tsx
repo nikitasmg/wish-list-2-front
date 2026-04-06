@@ -64,7 +64,7 @@ export function ConstructorEditor({ wishlist }: Props) {
         <button type="button" onClick={() => setMode('preview')} className={tabClass('preview')}>
           <Eye size={14} /> Превью
         </button>
-        <button type="button" onClick={() => setMode('presents')} className={tabClass('presents')}>
+        <button data-tour="tab-presents" type="button" onClick={() => setMode('presents')} className={tabClass('presents')}>
           <Gift size={14} /> Подарки
           {presents.length > 0 && (
             <span className="ml-1 text-xs bg-primary/20 text-primary px-1.5 py-0.5 rounded-full">
