@@ -13,7 +13,7 @@ import { Block, Wishlist } from '@/shared/types'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import React from 'react'
 import { useToast } from '@/hooks/use-toast'
-import { Eye, Pencil, Gift, Plus } from 'lucide-react'
+import { Eye, Pencil, Gift, Plus, CircleHelp } from 'lucide-react'
 import { useConstructorTour } from '@/hooks/use-constructor-tour'
 
 type Props = {
@@ -34,7 +34,7 @@ export function ConstructorEditor({ wishlist }: Props) {
 
   useEffect(() => () => { if (debounceRef.current) clearTimeout(debounceRef.current) }, [])
 
-  useConstructorTour()
+  const { startTour } = useConstructorTour()
 
   const handleBlocksChange = useCallback(
     (blocks: Block[]) => {
@@ -74,6 +74,14 @@ export function ConstructorEditor({ wishlist }: Props) {
               {presents.length}
             </span>
           )}
+        </button>
+        <button
+          type="button"
+          onClick={startTour}
+          title="Помощь"
+          className="ml-auto p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+        >
+          <CircleHelp size={16} />
         </button>
       </div>
 
