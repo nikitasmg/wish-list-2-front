@@ -1,6 +1,8 @@
 export type User = {
   id: string;
   username: string;
+  displayName?: string;
+  avatar?: string;
 }
 
 export type BlockType =
@@ -77,6 +79,22 @@ export type Present = {
   createdAt: string,
   updatedAt: string,
   wishlistId: string
+}
+
+export type Template = {
+  id: string;
+  userId: string;
+  userDisplayName?: string;
+  name: string;
+  settings: {
+    colorScheme: string;
+    showGiftAvailability: boolean;
+    presentsLayout?: 'list' | 'grid3' | 'grid2';
+  };
+  blocks: Block[];
+  isPublic: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export type AuthProps = {
