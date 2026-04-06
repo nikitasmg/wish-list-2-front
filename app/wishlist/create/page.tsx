@@ -145,12 +145,12 @@ export default function Page() {
               >
                 <div
                   className="px-4 pt-4 pb-3 text-sm font-semibold"
-                  style={{ background: `var(--${template.settings.colorScheme}-background, var(--muted))` }}
+                  style={{ background: `var(--${template.settings?.colorScheme}-background, var(--muted))` }}
                 >
                   {template.name}
                 </div>
                 <div className="px-3.5 py-2 text-xs text-muted-foreground">
-                  {template.blocks.length} блоков
+                  {template.blocks?.length ?? 0} блоков
                 </div>
               </button>
             ))}

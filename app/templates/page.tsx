@@ -76,7 +76,7 @@ export default function Page() {
             <div className="px-4 pt-5 pb-4 bg-muted/40 flex-1">
               <p className="font-semibold text-base mb-1">{template.name}</p>
               <p className="text-xs text-muted-foreground mb-3">
-                {template.blocks.length} блоков · {template.settings.colorScheme}
+                {template.blocks?.length ?? 0} блоков · {template.settings?.colorScheme ?? ''}
               </p>
               {template.userDisplayName && (
                 <p className="text-xs text-muted-foreground">
