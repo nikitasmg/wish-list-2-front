@@ -3,13 +3,13 @@ import { Template, Wishlist } from '@/shared/types'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
 
-export const useApiGetPublicTemplates = (cursor?: string) => {
+type PublicTemplatesResponse = { data: Template[]; hasMore: boolean }
+
+export const useApiGetPublicTemplates = (page: number) => {
   return useQuery({
-    queryKey: ['templates-public', cursor ?? ''],
+    queryKey: ['templates-public', page],
     queryFn: async () =>
-      api.get<{ data: Template[]; nextCursor: string | null }>(
-        `templates${cursor ? `?cursor=${cursor}` : ''}`,
-      ),
+      api.get<PublicTemplatesResponse>(`templates?page=${page}`),
   })
 }
 
@@ -65,6 +65,80 @@ export const useApiCreateWishlistFromTemplate = () => {
       api.post(`wishlists/from-template/${templateId}`, { title }),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ['wishlists'] })
+    },
+  })
+}
+
+export const useApiLikeTemplate = () => {
+  const queryClient = useQueryClient()
+  return useMutation<
+    { data: { likesCount: number; likedByMe: boolean } },
+    AxiosError,
+    string
+  >({
+    mutationFn: async (templateId) => api.post(`templates/${templateId}/like`),
+    onMutate: async (templateId) => {
+      await queryClient.cancelQueries({ queryKey: ['templates-public'] })
+      const previousData = queryClient.getQueriesData<PublicTemplatesResponse>({
+        queryKey: ['templates-public'],
+      })
+      queryClient.setQueriesData<PublicTemplatesResponse>(
+        { queryKey: ['templates-public'] },
+        (old) => {
+          if (!old) return old
+          return {
+            ...old,
+            data: old.data.map((t) =>
+              t.id === templateId
+                ? { ...t, likesCount: t.likesCount + 1, likedByMe: true }
+                : t,
+            ),
+          }
+        },
+      )
+      return { previousData }
+    },
+    onError: (_err, _id, context) => {
+      context?.previousData.forEach(([queryKey, data]) => {
+        queryClient.setQueryData(queryKey, data)
+      })
+    },
+  })
+}
+
+export const useApiUnlikeTemplate = () => {
+  const queryClient = useQueryClient()
+  return useMutation<
+    { data: { likesCount: number; likedByMe: boolean } },
+    AxiosError,
+    string
+  >({
+    mutationFn: async (templateId) => api.delete(`templates/${templateId}/like`),
+    onMutate: async (templateId) => {
+      await queryClient.cancelQueries({ queryKey: ['templates-public'] })
+      const previousData = queryClient.getQueriesData<PublicTemplatesResponse>({
+        queryKey: ['templates-public'],
+      })
+      queryClient.setQueriesData<PublicTemplatesResponse>(
+        { queryKey: ['templates-public'] },
+        (old) => {
+          if (!old) return old
+          return {
+            ...old,
+            data: old.data.map((t) =>
+              t.id === templateId
+                ? { ...t, likesCount: Math.max(0, t.likesCount - 1), likedByMe: false }
+                : t,
+            ),
+          }
+        },
+      )
+      return { previousData }
+    },
+    onError: (_err, _id, context) => {
+      context?.previousData.forEach(([queryKey, data]) => {
+        queryClient.setQueryData(queryKey, data)
+      })
     },
   })
 }

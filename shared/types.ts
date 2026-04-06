@@ -93,6 +93,8 @@ export type Template = {
   };
   blocks: Block[];
   isPublic: boolean;
+  likesCount: number;
+  likedByMe: boolean;
   createdAt: string;
   updatedAt: string;
 }
