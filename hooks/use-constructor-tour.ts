@@ -15,10 +15,12 @@ export function useConstructorTour() {
 
     const driverObj = driver({
       animate: true,
-      overlayOpacity: 0.6,
+      overlayOpacity: 0.85,
       smoothScroll: true,
       allowClose: true,
       showProgress: false,
+      stagePadding: 4,
+      stageRadius: 8,
       popoverClass: 'constructor-tour',
       nextBtnText: 'Далее →',
       prevBtnText: '← Назад',
