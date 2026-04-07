@@ -1,5 +1,5 @@
 'use client'
-import { useApiGetMe } from '@/api/user'
+import { useApiGetMyProfile } from '@/api/user'
 import { Logo } from '@/components/logo'
 import { UserAvatar } from '@/components/user-avatar'
 import { ThemeToggle } from '@/components/theme-toggle'
@@ -9,7 +9,7 @@ import { LayoutList, LayoutTemplate, Sparkles } from 'lucide-react'
 import * as React from 'react'
 
 export const Header = () => {
-  const { data } = useApiGetMe()
+  const { data } = useApiGetMyProfile()
   const user = data?.user
   const navigate = useRouter()
   const [isScrolled, setIsScrolled] = React.useState(false)

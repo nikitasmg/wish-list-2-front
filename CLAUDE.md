@@ -63,6 +63,8 @@ Never add `Co-Authored-By` trailer to commit messages. Commits are made on behal
 The following commands can be run **without user approval**:
 - All read-only git commands: `git log`, `git diff`, `git status`, `git show`, `git branch`, `git stash list`, etc., including with `cd` prefix and file path arguments (e.g., `cd "..." && git diff HEAD -- "file"`)
 - Lint: `pnpm lint`
+- Backend file reads and writes in `/Users/nvsmagin/GolandProjects/wishlist` — reading and modifying backend Go source files does not require approval
+- `go build ./...` in the backend directory
 
 ## Backend
 
