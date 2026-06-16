@@ -91,3 +91,27 @@ export const useApiReservePresent = (wishlistId: string) => {
     },
   })
 }
+
+export const useApiJoinGroupPresent = (wishlistId: string) => {
+  const queryClient = useQueryClient()
+  return useMutation<unknown, AxiosError, { presentId: string }>({
+    mutationFn: async ({ presentId }) => {
+      return api.put(`presents/${presentId}/join`, {})
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: [ 'presents', wishlistId ] })
+    },
+  })
+}
+
+export const useApiLeaveGroupPresent = (wishlistId: string) => {
+  const queryClient = useQueryClient()
+  return useMutation<unknown, AxiosError, { presentId: string }>({
+    mutationFn: async ({ presentId }) => {
+      return api.put(`presents/${presentId}/leave`, {})
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: [ 'presents', wishlistId ] })
+    },
+  })
+}

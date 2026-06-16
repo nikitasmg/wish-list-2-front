@@ -76,6 +76,10 @@ export type Present = {
   link?: string;
   price?: number;
   reserved: boolean;
+  type: 'single' | 'group' | 'multi';
+  participantsCount: number;
+  images?: string[];
+  links?: string[];
   createdAt: string,
   updatedAt: string,
   wishlistId: string
