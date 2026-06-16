@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel'
 import { Present } from '@/shared/types'
 import { ExternalLink, Heart } from 'lucide-react'
-import { pluralizePeople } from '@/lib/utils'
+import { pluralizeRu } from '@/lib/utils'
 import * as React from 'react'
 import { useEffect, useState } from 'react'
 
@@ -104,7 +104,7 @@ export const PresentItem = ({ present, theme, isHidden, wishlistId, isExample }:
                   {joined ? 'Не хочу дарить' : 'Я хочу подарить'}
                 </Button>
                 <p className="text-sm text-center text-muted-foreground">
-                  {present.participantsCount} {pluralizePeople(present.participantsCount)} хотят подарить
+                  {present.participantsCount} {pluralizeRu(present.participantsCount, ['человек', 'человека', 'человек'])} {pluralizeRu(present.participantsCount, ['хочет', 'хотят', 'хотят'])} подарить
                 </p>
               </div>
             )

@@ -25,13 +25,14 @@ export const parseJwt = (token: string): JwtPayload | null => {
   }
 }
 
-// Russian pluralization for "человек/человека/человек" (gift participants)
-export function pluralizePeople(n: number): string {
+// Russian pluralization: pick the correct form for a count.
+// forms = [one, few, many], e.g. ['день', 'дня', 'дней'] → 1 день, 2 дня, 5 дней.
+export function pluralizeRu(n: number, forms: [string, string, string]): string {
   const mod10 = n % 10
   const mod100 = n % 100
-  if (mod10 === 1 && mod100 !== 11) return 'человек'
-  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20)) return 'человека'
-  return 'человек'
+  if (mod10 === 1 && mod100 !== 11) return forms[0]
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20)) return forms[1]
+  return forms[2]
 }
 
 export async function createFileFromUrl(url: string, fileName: string): Promise<File> {

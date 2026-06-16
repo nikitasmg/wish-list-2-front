@@ -1,6 +1,7 @@
 'use client'
 
 import { Block } from '@/shared/types'
+import { pluralizeRu } from '@/lib/utils'
 import { TimerIcon } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 
@@ -54,12 +55,12 @@ export function TimingBlockView({ block }: { block: Block }) {
       {!past && timeLeft && (
         <div className="grid grid-cols-4 gap-2">
           {[
-            { value: timeLeft.days, label: 'дней' },
-            { value: timeLeft.hours, label: 'часов' },
-            { value: timeLeft.minutes, label: 'минут' },
-            { value: timeLeft.seconds, label: 'секунд' },
-          ].map(({ value, label }) => (
-            <div key={label} className="bg-primary/10 rounded-xl px-4 py-2 text-center min-w-[60px]">
+            { unit: 'days', value: timeLeft.days, label: pluralizeRu(timeLeft.days, ['день', 'дня', 'дней']) },
+            { unit: 'hours', value: timeLeft.hours, label: pluralizeRu(timeLeft.hours, ['час', 'часа', 'часов']) },
+            { unit: 'minutes', value: timeLeft.minutes, label: pluralizeRu(timeLeft.minutes, ['минута', 'минуты', 'минут']) },
+            { unit: 'seconds', value: timeLeft.seconds, label: pluralizeRu(timeLeft.seconds, ['секунда', 'секунды', 'секунд']) },
+          ].map(({ unit, value, label }) => (
+            <div key={unit} className="bg-primary/10 rounded-xl px-4 py-2 text-center min-w-[60px]">
               <p className="text-2xl font-bold text-primary tabular-nums">{String(value).padStart(2, '0')}</p>
               <p className="text-xs text-muted-foreground uppercase tracking-wide">{label}</p>
             </div>

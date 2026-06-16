@@ -6,7 +6,7 @@ import { SchemeConfig } from './scheme-config'
 import { ConfirmReserveModal } from './confirm-modal'
 import { Button } from '@/components/ui/button'
 import { toast } from '@/hooks/use-toast'
-import { cn, pluralizePeople } from '@/lib/utils'
+import { cn, pluralizeRu } from '@/lib/utils'
 import { ExternalLinkIcon } from 'lucide-react'
 import Image from 'next/image'
 import * as React from 'react'
@@ -148,7 +148,7 @@ function PresentRow({
                 {joined ? 'Не хочу дарить' : 'Я хочу подарить'}
               </Button>
               <span className="text-xs text-muted-foreground whitespace-nowrap">
-                {present.participantsCount} {pluralizePeople(present.participantsCount)}
+                {present.participantsCount} {pluralizeRu(present.participantsCount, ['человек', 'человека', 'человек'])}
               </span>
             </div>
           ) : (
