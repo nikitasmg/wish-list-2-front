@@ -79,12 +79,12 @@ const birthday: OccasionData = {
     ],
   },
   presents: [
-    { id: 'ex-b-1', wishlistId: 'example-birthday', title: 'LEGO City — Пожарная станция', description: 'Набор 60320, 540 деталей', cover: '', price: 4990, reserved: false, createdAt: STUB_DATE, updatedAt: STUB_DATE },
-    { id: 'ex-b-2', wishlistId: 'example-birthday', title: 'Самокат Micro Sprite', description: 'Складной, для детей 5–12 лет', cover: '', price: 7500, reserved: false, createdAt: STUB_DATE, updatedAt: STUB_DATE },
-    { id: 'ex-b-3', wishlistId: 'example-birthday', title: 'Наушники JBL JR310', description: 'Детские, с ограничением громкости', cover: '', price: 2490, reserved: true, createdAt: STUB_DATE, updatedAt: STUB_DATE },
-    { id: 'ex-b-4', wishlistId: 'example-birthday', title: 'Гарри Поттер и философский камень', description: 'Иллюстрированное издание Росмэн', cover: '', price: 890, reserved: false, createdAt: STUB_DATE, updatedAt: STUB_DATE },
-    { id: 'ex-b-5', wishlistId: 'example-birthday', title: 'Набор для рисования Crayola', description: '140 предметов: фломастеры, карандаши, акварель', cover: '', price: 1490, reserved: false, createdAt: STUB_DATE, updatedAt: STUB_DATE },
-    { id: 'ex-b-6', wishlistId: 'example-birthday', title: 'Сертификат в «Детский мир»', description: 'На любую игрушку по выбору именинника', cover: '', price: 2000, reserved: false, createdAt: STUB_DATE, updatedAt: STUB_DATE },
+    { id: 'ex-b-1', wishlistId: 'example-birthday', title: 'LEGO City — Пожарная станция', description: 'Набор 60320, 540 деталей', cover: '', price: 4990, reserved: false, type: 'single', participantsCount: 0, createdAt: STUB_DATE, updatedAt: STUB_DATE },
+    { id: 'ex-b-2', wishlistId: 'example-birthday', title: 'Самокат Micro Sprite', description: 'Складной, для детей 5–12 лет', cover: '', price: 7500, reserved: false, type: 'single', participantsCount: 0, createdAt: STUB_DATE, updatedAt: STUB_DATE },
+    { id: 'ex-b-3', wishlistId: 'example-birthday', title: 'Наушники JBL JR310', description: 'Детские, с ограничением громкости', cover: '', price: 2490, reserved: true, type: 'single', participantsCount: 0, createdAt: STUB_DATE, updatedAt: STUB_DATE },
+    { id: 'ex-b-4', wishlistId: 'example-birthday', title: 'Гарри Поттер и философский камень', description: 'Иллюстрированное издание Росмэн', cover: '', price: 890, reserved: false, type: 'single', participantsCount: 0, createdAt: STUB_DATE, updatedAt: STUB_DATE },
+    { id: 'ex-b-5', wishlistId: 'example-birthday', title: 'Набор для рисования Crayola', description: '140 предметов: фломастеры, карандаши, акварель', cover: '', price: 1490, reserved: false, type: 'single', participantsCount: 0, createdAt: STUB_DATE, updatedAt: STUB_DATE },
+    { id: 'ex-b-6', wishlistId: 'example-birthday', title: 'Сертификат в «Детский мир»', description: 'На любую игрушку по выбору именинника', cover: '', price: 2000, reserved: false, type: 'single', participantsCount: 0, createdAt: STUB_DATE, updatedAt: STUB_DATE },
   ],
 }
 
@@ -146,11 +146,11 @@ const newYear: OccasionData = {
     ],
   },
   presents: [
-    { id: 'ex-ny-1', wishlistId: 'example-new-year', title: 'Подписка Яндекс Плюс на год', description: 'Музыка, кино, кешбэк — всё в одном', cover: '', price: 2990, reserved: true, createdAt: STUB_DATE, updatedAt: STUB_DATE },
-    { id: 'ex-ny-2', wishlistId: 'example-new-year', title: 'Тёплый плед Zara Home', description: 'Кремовый, 150×200 см, шерсть/акрил', cover: '', price: 4990, reserved: false, createdAt: STUB_DATE, updatedAt: STUB_DATE },
-    { id: 'ex-ny-3', wishlistId: 'example-new-year', title: 'Кофемашина DeLonghi Dedica', description: 'Компактная, рожковая, серебристая', cover: '', price: 18900, reserved: false, createdAt: STUB_DATE, updatedAt: STUB_DATE },
-    { id: 'ex-ny-4', wishlistId: 'example-new-year', title: 'Набор для ароматерапии', description: 'Диффузор + 6 эфирных масел', cover: '', price: 2490, reserved: false, createdAt: STUB_DATE, updatedAt: STUB_DATE },
-    { id: 'ex-ny-5', wishlistId: 'example-new-year', title: 'Книга «Атлас облаков»', description: 'Дэвид Митчелл, подарочное издание', cover: '', price: 890, reserved: false, createdAt: STUB_DATE, updatedAt: STUB_DATE },
+    { id: 'ex-ny-1', wishlistId: 'example-new-year', title: 'Подписка Яндекс Плюс на год', description: 'Музыка, кино, кешбэк — всё в одном', cover: '', price: 2990, reserved: true, type: 'single', participantsCount: 0, createdAt: STUB_DATE, updatedAt: STUB_DATE },
+    { id: 'ex-ny-2', wishlistId: 'example-new-year', title: 'Тёплый плед Zara Home', description: 'Кремовый, 150×200 см, шерсть/акрил', cover: '', price: 4990, reserved: false, type: 'single', participantsCount: 0, createdAt: STUB_DATE, updatedAt: STUB_DATE },
+    { id: 'ex-ny-3', wishlistId: 'example-new-year', title: 'Кофемашина DeLonghi Dedica', description: 'Компактная, рожковая, серебристая', cover: '', price: 18900, reserved: false, type: 'single', participantsCount: 0, createdAt: STUB_DATE, updatedAt: STUB_DATE },
+    { id: 'ex-ny-4', wishlistId: 'example-new-year', title: 'Набор для ароматерапии', description: 'Диффузор + 6 эфирных масел', cover: '', price: 2490, reserved: false, type: 'single', participantsCount: 0, createdAt: STUB_DATE, updatedAt: STUB_DATE },
+    { id: 'ex-ny-5', wishlistId: 'example-new-year', title: 'Книга «Атлас облаков»', description: 'Дэвид Митчелл, подарочное издание', cover: '', price: 890, reserved: false, type: 'single', participantsCount: 0, createdAt: STUB_DATE, updatedAt: STUB_DATE },
   ],
 }
 
@@ -238,12 +238,12 @@ const wedding: OccasionData = {
     ],
   },
   presents: [
-    { id: 'ex-w-1', wishlistId: 'example-wedding', title: 'Чайник Smeg KLF04', description: 'Ретро-стиль, 1,7 л, кремовый', cover: '', price: 12900, reserved: true, createdAt: STUB_DATE, updatedAt: STUB_DATE },
-    { id: 'ex-w-2', wishlistId: 'example-wedding', title: 'Постельное бельё IKEA NATTJASMIN', description: 'Комплект евро, 100% хлопок', cover: '', price: 3490, reserved: false, createdAt: STUB_DATE, updatedAt: STUB_DATE },
-    { id: 'ex-w-3', wishlistId: 'example-wedding', title: 'Ужин в ресторане Björn', description: 'Сертификат на романтический ужин на двоих', cover: '', price: 5000, reserved: false, createdAt: STUB_DATE, updatedAt: STUB_DATE },
-    { id: 'ex-w-4', wishlistId: 'example-wedding', title: 'Ваза Villeroy & Boch', description: 'Коллекция Manufacture Glow, 30 см', cover: '', price: 8200, reserved: false, createdAt: STUB_DATE, updatedAt: STUB_DATE },
-    { id: 'ex-w-5', wishlistId: 'example-wedding', title: 'Кофемашина DeLonghi Magnifica', description: 'Автоматическая, зерновая, с капучинатором', cover: '', price: 34900, reserved: false, createdAt: STUB_DATE, updatedAt: STUB_DATE },
-    { id: 'ex-w-6', wishlistId: 'example-wedding', title: 'Поездка в Санкт-Петербург', description: 'Сертификат на романтический уик-энд на двоих', cover: '', price: 25000, reserved: false, createdAt: STUB_DATE, updatedAt: STUB_DATE },
+    { id: 'ex-w-1', wishlistId: 'example-wedding', title: 'Чайник Smeg KLF04', description: 'Ретро-стиль, 1,7 л, кремовый', cover: '', price: 12900, reserved: true, type: 'single', participantsCount: 0, createdAt: STUB_DATE, updatedAt: STUB_DATE },
+    { id: 'ex-w-2', wishlistId: 'example-wedding', title: 'Постельное бельё IKEA NATTJASMIN', description: 'Комплект евро, 100% хлопок', cover: '', price: 3490, reserved: false, type: 'single', participantsCount: 0, createdAt: STUB_DATE, updatedAt: STUB_DATE },
+    { id: 'ex-w-3', wishlistId: 'example-wedding', title: 'Ужин в ресторане Björn', description: 'Сертификат на романтический ужин на двоих', cover: '', price: 5000, reserved: false, type: 'single', participantsCount: 0, createdAt: STUB_DATE, updatedAt: STUB_DATE },
+    { id: 'ex-w-4', wishlistId: 'example-wedding', title: 'Ваза Villeroy & Boch', description: 'Коллекция Manufacture Glow, 30 см', cover: '', price: 8200, reserved: false, type: 'single', participantsCount: 0, createdAt: STUB_DATE, updatedAt: STUB_DATE },
+    { id: 'ex-w-5', wishlistId: 'example-wedding', title: 'Кофемашина DeLonghi Magnifica', description: 'Автоматическая, зерновая, с капучинатором', cover: '', price: 34900, reserved: false, type: 'single', participantsCount: 0, createdAt: STUB_DATE, updatedAt: STUB_DATE },
+    { id: 'ex-w-6', wishlistId: 'example-wedding', title: 'Поездка в Санкт-Петербург', description: 'Сертификат на романтический уик-энд на двоих', cover: '', price: 25000, reserved: false, type: 'single', participantsCount: 0, createdAt: STUB_DATE, updatedAt: STUB_DATE },
   ],
 }
 
@@ -294,11 +294,11 @@ const valentines: OccasionData = {
     ],
   },
   presents: [
-    { id: 'ex-v-1', wishlistId: 'example-valentines', title: 'Парфюм Chanel Chance', description: 'Eau Tendre, 50 мл', cover: '', price: 8900, reserved: false, createdAt: STUB_DATE, updatedAt: STUB_DATE },
-    { id: 'ex-v-2', wishlistId: 'example-valentines', title: 'SPA-сертификат для двоих', description: 'Программа «Романтика», 2 часа', cover: '', price: 6500, reserved: false, createdAt: STUB_DATE, updatedAt: STUB_DATE },
-    { id: 'ex-v-3', wishlistId: 'example-valentines', title: 'Браслет Pandora', description: 'Серебро, базовый браслет + 2 шарма', cover: '', price: 5490, reserved: true, createdAt: STUB_DATE, updatedAt: STUB_DATE },
-    { id: 'ex-v-4', wishlistId: 'example-valentines', title: 'Букет из 25 роз', description: 'Красные розы Эквадор, премиум', cover: '', price: 3500, reserved: false, createdAt: STUB_DATE, updatedAt: STUB_DATE },
-    { id: 'ex-v-5', wishlistId: 'example-valentines', title: 'Ужин в ресторане', description: 'Сертификат на двоих, любое место', cover: '', price: 5000, reserved: false, createdAt: STUB_DATE, updatedAt: STUB_DATE },
+    { id: 'ex-v-1', wishlistId: 'example-valentines', title: 'Парфюм Chanel Chance', description: 'Eau Tendre, 50 мл', cover: '', price: 8900, reserved: false, type: 'single', participantsCount: 0, createdAt: STUB_DATE, updatedAt: STUB_DATE },
+    { id: 'ex-v-2', wishlistId: 'example-valentines', title: 'SPA-сертификат для двоих', description: 'Программа «Романтика», 2 часа', cover: '', price: 6500, reserved: false, type: 'single', participantsCount: 0, createdAt: STUB_DATE, updatedAt: STUB_DATE },
+    { id: 'ex-v-3', wishlistId: 'example-valentines', title: 'Браслет Pandora', description: 'Серебро, базовый браслет + 2 шарма', cover: '', price: 5490, reserved: true, type: 'single', participantsCount: 0, createdAt: STUB_DATE, updatedAt: STUB_DATE },
+    { id: 'ex-v-4', wishlistId: 'example-valentines', title: 'Букет из 25 роз', description: 'Красные розы Эквадор, премиум', cover: '', price: 3500, reserved: false, type: 'single', participantsCount: 0, createdAt: STUB_DATE, updatedAt: STUB_DATE },
+    { id: 'ex-v-5', wishlistId: 'example-valentines', title: 'Ужин в ресторане', description: 'Сертификат на двоих, любое место', cover: '', price: 5000, reserved: false, type: 'single', participantsCount: 0, createdAt: STUB_DATE, updatedAt: STUB_DATE },
   ],
 }
 
@@ -349,11 +349,11 @@ const march8: OccasionData = {
     ],
   },
   presents: [
-    { id: 'ex-m8-1', wishlistId: 'example-march-8', title: 'Уходовый набор Clinique', description: 'Набор из 5 средств для лица', cover: '', price: 4990, reserved: false, createdAt: STUB_DATE, updatedAt: STUB_DATE },
-    { id: 'ex-m8-2', wishlistId: 'example-march-8', title: 'Сертификат на маникюр', description: 'Студия «Лунный свет», покрытие + дизайн', cover: '', price: 2500, reserved: true, createdAt: STUB_DATE, updatedAt: STUB_DATE },
-    { id: 'ex-m8-3', wishlistId: 'example-march-8', title: 'Фен Dyson Supersonic', description: 'Розовое золото, с набором насадок', cover: '', price: 34990, reserved: false, createdAt: STUB_DATE, updatedAt: STUB_DATE },
-    { id: 'ex-m8-4', wishlistId: 'example-march-8', title: 'Книга «Вино по бокалам»', description: 'Мадлен Пакетт, путеводитель по вину', cover: '', price: 1290, reserved: false, createdAt: STUB_DATE, updatedAt: STUB_DATE },
-    { id: 'ex-m8-5', wishlistId: 'example-march-8', title: 'Абонемент на йогу', description: 'Студия YogaSpace, 8 занятий', cover: '', price: 4800, reserved: false, createdAt: STUB_DATE, updatedAt: STUB_DATE },
+    { id: 'ex-m8-1', wishlistId: 'example-march-8', title: 'Уходовый набор Clinique', description: 'Набор из 5 средств для лица', cover: '', price: 4990, reserved: false, type: 'single', participantsCount: 0, createdAt: STUB_DATE, updatedAt: STUB_DATE },
+    { id: 'ex-m8-2', wishlistId: 'example-march-8', title: 'Сертификат на маникюр', description: 'Студия «Лунный свет», покрытие + дизайн', cover: '', price: 2500, reserved: true, type: 'single', participantsCount: 0, createdAt: STUB_DATE, updatedAt: STUB_DATE },
+    { id: 'ex-m8-3', wishlistId: 'example-march-8', title: 'Фен Dyson Supersonic', description: 'Розовое золото, с набором насадок', cover: '', price: 34990, reserved: false, type: 'single', participantsCount: 0, createdAt: STUB_DATE, updatedAt: STUB_DATE },
+    { id: 'ex-m8-4', wishlistId: 'example-march-8', title: 'Книга «Вино по бокалам»', description: 'Мадлен Пакетт, путеводитель по вину', cover: '', price: 1290, reserved: false, type: 'single', participantsCount: 0, createdAt: STUB_DATE, updatedAt: STUB_DATE },
+    { id: 'ex-m8-5', wishlistId: 'example-march-8', title: 'Абонемент на йогу', description: 'Студия YogaSpace, 8 занятий', cover: '', price: 4800, reserved: false, type: 'single', participantsCount: 0, createdAt: STUB_DATE, updatedAt: STUB_DATE },
   ],
 }
 
@@ -409,11 +409,11 @@ const christmas: OccasionData = {
     ],
   },
   presents: [
-    { id: 'ex-ch-1', wishlistId: 'example-christmas', title: 'Адвент-календарь с шоколадом', description: 'Lindt, 24 дня, премиум', cover: '', price: 2490, reserved: true, createdAt: STUB_DATE, updatedAt: STUB_DATE },
-    { id: 'ex-ch-2', wishlistId: 'example-christmas', title: 'Тёплый свитер', description: 'Uniqlo, шерсть мериноса, бежевый, размер L', cover: '', price: 3990, reserved: false, createdAt: STUB_DATE, updatedAt: STUB_DATE },
-    { id: 'ex-ch-3', wishlistId: 'example-christmas', title: 'Настольная игра «Каркассон»', description: 'Базовый набор + расширение', cover: '', price: 2190, reserved: false, createdAt: STUB_DATE, updatedAt: STUB_DATE },
-    { id: 'ex-ch-4', wishlistId: 'example-christmas', title: 'Умная колонка Яндекс Станция Мини', description: 'С Алисой, серая', cover: '', price: 5990, reserved: false, createdAt: STUB_DATE, updatedAt: STUB_DATE },
-    { id: 'ex-ch-5', wishlistId: 'example-christmas', title: 'Фотокнига за год', description: 'Альбом 30×30, 40 страниц, дизайн на заказ', cover: '', price: 3500, reserved: false, createdAt: STUB_DATE, updatedAt: STUB_DATE },
+    { id: 'ex-ch-1', wishlistId: 'example-christmas', title: 'Адвент-календарь с шоколадом', description: 'Lindt, 24 дня, премиум', cover: '', price: 2490, reserved: true, type: 'single', participantsCount: 0, createdAt: STUB_DATE, updatedAt: STUB_DATE },
+    { id: 'ex-ch-2', wishlistId: 'example-christmas', title: 'Тёплый свитер', description: 'Uniqlo, шерсть мериноса, бежевый, размер L', cover: '', price: 3990, reserved: false, type: 'single', participantsCount: 0, createdAt: STUB_DATE, updatedAt: STUB_DATE },
+    { id: 'ex-ch-3', wishlistId: 'example-christmas', title: 'Настольная игра «Каркассон»', description: 'Базовый набор + расширение', cover: '', price: 2190, reserved: false, type: 'single', participantsCount: 0, createdAt: STUB_DATE, updatedAt: STUB_DATE },
+    { id: 'ex-ch-4', wishlistId: 'example-christmas', title: 'Умная колонка Яндекс Станция Мини', description: 'С Алисой, серая', cover: '', price: 5990, reserved: false, type: 'single', participantsCount: 0, createdAt: STUB_DATE, updatedAt: STUB_DATE },
+    { id: 'ex-ch-5', wishlistId: 'example-christmas', title: 'Фотокнига за год', description: 'Альбом 30×30, 40 страниц, дизайн на заказ', cover: '', price: 3500, reserved: false, type: 'single', participantsCount: 0, createdAt: STUB_DATE, updatedAt: STUB_DATE },
   ],
 }
 
@@ -483,11 +483,11 @@ const party: OccasionData = {
     ],
   },
   presents: [
-    { id: 'ex-p-1', wishlistId: 'example-party', title: 'Коктейльный набор Barfly', description: 'Шейкер, стрейнер, мерник, ложка', cover: '', price: 3200, reserved: false, createdAt: STUB_DATE, updatedAt: STUB_DATE },
-    { id: 'ex-p-2', wishlistId: 'example-party', title: 'Настолка «Имаджинариум»', description: 'Компактная версия, до 6 игроков', cover: '', price: 1890, reserved: true, createdAt: STUB_DATE, updatedAt: STUB_DATE },
-    { id: 'ex-p-3', wishlistId: 'example-party', title: 'Bluetooth-колонка JBL Flip 6', description: 'Водостойкая, 12 ч работы', cover: '', price: 4990, reserved: false, createdAt: STUB_DATE, updatedAt: STUB_DATE },
-    { id: 'ex-p-4', wishlistId: 'example-party', title: 'Флешка с плейлистом вечера', description: '64 ГБ, подборка от хозяина вечеринки', cover: '', price: 990, reserved: false, createdAt: STUB_DATE, updatedAt: STUB_DATE },
-    { id: 'ex-p-5', wishlistId: 'example-party', title: 'Виниловая пластинка The Beatles', description: 'Abbey Road, переиздание 2019', cover: '', price: 2490, reserved: false, createdAt: STUB_DATE, updatedAt: STUB_DATE },
+    { id: 'ex-p-1', wishlistId: 'example-party', title: 'Коктейльный набор Barfly', description: 'Шейкер, стрейнер, мерник, ложка', cover: '', price: 3200, reserved: false, type: 'single', participantsCount: 0, createdAt: STUB_DATE, updatedAt: STUB_DATE },
+    { id: 'ex-p-2', wishlistId: 'example-party', title: 'Настолка «Имаджинариум»', description: 'Компактная версия, до 6 игроков', cover: '', price: 1890, reserved: true, type: 'single', participantsCount: 0, createdAt: STUB_DATE, updatedAt: STUB_DATE },
+    { id: 'ex-p-3', wishlistId: 'example-party', title: 'Bluetooth-колонка JBL Flip 6', description: 'Водостойкая, 12 ч работы', cover: '', price: 4990, reserved: false, type: 'single', participantsCount: 0, createdAt: STUB_DATE, updatedAt: STUB_DATE },
+    { id: 'ex-p-4', wishlistId: 'example-party', title: 'Флешка с плейлистом вечера', description: '64 ГБ, подборка от хозяина вечеринки', cover: '', price: 990, reserved: false, type: 'single', participantsCount: 0, createdAt: STUB_DATE, updatedAt: STUB_DATE },
+    { id: 'ex-p-5', wishlistId: 'example-party', title: 'Виниловая пластинка The Beatles', description: 'Abbey Road, переиздание 2019', cover: '', price: 2490, reserved: false, type: 'single', participantsCount: 0, createdAt: STUB_DATE, updatedAt: STUB_DATE },
   ],
 }
 
