@@ -19,9 +19,11 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
+import { MultiImageUpload } from '@/components/multi-image-upload'
 import { Present } from '@/shared/types'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useQueryClient } from '@tanstack/react-query'
+import { Plus, X } from 'lucide-react'
 import React from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -41,6 +43,9 @@ const FormSchema = z.object({
     .refine((v) => v === '' || !isNaN(parseFloat(v ?? '')), { message: 'Значение не число' })
     .optional(),
   coverUrl: z.string().optional(),
+  type: z.enum(['single', 'group', 'multi']),
+  images: z.array(z.string()).optional(),
+  links: z.array(z.string()).optional(),
 })
 
 type FormValues = z.infer<typeof FormSchema>
@@ -68,8 +73,13 @@ export function PresentModal({ wishlistId, present, open, onOpenChange }: Props)
       link: present?.link ?? '',
       price: present?.price != null ? String(present.price) : '',
       coverUrl: present?.cover ?? '',
+      type: present?.type ?? 'single',
+      images: present?.images ?? [],
+      links: present?.links ?? [],
     },
   })
+
+  const presentType = form.watch('type')
 
   // Reset form when modal opens or present changes
   React.useEffect(() => {
@@ -80,6 +90,9 @@ export function PresentModal({ wishlistId, present, open, onOpenChange }: Props)
         link: present?.link ?? '',
         price: present?.price != null ? String(present.price) : '',
         coverUrl: present?.cover ?? '',
+        type: present?.type ?? 'single',
+        images: present?.images ?? [],
+        links: present?.links ?? [],
       })
     }
   }, [open, present, form])
@@ -96,6 +109,11 @@ export function PresentModal({ wishlistId, present, open, onOpenChange }: Props)
     if (data.link) formData.append('link', data.link)
     if (data.price) formData.append('price', data.price)
     if (data.coverUrl) formData.append('cover_url', data.coverUrl)
+    formData.append('type', data.type)
+    if (data.type === 'multi') {
+      formData.append('images', JSON.stringify(data.images ?? []))
+      formData.append('links', JSON.stringify((data.links ?? []).filter(Boolean)))
+    }
 
     if (isEdit && present) {
       editMutate({ data: formData, id: present.id }, { onSuccess })
@@ -116,21 +134,58 @@ export function PresentModal({ wishlistId, present, open, onOpenChange }: Props)
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
-              name="coverUrl"
+              name="type"
               render={({ field }) => (
                 <FormItem>
+                  <FormLabel>Тип подарка</FormLabel>
                   <FormControl>
-                    <ImageUpload
-                      previewUrl={field.value}
-                      onChange={(val: ImageUploadValue | null) => {
-                        field.onChange(val?.type === 'url' ? val.value : undefined)
-                      }}
-                    />
+                    <div className="flex gap-2">
+                      {([
+                        ['single', 'Обычный'],
+                        ['group', 'Групповой'],
+                        ['multi', 'Набор'],
+                      ] as const).map(([val, label]) => (
+                        <Button
+                          key={val}
+                          type="button"
+                          size="sm"
+                          variant={field.value === val ? 'default' : 'outline'}
+                          className="grow"
+                          onClick={() => field.onChange(val)}
+                        >
+                          {label}
+                        </Button>
+                      ))}
+                    </div>
                   </FormControl>
-                  <FormMessage />
                 </FormItem>
               )}
             />
+            {presentType === 'group' && (
+              <p className="text-sm text-muted-foreground">
+                Несколько человек смогут отметить, что хотят подарить.
+              </p>
+            )}
+
+            {presentType !== 'multi' && (
+              <FormField
+                control={form.control}
+                name="coverUrl"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <ImageUpload
+                        previewUrl={field.value}
+                        onChange={(val: ImageUploadValue | null) => {
+                          field.onChange(val?.type === 'url' ? val.value : undefined)
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
 
             <FormField
               control={form.control}
@@ -165,20 +220,58 @@ export function PresentModal({ wishlistId, present, open, onOpenChange }: Props)
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="link"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Ссылка</FormLabel>
-                    <FormControl>
-                      <Input placeholder="https://..." {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              {presentType !== 'multi' && (
+                <FormField
+                  control={form.control}
+                  name="link"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Ссылка</FormLabel>
+                      <FormControl>
+                        <Input placeholder="https://..." {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
             </div>
+
+            {presentType === 'multi' && (
+              <>
+                <MultiImageUpload
+                  value={form.watch('images') ?? []}
+                  onChange={(urls) => form.setValue('images', urls)}
+                />
+                <div className="space-y-2">
+                  <FormLabel>Ссылки</FormLabel>
+                  {(form.watch('links') ?? []).map((_, i) => (
+                    <div key={i} className="flex gap-2">
+                      <Input
+                        placeholder="https://..."
+                        value={form.watch('links')?.[i] ?? ''}
+                        onChange={(e) => {
+                          const next = [...(form.watch('links') ?? [])]
+                          next[i] = e.target.value
+                          form.setValue('links', next)
+                        }}
+                      />
+                      <Button type="button" variant="outline" size="icon"
+                        onClick={() => {
+                          const next = (form.watch('links') ?? []).filter((_, idx) => idx !== i)
+                          form.setValue('links', next)
+                        }}>
+                        <X size={16} />
+                      </Button>
+                    </div>
+                  ))}
+                  <Button type="button" variant="outline" size="sm"
+                    onClick={() => form.setValue('links', [...(form.watch('links') ?? []), ''])}>
+                    <Plus size={16} className="mr-1" /> Добавить ссылку
+                  </Button>
+                </div>
+              </>
+            )}
 
             <FormField
               control={form.control}
