@@ -1,16 +1,16 @@
 'use client'
 
-import { useApiReservePresent } from '@/api/present'
+import { useApiReservePresent, useApiJoinGroupPresent, useApiLeaveGroupPresent } from '@/api/present'
 import { Present } from '@/shared/types'
 import { SchemeConfig } from './scheme-config'
 import { ConfirmReserveModal } from './confirm-modal'
 import { Button } from '@/components/ui/button'
 import { toast } from '@/hooks/use-toast'
-import { cn } from '@/lib/utils'
+import { cn, pluralizePeople } from '@/lib/utils'
 import { ExternalLinkIcon } from 'lucide-react'
 import Image from 'next/image'
 import * as React from 'react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 type Props = {
   presents: Present[]
@@ -52,9 +52,34 @@ function PresentRow({
   isExample?: boolean
 }) {
   const { mutate, isPending } = useApiReservePresent(wishlistId)
+  const { mutate: join, isPending: joinPending } = useApiJoinGroupPresent(wishlistId)
+  const { mutate: leave, isPending: leavePending } = useApiLeaveGroupPresent(wishlistId)
   const [exampleReserved, setExampleReserved] = useState(present.reserved)
+  const [joined, setJoined] = useState(false)
 
   const reserved = isExample ? exampleReserved : present.reserved
+  const cover = present.images?.[0] || present.cover
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setJoined(localStorage.getItem(`gift-joined-${present.id}`) === '1')
+    }
+  }, [present.id])
+
+  const handleToggleJoin = () => {
+    if (joined) {
+      leave({ presentId: present.id }, { onSuccess: () => {
+        localStorage.removeItem(`gift-joined-${present.id}`)
+        setJoined(false)
+      }})
+    } else {
+      join({ presentId: present.id }, { onSuccess: () => {
+        localStorage.setItem(`gift-joined-${present.id}`, '1')
+        setJoined(true)
+        toast({ title: 'Вы отметили, что хотите подарить!', variant: 'success' })
+      }})
+    }
+  }
 
   const handleReserve = () => {
     if (isExample) {
@@ -74,8 +99,8 @@ function PresentRow({
       config.cardRounded,
     )}>
       <div className={cn('w-16 h-16 flex-shrink-0 overflow-hidden bg-muted', config.cardRounded)}>
-        {present.cover ? (
-          <Image src={present.cover} alt={present.title} width={64} height={64} unoptimized className="w-full h-full object-cover" />
+        {cover ? (
+          <Image src={cover} alt={present.title} width={64} height={64} unoptimized className="w-full h-full object-cover" />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-2xl">🎁</div>
         )}
@@ -86,11 +111,22 @@ function PresentRow({
         {present.description && (
           <div className="text-sm text-muted-foreground line-clamp-1 mt-0.5">{present.description}</div>
         )}
-        {present.link && (
-          <a href={present.link} target="_blank" rel="noopener noreferrer"
-             className="inline-flex items-center gap-1 text-xs text-primary hover:underline mt-1">
-            <ExternalLinkIcon className="w-3 h-3" /> Ссылка
-          </a>
+        {present.type === 'multi' && present.links && present.links.length > 0 ? (
+          <div className="flex flex-col gap-0.5 mt-1">
+            {present.links.map((l, i) => (
+              <a key={l + i} href={l} target="_blank" rel="noopener noreferrer"
+                 className="inline-flex items-center gap-1 text-xs text-primary hover:underline">
+                <ExternalLinkIcon className="w-3 h-3" /> Ссылка
+              </a>
+            ))}
+          </div>
+        ) : (
+          present.link && (
+            <a href={present.link} target="_blank" rel="noopener noreferrer"
+               className="inline-flex items-center gap-1 text-xs text-primary hover:underline mt-1">
+              <ExternalLinkIcon className="w-3 h-3" /> Ссылка
+            </a>
+          )
         )}
       </div>
 
@@ -101,16 +137,32 @@ function PresentRow({
           </span>
         )}
         {!isHidden && (
-          <ConfirmReserveModal theme={theme} disabled={reserved} onClick={handleReserve}>
-            <Button
-              size="sm"
-              loading={isPending}
-              variant={reserved ? 'destructive' : 'default'}
-              disabled={reserved}
-            >
-              {reserved ? 'Забронирован' : 'Забронировать'}
-            </Button>
-          </ConfirmReserveModal>
+          present.type === 'group' ? (
+            <div className="flex flex-col items-end gap-1">
+              <Button
+                size="sm"
+                loading={joinPending || leavePending}
+                variant={joined ? 'destructive' : 'default'}
+                onClick={handleToggleJoin}
+              >
+                {joined ? 'Не хочу дарить' : 'Я хочу подарить'}
+              </Button>
+              <span className="text-xs text-muted-foreground whitespace-nowrap">
+                {present.participantsCount} {pluralizePeople(present.participantsCount)}
+              </span>
+            </div>
+          ) : (
+            <ConfirmReserveModal theme={theme} disabled={reserved} onClick={handleReserve}>
+              <Button
+                size="sm"
+                loading={isPending}
+                variant={reserved ? 'destructive' : 'default'}
+                disabled={reserved}
+              >
+                {reserved ? 'Забронирован' : 'Забронировать'}
+              </Button>
+            </ConfirmReserveModal>
+          )
         )}
       </div>
     </div>
