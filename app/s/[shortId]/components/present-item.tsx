@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel'
 import { Present } from '@/shared/types'
 import { ExternalLink, Heart } from 'lucide-react'
-import { pluralizeRu } from '@/lib/utils'
+import { pluralizeRu, linkHostname } from '@/lib/utils'
 import * as React from 'react'
 import { useEffect, useState } from 'react'
 
@@ -120,10 +120,11 @@ export const PresentItem = ({ present, theme, isHidden, wishlistId, isExample }:
           )}
 
           {present.type === 'multi' && present.links && present.links.length > 0 ? (
-            <div className="flex flex-col gap-1">
+            <div className="flex flex-wrap gap-2 justify-center sm:justify-end">
               {present.links.map((l, i) => (
-                <a key={l + i} href={l} target="_blank" className="flex text-primary gap-2 hover:underline">
-                  В магазин <ExternalLink />
+                <a key={l + i} href={l} target="_blank" rel="noopener noreferrer"
+                   className="inline-flex items-center gap-1.5 text-sm text-primary border border-primary/40 rounded-full px-3 py-1 hover:bg-primary/10 transition-colors">
+                  {linkHostname(l) ?? `Ссылка ${i + 1}`} <ExternalLink size={14} />
                 </a>
               ))}
             </div>

@@ -6,7 +6,7 @@ import { SchemeConfig } from './scheme-config'
 import { ConfirmReserveModal } from './confirm-modal'
 import { Button } from '@/components/ui/button'
 import { toast } from '@/hooks/use-toast'
-import { cn, pluralizeRu } from '@/lib/utils'
+import { cn, pluralizeRu, linkHostname } from '@/lib/utils'
 import { ExternalLinkIcon } from 'lucide-react'
 import Image from 'next/image'
 import * as React from 'react'
@@ -112,11 +112,11 @@ function PresentRow({
           <div className="text-sm text-muted-foreground line-clamp-1 mt-0.5">{present.description}</div>
         )}
         {present.type === 'multi' && present.links && present.links.length > 0 ? (
-          <div className="flex flex-col gap-0.5 mt-1">
+          <div className="flex flex-wrap gap-1.5 mt-1">
             {present.links.map((l, i) => (
               <a key={l + i} href={l} target="_blank" rel="noopener noreferrer"
-                 className="inline-flex items-center gap-1 text-xs text-primary hover:underline">
-                <ExternalLinkIcon className="w-3 h-3" /> Ссылка
+                 className="inline-flex items-center gap-1 text-xs text-primary border border-primary/40 rounded-full px-2 py-0.5 hover:bg-primary/10 transition-colors">
+                {linkHostname(l) ?? `Ссылка ${i + 1}`} <ExternalLinkIcon className="w-3 h-3" />
               </a>
             ))}
           </div>

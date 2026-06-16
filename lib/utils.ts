@@ -35,6 +35,16 @@ export function pluralizeRu(n: number, forms: [string, string, string]): string 
   return forms[2]
 }
 
+// Extract a short site label from a URL (e.g. "https://www.ozon.ru/x" → "ozon.ru").
+// Returns null if the URL can't be parsed.
+export function linkHostname(url: string): string | null {
+  try {
+    return new URL(url).hostname.replace(/^www\./, '')
+  } catch {
+    return null
+  }
+}
+
 export async function createFileFromUrl(url: string, fileName: string): Promise<File> {
   try {
     // Загружаем данные из URL
