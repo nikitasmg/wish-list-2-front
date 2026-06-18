@@ -3,25 +3,32 @@
 import { uploadImage } from '@/api/upload'
 import { Label } from '@/components/ui/label'
 import { Loader2, UploadIcon, X } from 'lucide-react'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 type Props = {
   label?: string
   value: string[]
   onChange: (urls: string[]) => void
+  onUploadingChange?: (uploading: boolean) => void
 }
 
-export function MultiImageUpload({ label = 'Картинки', value, onChange }: Props) {
-  const [isUploading, setIsUploading] = useState(false)
+export function MultiImageUpload({ label = 'Картинки', value, onChange, onUploadingChange }: Props) {
+  const [pendingCount, setPendingCount] = useState(0)
   const [error, setError] = useState<string | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+  const isUploading = pendingCount > 0
+
+  useEffect(() => {
+    onUploadingChange?.(isUploading)
+  }, [isUploading, onUploadingChange])
 
   const handleFiles = async (files: FileList) => {
-    setIsUploading(true)
+    const list = Array.from(files)
+    setPendingCount(list.length)
     setError(null)
     try {
       const uploaded: string[] = []
-      for (const file of Array.from(files)) {
+      for (const file of list) {
         if (file.size > 10 * 1024 * 1024) {
           setError('Файл должен быть менее 10MB')
           continue
@@ -32,7 +39,7 @@ export function MultiImageUpload({ label = 'Картинки', value, onChange }
     } catch {
       setError('Ошибка загрузки. Попробуйте ещё раз.')
     } finally {
-      setIsUploading(false)
+      setPendingCount(0)
     }
   }
 
@@ -42,7 +49,7 @@ export function MultiImageUpload({ label = 'Картинки', value, onChange }
     <div className="space-y-3">
       <Label>{label}</Label>
 
-      {value.length > 0 && (
+      {(value.length > 0 || pendingCount > 0) && (
         <div className="grid grid-cols-3 gap-2">
           {value.map((url, i) => (
             <div key={url + i} className="relative h-24 rounded-lg overflow-hidden border">
@@ -56,6 +63,11 @@ export function MultiImageUpload({ label = 'Картинки', value, onChange }
               >
                 <X size={16} />
               </button>
+            </div>
+          ))}
+          {Array.from({ length: pendingCount }).map((_, i) => (
+            <div key={`skeleton-${i}`} className="relative h-24 rounded-lg overflow-hidden border bg-muted animate-pulse">
+              <Loader2 className="absolute inset-0 m-auto text-muted-foreground animate-spin" size={20} />
             </div>
           ))}
         </div>

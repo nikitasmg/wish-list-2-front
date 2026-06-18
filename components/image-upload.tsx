@@ -4,7 +4,7 @@ import { uploadImage } from '@/api/upload'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Loader2, UploadIcon } from 'lucide-react'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 export type ImageUploadValue =
   | { type: 'file'; value: File }   // kept for type compatibility, no longer emitted
@@ -13,14 +13,19 @@ export type ImageUploadValue =
 type Props = {
   label?: string
   onChange: (value: ImageUploadValue | null) => void
+  onUploadingChange?: (uploading: boolean) => void
   previewUrl?: string
 }
 
-export function ImageUpload({ label = 'Обложка', onChange, previewUrl }: Props) {
+export function ImageUpload({ label = 'Обложка', onChange, onUploadingChange, previewUrl }: Props) {
   const [preview, setPreview] = useState<string | undefined>(previewUrl)
   const [isUploading, setIsUploading] = useState(false)
   const [uploadError, setUploadError] = useState<string | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    onUploadingChange?.(isUploading)
+  }, [isUploading, onUploadingChange])
 
   const handleFile = async (file: File) => {
     // Show blob preview immediately for snappy UX

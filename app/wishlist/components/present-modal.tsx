@@ -65,6 +65,8 @@ export function PresentModal({ wishlistId, present, open, onOpenChange }: Props)
   const { mutate: editMutate, isPending: editPending } = useApiEditPresent(wishlistId)
   const isPending = createPending || editPending
 
+  const [isImageUploading, setIsImageUploading] = React.useState(false)
+
   const form = useForm<FormValues>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -176,6 +178,7 @@ export function PresentModal({ wishlistId, present, open, onOpenChange }: Props)
                     <FormControl>
                       <ImageUpload
                         previewUrl={field.value}
+                        onUploadingChange={setIsImageUploading}
                         onChange={(val: ImageUploadValue | null) => {
                           field.onChange(val?.type === 'url' ? val.value : undefined)
                         }}
@@ -242,6 +245,7 @@ export function PresentModal({ wishlistId, present, open, onOpenChange }: Props)
                 <MultiImageUpload
                   value={form.watch('images') ?? []}
                   onChange={(urls) => form.setValue('images', urls)}
+                  onUploadingChange={setIsImageUploading}
                 />
                 <div className="space-y-2">
                   <FormLabel>Ссылки</FormLabel>
@@ -303,10 +307,10 @@ export function PresentModal({ wishlistId, present, open, onOpenChange }: Props)
               <Button
                 type="submit"
                 className="flex-1"
-                disabled={isPending || !form.watch('title')}
+                disabled={isPending || isImageUploading || !form.watch('title')}
                 loading={isPending}
               >
-                {isEdit ? 'Сохранить' : 'Добавить'}
+                {isImageUploading ? 'Загрузка фото…' : isEdit ? 'Сохранить' : 'Добавить'}
               </Button>
             </div>
           </form>
