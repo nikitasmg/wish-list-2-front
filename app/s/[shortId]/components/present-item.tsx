@@ -14,11 +14,12 @@ type Props = {
   present: Present
   theme: string
   isHidden: boolean
+  isOwner?: boolean
   wishlistId: string
   isExample?: boolean
 }
 
-export const PresentItem = ({ present, theme, isHidden, wishlistId, isExample }: Props) => {
+export const PresentItem = ({ present, theme, isHidden, isOwner, wishlistId, isExample }: Props) => {
   const { mutate, isPending } = useApiReservePresent(wishlistId)
   const { mutate: join, isPending: joinPending } = useApiJoinGroupPresent(wishlistId)
   const { mutate: leave, isPending: leavePending } = useApiLeaveGroupPresent(wishlistId)
@@ -99,10 +100,12 @@ export const PresentItem = ({ present, theme, isHidden, wishlistId, isExample }:
           {present.type === 'group' ? (
             !isHidden && (
               <div className="w-full flex flex-col gap-2">
-                <Button className="grow" loading={joinPending || leavePending}
-                  variant={joined ? 'destructive' : 'default'} onClick={handleToggleJoin}>
-                  {joined ? 'Не хочу дарить' : 'Я хочу подарить'}
-                </Button>
+                {!isOwner && (
+                  <Button className="grow" loading={joinPending || leavePending}
+                    variant={joined ? 'destructive' : 'default'} onClick={handleToggleJoin}>
+                    {joined ? 'Не хочу дарить' : 'Я хочу подарить'}
+                  </Button>
+                )}
                 <p className="text-sm text-center text-muted-foreground">
                   {present.participantsCount} {pluralizeRu(present.participantsCount, ['человек', 'человека', 'человек'])} {pluralizeRu(present.participantsCount, ['хочет', 'хотят', 'хотят'])} подарить
                 </p>
@@ -110,12 +113,18 @@ export const PresentItem = ({ present, theme, isHidden, wishlistId, isExample }:
             )
           ) : (
             !isHidden && (
-              <ConfirmReserveModal theme={theme} disabled={reserved} onClick={handleReserve}>
-                <Button className="grow" loading={isPending}
-                  variant={reserved ? 'destructive' : 'default'} disabled={reserved}>
-                  {reserved ? 'Забронирован' : 'Забронировать'}
+              isOwner ? (
+                <Button className="grow" variant={reserved ? 'destructive' : 'secondary'} disabled>
+                  {reserved ? 'Забронирован' : 'Свободен'}
                 </Button>
-              </ConfirmReserveModal>
+              ) : (
+                <ConfirmReserveModal theme={theme} disabled={reserved} onClick={handleReserve}>
+                  <Button className="grow" loading={isPending}
+                    variant={reserved ? 'destructive' : 'default'} disabled={reserved}>
+                    {reserved ? 'Забронирован' : 'Забронировать'}
+                  </Button>
+                </ConfirmReserveModal>
+              )
             )
           )}
 

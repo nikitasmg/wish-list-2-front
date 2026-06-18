@@ -21,7 +21,7 @@ type Props = {
 
 export function WishlistLanding({ wishlist, presents, isMyWishlist, isExample, disableBodyTheme }: Props) {
   const config = getSchemeConfig(wishlist.settings.colorScheme)
-  const isPresentHidden = isMyWishlist
+  const isPresentHidden = isMyWishlist && !wishlist.settings.showGiftAvailability
   const layout = wishlist.settings.presentsLayout ?? 'list'
 
   useEffect(() => {
@@ -55,6 +55,7 @@ export function WishlistLanding({ wishlist, presents, isMyWishlist, isExample, d
                 theme={wishlist.settings.colorScheme}
                 config={config}
                 isHidden={isPresentHidden}
+                isOwner={isMyWishlist}
                 isExample={isExample}
               />
             )}
@@ -64,6 +65,7 @@ export function WishlistLanding({ wishlist, presents, isMyWishlist, isExample, d
                 wishlistId={wishlist.id}
                 theme={wishlist.settings.colorScheme}
                 isHidden={isPresentHidden}
+                isOwner={isMyWishlist}
                 isExample={isExample}
                 columns={3}
               />
@@ -74,6 +76,7 @@ export function WishlistLanding({ wishlist, presents, isMyWishlist, isExample, d
                 wishlistId={wishlist.id}
                 theme={wishlist.settings.colorScheme}
                 isHidden={isPresentHidden}
+                isOwner={isMyWishlist}
                 isExample={isExample}
                 columns={2}
               />

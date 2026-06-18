@@ -18,10 +18,11 @@ type Props = {
   theme: string
   config: SchemeConfig
   isHidden: boolean
+  isOwner?: boolean
   isExample?: boolean
 }
 
-export function PresentsList({ presents, wishlistId, theme, config, isHidden, isExample }: Props) {
+export function PresentsList({ presents, wishlistId, theme, config, isHidden, isOwner, isExample }: Props) {
   if (!presents.length) return null
 
   return (
@@ -34,6 +35,7 @@ export function PresentsList({ presents, wishlistId, theme, config, isHidden, is
           theme={theme}
           config={config}
           isHidden={isHidden}
+          isOwner={isOwner}
           isExample={isExample}
         />
       ))}
@@ -42,13 +44,14 @@ export function PresentsList({ presents, wishlistId, theme, config, isHidden, is
 }
 
 function PresentRow({
-  present, wishlistId, theme, config, isHidden, isExample,
+  present, wishlistId, theme, config, isHidden, isOwner, isExample,
 }: {
   present: Present
   wishlistId: string
   theme: string
   config: SchemeConfig
   isHidden: boolean
+  isOwner?: boolean
   isExample?: boolean
 }) {
   const { mutate, isPending } = useApiReservePresent(wishlistId)
@@ -139,18 +142,24 @@ function PresentRow({
         {!isHidden && (
           present.type === 'group' ? (
             <div className="flex flex-col items-end gap-1">
-              <Button
-                size="sm"
-                loading={joinPending || leavePending}
-                variant={joined ? 'destructive' : 'default'}
-                onClick={handleToggleJoin}
-              >
-                {joined ? 'Не хочу дарить' : 'Я хочу подарить'}
-              </Button>
+              {!isOwner && (
+                <Button
+                  size="sm"
+                  loading={joinPending || leavePending}
+                  variant={joined ? 'destructive' : 'default'}
+                  onClick={handleToggleJoin}
+                >
+                  {joined ? 'Не хочу дарить' : 'Я хочу подарить'}
+                </Button>
+              )}
               <span className="text-xs text-muted-foreground whitespace-nowrap">
                 {present.participantsCount} {pluralizeRu(present.participantsCount, ['человек', 'человека', 'человек'])}
               </span>
             </div>
+          ) : isOwner ? (
+            <Button size="sm" variant={reserved ? 'destructive' : 'secondary'} disabled>
+              {reserved ? 'Забронирован' : 'Свободен'}
+            </Button>
           ) : (
             <ConfirmReserveModal theme={theme} disabled={reserved} onClick={handleReserve}>
               <Button

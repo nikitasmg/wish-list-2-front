@@ -7,11 +7,12 @@ type Props = {
   wishlistId: string
   theme: string
   isHidden: boolean
+  isOwner?: boolean
   isExample?: boolean
   columns: 2 | 3
 }
 
-export function PresentsGrid({ presents, wishlistId, theme, isHidden, isExample, columns }: Props) {
+export function PresentsGrid({ presents, wishlistId, theme, isHidden, isOwner, isExample, columns }: Props) {
   if (!presents.length) return null
 
   return (
@@ -21,7 +22,7 @@ export function PresentsGrid({ presents, wishlistId, theme, isHidden, isExample,
         : 'grid grid-cols-1 md:grid-cols-2 gap-6'
     }>
       {presents.map(present => (
-        <PresentItem key={present.id} present={present} wishlistId={wishlistId} theme={theme} isHidden={isHidden} isExample={isExample} />
+        <PresentItem key={present.id} present={present} wishlistId={wishlistId} theme={theme} isHidden={isHidden} isOwner={isOwner} isExample={isExample} />
       ))}
     </div>
   )
