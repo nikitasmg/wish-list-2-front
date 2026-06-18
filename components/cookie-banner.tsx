@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
@@ -32,7 +33,12 @@ export function CookieBanner() {
       <div className="mx-auto flex max-w-7xl items-center gap-4">
         <span className="text-lg">🍪</span>
         <p className="flex-1 text-sm text-muted-foreground">
-          Мы используем куки для аналитики и улучшения работы сайта. Продолжая пользоваться сайтом, вы соглашаетесь с этим.
+          Мы используем куки для аналитики и улучшения работы сайта. Продолжая пользоваться сайтом, вы соглашаетесь с этим
+          и с{' '}
+          <Link href="/privacy-policy" className="underline hover:text-primary">
+            Политикой конфиденциальности
+          </Link>
+          .
         </p>
         <Button size="sm" onClick={dismiss} className="shrink-0">
           Понятно

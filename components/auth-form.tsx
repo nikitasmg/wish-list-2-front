@@ -27,9 +27,10 @@ const FormSchema = z.object({
 
 type Props = {
   isLogin?: boolean
+  disabled?: boolean
 }
 
-export function AuthForm({ isLogin }: Props) {
+export function AuthForm({ isLogin, disabled }: Props) {
   const { mutate: login, isPending: loginLoading } = useApiLogin()
   const { mutate: register, isPending: registerLoading } = useApiRegister()
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -85,7 +86,7 @@ export function AuthForm({ isLogin }: Props) {
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={loginLoading || registerLoading}>
+        <Button type="submit" disabled={loginLoading || registerLoading || disabled}>
           {isLogin ? 'Войти' : 'Регистрация'}
         </Button>
       </form>

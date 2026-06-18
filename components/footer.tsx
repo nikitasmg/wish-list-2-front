@@ -12,6 +12,7 @@ const NAV_LINKS = [
 
 const LEGAL_LINKS = [
   { label: 'Пользовательское соглашение', href: '/terms-of-service' },
+  { label: 'Политика конфиденциальности', href: '/privacy-policy' },
 ]
 
 export const Footer = () => {

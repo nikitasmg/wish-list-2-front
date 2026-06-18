@@ -1,3 +1,6 @@
+'use client'
+
+import { useState } from 'react'
 import { AuthForm } from '@/components/auth-form'
 import { TgAuthButton } from '@/components/Auth/components/tg-auth-button'
 import { cn } from "@/lib/utils"
@@ -14,6 +17,8 @@ export function RegistrationForm({
                             className,
                             ...props
                           }: React.ComponentPropsWithoutRef<"div">) {
+  const [consent, setConsent] = useState(false)
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
@@ -25,15 +30,43 @@ export function RegistrationForm({
         </CardHeader>
         <CardContent>
           <div className="grid gap-6">
+            <label className="flex items-start gap-2 text-xs text-muted-foreground">
+              <input
+                type="checkbox"
+                checked={consent}
+                onChange={(e) => setConsent(e.target.checked)}
+                className="mt-0.5 h-4 w-4 shrink-0 accent-primary"
+              />
+              <span>
+                Я принимаю{' '}
+                <Link href="/terms-of-service" target="_blank" className="underline hover:text-primary">
+                  Пользовательское соглашение
+                </Link>{' '}
+                и даю согласие на обработку персональных данных в соответствии с{' '}
+                <Link href="/privacy-policy" target="_blank" className="underline hover:text-primary">
+                  Политикой конфиденциальности
+                </Link>
+                .
+              </span>
+            </label>
             <div className="flex flex-col gap-4">
-              <TgAuthButton />
+              {consent ? (
+                <TgAuthButton />
+              ) : (
+                <div
+                  className="w-full min-h-[40px] flex items-center justify-center rounded-md border border-dashed border-border text-xs text-muted-foreground px-3 text-center opacity-60"
+                  title="Сначала примите условия выше"
+                >
+                  Отметьте согласие, чтобы войти через Telegram
+                </div>
+              )}
             </div>
             <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
               <span className="relative z-10 bg-background px-2 text-muted-foreground">
                 Или
               </span>
             </div>
-            <AuthForm />
+            <AuthForm disabled={!consent} />
             <div className="text-center text-sm">
               Уже есть аккаунт?{" "}
               <Link href={'/login'} className="underline underline-offset-4">
@@ -43,10 +76,6 @@ export function RegistrationForm({
           </div>
         </CardContent>
       </Card>
-      {/*<div className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 [&_a]:hover:text-primary  ">*/}
-      {/*  By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}*/}
-      {/*  and <a href="#">Privacy Policy</a>.*/}
-      {/*</div>*/}
     </div>
   )
 }
