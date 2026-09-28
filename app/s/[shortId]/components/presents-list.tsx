@@ -1,11 +1,9 @@
 'use client'
 
-import { useApiReservePresent } from '@/api/present'
+import { ReserveControl, shopName } from '@/app/s/[shortId]/components/present-item'
+import { useReservation } from '@/app/s/[shortId]/components/use-reservation'
 import { Present } from '@/shared/types'
 import { SchemeConfig } from './scheme-config'
-import { ConfirmReserveModal } from './confirm-modal'
-import { Button } from '@/components/ui/button'
-import { toast } from '@/hooks/use-toast'
 import { cn } from '@/lib/utils'
 import { ExternalLinkIcon } from 'lucide-react'
 import Image from 'next/image'
@@ -47,18 +45,15 @@ function PresentRow({
   config: SchemeConfig
   isHidden: boolean
 }) {
-  const { mutate, isPending } = useApiReservePresent(wishlistId)
-
-  const handleReserve = () => {
-    mutate({ presentId: present.id }, {
-      onSuccess: () => toast({ title: 'Подарок забронирован!', variant: 'success' }),
-    })
-  }
+  const { state, isPending, reserve, release } = useReservation(present, wishlistId)
+  const links = present.links?.length ? present.links : present.link ? [present.link] : []
 
   return (
     <div className={cn(
       'flex items-center gap-4 bg-card p-4 border border-border/40',
-      present.reserved && 'opacity-60',
+      // Своя бронь не приглушается: это подарок, который гость выбрал сам.
+      state === 'taken' && 'opacity-60',
+      state === 'mine' && 'border-primary/40',
       config.cardRounded,
     )}>
       <div className={cn('w-16 h-16 flex-shrink-0 overflow-hidden bg-muted', config.cardRounded)}>
@@ -74,31 +69,35 @@ function PresentRow({
         {present.description && (
           <div className="text-sm text-muted-foreground line-clamp-1 mt-0.5">{present.description}</div>
         )}
-        {present.link && (
-          <a href={present.link} target="_blank" rel="noopener noreferrer"
-             className="inline-flex items-center gap-1 text-xs text-primary hover:underline mt-1">
-            <ExternalLinkIcon className="w-3 h-3" /> Ссылка
-          </a>
+        {links.length > 0 && (
+          <div className="flex flex-wrap gap-2 mt-1">
+            {links.map(link => (
+              <a key={link} href={link} target="_blank" rel="noopener noreferrer"
+                 className="inline-flex items-center gap-1 text-xs text-primary hover:underline">
+                <ExternalLinkIcon className="w-3 h-3" /> {shopName(link)}
+              </a>
+            ))}
+          </div>
         )}
       </div>
 
-      <div className="flex flex-col items-end gap-2 flex-shrink-0">
+      <div className="flex flex-col items-end gap-2 flex-shrink-0 w-[172px]">
         {present.price && (
           <span className="text-sm font-bold text-primary whitespace-nowrap">
             {present.price.toLocaleString('ru-RU')} ₽
           </span>
         )}
         {!isHidden && (
-          <ConfirmReserveModal theme={theme} disabled={present.reserved} onClick={handleReserve}>
-            <Button
+          <div className="flex w-full">
+            <ReserveControl
+              state={state}
+              isPending={isPending}
+              theme={theme}
+              onReserve={reserve}
+              onRelease={release}
               size="sm"
-              loading={isPending}
-              variant={present.reserved ? 'destructive' : 'default'}
-              disabled={present.reserved}
-            >
-              {present.reserved ? 'Забронирован' : 'Забронировать'}
-            </Button>
-          </ConfirmReserveModal>
+            />
+          </div>
         )}
       </div>
     </div>

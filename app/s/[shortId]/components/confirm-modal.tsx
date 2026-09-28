@@ -20,9 +20,10 @@ export function ConfirmReserveModal({ theme, disabled,  onClick, children }: Pro
       <AlertDialogTrigger asChild disabled={disabled}>{children}</AlertDialogTrigger>
       <AlertDialogContent className={theme}>
         <AlertDialogHeader>
-          <AlertDialogTitle className='text-primary'>Вы уверены что хотите забронировать подарок?</AlertDialogTitle>
+          <AlertDialogTitle className="text-primary">Забронировать подарок?</AlertDialogTitle>
           <AlertDialogDescription>
-            Если вы забронируте подарок, бронь уже будет не отменить
+            Остальные гости увидят, что подарок занят, но не узнают, кем.
+            Бронь можно снять — кнопка «Отменить» появится на карточке.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

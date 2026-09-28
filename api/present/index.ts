@@ -73,3 +73,19 @@ export const useApiReservePresent = (wishlistId: string) => {
     },
   })
 }
+
+/**
+ * Снять свою бронь. Бэк сверяет куку гостя и отвечает 403, если бронь чужая,
+ * поэтому кнопку «Отменить» показываем только при present.reservedByMe.
+ */
+export const useApiReleasePresent = (wishlistId: string) => {
+  const queryClient = useQueryClient()
+  return useMutation<unknown, AxiosError, { presentId: string }>({
+    mutationFn: async ({ presentId }) => {
+      return api.put(`presents/${presentId}/release`, {})
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: [ 'presents', wishlistId ] })
+    },
+  })
+}

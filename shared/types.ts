@@ -4,45 +4,95 @@ export type User = {
 }
 
 export type BlockType =
+  // основа
+  | 'cover'
   | 'text'
-  | 'text_image'
-  | 'image'
+  | 'quote'
+  | 'media'
+  | 'video'
+  | 'divider'
+  // список — один блок, пять видов
+  | 'list'
+  // о празднике
   | 'date'
   | 'location'
   | 'color_scheme'
   | 'timing'
-  | 'agenda'
-  | 'gallery'
-  | 'quote'
-  | 'divider'
   | 'contact'
-  | 'video'
+  // подарки
+  | 'wishlist'
+  // гости
+  | 'rsvp'
+  | 'poll'
+  | 'playlist'
+  | 'guestbook'
+  // legacy — читаются у старых вишлистов, новые такими не собирают
+  | 'text_image'
+  | 'image'
+  | 'gallery'
+  | 'agenda'
   | 'checklist'
 
+/** Типы формата v1: рисуем плашкой «блок из старой версии». */
+export const LEGACY_BLOCK_TYPES: BlockType[] = [
+  'image', 'gallery', 'agenda', 'checklist',
+]
+
+/** Версии формата блоков — совпадают с константами бэка. */
+export const BLOCKS_VERSION_LEGACY = 1
+export const BLOCKS_VERSION_CURRENT = 2
+
 export type Block = {
+  /** Стабильный id. К нему привязаны ответы гостей, голоса и треки —
+   *  позиция для этого не годится, она меняется при перестановке блоков. */
+  id: string
   type: BlockType
   position: number
   mobilePosition?: number
   colSpan?: 1 | 2
   rowSpan?: 1 | 2 | 3
+  /** Вариант отображения внутри типа. */
+  view?: string
+  caption?: string
+  title?: string
+  /** Владелец скрыл блок — гостю он не приходит вовсе. */
+  hidden?: boolean
+  /** «Секрет до даты»: пока не наступила, бэк отдаёт блок без data. */
+  revealAt?: string | null
   data: Record<string, unknown>
 }
 
-// Block data shapes per type:
-// text:         { html: string }  (fallback: content: string for legacy)
-// text_image:   { content: string; imageUrl: string }
-// image:        { url: string }
-// date:         { datetime: string; label?: string }
-// location:     { name: string; link?: string }
-// color_scheme: { colors: string[]; label?: string }
-// timing:       { end: string }
-// agenda:       { items: { time: string; text: string }[] }
-// gallery:      { images: string[] }
-// quote:        { text: string; author?: string }
-// divider:      { style: 'line' | 'dots' | 'wave' }
-// contact:      { name: string; role?: string; telegram?: string; phone?: string }
-// video:        { url: string; title?: string }
-// checklist:    { title?: string; items: string[] }
+// Вид (view) по типам блоков:
+//   cover:    center | left | number | photo | circle | arch
+//   list:     tags | pairs | tiles | schedule | timeline
+//   media:    single | row
+//   wishlist: cards | list | tiles
+//
+// Форма data по типам:
+//   cover:        { number?: string; subtitle?: string }
+//   text:         { html: string; size?: 'sm'|'md'|'lg'; align?: 'left'|'center';
+//                   width?: 'narrow'|'full'; imageUrl?: string; imagePosition?: 'side'|'top' }
+//   quote:        { text: string; author?: string }
+//   media:        { images: string[]; captions?: string[] }
+//   video:        { url: string }
+//   divider:      { style: 'line' | 'dots' | 'wave' }
+//   list:         { items: { k?: string; t?: string; v: string }[]; strike?: boolean }
+//   date:         { datetime: string; label?: string }
+//   location:     { name: string; address?: string; link?: string }
+//   color_scheme: { colors: string[] }
+//   timing:       { end: string }
+//   contact:      { name: string; role?: string; telegram?: string; phone?: string }
+//   wishlist:     {}
+//   rsvp:         { fields: string[] }   // plusOne, kids, menu, transfer, who
+//   poll:         { question: string; options: string[] }
+//   playlist:     { votes: boolean }
+//   guestbook:    { photos: boolean }
+
+export type CustomScheme = {
+  base: 'dark' | 'light'
+  /** hex вида #RRGGBB */
+  accent: string
+}
 
 export type Wishlist = {
   id: string;
@@ -50,19 +100,27 @@ export type Wishlist = {
   description: string;
   cover: string;
   presentsCount: number;
+  /** Сколько подарков занято — считается бэком на выдаче списка. */
+  reservedCount: number;
+  viewsCount: number;
   userId: string
   settings: {
     colorScheme: string
     showGiftAvailability: boolean
     presentsLayout?: 'list' | 'grid3' | 'grid2'
+    customScheme?: CustomScheme
   }
   location: {
     name: string,
     link?: string,
     time?: string
   }
+  /** Дата праздника — отдельно от location: нужна и без указанного места. */
+  eventDate?: string | null
+  occasion?: string
   shortId?: string
   blocks?: Block[]
+  blocksVersion: number
   createdAt: string,
   updatedAt: string,
 }
@@ -72,12 +130,87 @@ export type Present = {
   title: string;
   description: string;
   cover: string;
+  /** Магазины, где подарок можно купить. Подпись — хост ссылки. */
+  links?: string[];
+  /** Первая из links. Остаётся ради совместимости. */
   link?: string;
   price?: number;
   reserved: boolean;
+  /** Бронь поставил текущий гость — значит, он же может её снять. */
+  reservedByMe: boolean;
   createdAt: string,
   updatedAt: string,
   wishlistId: string
+}
+
+/** Лимит описания подарка. Тот же, что проверяет бэк. */
+export const MAX_PRESENT_DESCRIPTION = 500
+
+export type Template = {
+  id: string
+  category: string
+  name: string
+  colorScheme: string
+  sampleTitle: string
+  occasion: string
+  blocks: Block[]
+}
+
+export type TemplateCategory = {
+  id: string
+  name: string
+}
+
+export type RSVPResponse = {
+  id: string
+  wishlistId: string
+  blockId: string
+  name: string
+  going: boolean
+  plusOne: number
+  kids: number
+  menu: string
+  transfer: boolean
+  comment: string
+  mine: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+export type RSVPSummary = {
+  going: number
+  notGoing: number
+  plusOnes: number
+  kids: number
+  transfer: number
+  totalPeople: number
+  responses: RSVPResponse[]
+}
+
+export type PollResults = {
+  /** Голоса по индексу варианта из data блока. */
+  votes: number[]
+  total: number
+  myVote: number | null
+}
+
+export type PlaylistTrack = {
+  id: string
+  title: string
+  votes: number
+  votedByMe: boolean
+  mine: boolean
+  createdAt: string
+}
+
+export type GuestbookEntry = {
+  id: string
+  name: string
+  text: string
+  photoUrl: string
+  hidden: boolean
+  mine: boolean
+  createdAt: string
 }
 
 export type AuthProps = {

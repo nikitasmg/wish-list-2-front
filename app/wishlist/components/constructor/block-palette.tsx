@@ -1,6 +1,7 @@
 // app/wishlist/components/constructor/block-palette.tsx
 'use client'
 
+import { newBlockId } from '@/shared/block-id'
 import { Block, BlockType } from '@/shared/types'
 import React from 'react'
 
@@ -171,7 +172,7 @@ type Props = {
 
 export function BlockPalette({ onAdd, existingCount }: Props) {
   const handleAdd = (type: BlockType) => {
-    onAdd({ type, position: existingCount, colSpan: 1, rowSpan: 1, data: {} })
+    onAdd({ id: newBlockId(), type, position: existingCount, colSpan: 1, rowSpan: 1, data: {} })
   }
 
   return (

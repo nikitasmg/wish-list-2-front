@@ -5,11 +5,12 @@ import { BlockRenderer } from './blocks/block-renderer'
 import { HeroHeader } from './hero-header'
 import { PresentsList } from './presents-list'
 import { PresentsGrid } from './presents-grid'
+import { PresentFilter, PresentsFilter, filterPresents } from './presents-filter'
 import { getSchemeConfig } from './scheme-config'
 import { cn } from '@/lib/utils'
 import Link from 'next/link'
 import * as React from 'react'
-import { useEffect } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 type Props = {
   wishlist: Wishlist
@@ -22,6 +23,8 @@ export function WishlistLanding({ wishlist, presents, isMyWishlist, disableBodyT
   const config = getSchemeConfig(wishlist.settings.colorScheme)
   const isPresentHidden = isMyWishlist && !wishlist.settings.showGiftAvailability
   const layout = wishlist.settings.presentsLayout ?? 'list'
+  const [filter, setFilter] = useState<PresentFilter>('all')
+  const visiblePresents = useMemo(() => filterPresents(presents, filter), [presents, filter])
 
   useEffect(() => {
     if (disableBodyTheme) return
@@ -42,37 +45,48 @@ export function WishlistLanding({ wishlist, presents, isMyWishlist, disableBodyT
 
         {presents.length > 0 && (
           <section className="space-y-8">
-            <div className="space-y-2">
-              <h2 className="text-3xl md:text-4xl font-bold text-primary">Желанные подарки</h2>
-              <div className="w-16 h-1.5 bg-accent rounded-full" />
+            <div className="flex flex-wrap items-end justify-between gap-4">
+              <div className="space-y-2">
+                <h2 className="text-3xl md:text-4xl font-bold text-primary">Желанные подарки</h2>
+                <div className="w-16 h-1.5 bg-accent rounded-full" />
+              </div>
+              <PresentsFilter presents={presents} value={filter} onChange={setFilter} />
             </div>
 
-            {layout === 'list' && (
-              <PresentsList
-                presents={presents}
-                wishlistId={wishlist.id}
-                theme={wishlist.settings.colorScheme}
-                config={config}
-                isHidden={isPresentHidden}
-              />
-            )}
-            {layout === 'grid3' && (
-              <PresentsGrid
-                presents={presents}
-                wishlistId={wishlist.id}
-                theme={wishlist.settings.colorScheme}
-                isHidden={isPresentHidden}
-                columns={3}
-              />
-            )}
-            {layout === 'grid2' && (
-              <PresentsGrid
-                presents={presents}
-                wishlistId={wishlist.id}
-                theme={wishlist.settings.colorScheme}
-                isHidden={isPresentHidden}
-                columns={2}
-              />
+            {visiblePresents.length === 0 ? (
+              <p className="text-muted-foreground">
+                {filter === 'free' ? 'Свободных подарков не осталось' : 'Пока никто ничего не занял'}
+              </p>
+            ) : (
+              <>
+                {layout === 'list' && (
+                  <PresentsList
+                    presents={visiblePresents}
+                    wishlistId={wishlist.id}
+                    theme={wishlist.settings.colorScheme}
+                    config={config}
+                    isHidden={isPresentHidden}
+                  />
+                )}
+                {layout === 'grid3' && (
+                  <PresentsGrid
+                    presents={visiblePresents}
+                    wishlistId={wishlist.id}
+                    theme={wishlist.settings.colorScheme}
+                    isHidden={isPresentHidden}
+                    columns={3}
+                  />
+                )}
+                {layout === 'grid2' && (
+                  <PresentsGrid
+                    presents={visiblePresents}
+                    wishlistId={wishlist.id}
+                    theme={wishlist.settings.colorScheme}
+                    isHidden={isPresentHidden}
+                    columns={2}
+                  />
+                )}
+              </>
             )}
           </section>
         )}

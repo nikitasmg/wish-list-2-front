@@ -1,10 +1,11 @@
-import { useApiReservePresent } from '@/api/present'
+'use client'
+
 import { ConfirmReserveModal } from '@/app/s/[shortId]/components/confirm-modal'
+import { useReservation } from '@/app/s/[shortId]/components/use-reservation'
 import { CardCover } from '@/components/card-cover'
-import { toast } from '@/hooks/use-toast'
 import { Button } from '@/components/ui/button'
 import { Present } from '@/shared/types'
-import { ExternalLink, Heart } from 'lucide-react'
+import { Check, ExternalLink, Heart, Lock } from 'lucide-react'
 import * as React from 'react'
 
 type Props = {
@@ -15,48 +16,125 @@ type Props = {
 }
 
 export const PresentItem = ({ present, theme, isHidden, wishlistId }: Props) => {
-  const { mutate, isPending } = useApiReservePresent(wishlistId)
-  const handleReserve = () => {
-    mutate({presentId: present.id }, {
-      onSuccess: () => {
-        toast({title: 'Подарок забронирован!', variant: 'success'})
-      }
-    })
-  }
+  const { state, isPending, reserve, release } = useReservation(present, wishlistId)
+  const links = present.links?.length ? present.links : present.link ? [present.link] : []
+
   return (
-    <div className="w-full md:max-w-[350px] bg-card rounded-2xl flex flex-col gap-2 ">
-        {present.cover
-          ? <CardCover cover={present.cover} className='h-[300px]' />
-          : <div className="flex justify-center items-center bg-primary w-full h-[300px] rounded-t-2xl">
-              <Heart size={50} />
-            </div>
-        }
+    <div className="w-full md:max-w-[350px] bg-card rounded-2xl flex flex-col gap-2">
+      {present.cover
+        ? <CardCover cover={present.cover} className="h-[300px]" />
+        : <div className="flex justify-center items-center bg-primary w-full h-[300px] rounded-t-2xl">
+            <Heart size={50} />
+          </div>
+      }
       <div className="grow flex flex-col gap-2 p-3">
-        <div
-          className="text-2xl text-secondary-foreground font-bold line-clamp-2 min-h-[65px]">
+        <div className="text-2xl text-secondary-foreground font-bold line-clamp-2 min-h-[65px]">
           {present.title}
         </div>
-        <div className="line-clamp-3 text-foreground min-h-[72px]">{present.description}
-        </div>
-        {
-          present.price &&
-          <div className='text-right font-bold text-l italic text-foreground mt-auto'>{present.price.toLocaleString()} ₽</div>
-        }
+        <div className="line-clamp-3 text-foreground min-h-[72px]">{present.description}</div>
+        {present.price && (
+          <div className="text-right font-bold text-l italic text-foreground mt-auto">
+            {present.price.toLocaleString('ru-RU')} ₽
+          </div>
+        )}
+
         <div className="flex items-center justify-between flex-row gap-6 mt-auto">
-          {!isHidden && <ConfirmReserveModal theme={theme} disabled={present.reserved} onClick={handleReserve}>
-            <Button className="grow"
-                    loading={isPending}
-                    variant={present.reserved ? 'destructive' : 'default'}
-                    disabled={present.reserved}
-            >{present.reserved ? 'Забронирован' : 'Забронировать'}</Button>
-          </ConfirmReserveModal>
-          }
-          {
-            present.link && <a href={present.link} target="_blank" className="flex text-primary gap-2 hover:underline">В
-              магазин <ExternalLink /></a>
-          }
+          {!isHidden && (
+            <ReserveControl
+              state={state}
+              isPending={isPending}
+              theme={theme}
+              onReserve={reserve}
+              onRelease={release}
+            />
+          )}
+          {links.length > 0 && <ShopLinks links={links} />}
         </div>
       </div>
+    </div>
+  )
+}
+
+/**
+ * Три состояния вместо двух: свободен, «Вы дарите» со снятием брони и чужая
+ * бронь. Кто именно занял подарок, гостю не показываем — этого нет и в ответе
+ * API.
+ */
+export function ReserveControl({
+  state, isPending, theme, onReserve, onRelease, size,
+}: {
+  state: 'free' | 'mine' | 'taken'
+  isPending: boolean
+  theme: string
+  onReserve: () => void
+  onRelease: () => void
+  size?: 'sm'
+}) {
+  if (state === 'mine') {
+    return (
+      <div className="grow flex items-center justify-between gap-2 h-10 px-3 rounded-xl border border-primary/40">
+        <span className="flex items-center gap-1.5 text-sm font-semibold text-primary">
+          <Check className="w-4 h-4" /> Вы дарите
+        </span>
+        <button
+          type="button"
+          onClick={onRelease}
+          disabled={isPending}
+          className="text-xs font-semibold text-muted-foreground hover:text-foreground disabled:opacity-50"
+        >
+          Отменить
+        </button>
+      </div>
+    )
+  }
+
+  if (state === 'taken') {
+    return (
+      <div className="grow flex items-center justify-center gap-1.5 h-10 text-sm text-muted-foreground">
+        <Lock className="w-4 h-4" /> Уже дарят
+      </div>
+    )
+  }
+
+  return (
+    <ConfirmReserveModal theme={theme} onClick={onReserve}>
+      <Button className="grow" size={size} loading={isPending}>Забронировать</Button>
+    </ConfirmReserveModal>
+  )
+}
+
+/** Подпись магазина — хост ссылки: отдельного поля для названия нет. */
+export function shopName(link: string): string {
+  try {
+    return new URL(link).hostname.replace(/^www\./, '')
+  } catch {
+    return 'Магазин'
+  }
+}
+
+function ShopLinks({ links }: { links: string[] }) {
+  if (links.length === 1) {
+    return (
+      <a href={links[0]} target="_blank" rel="noopener noreferrer"
+         className="flex text-primary gap-2 hover:underline whitespace-nowrap">
+        В магазин <ExternalLink />
+      </a>
+    )
+  }
+
+  return (
+    <div className="flex flex-wrap gap-1.5 justify-end">
+      {links.map(link => (
+        <a
+          key={link}
+          href={link}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1 h-8 px-2.5 rounded-full border border-border/60 text-xs text-muted-foreground hover:text-foreground"
+        >
+          {shopName(link)} <ExternalLink className="w-3 h-3" />
+        </a>
+      ))}
     </div>
   )
 }
