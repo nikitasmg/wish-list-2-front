@@ -7,6 +7,7 @@ import { CSS } from '@dnd-kit/utilities'
 import { GripVertical, Copy, Trash2 } from 'lucide-react'
 import { Block, Present, Wishlist } from '@/shared/types'
 import { BLOCK_CATALOG, addBlockAfter, duplicateBlock, makeBlock } from '@/shared/editor-model'
+import { convertBlock } from '@/shared/slash-menu'
 import { BlockContent } from '@/app/s/[shortId]/components/blocks/block-renderer'
 import { InlineTextEditor } from './inline-text-editor'
 import { Button } from '@/components/ui/button'
@@ -51,6 +52,7 @@ export function BlockCanvas({ wishlist, presents, selected, onSelect, onChange }
                 html={String(block.data.html ?? block.data.content ?? '')}
                 onChange={html => sync(blocks.map(b => b.id === block.id ? { ...b, data: { ...b.data, html } } : b))}
                 onSplit={() => { const next = addBlockAfter(blocks, block.id, 'text'); sync(next); onSelect(next[next.findIndex(b => b.id === block.id) + 1].id) }}
+                onConvert={type => { sync(convertBlock(blocks, block.id, type)); onSelect(block.id) }}
               />
             : <BlockContent block={{ ...block, hidden: false, revealAt: null }} wishlist={wishlist} presents={presents} preview />
           }</CanvasItem>)}

@@ -1,6 +1,9 @@
 'use client'
 
 import { cn } from '@/lib/utils'
+import { BLOCK_CATALOG } from '@/shared/editor-model'
+import { slashMatches, slashQuery } from '@/shared/slash-menu'
+import { BlockType } from '@/shared/types'
 import DOMPurify from 'isomorphic-dompurify'
 import { Bold, Italic, Link2, List, Underline } from 'lucide-react'
 import * as React from 'react'
@@ -24,14 +27,34 @@ export function sanitizeRichText(html: string): string {
 type Props = {
   html: string
   onChange: (html: string) => void
-  /** Ctrl/Cmd+Enter или двойной Enter на пустой строке — блок следом. */
+  /** Ctrl/Cmd+Enter — блок следом. */
   onSplit?: () => void
+  /** Выбор типа через «/»: блок превращается в выбранный. */
+  onConvert?: (type: BlockType) => void
   className?: string
 }
 
-export function InlineTextEditor({ html, onChange, onSplit, className }: Props) {
+export function InlineTextEditor({ html, onChange, onSplit, onConvert, className }: Props) {
   const ref = useRef<HTMLDivElement>(null)
   const [active, setActive] = useState(false)
+  const [highlight, setHighlight] = useState(0)
+
+  // Меню открывается, только когда «/» — это всё содержимое блока: иначе
+  // «ул. Мира 7/2» открывало бы его посреди набора адреса.
+  const query = onConvert ? slashQuery(html) : null
+  const matches = query === null ? [] : slashMatches(BLOCK_CATALOG, query)
+  const menuOpen = active && query !== null && matches.length > 0
+
+  // Подсветка возвращается на первый пункт, когда список поменялся: иначе
+  // после набора она указывает на строку, которой уже нет.
+  useEffect(() => { setHighlight(0) }, [query])
+
+  const pick = (type: BlockType) => {
+    // Команда не должна остаться в блоке: convertBlock даёт чистые данные,
+    // но поле всё ещё показывает «/мес» до перерисовки.
+    if (ref.current) ref.current.innerHTML = ''
+    onConvert?.(type)
+  }
 
   // Внешние изменения втягиваем, только когда поле не в фокусе: иначе
   // перерисовка на каждый ввод сбрасывала бы курсор в начало.
@@ -74,6 +97,20 @@ export function InlineTextEditor({ html, onChange, onSplit, className }: Props) 
   }
 
   const onKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (menuOpen) {
+      if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+        event.preventDefault()
+        const step = event.key === 'ArrowDown' ? 1 : -1
+        setHighlight(current => (current + step + matches.length) % matches.length)
+        return
+      }
+      if (event.key === 'Enter' || event.key === 'Tab') {
+        event.preventDefault()
+        pick(matches[highlight].type)
+        return
+      }
+    }
+
     if (event.key === 'Escape') {
       event.preventDefault()
       ref.current?.blur()
@@ -123,6 +160,34 @@ export function InlineTextEditor({ html, onChange, onSplit, className }: Props) 
         )}
       />
 
+      {menuOpen && (
+        <ul
+          role="listbox"
+          aria-label="Тип блока"
+          className="absolute left-0 top-full z-30 mt-1 max-h-64 w-64 overflow-y-auto rounded-xl border bg-popover p-1 shadow-lg"
+        >
+          {matches.map((item, index) => (
+            <li key={item.type}>
+              <button
+                type="button"
+                role="option"
+                aria-selected={index === highlight}
+                onMouseEnter={() => setHighlight(index)}
+                // Клик мышью не должен уводить фокус раньше, чем сработает выбор
+                onMouseDown={event => { event.preventDefault(); pick(item.type) }}
+                className={cn(
+                  'flex w-full items-baseline justify-between gap-3 rounded-lg px-3 py-2 text-left text-sm',
+                  index === highlight ? 'bg-accent text-accent-foreground' : 'text-foreground',
+                )}
+              >
+                <span className="font-medium">{item.label}</span>
+                <span className="shrink-0 text-xs text-muted-foreground">{item.group}</span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+
       {/* Подсказки поверх пустого поля: contenteditable не умеет placeholder */}
       {isEmpty && !active && (
         <p className="pointer-events-none absolute inset-0 px-3 py-2 text-muted-foreground">
@@ -131,7 +196,7 @@ export function InlineTextEditor({ html, onChange, onSplit, className }: Props) 
       )}
       {isEmpty && active && (
         <p className="pointer-events-none absolute inset-0 px-3 py-2 text-muted-foreground">
-          Начните печатать. Ctrl + Enter — новый блок, Esc — выйти
+          Начните печатать или нажмите «/», чтобы выбрать тип
         </p>
       )}
     </div>
