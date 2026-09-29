@@ -3,24 +3,17 @@
 import { BlockContent } from '@/app/s/[shortId]/components/blocks/block-renderer'
 import { BlockPickerModal } from '@/app/wishlist/components/constructor/block-picker-modal'
 import { EmptyCell } from '@/app/wishlist/components/constructor/empty-cell'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { useHaptic } from '@/hooks/use-haptic'
 import { cn } from '@/lib/utils'
-import {
-  BLOCK_CATALOG,
-  addBlockAfter,
-  appendBlock,
-  duplicateBlock,
-  makeBlock,
-} from '@/shared/editor-model'
+import { BLOCK_CATALOG, addBlockAfter, duplicateBlock, makeBlock } from '@/shared/editor-model'
 import {
   buildCellMap,
+  compactRows,
   getGridRowCount,
   isCellOccupied,
   mobileOrder,
   moveBlock,
-  resizeBlock,
+  moveBlockByRow,
 } from '@/shared/grid'
 import { convertBlock } from '@/shared/slash-menu'
 import { Block, BlockType, Present, Wishlist } from '@/shared/types'
@@ -37,36 +30,39 @@ import {
   useSensors,
 } from '@dnd-kit/core'
 import { CSS } from '@dnd-kit/utilities'
-import { Copy, GripVertical, Trash2 } from 'lucide-react'
-import { InlineTextEditor } from './inline-text-editor'
+import { ArrowDown, ArrowUp, Copy, GripVertical, Trash2 } from 'lucide-react'
 import React, { useMemo, useState } from 'react'
+import { InlineTextEditor } from './inline-text-editor'
 
 type Props = {
   wishlist: Wishlist
   presents: Present[]
   selected?: string
-  onSelect: (id: string) => void
+  mobile: boolean
+  onSelect: (id?: string) => void
   onChange: (blocks: Block[]) => void
 }
 
 /**
  * Холст конструктора.
  *
- * Страница — сетка из двух колонок, и блок держится за свои координаты, а не
- * за место в массиве: «два блока в ряд, а следующая строка одна широкая» так
- * и останется после любой правки соседей.
+ * Показывает страницу, а не форму: блок выглядит так, как его увидит гость, а
+ * управление появляется только у выделенного. Раньше у каждого блока висела
+ * шапка с шестью кнопками, и за ними не было видно самой страницы.
+ *
+ * Координаты живут в блоках, а не выводятся из порядка массива: «два блока в
+ * ряд, а дальше одна широкая строка» так и остаётся после правки соседей.
  */
-export function BlockCanvas({ wishlist, presents, selected, onSelect, onChange }: Props) {
+export function BlockCanvas({ wishlist, presents, selected, mobile, onSelect, onChange }: Props) {
   const blocks = useMemo(() => wishlist.blocks ?? [], [wishlist.blocks])
   const [isDragActive, setIsDragActive] = useState(false)
-  const [mobile, setMobile] = useState(false)
   const [pickerTarget, setPickerTarget] = useState<{ row: number; col: 0 | 1 } | null>(null)
   const haptic = useHaptic()
 
   const sensors = useSensors(
     useSensor(MouseSensor, { activationConstraint: { distance: 8 } }),
-    // На телефоне перетаскивание должно начинаться с удержания, иначе
-    // страница перестала бы прокручиваться пальцем.
+    // На телефоне перенос начинается с удержания, иначе страница перестала бы
+    // прокручиваться пальцем.
     useSensor(TouchSensor, { activationConstraint: { delay: 500, tolerance: 8 } }),
   )
 
@@ -96,7 +92,7 @@ export function BlockCanvas({ wishlist, presents, selected, onSelect, onChange }
     const moving = blocks[index]
     if (moving.row === target.row && moving.col === target.col) return
 
-    onChange(moveBlock(blocks, index, target.row, target.col))
+    onChange(compactRows(moveBlock(blocks, index, target.row, target.col)))
     haptic(15)
   }
 
@@ -107,50 +103,43 @@ export function BlockCanvas({ wishlist, presents, selected, onSelect, onChange }
     onSelect(block.id)
   }
 
-  const shown = mobile ? mobileOrder(blocks) : blocks
+  const item = (block: Block) => (
+    <CanvasItem
+      key={block.id}
+      block={block}
+      total={blocks.length}
+      mobile={mobile}
+      selected={selected === block.id}
+      onSelect={() => onSelect(block.id)}
+      onMove={direction => onChange(moveBlockByRow(blocks, block.id, direction))}
+      onDuplicate={() => onChange(duplicateBlock(blocks, block.id))}
+      onDelete={() => {
+        if (!window.confirm('Удалить блок? Ответы гостей для него больше не будут видны на странице.')) return
+        onChange(compactRows(blocks.filter(b => b.id !== block.id)))
+        onSelect(undefined)
+      }}
+    >
+      <BlockBody
+        block={block}
+        blocks={blocks}
+        wishlist={wishlist}
+        presents={presents}
+        onChange={onChange}
+        onSelect={onSelect}
+      />
+    </CanvasItem>
+  )
+
+  // Лист страницы на подложке, со скруглением сверху — как в макете.
+  const sheet = 'min-h-full rounded-t-2xl border border-b-0 bg-background px-5 py-7 shadow-2xl'
 
   return (
-    <div className="min-w-0 space-y-5">
-      <BlockLibrary
-        onAdd={type => {
-          const next = appendBlock(blocks, type)
-          onChange(next)
-          onSelect(next[next.length - 1].id)
-        }}
-        open={blocks.length === 0}
-      />
-
-      <div className="flex justify-end gap-2">
-        <Button size="sm" variant={!mobile ? 'default' : 'outline'} onClick={() => setMobile(false)}>Десктоп</Button>
-        <Button size="sm" variant={mobile ? 'default' : 'outline'} onClick={() => setMobile(true)}>Телефон</Button>
-      </div>
-
+    <div className="min-h-0 flex-1 overflow-y-auto bg-muted/40 px-4 pt-6">
       {mobile ? (
-        // На телефоне сетки нет: блоки идут сверху вниз в порядке чтения,
-        // и перетаскивать там нечего — порядок задаётся координатами.
-        <div className="mx-auto grid max-w-[390px] gap-4">
-          {shown.map(block => (
-            <CanvasItem
-              key={block.id}
-              block={block}
-              mobile
-              selected={selected === block.id}
-              onSelect={() => onSelect(block.id)}
-              onDuplicate={() => onChange(duplicateBlock(blocks, block.id))}
-              onDelete={() => handleDelete(blocks, block.id, onChange)}
-              onResize={() => onChange(resizeBlock(blocks, block.id, block.colSpan === 1 ? 2 : 1))}
-              interactive={block.type === 'text'}
-            >
-              <BlockBody
-                block={block}
-                blocks={blocks}
-                wishlist={wishlist}
-                presents={presents}
-                onChange={onChange}
-                onSelect={onSelect}
-              />
-            </CanvasItem>
-          ))}
+        // На узкой ширине сетки нет: блоки идут в порядке чтения, переносить
+        // там нечего — расстановку задают координаты.
+        <div className={cn(sheet, 'mx-auto w-[390px] max-w-full space-y-6')}>
+          {mobileOrder(blocks).map(item)}
         </div>
       ) : (
         <DndContext
@@ -163,29 +152,11 @@ export function BlockCanvas({ wishlist, presents, selected, onSelect, onChange }
           onDragEnd={handleDragEnd}
           onDragCancel={() => { setIsDragActive(false); document.body.style.overflow = '' }}
         >
-          <div className="grid grid-cols-2 gap-3 items-start" style={{ gridAutoRows: 'minmax(80px, auto)' }}>
-            {blocks.map(block => (
-              <CanvasItem
-                key={block.id}
-                block={block}
-                mobile={false}
-                selected={selected === block.id}
-                onSelect={() => onSelect(block.id)}
-                onDuplicate={() => onChange(duplicateBlock(blocks, block.id))}
-                onDelete={() => handleDelete(blocks, block.id, onChange)}
-                onResize={() => onChange(resizeBlock(blocks, block.id, block.colSpan === 1 ? 2 : 1))}
-                interactive={block.type === 'text'}
-              >
-                <BlockBody
-                  block={block}
-                  blocks={blocks}
-                  wishlist={wishlist}
-                  presents={presents}
-                  onChange={onChange}
-                  onSelect={onSelect}
-                />
-              </CanvasItem>
-            ))}
+          <div
+            className={cn(sheet, 'mx-auto grid w-full max-w-[720px] grid-cols-2 items-start gap-x-4 gap-y-8')}
+            style={{ gridAutoRows: 'minmax(72px, auto)' }}
+          >
+            {blocks.map(item)}
 
             {emptyCells.map(({ row, col }) => (
               <EmptyCell
@@ -213,15 +184,10 @@ export function BlockCanvas({ wishlist, presents, selected, onSelect, onChange }
   )
 }
 
-function handleDelete(blocks: Block[], id: string, onChange: (blocks: Block[]) => void) {
-  if (!window.confirm('Удалить блок? Ответы гостей для него больше не будут видны на странице.')) return
-  onChange(blocks.filter(b => b.id !== id))
-}
-
 /**
- * Содержимое блока на холсте. Текст правится прямо здесь: открывать панель
- * ради одной опечатки — лишний шаг, а текстовых блоков на странице больше
- * всех остальных вместе взятых.
+ * Содержимое блока. Текст правится прямо здесь: открывать панель ради одной
+ * опечатки — лишний шаг, а текстовых блоков на странице больше всех остальных
+ * вместе взятых.
  */
 function BlockBody({ block, blocks, wishlist, presents, onChange, onSelect }: {
   block: Block
@@ -229,7 +195,7 @@ function BlockBody({ block, blocks, wishlist, presents, onChange, onSelect }: {
   wishlist: Wishlist
   presents: Present[]
   onChange: (blocks: Block[]) => void
-  onSelect: (id: string) => void
+  onSelect: (id?: string) => void
 }) {
   if (block.type !== 'text') {
     return <BlockContent block={{ ...block, hidden: false, revealAt: null }} wishlist={wishlist} presents={presents} preview />
@@ -249,50 +215,17 @@ function BlockBody({ block, blocks, wishlist, presents, onChange, onSelect }: {
   )
 }
 
-/** Библиотека блоков: добавляет в первую свободную ячейку. */
-function BlockLibrary({ onAdd, open }: { onAdd: (type: BlockType) => void; open: boolean }) {
-  const [search, setSearch] = useState('')
-  const catalog = BLOCK_CATALOG.filter(b =>
-    b.label.toLocaleLowerCase('ru').includes(search.toLocaleLowerCase('ru')),
-  )
-
-  return (
-    <details className="rounded-xl border p-4" open={open}>
-      <summary className="cursor-pointer font-semibold">Добавить блок</summary>
-      <Input
-        className="mt-3"
-        aria-label="Поиск блоков"
-        placeholder="Поиск блоков"
-        value={search}
-        onChange={e => setSearch(e.target.value)}
-      />
-      {Array.from(new Set(catalog.map(b => b.group))).map(group => (
-        <div key={group} className="mt-4 space-y-2">
-          <p className="text-xs uppercase tracking-wide text-muted-foreground">{group}</p>
-          <div className="flex flex-wrap gap-2">
-            {catalog.filter(b => b.group === group).map(item => (
-              <Button key={item.type} variant="outline" size="sm" onClick={() => onAdd(item.type)}>
-                {item.label}
-              </Button>
-            ))}
-          </div>
-        </div>
-      ))}
-      {!catalog.length && <p className="py-4 text-sm text-muted-foreground">Ничего не найдено</p>}
-    </details>
-  )
-}
-
-function CanvasItem({ block, mobile, selected, onSelect, onDuplicate, onDelete, onResize, interactive = false, children }: {
+function CanvasItem({
+  block, total, mobile, selected, onSelect, onMove, onDuplicate, onDelete, children,
+}: {
   block: Block
+  total: number
   mobile: boolean
   selected: boolean
   onSelect: () => void
+  onMove: (direction: -1 | 1) => void
   onDuplicate: () => void
   onDelete: () => void
-  onResize: () => void
-  /** Блок правится прямо на холсте — превью-обёртку к нему применять нельзя. */
-  interactive?: boolean
   children: React.ReactNode
 }) {
   const { attributes, listeners, setNodeRef: setDragRef, transform, isDragging } = useDraggable({
@@ -307,6 +240,11 @@ function CanvasItem({ block, mobile, selected, onSelect, onDuplicate, onDelete, 
   })
 
   const setRef = (node: HTMLElement | null) => { setDragRef(node); setDropRef(node) }
+  const info = BLOCK_CATALOG.find(b => b.type === block.type)
+  const viewName = info?.views?.find(([value]) => value === block.view)?.[1]
+  // Текст правится на месте, поэтому inert-обёртку к нему применять нельзя:
+  // она вынесла бы contentEditable из дерева фокуса.
+  const interactive = block.type === 'text'
 
   return (
     <article
@@ -316,34 +254,82 @@ function CanvasItem({ block, mobile, selected, onSelect, onDuplicate, onDelete, 
         ...(mobile ? {} : { gridRow: block.row + 1, gridColumn: `${block.col + 1} / span ${block.colSpan ?? 1}` }),
       }}
       className={cn(
-        'min-w-0 rounded-2xl border bg-card p-3',
-        selected && 'ring-2 ring-primary',
-        block.hidden && 'opacity-60',
+        'relative min-w-0 rounded-xl',
+        selected ? 'outline outline-2 outline-primary' : 'outline outline-1 outline-transparent hover:outline-border',
+        block.hidden && 'opacity-50',
         isDragging && 'opacity-40',
       )}
     >
-      <div className="mb-3 flex flex-wrap items-center gap-1 border-b pb-2">
-        {!mobile && (
-          <button type="button" {...attributes} {...listeners} aria-label="Переместить блок" className="touch-none cursor-grab rounded p-2">
-            <GripVertical size={16} />
-          </button>
-        )}
-        <button type="button" onClick={onSelect} className="flex-1 text-left text-sm font-semibold">
-          {BLOCK_CATALOG.find(b => b.type === block.type)?.label ?? 'Старый блок'}
-          {block.hidden && ' · скрыт'}
-          {block.revealAt && ' · секрет'}
-        </button>
-        {!mobile && <Button size="sm" variant="ghost" onClick={onResize}>{block.colSpan === 1 ? '½' : '1/1'}</Button>}
-        <Button size="sm" variant="ghost" aria-label="Дублировать блок" onClick={onDuplicate}><Copy size={14} /></Button>
-        <Button size="sm" variant="ghost" aria-label="Удалить блок" onClick={onDelete}><Trash2 size={14} /></Button>
-      </div>
+      {selected && (
+        <>
+          <span className="absolute -top-2.5 left-3 z-10 rounded-md bg-primary px-2 py-0.5 text-[11px] font-bold text-primary-foreground">
+            {info?.label ?? 'Старый блок'}{viewName && ` · ${viewName}`}
+            {block.hidden && ' · скрыт'}
+            {block.revealAt && ' · секрет'}
+          </span>
+
+          <div className="absolute -top-4 right-3 z-10 flex gap-0.5 rounded-lg border bg-popover p-1 shadow-lg">
+            {!mobile && (
+              <button
+                type="button"
+                {...attributes}
+                {...listeners}
+                aria-label="Перетащить блок"
+                className="flex h-6 w-6 cursor-grab touch-none items-center justify-center rounded text-muted-foreground hover:bg-accent hover:text-foreground"
+              >
+                <GripVertical size={14} aria-hidden />
+              </button>
+            )}
+            <ToolbarButton label="Выше" onClick={() => onMove(-1)} disabled={block.row === 0}>
+              <ArrowUp size={14} aria-hidden />
+            </ToolbarButton>
+            <ToolbarButton label="Ниже" onClick={() => onMove(1)} disabled={total < 2}>
+              <ArrowDown size={14} aria-hidden />
+            </ToolbarButton>
+            <ToolbarButton label="Дублировать блок" onClick={onDuplicate}>
+              <Copy size={14} aria-hidden />
+            </ToolbarButton>
+            <ToolbarButton label="Удалить блок" onClick={onDelete} destructive>
+              <Trash2 size={14} aria-hidden />
+            </ToolbarButton>
+          </div>
+        </>
+      )}
+
       {/* Превью нельзя трогать мышью: клик по нему выбирает блок, а не уходит
-          внутрь. Редактируемый блок — наоборот: inert убрал бы его из дерева
-          фокуса, и курсор в поле было бы не поставить. */}
-      {interactive
-        ? <div onFocusCapture={onSelect}>{children}</div>
-        : <div onClick={onSelect} className="cursor-pointer"><div className="pointer-events-none select-none" inert>{children}</div></div>}
-      <Button size="sm" variant="ghost" className="mt-3 w-full" onClick={onSelect}>Настроить блок</Button>
+          внутрь. Редактируемый блок — наоборот. */}
+      {interactive ? (
+        <div className="p-2" onFocusCapture={onSelect}>{children}</div>
+      ) : (
+        <div className="cursor-pointer p-2" onClick={onSelect}>
+          <div className="pointer-events-none select-none" inert>{children}</div>
+        </div>
+      )}
     </article>
+  )
+}
+
+function ToolbarButton({ label, onClick, disabled, destructive, children }: {
+  label: string
+  onClick: () => void
+  disabled?: boolean
+  destructive?: boolean
+  children: React.ReactNode
+}) {
+  return (
+    <button
+      type="button"
+      aria-label={label}
+      title={label}
+      onClick={onClick}
+      disabled={disabled}
+      className={cn(
+        'flex h-6 w-6 items-center justify-center rounded text-muted-foreground',
+        'hover:bg-accent hover:text-foreground disabled:opacity-40 disabled:hover:bg-transparent',
+        destructive && 'hover:text-destructive',
+      )}
+    >
+      {children}
+    </button>
   )
 }

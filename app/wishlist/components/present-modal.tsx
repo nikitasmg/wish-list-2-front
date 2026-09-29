@@ -60,9 +60,11 @@ type Props = {
   present?: Present
   open: boolean
   onOpenChange: (open: boolean) => void
+  /** Вызывается только на создании: экран подарков показывает тост с отменой. */
+  onCreated?: (present: Present) => void
 }
 
-export function PresentModal({ wishlistId, present, open, onOpenChange }: Props) {
+export function PresentModal({ wishlistId, present, open, onOpenChange, onCreated }: Props) {
   const isEdit = !!present
   const queryClient = useQueryClient()
 
@@ -125,7 +127,9 @@ export function PresentModal({ wishlistId, present, open, onOpenChange }: Props)
     if (isEdit && present) {
       editMutate({ data: formData, id: present.id }, { onSuccess })
     } else {
-      createMutate(formData, { onSuccess })
+      createMutate(formData, {
+        onSuccess: res => { onSuccess(); onCreated?.(res.data) },
+      })
     }
   }
 

@@ -82,6 +82,33 @@ export function resizeBlock(blocks: Block[], id: string, colSpan: 1 | 2): Block[
   return [...shifted, { ...block, colSpan: 2 as const, col: 0 as const }]
 }
 
+/**
+ * Убрать пустые строки, не трогая расстановку по колонкам.
+ *
+ * Перенос и удаление оставляют дыры: блок уехал со строки, строка осталась.
+ * Без сжатия номера строк растут при каждом «выше/ниже», а на странице
+ * появляется пустота, которую никто не заказывал.
+ */
+export function compactRows(blocks: Block[]): Block[] {
+  const used = Array.from(new Set(blocks.map(b => b.row))).sort((a, b) => a - b)
+  const rowByOld = new Map(used.map((row, index) => [row, index]))
+  return blocks.map(b => ({ ...b, row: rowByOld.get(b.row) ?? b.row }))
+}
+
+/**
+ * Сдвинуть блок на строку вверх или вниз.
+ *
+ * Если в соседней строке кто-то стоит, он уезжает на освободившееся место —
+ * для человека это выглядит как обмен местами.
+ */
+export function moveBlockByRow(blocks: Block[], id: string, direction: -1 | 1): Block[] {
+  const index = blocks.findIndex(b => b.id === id)
+  if (index < 0) return blocks
+  const target = blocks[index].row + direction
+  if (target < 0) return blocks
+  return compactRows(moveBlock(blocks, index, target, blocks[index].col))
+}
+
 /** Порядок чтения — он же порядок на телефоне: сверху вниз, слева направо. */
 export function mobileOrder(blocks: Block[]): Block[] {
   return [...blocks].sort((a, b) => a.row - b.row || a.col - b.col)

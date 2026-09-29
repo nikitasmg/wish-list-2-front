@@ -86,3 +86,68 @@ test('mobileOrder не трогает исходный массив', () => {
   mobileOrder(blocks)
   assert.equal(blocks[0].id, 'right')
 })
+
+const { compactRows, moveBlockByRow } = load('shared/grid.ts')
+
+test('пустые строки схлопываются, расстановка по колонкам цела', () => {
+  const next = compactRows([half('a', 0, 1), half('b', 4, 0), full('c', 9)])
+  const byId = Object.fromEntries(next.map(b => [b.id, b]))
+  assert.deepEqual([byId.a.row, byId.a.col], [0, 1], 'колонка не съехала')
+  assert.equal(byId.b.row, 1)
+  assert.equal(byId.c.row, 2)
+})
+
+test('сжатие не трогает строку, где стоят два блока', () => {
+  const next = compactRows([half('a', 3, 0), half('b', 3, 1)])
+  assert.deepEqual(next.map(b => b.row), [0, 0], 'соседи остались в одной строке')
+})
+
+test('«выше» меняет блоки местами, а не затирает', () => {
+  const next = moveBlockByRow([full('a', 0), full('b', 1)], 'b', -1)
+  const byId = Object.fromEntries(next.map(b => [b.id, b]))
+  assert.equal(next.length, 2)
+  assert.equal(byId.b.row, 0)
+  assert.equal(byId.a.row, 1)
+})
+
+test('«выше» у самого верхнего блока ничего не делает', () => {
+  const blocks = [full('a', 0), full('b', 1)]
+  assert.deepEqual(moveBlockByRow(blocks, 'a', -1), blocks)
+})
+
+test('многократное «вниз-вверх» не раздувает номера строк', () => {
+  let blocks = [full('a', 0), full('b', 1), full('c', 2)]
+  for (let i = 0; i < 5; i++) {
+    blocks = moveBlockByRow(blocks, 'a', 1)
+    blocks = moveBlockByRow(blocks, 'a', -1)
+  }
+  const rows = blocks.map(b => b.row).sort((x, y) => x - y)
+  assert.deepEqual(rows, [0, 1, 2], 'сетка осталась из трёх строк')
+})
+
+const { appendLibraryBlock, BLOCK_LIBRARY } = load('shared/editor-model.ts')
+
+test('блок из библиотеки приходит с видом и заготовкой содержимого', () => {
+  const stoplist = BLOCK_LIBRARY.find(i => i.id === 'stoplist')
+  const [block] = appendLibraryBlock([], stoplist)
+
+  assert.equal(block.type, 'list')
+  assert.equal(block.view, 'tags')
+  assert.equal(block.caption, 'Не дарите')
+  assert.equal(block.data.strike, true)
+  assert.ok(block.data.items.length, 'пустой блок объяснять некому — items заполнены')
+  assert.ok(block.id, 'у блока своя идентичность')
+})
+
+test('заготовка библиотеки не расшаривается между блоками', () => {
+  const sizes = BLOCK_LIBRARY.find(i => i.id === 'sizes')
+  const [first] = appendLibraryBlock([], sizes)
+  first.data.items[0].v = 'XXL'
+  const [second] = appendLibraryBlock([], sizes)
+  assert.notEqual(second.data.items[0].v, 'XXL', 'второй блок не унаследовал правку первого')
+})
+
+test('блок из библиотеки встаёт в первую свободную ячейку', () => {
+  const [, added] = appendLibraryBlock([half('a', 0, 0)], BLOCK_LIBRARY.find(i => i.id === 'quote'))
+  assert.deepEqual([added.row, added.col], [0, 1], 'рядом, а не строкой ниже')
+})

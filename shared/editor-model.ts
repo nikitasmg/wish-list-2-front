@@ -80,12 +80,73 @@ export function makeBlock(type: BlockType, row = 0, col: 0 | 1 = 0, colSpan: 1 |
 }
 
 /**
- * Новый блок в первой свободной ячейке — так добавляет библиотека блоков.
- * Пустая ячейка в середине страницы не остаётся дырой.
+ * Библиотека блоков — то, что человек видит в левой колонке конструктора.
+ *
+ * Это не список типов: тип «Список» встречается шесть раз под разными именами
+ * («Программа», «Стоп-лист», «Размеры»), потому что выбирают не техническую
+ * сущность, а то, что хотят получить на странице. Вид и заготовка содержимого
+ * подставляются сразу — пустой блок объяснять некому.
  */
-export function appendBlock(blocks: Block[], type: BlockType): Block[] {
+export type LibraryItem = {
+  id: string
+  type: BlockType
+  label: string
+  group: string
+  /** Приписка справа от названия: чем этот пресет отличается от соседнего. */
+  hint?: string
+  view?: string
+  caption?: string
+  data?: Record<string, unknown>
+}
+
+export const BLOCK_LIBRARY: LibraryItem[] = [
+  { id: 'cover', type: 'cover', label: 'Обложка', group: 'Основа', hint: '6 видов' },
+  { id: 'text', type: 'text', label: 'Текст', group: 'Основа', hint: '± фото' },
+  { id: 'quote', type: 'quote', label: 'Цитата', group: 'Основа' },
+  { id: 'media', type: 'media', label: 'Фото и галерея', group: 'Основа' },
+  { id: 'video', type: 'video', label: 'Видео', group: 'Основа' },
+  { id: 'divider', type: 'divider', label: 'Разделитель', group: 'Основа' },
+
+  { id: 'schedule', type: 'list', label: 'Программа', group: 'Список', hint: 'расписание', view: 'schedule', caption: 'Программа',
+    data: { items: [{ t: '18:00', v: 'Сбор гостей' }, { t: '19:00', v: 'Ужин' }] } },
+  { id: 'timeline', type: 'list', label: 'История', group: 'Список', hint: 'таймлайн', view: 'timeline', caption: 'Наша история',
+    data: { items: [{ t: '2019', v: 'Познакомились' }, { t: '2026', v: 'Решились' }] } },
+  { id: 'pairs', type: 'list', label: 'Любимое', group: 'Список', hint: 'пары', view: 'pairs', caption: 'Любимое',
+    data: { items: [{ k: 'Цветы', v: 'пионы' }, { k: 'Сладкое', v: 'тёмный шоколад' }] } },
+  { id: 'tags', type: 'list', label: 'Интересы', group: 'Список', hint: 'теги', view: 'tags', caption: 'Интересы',
+    data: { items: [{ v: 'Книги' }, { v: 'Горы' }, { v: 'Кофе' }] } },
+  { id: 'stoplist', type: 'list', label: 'Стоп-лист', group: 'Список', hint: 'теги', view: 'tags', caption: 'Не дарите',
+    data: { items: [{ v: 'носки' }, { v: 'парфюм' }], strike: true } },
+  { id: 'sizes', type: 'list', label: 'Размеры', group: 'Список', hint: 'плитки', view: 'tiles', caption: 'Мои размеры',
+    data: { items: [{ k: 'одежда', v: 'M' }, { k: 'обувь', v: '39' }] } },
+
+  { id: 'date', type: 'date', label: 'Дата', group: 'О празднике' },
+  { id: 'location', type: 'location', label: 'Место', group: 'О празднике', hint: '1–3 точки' },
+  { id: 'timing', type: 'timing', label: 'Обратный отсчёт', group: 'О празднике' },
+  { id: 'color_scheme', type: 'color_scheme', label: 'Дресс-код', group: 'О празднике' },
+  { id: 'contact', type: 'contact', label: 'Контакты', group: 'О празднике' },
+
+  { id: 'wishlist', type: 'wishlist', label: 'Вишлист', group: 'Подарки', hint: 'подарки на странице' },
+
+  { id: 'rsvp', type: 'rsvp', label: 'Ответ гостя', group: 'Гости' },
+  { id: 'poll', type: 'poll', label: 'Голосование', group: 'Гости' },
+  { id: 'playlist', type: 'playlist', label: 'Плейлист', group: 'Гости' },
+  { id: 'guestbook', type: 'guestbook', label: 'Поздравления', group: 'Гости' },
+]
+
+/**
+ * Блок из библиотеки — в первой свободной ячейке. Дыра посреди страницы
+ * выглядит как сбой, поэтому свободное место ищем сверху.
+ */
+export function appendLibraryBlock(blocks: Block[], item: LibraryItem): Block[] {
   const { row, col } = findFirstEmptyCell(blocks)
-  return [...blocks, makeBlock(type, row, col, 1)]
+  const fresh = makeBlock(item.type, row, col, 1)
+  return [...blocks, {
+    ...fresh,
+    view: item.view ?? fresh.view,
+    caption: item.caption ?? fresh.caption,
+    data: item.data ? structuredClone(item.data) : fresh.data,
+  }]
 }
 
 /** Convert known v1 shapes without losing text, images or existing identities. */

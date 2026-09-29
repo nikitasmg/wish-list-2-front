@@ -63,6 +63,23 @@ export const useApiDeletePresent = (id: string, wishlistId: string) => {
   })
 }
 
+/**
+ * Удаление по id подарка. Отличается от useApiDeletePresent тем, что id
+ * приходит в вызов, а не в хук: в таблице строк много, а отменять только что
+ * добавленный подарок нужно из тоста, где хук уже создан.
+ */
+export const useApiRemovePresent = (wishlistId: string) => {
+  const queryClient = useQueryClient()
+  return useMutation<{ data: boolean }, AxiosError, { presentId: string }>({
+    mutationFn: async ({ presentId }) => {
+      return api.delete(`wishlists/${wishlistId}/presents/${presentId}`)
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: [ 'presents', wishlistId ] })
+    },
+  })
+}
+
 export const useApiReservePresent = (wishlistId: string) => {
   const queryClient = useQueryClient()
   return useMutation<unknown, AxiosError, { presentId: string }>({
