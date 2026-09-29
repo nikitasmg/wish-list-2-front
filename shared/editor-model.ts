@@ -52,6 +52,16 @@ export function prepareBlocks(wishlist: Pick<Wishlist, 'blocks' | 'cover' | 'tit
       const single = block.type === 'image'
       block.type = 'media'; block.view = single ? 'single' : 'row'
       block.data = { ...block.data, images: single ? (block.data.url ? [block.data.url] : []) : block.data.images ?? [] }
+    } else if (block.type === 'text_image') {
+      // Фото стало опцией текстового блока, а не отдельным типом: раньше,
+      // чтобы убрать картинку, приходилось пересоздавать блок и терять текст.
+      const { content, imageUrl, ...rest } = block.data as { content?: string; imageUrl?: string }
+      block.type = 'text'
+      block.data = {
+        ...rest,
+        html: block.data.html ?? content ?? '',
+        ...(imageUrl ? { imageUrl, imagePosition: 'side' } : {}),
+      }
     } else if (block.type === 'agenda' || block.type === 'checklist') {
       const agenda = block.type === 'agenda'
       const items = Array.isArray(block.data.items) ? block.data.items : []
@@ -63,6 +73,19 @@ export function prepareBlocks(wishlist: Pick<Wishlist, 'blocks' | 'cover' | 'tit
     blocks.unshift({ ...makeBlock('cover', 0), title: wishlist.title, data: { imageUrl: wishlist.cover } })
   }
   return blocks.map((b, position) => ({ ...b, position }))
+}
+
+/**
+ * Новый блок сразу за указанным.
+ *
+ * Нужен для Ctrl+Enter в тексте: продолжать мысль следующим блоком человек
+ * хочет там же, где пишет, а не возвращаясь к библиотеке слева.
+ */
+export function addBlockAfter(blocks: Block[], id: string, type: BlockType): Block[] {
+  const index = blocks.findIndex(b => b.id === id)
+  if (index < 0) return blocks
+  const fresh = makeBlock(type, index + 1)
+  return [...blocks.slice(0, index + 1), fresh, ...blocks.slice(index + 1)].map((b, position) => ({ ...b, position }))
 }
 
 export function duplicateBlock(blocks: Block[], id: string): Block[] {

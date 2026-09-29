@@ -6,8 +6,9 @@ import { SortableContext, arrayMove, rectSortingStrategy, sortableKeyboardCoordi
 import { CSS } from '@dnd-kit/utilities'
 import { GripVertical, Copy, Trash2 } from 'lucide-react'
 import { Block, Present, Wishlist } from '@/shared/types'
-import { BLOCK_CATALOG, duplicateBlock, makeBlock } from '@/shared/editor-model'
+import { BLOCK_CATALOG, addBlockAfter, duplicateBlock, makeBlock } from '@/shared/editor-model'
 import { BlockContent } from '@/app/s/[shortId]/components/blocks/block-renderer'
+import { InlineTextEditor } from './inline-text-editor'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
@@ -42,7 +43,17 @@ export function BlockCanvas({ wishlist, presents, selected, onSelect, onChange }
             onDuplicate={() => { const next = duplicateBlock(blocks, block.id); sync(next); onSelect(next[blocks.findIndex(b => b.id === block.id) + 1].id) }}
             onDelete={() => { if (window.confirm('Удалить блок? Ответы гостей для него больше не будут видны на странице.')) sync(blocks.filter(b => b.id !== block.id)) }}
             onResize={() => sync(blocks.map(b => b.id === block.id ? { ...b, colSpan: b.colSpan === 1 ? 2 : 1 } : b))}
-          ><BlockContent block={{ ...block, hidden: false, revealAt: null }} wishlist={wishlist} presents={presents} preview /></CanvasItem>)}
+          >{block.type === 'text'
+            // Текст правится прямо на холсте: открывать панель ради одной
+            // опечатки — лишний шаг, а текстовых блоков на странице больше
+            // всех остальных вместе взятых.
+            ? <InlineTextEditor
+                html={String(block.data.html ?? block.data.content ?? '')}
+                onChange={html => sync(blocks.map(b => b.id === block.id ? { ...b, data: { ...b.data, html } } : b))}
+                onSplit={() => { const next = addBlockAfter(blocks, block.id, 'text'); sync(next); onSelect(next[next.findIndex(b => b.id === block.id) + 1].id) }}
+              />
+            : <BlockContent block={{ ...block, hidden: false, revealAt: null }} wishlist={wishlist} presents={presents} preview />
+          }</CanvasItem>)}
         </div>
       </SortableContext>
     </DndContext>
