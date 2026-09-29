@@ -77,7 +77,9 @@ export const useApiCreateConstructorWishlist = () => {
         title: input.title,
         description: input.description ?? '',
         cover_url: input.coverUrl ?? '',
-        color_scheme: input.colorScheme ?? 'main',
+        // 'space' — схема сайта по умолчанию. Прежний 'main' в новый набор не
+        // входит и уезжал в запасной вариант при каждом создании.
+        color_scheme: input.colorScheme ?? 'space',
         show_gift_availability: input.showGiftAvailability ?? false,
         presents_layout: input.presentsLayout ?? 'list',
         location_name: input.locationName ?? '',

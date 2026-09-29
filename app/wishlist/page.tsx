@@ -1,66 +1,93 @@
 'use client'
 
-import { useApiCreateConstructorWishlist, useApiGetAllWishlists } from '@/api/wishlist'
+import { useApiGetAllWishlists } from '@/api/wishlist'
 import { WishlistCard } from '@/app/wishlist/components/wishlist-card'
 import { Button } from '@/components/ui/button'
-import { LayoutTemplate, Loader2 } from 'lucide-react'
-import { useRouter } from 'next/navigation'
+import { Input } from '@/components/ui/input'
+import { pluralRu, searchWishlists } from '@/shared/event-date'
+import { Plus, Search } from 'lucide-react'
+import Link from 'next/link'
 import * as React from 'react'
+import { useMemo, useState } from 'react'
 
 export default function Page() {
   const { data } = useApiGetAllWishlists()
-  const { mutate: createConstructor, isPending } = useApiCreateConstructorWishlist()
-  const router = useRouter()
-  const wishlists = data?.data ?? []
+  const [query, setQuery] = useState('')
+  const wishlists = useMemo(() => data?.data ?? [], [data])
+  const visible = useMemo(() => searchWishlists(wishlists, query), [wishlists, query])
 
-  const handleCreate = () => {
-    createConstructor(
-      { title: 'Новый вишлист', blocks: [] },
-      {
-        onSuccess: (res) => {
-          if (res.data?.id) {
-            router.push(`/wishlist/edit/${res.data.id}`)
-          }
-        },
-      }
+  const reserved = wishlists.reduce((sum, w) => sum + (w.reservedCount ?? 0), 0)
+
+  if (wishlists.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center py-24 text-center gap-4">
+        <div className="text-6xl">🎁</div>
+        <h3 className="text-xl font-semibold">Пока нет вишлистов</h3>
+        <p className="text-muted-foreground text-sm max-w-xs">
+          Создайте первый вишлист и поделитесь им с теми, кто хочет сделать вам подарок
+        </p>
+        <Button asChild>
+          <Link href="/templates">Создать первый вишлист</Link>
+        </Button>
+      </div>
     )
   }
 
   return (
-    <div>
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-4xl">Мои вишлисты</h2>
-        <Button onClick={handleCreate} disabled={isPending}>
-          {isPending ? (
-            <Loader2 className="mr-2 animate-spin" size={18} />
-          ) : (
-            <LayoutTemplate className="mr-2" size={18} />
-          )}
-          Создать вишлист
+    <div className="space-y-6">
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight">Мои вишлисты</h2>
+          <p className="mt-2 text-sm text-muted-foreground">
+            {wishlists.length} {pluralRu(wishlists.length, ['вишлист', 'вишлиста', 'вишлистов'])}
+            {reserved > 0 && <> · {reserved} {pluralRu(reserved, ['подарок занят', 'подарка заняты', 'подарков заняты'])}</>}
+          </p>
+        </div>
+        <Button asChild>
+          <Link href="/templates">
+            <Plus size={18} className="mr-2" aria-hidden />
+            Новый вишлист
+          </Link>
         </Button>
       </div>
 
-      {wishlists.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-24 text-center gap-4">
-          <div className="text-6xl">🎁</div>
-          <h3 className="text-xl font-semibold">Пока нет вишлистов</h3>
-          <p className="text-muted-foreground text-sm max-w-xs">
-            Создай первый вишлист и поделись им с теми, кто хочет сделать тебе подарок
-          </p>
-          <Button onClick={handleCreate} disabled={isPending}>
-            {isPending ? (
-              <Loader2 className="mr-2 animate-spin" size={18} />
-            ) : (
-              <LayoutTemplate className="mr-2" size={18} />
-            )}
-            Создать первый вишлист
-          </Button>
-        </div>
+      {/* Поиск появляется, когда список перестаёт охватываться взглядом */}
+      {wishlists.length > 3 && (
+        <label className="flex items-center gap-2 max-w-xs rounded-xl border px-3 h-10 text-muted-foreground focus-within:ring-2 focus-within:ring-ring">
+          <Search size={16} aria-hidden />
+          <Input
+            value={query}
+            onChange={e => setQuery(e.target.value)}
+            placeholder="Поиск по названию или поводу"
+            aria-label="Найти вишлист"
+            className="border-0 bg-transparent p-0 h-auto shadow-none focus-visible:ring-0"
+          />
+        </label>
+      )}
+
+      {visible.length === 0 ? (
+        <p className="py-12 text-center text-muted-foreground">
+          Ничего не нашлось. Попробуйте другое слово.
+        </p>
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {wishlists.map((wishlist) => (
+          {visible.map(wishlist => (
             <WishlistCard key={wishlist.id} wishlist={wishlist} />
           ))}
+
+          {/* Плитка ведёт на шаблоны, а не создаёт пустой конструктор:
+              с готовой страницы начать проще, чем с чистого листа. */}
+          {!query && (
+            <Link
+              href="/templates"
+              className="flex flex-col items-center justify-center gap-3 min-h-[220px] rounded-xl border border-dashed text-muted-foreground hover:text-foreground hover:border-primary/50 transition-colors"
+            >
+              <span className="flex items-center justify-center w-12 h-12 rounded-full border text-primary">
+                <Plus size={22} aria-hidden />
+              </span>
+              <span className="text-sm font-semibold">Создать вишлист</span>
+            </Link>
+          )}
         </div>
       )}
     </div>
