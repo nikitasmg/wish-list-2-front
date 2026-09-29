@@ -13,11 +13,22 @@ type Props = {
   theme: string
   isHidden: boolean
   wishlistId: string
+  onDetails?: (present: Present) => void
 }
 
-export const PresentItem = ({ present, theme, isHidden, wishlistId }: Props) => {
+/**
+ * Порог, после которого описание точно не помещается в три строки карточки.
+ * Показывать «Подробнее» под однострочным описанием — лишний шум: там и так
+ * всё видно.
+ */
+const CLAMPED_DESCRIPTION = 90
+
+export const PresentItem = ({ present, theme, isHidden, wishlistId, onDetails }: Props) => {
   const { state, isPending, reserve, release } = useReservation(present, wishlistId)
   const links = present.links?.length ? present.links : present.link ? [present.link] : []
+  const hasMore = Boolean(onDetails) && (
+    (present.description?.length ?? 0) > CLAMPED_DESCRIPTION || links.length > 1
+  )
 
   return (
     <div className="w-full md:max-w-[350px] bg-card rounded-2xl flex flex-col gap-2">
@@ -32,6 +43,15 @@ export const PresentItem = ({ present, theme, isHidden, wishlistId }: Props) => 
           {present.title}
         </div>
         <div className="line-clamp-3 text-foreground min-h-[72px]">{present.description}</div>
+        {hasMore && (
+          <button
+            type="button"
+            onClick={() => onDetails?.(present)}
+            className="self-start text-sm font-semibold text-primary hover:underline"
+          >
+            Подробнее
+          </button>
+        )}
         {present.price && (
           <div className="text-right font-bold text-l italic text-foreground mt-auto">
             {present.price.toLocaleString('ru-RU')} ₽

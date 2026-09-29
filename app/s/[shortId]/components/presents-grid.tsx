@@ -8,9 +8,11 @@ type Props = {
   theme: string
   isHidden: boolean
   columns: 2 | 3
+  /** Открыть подробности: модалка живёт одна на всю секцию. */
+  onDetails?: (present: Present) => void
 }
 
-export function PresentsGrid({ presents, wishlistId, theme, isHidden, columns }: Props) {
+export function PresentsGrid({ presents, wishlistId, theme, isHidden, columns, onDetails }: Props) {
   if (!presents.length) return null
 
   return (
@@ -20,7 +22,7 @@ export function PresentsGrid({ presents, wishlistId, theme, isHidden, columns }:
         : 'grid grid-cols-1 md:grid-cols-2 gap-6'
     }>
       {presents.map(present => (
-        <PresentItem key={present.id} present={present} wishlistId={wishlistId} theme={theme} isHidden={isHidden} />
+        <PresentItem key={present.id} present={present} wishlistId={wishlistId} theme={theme} isHidden={isHidden} onDetails={onDetails} />
       ))}
     </div>
   )

@@ -58,10 +58,11 @@ export function BlockContent({ block, wishlist, presents = [], preview, owner }:
   const known = BLOCK_CATALOG.some(item => item.type === block.type) || ['text_image', 'image', 'gallery', 'agenda', 'checklist'].includes(block.type)
   return <div className="space-y-4 min-w-0">
           {block.type !== 'cover' && <>{block.caption && <p className="text-sm text-primary">{block.caption}</p>}{block.title && <h2 className="text-2xl font-bold">{block.title}</h2>}</>}
-          {block.type === 'cover' && <CoverBlockView block={block} wishlist={wishlist} />}
+          {block.type === 'cover' && <CoverBlockView block={block} wishlist={wishlist} preview={preview} />}
           {block.type === 'list' && <ListBlockView block={block} />}
           {block.type === 'media' && <MediaBlockView block={block} />}
-          {block.type === 'wishlist' && wishlist && <GiftsSection wishlist={wishlist} presents={presents} owner={owner} preview={preview} view={block.view} />}
+          {/* id="gifts" — цель кнопки «Смотреть подарки» из обложки */}
+          {block.type === 'wishlist' && wishlist && <div id="gifts" className="scroll-mt-6"><GiftsSection wishlist={wishlist} presents={presents} owner={owner} preview={preview} view={block.view} /></div>}
           {interactive && (preview || !wishlist ? <div className="rounded-xl border border-dashed p-6 text-muted-foreground">{BLOCK_CATALOG.find(item => item.type === block.type)?.label}. Ответы гостей доступны на опубликованной странице.</div> : <GuestBlockView block={block} wishlistId={wishlist.id} owner={owner} />)}
           {!known && <div className="rounded-xl border border-dashed p-5 text-sm text-muted-foreground">Блок из другой версии. Владелец может заменить его в редакторе.</div>}
           {block.type === 'text' && <TextBlockView block={block} />}
