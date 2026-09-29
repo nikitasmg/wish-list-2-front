@@ -4,7 +4,7 @@ import { uploadImage } from '@/api/upload'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Loader2, UploadIcon } from 'lucide-react'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 export type ImageUploadValue =
   | { type: 'file'; value: File }   // kept for type compatibility, no longer emitted
@@ -13,14 +13,19 @@ export type ImageUploadValue =
 type Props = {
   label?: string
   onChange: (value: ImageUploadValue | null) => void
+  onUploadingChange?: (uploading: boolean) => void
   previewUrl?: string
 }
 
-export function ImageUpload({ label = 'Обложка', onChange, previewUrl }: Props) {
+export function ImageUpload({ label = 'Обложка', onChange, onUploadingChange, previewUrl }: Props) {
   const [preview, setPreview] = useState<string | undefined>(previewUrl)
   const [isUploading, setIsUploading] = useState(false)
   const [uploadError, setUploadError] = useState<string | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    onUploadingChange?.(isUploading)
+  }, [isUploading, onUploadingChange])
 
   const handleFile = async (file: File) => {
     // Show blob preview immediately for snappy UX
@@ -103,7 +108,7 @@ export function ImageUpload({ label = 'Обложка', onChange, previewUrl }: 
         <p className="text-sm text-muted-foreground">
           {isUploading ? 'Загружается...' : 'Перетащи или нажми для выбора файла'}
         </p>
-        <p className="text-xs text-muted-foreground mt-1">JPG, PNG до 2MB</p>
+        <p className="text-xs text-muted-foreground mt-1">JPG, PNG до 10MB</p>
         <input
           ref={inputRef}
           type="file"
@@ -112,8 +117,8 @@ export function ImageUpload({ label = 'Обложка', onChange, previewUrl }: 
           onChange={(e) => {
             const file = e.target.files?.[0]
             if (!file) return
-            if (file.size > 2 * 1024 * 1024) {
-              alert('Файл должен быть менее 2MB')
+            if (file.size > 10 * 1024 * 1024) {
+              alert('Файл должен быть менее 10MB')
               return
             }
             handleFile(file)

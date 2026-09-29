@@ -1,3 +1,4 @@
+import { findFirstEmptyCell, mobileOrder, pushBlocksDown } from './grid'
 import type { Block, BlockType, Wishlist } from './types'
 
 /**
@@ -43,8 +44,8 @@ export function isSecretHidden(
 export function matchesSavedBlocks(sent: Block[], received: Block[]): boolean {
   const canonical = (value: unknown): unknown => Array.isArray(value) ? value.map(canonical)
     : value && typeof value === 'object' ? Object.fromEntries(Object.entries(value).filter(([, v]) => v !== undefined).sort(([a], [b]) => a.localeCompare(b)).map(([k, v]) => [k, canonical(v)])) : value
-  const normalized = (blocks: Block[]) => blocks.map(b => ({ ...b, mobilePosition: b.mobilePosition ?? null,
-    colSpan: b.colSpan ?? 0, rowSpan: b.rowSpan ?? 0, view: b.view ?? '', caption: b.caption ?? '', title: b.title ?? '', hidden: b.hidden ?? false,
+  const normalized = (blocks: Block[]) => blocks.map(b => ({ ...b,
+    colSpan: b.colSpan ?? 1, view: b.view ?? '', caption: b.caption ?? '', title: b.title ?? '', hidden: b.hidden ?? false,
     revealAt: b.revealAt ? new Date(b.revealAt).toISOString() : null }))
   return JSON.stringify(canonical(normalized(sent))) === JSON.stringify(canonical(normalized(received)))
 }
@@ -69,17 +70,27 @@ export const BLOCK_CATALOG: { type: BlockType; label: string; group: string; vie
   { type: 'guestbook', label: 'Гостевая книга', group: 'Гости' },
 ]
 
-export function makeBlock(type: BlockType, position: number): Block {
+/** Новый блок в указанной ячейке. По умолчанию — во всю ширину строки. */
+export function makeBlock(type: BlockType, row = 0, col: 0 | 1 = 0, colSpan: 1 | 2 = 2): Block {
   const data: Record<string, unknown> = type === 'poll' ? { question: 'Как думаете?', options: ['Первый вариант', 'Второй вариант'] }
     : type === 'list' ? { items: [{ v: 'Новый пункт' }] }
     : type === 'rsvp' ? { fields: ['plusOne'] }
     : type === 'playlist' ? { votes: true } : type === 'guestbook' ? { photos: false } : {}
-  return { id: newBlockId(), type, position, colSpan: 2, rowSpan: 1, view: BLOCK_CATALOG.find(b => b.type === type)?.views?.[0][0], data }
+  return { id: newBlockId(), type, row, col, colSpan, view: BLOCK_CATALOG.find(b => b.type === type)?.views?.[0][0], data }
+}
+
+/**
+ * Новый блок в первой свободной ячейке — так добавляет библиотека блоков.
+ * Пустая ячейка в середине страницы не остаётся дырой.
+ */
+export function appendBlock(blocks: Block[], type: BlockType): Block[] {
+  const { row, col } = findFirstEmptyCell(blocks)
+  return [...blocks, makeBlock(type, row, col, 1)]
 }
 
 /** Convert known v1 shapes without losing text, images or existing identities. */
 export function prepareBlocks(wishlist: Pick<Wishlist, 'blocks' | 'cover' | 'title'>): Block[] {
-  const blocks = structuredClone(wishlist.blocks ?? []).sort((a, b) => a.position - b.position)
+  const blocks = mobileOrder(structuredClone(wishlist.blocks ?? []))
   for (const block of blocks) {
     block.id ||= newBlockId()
     block.data ||= {}
@@ -105,9 +116,9 @@ export function prepareBlocks(wishlist: Pick<Wishlist, 'blocks' | 'cover' | 'tit
     }
   }
   if (wishlist.cover && !blocks.some(b => b.type === 'cover')) {
-    blocks.unshift({ ...makeBlock('cover', 0), title: wishlist.title, data: { imageUrl: wishlist.cover } })
+    blocks.unshift({ ...makeBlock('cover'), title: wishlist.title, data: { imageUrl: wishlist.cover } })
   }
-  return blocks.map((b, position) => ({ ...b, position }))
+  return relayout(blocks)
 }
 
 /**
@@ -117,17 +128,34 @@ export function prepareBlocks(wishlist: Pick<Wishlist, 'blocks' | 'cover' | 'tit
  * хочет там же, где пишет, а не возвращаясь к библиотеке слева.
  */
 export function addBlockAfter(blocks: Block[], id: string, type: BlockType): Block[] {
-  const index = blocks.findIndex(b => b.id === id)
-  if (index < 0) return blocks
-  const fresh = makeBlock(type, index + 1)
-  return [...blocks.slice(0, index + 1), fresh, ...blocks.slice(index + 1)].map((b, position) => ({ ...b, position }))
+  const anchor = blocks.find(b => b.id === id)
+  if (!anchor) return blocks
+  const row = anchor.row + 1
+  return [...pushBlocksDown(blocks, row), makeBlock(type, row)]
 }
 
 export function duplicateBlock(blocks: Block[], id: string): Block[] {
   const index = blocks.findIndex(b => b.id === id)
   if (index < 0) return blocks
-  const copy = { ...structuredClone(blocks[index]), id: newBlockId(), mobilePosition: undefined }
-  return [...blocks.slice(0, index + 1), copy, ...blocks.slice(index + 1)].map((b, position) => ({ ...b, position }))
+  const row = blocks[index].row + 1
+  const copy = { ...structuredClone(blocks[index]), id: newBlockId(), row, col: 0 as const }
+  return [...pushBlocksDown(blocks, row), copy]
+}
+
+/**
+ * Разложить блоки по сетке заново, сохранив порядок чтения. Нужно там, где
+ * координат ещё нет — например, у вишлистов первой версии.
+ */
+export function relayout(blocks: Block[]): Block[] {
+  let row = 0
+  let col: 0 | 1 = 0
+  return blocks.map(block => {
+    const colSpan: 1 | 2 = block.colSpan === 1 ? 1 : 2
+    if (colSpan === 2 && col === 1) { row += 1; col = 0 }
+    const placed = { ...block, row, col, colSpan }
+    if (colSpan === 2 || col === 1) { row += 1; col = 0 } else { col = 1 }
+    return placed
+  })
 }
 
 /** PUT metadata replaces all these fields on the backend. Never send a partial form. */

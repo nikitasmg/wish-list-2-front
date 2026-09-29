@@ -15,7 +15,7 @@ Package manager: **pnpm** (v8.14.0). Do not use npm or yarn.
 
 ## Architecture
 
-This is a **Next.js 16 App Router** project — a wishlist service (get-my-wishlist.ru) where users create and share wishlists with presents.
+This is a **Next.js 16 App Router** project — a wishlist service (prosto-namekni.ru) where users create and share wishlists with presents.
 
 ### Directory Structure
 
@@ -31,7 +31,7 @@ This is a **Next.js 16 App Router** project — a wishlist service (get-my-wishl
   - `user/` — User queries
 - `components/` — Shared UI components; `components/ui/` contains shadcn/ui primitives
 - `hooks/` — Custom React hooks (e.g., `use-toast.ts`)
-- `lib/api.ts` — Axios wrapper (`ApiHelper` class), base URL: `https://api.get-my-wishlist.ru/`
+- `lib/api.ts` — Axios wrapper (`ApiHelper` class), base URL: `https://api.prosto-namekni.ru/`
 - `shared/` — Shared types (`types.ts`), constants (`constants.ts`), validation (`validate.ts`)
 - `store/useUserStore.ts` — Zustand store for current user state
 
@@ -52,7 +52,7 @@ This is a **Next.js 16 App Router** project — a wishlist service (get-my-wishl
 
 ### Deployment
 
-Docker with standalone Next.js output (`output: 'standalone'` in `next.config.ts`). Images served from `get-my-wishlist.ru` and `minio` (MinIO object storage).
+Docker with standalone Next.js output (`output: 'standalone'` in `next.config.ts`). Images served from `prosto-namekni.ru` and `minio` (MinIO object storage).
 
 ## Commits
 
@@ -63,9 +63,11 @@ Never add `Co-Authored-By` trailer to commit messages. Commits are made on behal
 The following commands can be run **without user approval**:
 - All read-only git commands: `git log`, `git diff`, `git status`, `git show`, `git branch`, `git stash list`, etc., including with `cd` prefix and file path arguments (e.g., `cd "..." && git diff HEAD -- "file"`)
 - Lint: `pnpm lint`
+- Backend file reads and writes in `/Users/nvsmagin/GolandProjects/wishlist` — reading and modifying backend Go source files does not require approval
+- `go build ./...` in the backend directory
 
 ## Backend
 
-The backend source code is located at `C:\Users\nvsma\OneDrive\Документы\projects\wish-list-2-back`.
+The backend source code is located at `C:\Users\nvsma\OneDrive\Документы\projects\wish-list-2-back`. or `/Users/nvsmagin/GolandProjects/wishlist`
 
 When implementing API calls or features on the frontend, refer to the backend implementation to understand the exact endpoint contracts, request/response shapes, and business logic. Always check the backend source before making assumptions about API behavior.

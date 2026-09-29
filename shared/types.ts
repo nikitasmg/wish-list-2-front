@@ -1,6 +1,8 @@
 export type User = {
   id: string;
   username: string;
+  displayName?: string;
+  avatar?: string;
 }
 
 export type BlockType =
@@ -47,10 +49,10 @@ export type Block = {
    *  позиция для этого не годится, она меняется при перестановке блоков. */
   id: string
   type: BlockType
-  position: number
-  mobilePosition?: number
-  colSpan?: 1 | 2
-  rowSpan?: 1 | 2 | 3
+  /** Координаты в сетке: строка, колонка (0 — левая) и ширина в колонках. */
+  row: number
+  col: 0 | 1
+  colSpan: 1 | 2
   /** Вариант отображения внутри типа. */
   view?: string
   caption?: string
@@ -137,7 +139,11 @@ export type Present = {
   price?: number;
   reserved: boolean;
   /** Бронь поставил текущий гость — значит, он же может её снять. */
-  reservedByMe: boolean;
+  reservedByMe?: boolean;
+  /** single — один даритель, group — скидываются, multi — набор вещей. */
+  type: 'single' | 'group' | 'multi';
+  participantsCount: number;
+  images?: string[];
   createdAt: string,
   updatedAt: string,
   wishlistId: string
@@ -146,17 +152,45 @@ export type Present = {
 /** Лимит описания подарка. Тот же, что проверяет бэк. */
 export const MAX_PRESENT_DESCRIPTION = 500
 
+/**
+ * Пользовательский шаблон: человек сохранил свой вишлист как заготовку и,
+ * если захотел, опубликовал её в галерее /templates.
+ */
 export type Template = {
+  id: string;
+  userId: string;
+  userDisplayName?: string;
+  name: string;
+  settings: {
+    colorScheme: string;
+    showGiftAvailability: boolean;
+    presentsLayout?: 'list' | 'grid3' | 'grid2';
+  };
+  blocks: Block[];
+  isPublic: boolean;
+  likesCount: number;
+  likedByMe: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/**
+ * Системная заготовка — она идёт вместе с релизом, одинакова для всех и
+ * показывается только на экране создания вишлиста. Ни владельца, ни лайков,
+ * ни публичности у неё нет: это не то же самое, что Template.
+ */
+export type SystemTemplate = {
   id: string
   category: string
   name: string
   colorScheme: string
+  /** Название-пример: подставляется в превью и в поле «Для кого». */
   sampleTitle: string
   occasion: string
   blocks: Block[]
 }
 
-export type TemplateCategory = {
+export type SystemTemplateCategory = {
   id: string
   name: string
 }

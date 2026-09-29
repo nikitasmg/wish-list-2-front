@@ -1,30 +1,6 @@
 const { test } = require('node:test')
 const assert = require('node:assert/strict')
-const fs = require('node:fs')
-const path = require('node:path')
-const ts = require('typescript')
-
-// Загрузчик с поддержкой относительных импортов: slash-menu тянет каталог
-// блоков и makeBlock из соседнего модуля, а простой require из tests/ искал
-// бы './editor-model' рядом с тестом.
-const cache = new Map()
-function load(file) {
-  const key = path.resolve(file)
-  if (cache.has(key)) return cache.get(key)
-
-  const source = fs.existsSync(key) ? fs.readFileSync(key, 'utf8') : ''
-  const output = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText
-  const loaded = { exports: {} }
-  cache.set(key, loaded.exports)
-
-  const localRequire = id => id.startsWith('.')
-    ? load(path.join(path.dirname(key), `${id}.ts`))
-    : require(id)
-
-  new Function('exports', 'require', 'module', output)(loaded.exports, localRequire, loaded)
-  return loaded.exports
-}
-globalThis.crypto ??= require('node:crypto').webcrypto
+const { load } = require('./load.cjs')
 const { slashQuery, slashMatches, convertBlock } = load('shared/slash-menu.ts')
 const { BLOCK_CATALOG } = load('shared/editor-model.ts')
 
@@ -66,23 +42,25 @@ test('ничего не найдено — пустой список, а не в
   assert.deepEqual(slashMatches(BLOCK_CATALOG, 'зззз'), [])
 })
 
-test('превращение сохраняет id и позицию, но меняет тип и данные', () => {
+test('превращение сохраняет id и место в сетке, но меняет тип и данные', () => {
   const blocks = [
-    { id: 'a', type: 'text', position: 0, colSpan: 2, rowSpan: 1, data: { html: '/мес' } },
-    { id: 'b', type: 'text', position: 1, colSpan: 2, rowSpan: 1, data: {} },
+    { id: 'a', type: 'text', row: 0, col: 1, colSpan: 1, data: { html: '/мес' } },
+    { id: 'b', type: 'text', row: 1, col: 0, colSpan: 2, data: {} },
   ]
 
   const next = convertBlock(blocks, 'a', 'location')
 
   assert.equal(next[0].id, 'a', 'идентичность держит ответы гостей — её нельзя терять')
-  assert.equal(next[0].position, 0)
+  assert.equal(next[0].row, 0)
+  assert.equal(next[0].col, 1, 'блок не перескакивает в другую колонку')
+  assert.equal(next[0].colSpan, 1, 'ширина остаётся прежней')
   assert.equal(next[0].type, 'location')
   assert.equal(next[0].data.html, undefined, 'текст команды не утекает в новый блок')
   assert.equal(next[1].id, 'b', 'соседи не трогаются')
 })
 
 test('превращение не меняет исходный массив', () => {
-  const blocks = [{ id: 'a', type: 'text', position: 0, data: { html: '/' } }]
+  const blocks = [{ id: 'a', type: 'text', row: 0, col: 0, colSpan: 2, data: { html: '/' } }]
   convertBlock(blocks, 'a', 'poll')
   assert.equal(blocks[0].type, 'text')
 })

@@ -334,6 +334,11 @@
   }
 }
 
+/* Suppress Tiptap's default ProseMirror focus outline */
+.ProseMirror-focused {
+  outline: none;
+}
+
 /* Block grid layout for landing page */
 .block-grid-item {
   order: var(--mobile-order, 0);
@@ -344,4 +349,87 @@
     grid-row: var(--row-span, span 1);
     order: unset;
   }
+}
+
+/* driver.js tour overrides */
+.driver-popover.constructor-tour {
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: calc(var(--radius) - 2px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+  color: hsl(var(--foreground));
+  min-width: 260px;
+  max-width: 320px;
+  padding: 16px;
+}
+
+.driver-popover.constructor-tour .driver-popover-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: hsl(var(--foreground));
+  margin-bottom: 6px;
+}
+
+.driver-popover.constructor-tour .driver-popover-description {
+  font-size: 13px;
+  color: hsl(var(--muted-foreground));
+  line-height: 1.5;
+}
+
+.driver-popover.constructor-tour .driver-popover-footer {
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.driver-popover.constructor-tour .driver-popover-close-btn {
+  background: transparent !important;
+  border: none !important;
+  font-size: 12px;
+  color: hsl(var(--muted-foreground)) !important;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-shadow: none !important;
+}
+
+.driver-popover.constructor-tour .driver-popover-close-btn:hover {
+  color: hsl(var(--foreground)) !important;
+}
+
+.driver-popover.constructor-tour .driver-popover-next-btn,
+.driver-popover.constructor-tour .driver-popover-done-btn {
+  background: hsl(var(--primary)) !important;
+  color: hsl(var(--primary-foreground)) !important;
+  border: none !important;
+  border-radius: calc(var(--radius) - 4px);
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s;
+  text-shadow: none !important;
+}
+
+.driver-popover.constructor-tour .driver-popover-next-btn:hover,
+.driver-popover.constructor-tour .driver-popover-done-btn:hover {
+  opacity: 0.85;
+}
+
+.driver-popover.constructor-tour .driver-popover-prev-btn {
+  display: none;
+}
+
+.driver-popover.constructor-tour .driver-popover-navigation-btns {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.driver-popover-arrow {
+  border-color: hsl(var(--card)) transparent transparent transparent;
 }

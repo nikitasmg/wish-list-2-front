@@ -1,9 +1,14 @@
 # *
 User-agent: *
 Allow: /
+Disallow: /s/
+Disallow: /wishlist/
+Disallow: /oauth/
+Disallow: /login/
+Disallow: /registration/
 
 # Host
-Host: https://get-my-wishlist.ru
+Host: prosto-namekni.ru
 
 # Sitemaps
-Sitemap: https://get-my-wishlist.ru/sitemap.xml
+Sitemap: https://prosto-namekni.ru/sitemap.xml

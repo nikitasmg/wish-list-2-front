@@ -18,6 +18,8 @@ import { localDateTime } from '@/shared/editor-model'
 import { normalizeScheme } from '@/shared/constants'
 import { deriveSchemeStyle } from '@/shared/derive-scheme'
 import { toast } from '@/hooks/use-toast'
+import { useConstructorTour } from '@/hooks/use-constructor-tour'
+import { CircleHelp } from 'lucide-react'
 
 export function ConstructorEditor({ wishlist }: { wishlist: Wishlist }) {
   return <Editor key={wishlist.id} wishlist={wishlist} />
@@ -32,23 +34,24 @@ function Editor({ wishlist }: { wishlist: Wishlist }) {
   const { data: presentsData } = useApiGetAllPresents(wishlist.id)
   const presents = presentsData?.data ?? []
   const block = draft.blocks?.find(b => b.id === selected)
+  const { startTour } = useConstructorTour()
   const copyLink = async () => {
     try { await navigator.clipboard.writeText(`${window.location.origin}/s/${wishlist.shortId}`); toast({ title: 'Ссылка скопирована' }) }
     catch { toast({ title: 'Не удалось скопировать ссылку', variant: 'destructive' }) }
   }
   return <div className="space-y-5">
     <header className="flex flex-wrap items-center justify-between gap-3">
-      <div><h1 className="text-2xl font-bold">{draft.title || 'Мой праздник'}</h1><p role="status" className={error ? 'text-sm text-destructive' : 'text-sm text-muted-foreground'}>{status}</p></div>
-      <div className="flex gap-2"><Button variant="outline" disabled={!dirty || Boolean(error)} onClick={() => void flush()}>Сохранить</Button>{wishlist.shortId && <Button variant="outline" onClick={copyLink}>Поделиться</Button>}</div>
+      <div data-tour="title"><h1 className="text-2xl font-bold">{draft.title || 'Мой праздник'}</h1><p role="status" className={error ? 'text-sm text-destructive' : 'text-sm text-muted-foreground'}>{status}</p></div>
+      <div className="flex gap-2"><Button variant="outline" disabled={!dirty || Boolean(error)} onClick={() => void flush()}>Сохранить</Button>{wishlist.shortId && <Button variant="outline" onClick={copyLink}>Поделиться</Button>}<Button variant="ghost" size="icon" title="Как пользоваться редактором" aria-label="Как пользоваться редактором" onClick={startTour}><CircleHelp size={16} /></Button></div>
     </header>
     {error != null && <div role="alert" className="rounded-xl border border-destructive p-4 space-y-3 text-sm"><p>Черновик остаётся в редакторе. При конфликте скопируйте нужные изменения, затем загрузите актуальную страницу. Повторная отправка не снимает защиту от конфликта.</p><div className="flex flex-wrap gap-2"><Button variant="outline" onClick={() => void retry()}>Повторить</Button><Button variant="outline" onClick={() => { const blob = new Blob([JSON.stringify(draft, null, 2)], { type: 'application/json' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'wishlist-draft.json'; a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000) }}>Скачать черновик</Button><Button variant="outline" onClick={() => { if (window.confirm('Локальные несохранённые изменения будут потеряны. Загрузить серверную версию?')) window.location.reload() }}>Загрузить актуальную</Button></div></div>}
     <nav className="flex flex-wrap gap-2" aria-label="Режим редактора">
-      {([['editor', 'Страница'], ['presents', 'Подарки'], ['preview', 'Предпросмотр'], ['responses', 'Ответы гостей']] as const).map(([value, label]) => <Button key={value} variant={mode === value ? 'default' : 'outline'} onClick={() => setMode(value)}>{label}</Button>)}
+      {([['editor', 'Страница'], ['presents', 'Подарки'], ['preview', 'Предпросмотр'], ['responses', 'Ответы гостей']] as const).map(([value, label]) => <Button key={value} data-tour={value === 'presents' ? 'tab-presents' : undefined} variant={mode === value ? 'default' : 'outline'} onClick={() => setMode(value)}>{label}</Button>)}
     </nav>
     {mode === 'editor' && <>
       <p className="rounded-xl bg-muted p-3 text-sm lg:hidden">Полный конструктор удобнее на компьютере. Здесь можно настроить страницу, блоки и подарки.{wishlist.shortId && <button onClick={copyLink} className="ml-2 underline">Скопировать ссылку</button>}</p>
       <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,1fr)_360px]">
-        <div className={normalizeScheme(draft.settings.colorScheme)} style={draft.settings.colorScheme === 'custom' ? deriveSchemeStyle(draft.settings.customScheme) : undefined}>
+        <div data-tour="block-canvas" className={normalizeScheme(draft.settings.colorScheme)} style={draft.settings.colorScheme === 'custom' ? deriveSchemeStyle(draft.settings.customScheme) : undefined}>
           <BlockCanvas wishlist={draft} presents={presents} selected={selected} onSelect={id => { setSelected(id); setTab('block') }} onChange={blocks => change({ blocks })} />
         </div>
         <aside className="rounded-2xl border bg-background lg:sticky lg:top-4 lg:max-h-[85vh] lg:overflow-y-auto">
@@ -67,8 +70,8 @@ function Editor({ wishlist }: { wishlist: Wishlist }) {
     </>}
     {mode === 'preview' && <div className="space-y-3">
       {/* Переключатель ширины: половина гостей приходит с телефона, а
-          проверить это, не меняя размер окна, было нечем. Заодно у
-          mobilePosition появляется способ себя показать. */}
+          проверить это, не меняя размер окна, было нечем. На узком экране
+          сетка схлопывается в одну колонку — порядок чтения виден сразу. */}
       <div className="flex justify-end">
         <div className="inline-flex gap-1 rounded-xl border p-1" role="group" aria-label="Ширина предпросмотра">
           {([['desktop', 'Компьютер'], ['phone', 'Телефон']] as const).map(([value, label]) => (

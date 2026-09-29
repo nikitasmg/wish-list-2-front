@@ -1,22 +1,13 @@
 const { test } = require('node:test')
 const assert = require('node:assert/strict')
-const fs = require('node:fs')
-const ts = require('typescript')
-function load(file) {
-  const source = fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : ''
-  const output = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText
-  const loaded = { exports: {} }
-  new Function('exports', 'require', 'module', output)(loaded.exports, require, loaded)
-  return loaded.exports
-}
-globalThis.crypto ??= require('node:crypto').webcrypto
+const { load } = require('./load.cjs')
 const { prepareBlocks } = load('shared/editor-model.ts')
 
 const wishlist = (blocks) => ({ blocks, cover: '', title: 'Праздник' })
 
 test('text_image становится текстом с фото, не теряя ни текста, ни картинки', () => {
   const [block] = prepareBlocks(wishlist([
-    { id: 'ti', type: 'text_image', position: 0, data: { content: 'Привет, это Маша', imageUrl: 'https://cdn/photo.jpg' } },
+    { id: 'ti', type: 'text_image', row: 0, col: 0, colSpan: 2, data: { content: 'Привет, это Маша', imageUrl: 'https://cdn/photo.jpg' } },
   ]))
 
   assert.equal(block.type, 'text')
@@ -28,7 +19,7 @@ test('text_image становится текстом с фото, не теря�
 
 test('text_image без картинки превращается в обычный текст', () => {
   const [block] = prepareBlocks(wishlist([
-    { id: 'ti', type: 'text_image', position: 0, data: { content: 'Только текст' } },
+    { id: 'ti', type: 'text_image', row: 0, col: 0, colSpan: 2, data: { content: 'Только текст' } },
   ]))
 
   assert.equal(block.type, 'text')
@@ -38,7 +29,7 @@ test('text_image без картинки превращается в обычн�
 
 test('уже переехавший текст не трогаем повторно', () => {
   const [block] = prepareBlocks(wishlist([
-    { id: 't', type: 'text', position: 0, data: { html: '<p>Готово</p>', imagePosition: 'top' } },
+    { id: 't', type: 'text', row: 0, col: 0, colSpan: 2, data: { html: '<p>Готово</p>', imagePosition: 'top' } },
   ]))
 
   assert.equal(block.data.html, '<p>Готово</p>')
@@ -46,37 +37,41 @@ test('уже переехавший текст не трогаем повтор�
 })
 
 test('legacy-конвертация не меняет исходный вишлист', () => {
-  const source = [{ id: 'ti', type: 'text_image', position: 0, data: { content: 'Текст', imageUrl: 'u' } }]
+  const source = [{ id: 'ti', type: 'text_image', row: 0, col: 0, colSpan: 2, data: { content: 'Текст', imageUrl: 'u' } }]
   prepareBlocks(wishlist(source))
   assert.equal(source[0].type, 'text_image', 'источник остаётся нетронутым')
 })
 
 const { addBlockAfter } = load('shared/editor-model.ts')
 
-test('новый блок встаёт сразу за текущим, а позиции пересчитываются', () => {
+test('новый блок встаёт строкой ниже, а соседи снизу сдвигаются', () => {
   const blocks = [
-    { id: 'a', type: 'text', position: 0, data: {} },
-    { id: 'b', type: 'text', position: 1, data: {} },
+    { id: 'a', type: 'text', row: 0, col: 0, colSpan: 2, data: {} },
+    { id: 'b', type: 'text', row: 1, col: 0, colSpan: 2, data: {} },
   ]
 
   const next = addBlockAfter(blocks, 'a', 'text')
+  const byId = Object.fromEntries(next.map(b => [b.id, b]))
 
   assert.equal(next.length, 3)
-  assert.deepEqual(next.map(b => b.position), [0, 1, 2])
-  assert.equal(next[0].id, 'a')
-  assert.equal(next[2].id, 'b')
-  assert.ok(next[1].id && next[1].id !== 'a' && next[1].id !== 'b', 'у нового блока своя идентичность')
-  assert.equal(next[1].type, 'text')
+  assert.equal(byId.a.row, 0, 'якорь остаётся на месте')
+  assert.equal(byId.b.row, 2, 'нижний сосед уезжает на строку вниз')
+
+  const fresh = next.find(b => b.id !== 'a' && b.id !== 'b')
+  assert.ok(fresh.id, 'у нового блока своя идентичность')
+  assert.equal(fresh.row, 1, 'новый блок встаёт в освободившуюся строку')
+  assert.equal(fresh.type, 'text')
 })
 
 test('добавление не трогает исходный массив', () => {
-  const blocks = [{ id: 'a', type: 'text', position: 0, data: {} }]
+  const blocks = [{ id: 'a', type: 'text', row: 0, col: 0, colSpan: 2, data: {} }]
   addBlockAfter(blocks, 'a', 'text')
   assert.equal(blocks.length, 1)
+  assert.equal(blocks[0].row, 0, 'исходные координаты не поехали')
 })
 
 test('неизвестный блок — список остаётся прежним', () => {
-  const blocks = [{ id: 'a', type: 'text', position: 0, data: {} }]
+  const blocks = [{ id: 'a', type: 'text', row: 0, col: 0, colSpan: 2, data: {} }]
   assert.equal(addBlockAfter(blocks, 'нет-такого', 'text').length, 1)
 })
 

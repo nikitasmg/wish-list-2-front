@@ -1,13 +1,14 @@
 'use client'
 
-import { ReserveControl, shopName } from '@/app/s/[shortId]/components/present-item'
-import { useReservation } from '@/app/s/[shortId]/components/use-reservation'
-import { Present } from '@/shared/types'
-import type { SchemeConfig, SchemeTheme } from './scheme-config'
-import { cn } from '@/lib/utils'
+import { GroupJoinControl, ReserveControl, shopName } from '@/app/s/[shortId]/components/present-item'
+import { useGroupJoin, useReservation } from '@/app/s/[shortId]/components/use-reservation'
 import { CardCover } from '@/components/card-cover'
+import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
+import { Present } from '@/shared/types'
 import { ExternalLinkIcon } from 'lucide-react'
 import * as React from 'react'
+import type { SchemeConfig, SchemeTheme } from './scheme-config'
 
 type Props = {
   presents: Present[]
@@ -15,10 +16,14 @@ type Props = {
   theme: SchemeTheme
   config: SchemeConfig
   isHidden: boolean
+  isOwner?: boolean
+  isExample?: boolean
   onDetails?: (present: Present) => void
 }
 
-export function PresentsList({ presents, wishlistId, theme, config, isHidden, onDetails }: Props) {
+export function PresentsList({
+  presents, wishlistId, theme, config, isHidden, isOwner, isExample, onDetails,
+}: Props) {
   if (!presents.length) return null
 
   return (
@@ -31,6 +36,8 @@ export function PresentsList({ presents, wishlistId, theme, config, isHidden, on
           theme={theme}
           config={config}
           isHidden={isHidden}
+          isOwner={isOwner}
+          isExample={isExample}
           onDetails={onDetails}
         />
       ))}
@@ -39,17 +46,22 @@ export function PresentsList({ presents, wishlistId, theme, config, isHidden, on
 }
 
 function PresentRow({
-  present, wishlistId, theme, config, isHidden, onDetails,
+  present, wishlistId, theme, config, isHidden, isOwner, isExample, onDetails,
 }: {
   present: Present
   wishlistId: string
   theme: SchemeTheme
   config: SchemeConfig
   isHidden: boolean
+  isOwner?: boolean
+  isExample?: boolean
   onDetails?: (present: Present) => void
 }) {
-  const { state, isPending, reserve, release } = useReservation(present, wishlistId)
+  const { state, isPending, reserve, release } = useReservation(present, wishlistId, isExample)
+  const group = useGroupJoin(present, wishlistId, isExample)
   const links = present.links?.length ? present.links : present.link ? [present.link] : []
+  // У набора обложки своей нет — берём первую картинку из набора.
+  const cover = present.images?.[0] || present.cover
 
   return (
     <div className={cn(
@@ -62,9 +74,9 @@ function PresentRow({
       {/* Тот же CardCover, что и в карточках: скелетон при загрузке и
           нейтральная заглушка на битой ссылке — раньше здесь был голый img,
           и сломанное фото ломало строку. */}
-      {present.cover ? (
+      {cover ? (
         <CardCover
-          cover={present.cover}
+          cover={cover}
           title={present.title}
           className={cn('w-16 h-16 flex-shrink-0', config.cardRounded)}
         />
@@ -110,16 +122,24 @@ function PresentRow({
           </span>
         )}
         {!isHidden && (
-          <div className="flex w-full">
-            <ReserveControl
-              state={state}
-              isPending={isPending}
-              theme={theme}
-              onReserve={reserve}
-              onRelease={release}
-              size="sm"
-            />
-          </div>
+          present.type === 'group' ? (
+            <GroupJoinControl group={group} isOwner={isOwner} />
+          ) : isOwner ? (
+            <Button size="sm" variant={present.reserved ? 'destructive' : 'secondary'} disabled>
+              {present.reserved ? 'Забронирован' : 'Свободен'}
+            </Button>
+          ) : (
+            <div className="flex w-full">
+              <ReserveControl
+                state={state}
+                isPending={isPending}
+                theme={theme}
+                onReserve={reserve}
+                onRelease={release}
+                size="sm"
+              />
+            </div>
+          )
         )}
       </div>
     </div>

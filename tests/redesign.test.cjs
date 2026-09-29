@@ -1,14 +1,6 @@
 const { test } = require('node:test')
 const assert = require('node:assert/strict')
-const fs = require('node:fs')
-const ts = require('typescript')
-function load(file) {
-  const source = fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : ''
-  const output = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText
-  const loaded = { exports: {} }
-  new Function('exports', 'require', 'module', output)(loaded.exports, require, loaded)
-  return loaded.exports
-}
+const { load } = require('./load.cjs')
 const model = load('shared/editor-model.ts')
 const { SaveQueue } = load('shared/save-queue.ts')
 test('v2 pages do not resurrect gifts removed from the public blocks by the API', () => {
@@ -45,7 +37,7 @@ test('failed save retains latest draft and stops automatic writes until explicit
 })
 test('migration keeps content and IDs, converts legacy blocks without mutating source', () => {
   assert.equal(typeof model.prepareBlocks, 'function')
-  const original = [{ id: 'a', type: 'agenda', position: 0, data: { items: [{ time: '12:00', text: 'Сбор' }] } }, { id: 'b', type: 'image', position: 1, data: { url: 'https://example.com/a.png' } }]
+  const original = [{ id: 'a', type: 'agenda', row: 0, col: 0, colSpan: 2, data: { items: [{ time: '12:00', text: 'Сбор' }] } }, { id: 'b', type: 'image', row: 1, col: 0, colSpan: 2, data: { url: 'https://example.com/a.png' } }]
   const result = model.prepareBlocks({ blocks: original, cover: '', title: 'Праздник' })
   assert.equal(result[0].id, 'a')
   assert.equal(result[0].type, 'list')
@@ -55,14 +47,18 @@ test('migration keeps content and IDs, converts legacy blocks without mutating s
   assert.equal(original[0].type, 'agenda')
   assert.deepEqual(model.prepareBlocks({ blocks: result, cover: '', title: 'Праздник' }), result)
 })
-test('duplicate has new identity, independent data, consecutive positions', () => {
+test('duplicate has new identity, independent data, and lands in the freed row', () => {
   assert.equal(typeof model.duplicateBlock, 'function')
-  const blocks = [{ id: 'a', type: 'list', position: 0, data: { items: [{ v: 'Один' }] } }, { id: 'b', type: 'text', position: 1, data: {} }]
+  const blocks = [{ id: 'a', type: 'list', row: 0, col: 0, colSpan: 2, data: { items: [{ v: 'Один' }] } }, { id: 'b', type: 'text', row: 1, col: 0, colSpan: 2, data: {} }]
   const result = model.duplicateBlock(blocks, 'a')
+  const byId = Object.fromEntries(result.map(b => [b.id, b]))
+  const copy = result.find(b => b.id !== 'a' && b.id !== 'b')
   assert.equal(result.length, 3)
-  assert.notEqual(result[1].id, 'a')
-  assert.deepEqual(result.map(b => b.position), [0, 1, 2])
-  result[1].data.items[0].v = 'Два'
+  assert.ok(copy, 'у копии своя идентичность')
+  assert.equal(byId.a.row, 0)
+  assert.equal(copy.row, 1, 'копия встаёт сразу под оригиналом')
+  assert.equal(byId.b.row, 2, 'нижний сосед сдвигается')
+  copy.data.items[0].v = 'Два'
   assert.equal(blocks[0].data.items[0].v, 'Один')
 })
 test('metadata form preserves description, date, cover and custom scheme', () => {

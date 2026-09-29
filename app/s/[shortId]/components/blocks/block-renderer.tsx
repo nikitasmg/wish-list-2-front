@@ -28,21 +28,23 @@ type Props = {
   presents?: Present[]
   preview?: boolean
   owner?: boolean
+  isExample?: boolean
 }
 
 export function BlockRenderer({ blocks, ...context }: Props) {
-  const sorted = [...blocks].sort((a, b) => a.position - b.position)
+  // Порядок — координаты сетки: сверху вниз, слева направо.
+  const sorted = [...blocks].sort((a, b) => a.row - b.row || a.col - b.col)
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:auto-rows-[minmax(100px,auto)]">
-      {sorted.filter(block => !block.hidden).map((block) => (
+      {sorted.filter(block => !block.hidden).map((block, idx) => (
         <div
-          key={block.id || block.position}
+          key={block.id || `${block.row}-${block.col}`}
           className="block-grid-item"
           style={{
-            '--mobile-order': block.mobilePosition ?? block.position,
-            '--col-span': `span ${block.colSpan ?? 1}`,
-            '--row-span': `span ${block.rowSpan ?? 1}`,
+            '--mobile-order': idx,
+            '--col-span': `${block.col + 1} / span ${block.colSpan ?? 1}`,
+            '--row-span': `${block.row + 1}`,
           } as React.CSSProperties}
         >
           <BlockContent block={block} {...context} />
@@ -52,7 +54,7 @@ export function BlockRenderer({ blocks, ...context }: Props) {
   )
 }
 
-export function BlockContent({ block, wishlist, presents = [], preview, owner }: Omit<Props, 'blocks'> & { block: Block }) {
+export function BlockContent({ block, wishlist, presents = [], preview, owner, isExample }: Omit<Props, 'blocks'> & { block: Block }) {
   if (block.revealAt && isSecretHidden(block)) return <SecretBlockView revealAt={block.revealAt} />
   const interactive = ['rsvp', 'poll', 'playlist', 'guestbook'].includes(block.type)
   const known = BLOCK_CATALOG.some(item => item.type === block.type) || ['text_image', 'image', 'gallery', 'agenda', 'checklist'].includes(block.type)
@@ -62,7 +64,7 @@ export function BlockContent({ block, wishlist, presents = [], preview, owner }:
           {block.type === 'list' && <ListBlockView block={block} />}
           {block.type === 'media' && <MediaBlockView block={block} />}
           {/* id="gifts" — цель кнопки «Смотреть подарки» из обложки */}
-          {block.type === 'wishlist' && wishlist && <div id="gifts" className="scroll-mt-6"><GiftsSection wishlist={wishlist} presents={presents} owner={owner} preview={preview} view={block.view} /></div>}
+          {block.type === 'wishlist' && wishlist && <div id="gifts" className="scroll-mt-6"><GiftsSection wishlist={wishlist} presents={presents} owner={owner} preview={preview} view={block.view} isExample={isExample} /></div>}
           {interactive && (preview || !wishlist ? <div className="rounded-xl border border-dashed p-6 text-muted-foreground">{BLOCK_CATALOG.find(item => item.type === block.type)?.label}. Ответы гостей доступны на опубликованной странице.</div> : <GuestBlockView block={block} wishlistId={wishlist.id} owner={owner} />)}
           {!known && <div className="rounded-xl border border-dashed p-5 text-sm text-muted-foreground">Блок из другой версии. Владелец может заменить его в редакторе.</div>}
           {block.type === 'text' && <TextBlockView block={block} />}

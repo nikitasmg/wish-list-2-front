@@ -64,7 +64,7 @@ export function BlockEditorModal({ block, open, onClose, onSave }: Props) {
 
   return (
     <Dialog open={open} onOpenChange={(o) => { if (!o) onClose() }}>
-      <DialogContent className="max-w-lg overflow-hidden">
+      <DialogContent className="max-w-lg">
         <DialogHeader>
           <DialogTitle>Редактировать: {BLOCK_LABELS[block.type] ?? block.type}</DialogTitle>
         </DialogHeader>

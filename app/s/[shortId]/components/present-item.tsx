@@ -1,20 +1,23 @@
 'use client'
-import type { SchemeTheme } from './scheme-config'
-
 import { ConfirmReserveModal } from '@/app/s/[shortId]/components/confirm-modal'
-import { useReservation } from '@/app/s/[shortId]/components/use-reservation'
+import { useGroupJoin, useReservation } from '@/app/s/[shortId]/components/use-reservation'
 import { CardCover } from '@/components/card-cover'
 import { Button } from '@/components/ui/button'
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel'
+import { linkHostname, pluralizeRu } from '@/lib/utils'
 import { Present } from '@/shared/types'
 import { Check, ExternalLink, Heart, Lock } from 'lucide-react'
 import * as React from 'react'
+import type { SchemeTheme } from './scheme-config'
 
 type Props = {
   present: Present
   theme: SchemeTheme
   isHidden: boolean
+  isOwner?: boolean
   wishlistId: string
   onDetails?: (present: Present) => void
+  isExample?: boolean
 }
 
 /**
@@ -24,26 +27,48 @@ type Props = {
  */
 const CLAMPED_DESCRIPTION = 90
 
-export const PresentItem = ({ present, theme, isHidden, wishlistId, onDetails }: Props) => {
-  const { state, isPending, reserve, release } = useReservation(present, wishlistId)
+export const PresentItem = ({
+  present, theme, isHidden, isOwner, wishlistId, onDetails, isExample,
+}: Props) => {
+  const { state, isPending, reserve, release } = useReservation(present, wishlistId, isExample)
+  const group = useGroupJoin(present, wishlistId, isExample)
   const links = present.links?.length ? present.links : present.link ? [present.link] : []
   const hasMore = Boolean(onDetails) && (
     (present.description?.length ?? 0) > CLAMPED_DESCRIPTION || links.length > 1
   )
+  const images = present.type === 'multi' && present.images?.length ? present.images : []
 
   return (
     <div className="w-full md:max-w-[350px] bg-card rounded-2xl flex flex-col gap-2">
-      {present.cover
-        ? <CardCover cover={present.cover} className="h-[300px]" />
-        : <div className="flex justify-center items-center bg-primary w-full h-[300px] rounded-t-2xl">
-            <Heart size={50} />
-          </div>
-      }
+      {images.length > 1 ? (
+        <Carousel className="w-full">
+          <CarouselContent>
+            {images.map((img, i) => (
+              <CarouselItem key={img + i}>
+                <CardCover cover={img} className="h-[300px]" />
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious className="left-2" />
+          <CarouselNext className="right-2" />
+        </Carousel>
+      ) : images.length === 1 ? (
+        <CardCover cover={images[0]} className="h-[300px]" />
+      ) : present.cover ? (
+        <CardCover cover={present.cover} className="h-[300px]" />
+      ) : (
+        <div className="flex justify-center items-center bg-primary w-full h-[300px] rounded-t-2xl">
+          <Heart size={50} />
+        </div>
+      )}
+
       <div className="grow flex flex-col gap-2 p-3">
         <div className="text-2xl text-secondary-foreground font-bold line-clamp-2 min-h-[65px]">
           {present.title}
         </div>
-        <div className="line-clamp-3 text-foreground min-h-[72px]">{present.description}</div>
+        <div className="line-clamp-3 text-foreground min-h-[72px] whitespace-pre-line break-words">
+          {present.description}
+        </div>
         {hasMore && (
           <button
             type="button"
@@ -59,19 +84,59 @@ export const PresentItem = ({ present, theme, isHidden, wishlistId, onDetails }:
           </div>
         )}
 
-        <div className="flex items-center justify-between flex-row gap-6 mt-auto">
+        <div className="flex items-center justify-between flex-col sm:flex-row gap-3 mt-auto">
           {!isHidden && (
-            <ReserveControl
-              state={state}
-              isPending={isPending}
-              theme={theme}
-              onReserve={reserve}
-              onRelease={release}
-            />
+            present.type === 'group'
+              ? <GroupJoinControl group={group} isOwner={isOwner} />
+              : isOwner
+                ? (
+                  <Button className="grow" variant={present.reserved ? 'destructive' : 'secondary'} disabled>
+                    {present.reserved ? 'Забронирован' : 'Свободен'}
+                  </Button>
+                )
+                : (
+                  <ReserveControl
+                    state={state}
+                    isPending={isPending}
+                    theme={theme}
+                    onReserve={reserve}
+                    onRelease={release}
+                  />
+                )
           )}
           {links.length > 0 && <ShopLinks links={links} />}
         </div>
       </div>
+    </div>
+  )
+}
+
+/**
+ * Групповой подарок: кнопка «скинусь» и счётчик участников. Владельцу кнопку
+ * не показываем — он смотрит на свой же вишлист, дарить ему нечего.
+ */
+export function GroupJoinControl({
+  group, isOwner,
+}: {
+  group: ReturnType<typeof useGroupJoin>
+  isOwner?: boolean
+}) {
+  return (
+    <div className="w-full flex flex-col gap-2">
+      {!isOwner && (
+        <Button
+          className="grow"
+          loading={group.isPending}
+          variant={group.joined ? 'destructive' : 'default'}
+          onClick={group.toggle}
+        >
+          {group.joined ? 'Не хочу дарить' : 'Я хочу подарить'}
+        </Button>
+      )}
+      <p className="text-sm text-center text-muted-foreground">
+        {group.count} {pluralizeRu(group.count, ['человек', 'человека', 'человек'])}{' '}
+        {pluralizeRu(group.count, ['хочет', 'хотят', 'хотят'])} подарить
+      </p>
     </div>
   )
 }
@@ -126,11 +191,7 @@ export function ReserveControl({
 
 /** Подпись магазина — хост ссылки: отдельного поля для названия нет. */
 export function shopName(link: string): string {
-  try {
-    return new URL(link).hostname.replace(/^www\./, '')
-  } catch {
-    return 'Магазин'
-  }
+  return linkHostname(link) ?? 'Магазин'
 }
 
 function ShopLinks({ links }: { links: string[] }) {

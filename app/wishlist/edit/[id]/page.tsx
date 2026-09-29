@@ -18,6 +18,7 @@ export default function Page() {
   return (
     <>
       <Breadcrumbs
+        className="mb-4"
         items={[{ name: 'Мои вишлисты', url: '/wishlist' }]}
         page={wishlist.title}
       />

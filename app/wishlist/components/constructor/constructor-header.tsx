@@ -9,6 +9,8 @@ import { colorSchema } from '@/shared/constants'
 import { Wishlist } from '@/shared/types'
 import React, { useEffect, useRef, useState } from 'react'
 import { useToast } from '@/hooks/use-toast'
+import { BookmarkPlus } from 'lucide-react'
+import { SaveAsTemplateModal } from '@/app/wishlist/components/save-as-template-modal'
 
 type Props = {
   wishlist: Wishlist
@@ -23,6 +25,7 @@ export function ConstructorHeader({ wishlist }: Props) {
 
   const [title, setTitle] = useState(wishlist.title)
   const [showSettings, setShowSettings] = useState(false)
+  const [saveTemplateOpen, setSaveTemplateOpen] = useState(false)
   const [colorScheme, setColorScheme] = useState(wishlist.settings.colorScheme)
   const [showGiftAvailability, setShowGiftAvailability] = useState(
     wishlist.settings.showGiftAvailability
@@ -69,6 +72,7 @@ export function ConstructorHeader({ wishlist }: Props) {
       <div>
         <p className="text-xs text-muted-foreground mb-1 uppercase tracking-wide">Название</p>
         <input
+          data-tour="title"
           className="w-full text-2xl font-bold bg-transparent border-0 border-b border-dashed border-border focus:border-primary focus:outline-none pb-1 transition-colors"
           value={title}
           placeholder="Новый вишлист"
@@ -99,7 +103,9 @@ export function ConstructorHeader({ wishlist }: Props) {
               }}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Выберите цветовую схему" />
+                <SelectValue placeholder="Выберите цветовую схему">
+                  {colorSchema.find(s => s.value === colorScheme)?.name ?? 'Выберите цветовую схему'}
+                </SelectValue>
               </SelectTrigger>
               <SelectContent>
                 {colorSchema.map(({ value, name, colors }) => (
@@ -149,7 +155,23 @@ export function ConstructorHeader({ wishlist }: Props) {
         </div>
       )}
 
-      <p className="text-xs text-muted-foreground">Сохраняется автоматически</p>
+      <div className="flex items-center gap-4">
+        <button
+          type="button"
+          onClick={() => setSaveTemplateOpen(true)}
+          className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+        >
+          <BookmarkPlus size={14} />
+          Сохранить как шаблон
+        </button>
+        <p className="text-xs text-muted-foreground">Сохраняется автоматически</p>
+      </div>
+      <SaveAsTemplateModal
+        wishlistId={wishlist.id}
+        wishlistTitle={title}
+        open={saveTemplateOpen}
+        onOpenChange={setSaveTemplateOpen}
+      />
     </div>
   )
 }

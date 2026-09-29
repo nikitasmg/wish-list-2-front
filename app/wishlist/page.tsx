@@ -27,7 +27,7 @@ export default function Page() {
           Создайте первый вишлист и поделитесь им с теми, кто хочет сделать вам подарок
         </p>
         <Button asChild>
-          <Link href="/templates">Создать первый вишлист</Link>
+          <Link href="/wishlist/create">Создать первый вишлист</Link>
         </Button>
       </div>
     )
@@ -44,7 +44,7 @@ export default function Page() {
           </p>
         </div>
         <Button asChild>
-          <Link href="/templates">
+          <Link href="/wishlist/create">
             <Plus size={18} className="mr-2" aria-hidden />
             Новый вишлист
           </Link>
@@ -75,11 +75,11 @@ export default function Page() {
             <WishlistCard key={wishlist.id} wishlist={wishlist} />
           ))}
 
-          {/* Плитка ведёт на шаблоны, а не создаёт пустой конструктор:
-              с готовой страницы начать проще, чем с чистого листа. */}
+          {/* Плитка ведёт на экран выбора заготовки, а не создаёт пустой
+              конструктор: с готовой страницы начать проще, чем с чистого листа. */}
           {!query && (
             <Link
-              href="/templates"
+              href="/wishlist/create"
               className="flex flex-col items-center justify-center gap-3 min-h-[220px] rounded-xl border border-dashed text-muted-foreground hover:text-foreground hover:border-primary/50 transition-colors"
             >
               <span className="flex items-center justify-center w-12 h-12 rounded-full border text-primary">

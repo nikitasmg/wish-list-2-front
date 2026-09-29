@@ -34,7 +34,7 @@ export function AgendaBlockEditor({ data, onChange }: Props) {
 
   return (
     <div className="space-y-3">
-      <div className="space-y-1.5">
+      <div className="space-y-1.5 mb-2">
         <Label>Заголовок (необязательно)</Label>
         <Input
           placeholder="Программа вечера"
@@ -42,7 +42,7 @@ export function AgendaBlockEditor({ data, onChange }: Props) {
           onChange={(e) => onChange({ ...data, title: e.target.value })}
         />
       </div>
-      <Label>Пункты программы</Label>
+      <Label className='mr-2'>Пункты программы</Label>
       {items.map((item, i) => (
         <div key={i} className="flex gap-2 items-start">
           <Input
