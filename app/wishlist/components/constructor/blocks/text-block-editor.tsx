@@ -2,15 +2,14 @@
 
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
-import Underline from '@tiptap/extension-underline'
 import DOMPurify from 'isomorphic-dompurify'
 import { Bold, Italic, Underline as UnderlineIcon, Heading2, Heading3 } from 'lucide-react'
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 
-const ALLOWED_TAGS = ['b', 'strong', 'i', 'em', 'u', 'h2', 'h3', 'p', 'br']
+const ALLOWED_TAGS = ['b', 'strong', 'i', 'em', 'u', 'h2', 'h3', 'p', 'br', 'ul', 'ol', 'li', 'a']
 
 function sanitize(html: string): string {
-  return DOMPurify.sanitize(html, { ALLOWED_TAGS, ALLOWED_ATTR: [] })
+  return DOMPurify.sanitize(html, { ALLOWED_TAGS, ALLOWED_ATTR: ['href', 'target', 'rel'] })
 }
 
 type Props = {
@@ -20,14 +19,16 @@ type Props = {
 
 export function TextBlockEditor({ data, onChange }: Props) {
   const initialContent = (data.html as string) ?? (data.content as string) ?? ''
+  const latest = useRef({ data, onChange })
+  latest.current = { data, onChange }
 
   const editor = useEditor({
     immediatelyRender: false,
-    extensions: [StarterKit, Underline],
+    extensions: [StarterKit],
     content: initialContent,
     onUpdate: ({ editor }) => {
       const html = sanitize(editor.getHTML())
-      onChange({ ...data, html })
+      latest.current.onChange({ ...latest.current.data, html })
     },
   })
 
@@ -35,9 +36,9 @@ export function TextBlockEditor({ data, onChange }: Props) {
     if (!editor) return
     const incoming = (data.html as string) ?? (data.content as string) ?? ''
     if (editor.getHTML() !== incoming) {
-      editor.commands.setContent(incoming)
+      editor.commands.setContent(incoming, { emitUpdate: false })
     }
-  }, [data.html, data.content]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [editor, data.html, data.content])
 
   if (!editor) return null
 
@@ -101,7 +102,7 @@ export function TextBlockEditor({ data, onChange }: Props) {
 
       <EditorContent
         editor={editor}
-        className="min-h-[120px] border rounded-lg p-3 prose prose-sm max-w-none focus-within:outline-none focus-within:ring-1 focus-within:ring-ring"
+        className="wishlist-prose min-h-[120px] border rounded-lg p-3 max-w-none focus-within:outline-none focus-within:ring-1 focus-within:ring-ring"
       />
     </div>
   )

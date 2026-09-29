@@ -1,168 +1,67 @@
-// app/wishlist/components/constructor/block-canvas.tsx
 'use client'
 
-import { BlockItem } from '@/app/wishlist/components/constructor/block-item'
-import { BlockPalette } from '@/app/wishlist/components/constructor/block-palette'
-import { Block } from '@/shared/types'
-import {
-  DndContext,
-  DragEndEvent,
-  PointerSensor,
-  closestCenter,
-  useSensor,
-  useSensors,
-} from '@dnd-kit/core'
-import {
-  SortableContext,
-  arrayMove,
-  rectSortingStrategy,
-} from '@dnd-kit/sortable'
-import { Monitor, Smartphone } from 'lucide-react'
-import React, { useCallback, useState } from 'react'
+import { useState } from 'react'
+import { DndContext, KeyboardSensor, PointerSensor, closestCenter, useSensor, useSensors } from '@dnd-kit/core'
+import { SortableContext, arrayMove, rectSortingStrategy, sortableKeyboardCoordinates, useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
+import { GripVertical, Copy, Trash2 } from 'lucide-react'
+import { Block, Present, Wishlist } from '@/shared/types'
+import { BLOCK_CATALOG, duplicateBlock, makeBlock } from '@/shared/editor-model'
+import { BlockContent } from '@/app/s/[shortId]/components/blocks/block-renderer'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { cn } from '@/lib/utils'
 
-type ViewMode = 'desktop' | 'mobile'
-
-type Props = {
-  initialBlocks: Block[]
-  onBlocksChange: (blocks: Block[]) => void
+type Props = { wishlist: Wishlist; presents: Present[]; selected?: string; onSelect: (id: string) => void; onChange: (blocks: Block[]) => void }
+export function BlockCanvas({ wishlist, presents, selected, onSelect, onChange }: Props) {
+  const [search, setSearch] = useState('')
+  const [mobile, setMobile] = useState(false)
+  const blocks = wishlist.blocks ?? []
+  const display = mobile ? [...blocks].sort((a,b) => (a.mobilePosition ?? a.position) - (b.mobilePosition ?? b.position)) : blocks
+  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }))
+  const sync = (next: Block[]) => onChange(next.map((b, position) => ({ ...b, position })))
+  const catalog = BLOCK_CATALOG.filter(b => b.label.toLocaleLowerCase('ru').includes(search.toLocaleLowerCase('ru')))
+  return <div className="min-w-0 space-y-5">
+    <details className="rounded-xl border p-4" open={blocks.length === 0}>
+      <summary className="cursor-pointer font-semibold">Добавить блок</summary>
+      <Input className="mt-3" aria-label="Поиск блоков" placeholder="Поиск блоков" value={search} onChange={e => setSearch(e.target.value)} />
+      {Array.from(new Set(catalog.map(b => b.group))).map(group => <div key={group} className="mt-4 space-y-2"><p className="text-xs uppercase tracking-wide text-muted-foreground">{group}</p><div className="flex flex-wrap gap-2">{catalog.filter(b => b.group === group).map(item => <Button key={item.type} variant="outline" size="sm" onClick={() => { const block = makeBlock(item.type, blocks.length); sync([...blocks, block]); onSelect(block.id) }}>{item.label}</Button>)}</div></div>)}
+      {!catalog.length && <p className="py-4 text-sm text-muted-foreground">Ничего не найдено</p>}
+    </details>
+    <div className="flex justify-end gap-2"><Button size="sm" variant={!mobile ? 'default' : 'outline'} onClick={() => setMobile(false)}>Десктоп</Button><Button size="sm" variant={mobile ? 'default' : 'outline'} onClick={() => setMobile(true)}>Телефон</Button></div>
+    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={({ active, over }) => {
+      if (!over || active.id === over.id) return
+      const from = display.findIndex(b => b.id === active.id), to = display.findIndex(b => b.id === over.id)
+      if (from < 0 || to < 0) return
+      const next = arrayMove(display, from, to)
+      sync(mobile ? blocks.map(b => ({ ...b, mobilePosition: next.findIndex(item => item.id === b.id) })) : next)
+    }}>
+      <SortableContext items={display.map(b => b.id)} strategy={rectSortingStrategy}>
+        <div className={cn('grid gap-4 items-start', mobile ? 'max-w-[390px] mx-auto' : 'grid-cols-1 md:grid-cols-2')}>
+          {display.map(block => <CanvasItem key={block.id} block={block} mobile={mobile} selected={selected === block.id} onSelect={() => onSelect(block.id)}
+            onDuplicate={() => { const next = duplicateBlock(blocks, block.id); sync(next); onSelect(next[blocks.findIndex(b => b.id === block.id) + 1].id) }}
+            onDelete={() => { if (window.confirm('Удалить блок? Ответы гостей для него больше не будут видны на странице.')) sync(blocks.filter(b => b.id !== block.id)) }}
+            onResize={() => sync(blocks.map(b => b.id === block.id ? { ...b, colSpan: b.colSpan === 1 ? 2 : 1 } : b))}
+          ><BlockContent block={{ ...block, hidden: false, revealAt: null }} wishlist={wishlist} presents={presents} preview /></CanvasItem>)}
+        </div>
+      </SortableContext>
+    </DndContext>
+  </div>
 }
 
-export function BlockCanvas({ initialBlocks, onBlocksChange }: Props) {
-  const [blocks, setBlocks] = useState<Block[]>(initialBlocks)
-  const [viewMode, setViewMode] = useState<ViewMode>('desktop')
-
-  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }))
-
-  const syncBlocks = useCallback(
-    (next: Block[]) => {
-      const normalized = next.map((b, i) => ({ ...b, position: i }))
-      setBlocks(normalized)
-      onBlocksChange(normalized)
-    },
-    [onBlocksChange]
-  )
-
-  const displayBlocks =
-    viewMode === 'mobile'
-      ? [...blocks].sort(
-          (a, b) => (a.mobilePosition ?? a.position) - (b.mobilePosition ?? b.position)
-        )
-      : blocks
-
-  const handleDragEnd = useCallback((event: DragEndEvent) => {
-    const { active, over } = event
-    if (!over || active.id === over.id) return
-
-    if (viewMode === 'mobile') {
-      // active.id/over.id are positions from displayBlocks (sorted by mobilePosition)
-      const oldIdx = displayBlocks.findIndex((b) => String(b.position) === String(active.id))
-      const newIdx = displayBlocks.findIndex((b) => String(b.position) === String(over.id))
-      const reordered = arrayMove(displayBlocks, oldIdx, newIdx).map((b, i) => ({
-        ...b,
-        mobilePosition: i,
-      }))
-      // merge updated mobilePositions back into blocks (keyed by position)
-      const next = blocks.map((b) => {
-        const updated = reordered.find((r) => r.position === b.position)
-        return updated ? { ...b, mobilePosition: updated.mobilePosition } : b
-      })
-      syncBlocks(next)
-    } else {
-      const oldIndex = blocks.findIndex((b) => String(b.position) === String(active.id))
-      const newIndex = blocks.findIndex((b) => String(b.position) === String(over.id))
-      syncBlocks(arrayMove(blocks, oldIndex, newIndex))
-    }
-  }, [blocks, displayBlocks, syncBlocks, viewMode])
-
-  const handleAdd = (block: Block) => {
-    syncBlocks([...blocks, block])
-  }
-
-  const handleUpdate = (index: number, data: Record<string, unknown>) => {
-    syncBlocks(blocks.map((b, i) => (i === index ? { ...b, data } : b)))
-  }
-
-  const handleResize = (index: number, colSpan: 1 | 2, rowSpan: 1 | 2 | 3) => {
-    syncBlocks(blocks.map((b, i) => (i === index ? { ...b, colSpan, rowSpan } : b)))
-  }
-
-  const handleDelete = (index: number) => {
-    syncBlocks(blocks.filter((_, i) => i !== index))
-  }
-
-  const ids = displayBlocks.map((b) => String(b.position))
-
-  return (
-    <div className="flex gap-6 items-start">
-      {/* Left palette */}
-      <BlockPalette onAdd={handleAdd} existingCount={blocks.length} />
-
-      {/* Canvas */}
-      <div className="flex-1 space-y-4">
-        {/* View switcher */}
-        <div className="flex items-center justify-end gap-2">
-          <button
-            type="button"
-            onClick={() => setViewMode('desktop')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-              viewMode === 'desktop'
-                ? 'bg-primary text-primary-foreground'
-                : 'bg-muted text-muted-foreground hover:bg-accent'
-            }`}
-          >
-            <Monitor size={14} /> Десктоп
-          </button>
-          <button
-            type="button"
-            onClick={() => setViewMode('mobile')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-              viewMode === 'mobile'
-                ? 'bg-primary text-primary-foreground'
-                : 'bg-muted text-muted-foreground hover:bg-accent'
-            }`}
-          >
-            <Smartphone size={14} /> Мобила
-          </button>
-        </div>
-
-        {/* Grid / list */}
-        {blocks.length === 0 ? (
-          <div className="border-2 border-dashed border-border rounded-lg p-12 text-center text-muted-foreground text-sm">
-            Добавь блоки из панели слева
-          </div>
-        ) : (
-          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-            <SortableContext items={ids} strategy={rectSortingStrategy}>
-              <div
-                className={
-                  viewMode === 'desktop'
-                    ? 'grid grid-cols-2 gap-4 auto-rows-[minmax(80px,auto)]'
-                    : 'flex flex-col gap-3 max-w-sm'
-                }
-              >
-                {displayBlocks.map((block) => (
-                  <BlockItem
-                    key={viewMode === 'desktop' ? block.position : (block.mobilePosition ?? block.position)}
-                    id={String(block.position)}
-                    block={viewMode === 'mobile' ? { ...block, colSpan: 1, rowSpan: 1 } : block}
-                    onUpdate={(data) => handleUpdate(
-                      blocks.findIndex((b) => b.position === block.position),
-                      data
-                    )}
-                    onResize={(cs, rs) => handleResize(
-                      blocks.findIndex((b) => b.position === block.position),
-                      cs, rs
-                    )}
-                    onDelete={() => handleDelete(
-                      blocks.findIndex((b) => b.position === block.position)
-                    )}
-                  />
-                ))}
-              </div>
-            </SortableContext>
-          </DndContext>
-        )}
-      </div>
+function CanvasItem({ block, mobile, selected, onSelect, onDuplicate, onDelete, onResize, children }: {
+  block: Block; mobile: boolean; selected: boolean; onSelect: () => void; onDuplicate: () => void; onDelete: () => void; onResize: () => void; children: React.ReactNode
+}) {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: block.id })
+  return <article ref={setNodeRef} style={{ transform: CSS.Transform.toString(transform), transition }} className={cn('min-w-0 rounded-2xl border bg-card p-3', !mobile && block.colSpan !== 1 && 'md:col-span-2', selected && 'ring-2 ring-primary', block.hidden && 'opacity-60')}>
+    <div className="mb-3 flex flex-wrap items-center gap-1 border-b pb-2">
+      <button type="button" {...attributes} {...listeners} aria-label="Переместить блок" className="touch-none cursor-grab rounded p-2"><GripVertical size={16} /></button>
+      <button type="button" onClick={onSelect} className="flex-1 text-left text-sm font-semibold">{BLOCK_CATALOG.find(b => b.type === block.type)?.label ?? 'Старый блок'}{block.hidden && ' · скрыт'}{block.revealAt && ' · секрет'}</button>
+      {!mobile && <Button size="sm" variant="ghost" onClick={onResize}>{block.colSpan === 1 ? '½' : '1/1'}</Button>}
+      <Button size="sm" variant="ghost" aria-label="Дублировать блок" onClick={onDuplicate}><Copy size={14} /></Button>
+      <Button size="sm" variant="ghost" aria-label="Удалить блок" onClick={onDelete}><Trash2 size={14} /></Button>
     </div>
-  )
+    <div onClick={onSelect} className="cursor-pointer"><div className="pointer-events-none select-none" inert>{children}</div></div>
+    <Button size="sm" variant="ghost" className="mt-3 w-full" onClick={onSelect}>Настроить блок</Button>
+  </article>
 }

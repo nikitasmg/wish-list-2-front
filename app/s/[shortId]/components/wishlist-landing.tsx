@@ -3,105 +3,28 @@
 import { Present, Wishlist } from '@/shared/types'
 import { BlockRenderer } from './blocks/block-renderer'
 import { HeroHeader } from './hero-header'
-import { PresentsList } from './presents-list'
-import { PresentsGrid } from './presents-grid'
-import { PresentFilter, PresentsFilter, filterPresents } from './presents-filter'
+import { GiftsSection } from './gifts-section'
 import { getSchemeConfig } from './scheme-config'
+import { CUSTOM_SCHEME, normalizeScheme } from '@/shared/constants'
+import { deriveSchemeStyle } from '@/shared/derive-scheme'
 import { cn } from '@/lib/utils'
+import { isLegacyWishlist } from '@/shared/editor-model'
 import Link from 'next/link'
-import * as React from 'react'
-import { useEffect, useMemo, useState } from 'react'
 
-type Props = {
-  wishlist: Wishlist
-  presents: Present[]
-  isMyWishlist: boolean
-  disableBodyTheme?: boolean
-}
-
-export function WishlistLanding({ wishlist, presents, isMyWishlist, disableBodyTheme }: Props) {
-  const config = getSchemeConfig(wishlist.settings.colorScheme)
-  const isPresentHidden = isMyWishlist && !wishlist.settings.showGiftAvailability
-  const layout = wishlist.settings.presentsLayout ?? 'list'
-  const [filter, setFilter] = useState<PresentFilter>('all')
-  const visiblePresents = useMemo(() => filterPresents(presents, filter), [presents, filter])
-
-  useEffect(() => {
-    if (disableBodyTheme) return
-    const scheme = wishlist.settings.colorScheme
-    if (!scheme) return
-    document.body.classList.add(scheme)
-    return () => { document.body.classList.remove(scheme) }
-  }, [wishlist.settings.colorScheme, disableBodyTheme])
-
-  return (
-    <div className={cn('min-h-screen bg-background', wishlist.settings.colorScheme)}>
-      <HeroHeader wishlist={wishlist} config={config} />
-
-      <div className="max-w-5xl mx-auto px-4 md:px-8 py-16 space-y-16">
-        {wishlist.blocks && wishlist.blocks.length > 0 && (
-          <BlockRenderer blocks={wishlist.blocks} />
-        )}
-
-        {presents.length > 0 && (
-          <section className="space-y-8">
-            <div className="flex flex-wrap items-end justify-between gap-4">
-              <div className="space-y-2">
-                <h2 className="text-3xl md:text-4xl font-bold text-primary">Желанные подарки</h2>
-                <div className="w-16 h-1.5 bg-accent rounded-full" />
-              </div>
-              <PresentsFilter presents={presents} value={filter} onChange={setFilter} />
-            </div>
-
-            {visiblePresents.length === 0 ? (
-              <p className="text-muted-foreground">
-                {filter === 'free' ? 'Свободных подарков не осталось' : 'Пока никто ничего не занял'}
-              </p>
-            ) : (
-              <>
-                {layout === 'list' && (
-                  <PresentsList
-                    presents={visiblePresents}
-                    wishlistId={wishlist.id}
-                    theme={wishlist.settings.colorScheme}
-                    config={config}
-                    isHidden={isPresentHidden}
-                  />
-                )}
-                {layout === 'grid3' && (
-                  <PresentsGrid
-                    presents={visiblePresents}
-                    wishlistId={wishlist.id}
-                    theme={wishlist.settings.colorScheme}
-                    isHidden={isPresentHidden}
-                    columns={3}
-                  />
-                )}
-                {layout === 'grid2' && (
-                  <PresentsGrid
-                    presents={visiblePresents}
-                    wishlistId={wishlist.id}
-                    theme={wishlist.settings.colorScheme}
-                    isHidden={isPresentHidden}
-                    columns={2}
-                  />
-                )}
-              </>
-            )}
-          </section>
-        )}
-      </div>
-
-      <footer className="bg-secondary text-secondary-foreground py-4">
-        <div className="mx-auto flex items-center justify-between container px-4 gap-4">
-          <p className="text-sm md:text-base">
-            Создано с помощью сервиса <Link href="/" className="underline">GetWishlist</Link>
-          </p>
-          <Link href="/" className="bg-background text-foreground px-4 py-2 md:px-8 md:py-3 rounded-xl font-bold text-sm md:text-base hover:bg-background/90 transition-colors shadow-lg">
-            Хочу такой же!
-          </Link>
-        </div>
-      </footer>
+type Props = { wishlist: Wishlist; presents: Present[]; isMyWishlist: boolean; disableBodyTheme?: boolean }
+export function WishlistLanding({ wishlist, presents, isMyWishlist, disableBodyTheme = false }: Props) {
+  const scheme = normalizeScheme(wishlist.settings.colorScheme)
+  const blocks = wishlist.blocks ?? []
+  return <div className={cn('min-h-screen bg-background text-foreground', scheme !== CUSTOM_SCHEME && scheme)}
+    style={scheme === CUSTOM_SCHEME ? deriveSchemeStyle(wishlist.settings.customScheme) : undefined}>
+    {isLegacyWishlist(wishlist) && !blocks.some(b => b.type === 'cover') && <HeroHeader wishlist={wishlist} config={getSchemeConfig(scheme)} />}
+    <div className="max-w-5xl mx-auto px-4 md:px-8 py-12 space-y-12">
+      <BlockRenderer blocks={blocks} wishlist={wishlist} presents={presents} owner={isMyWishlist} preview={disableBodyTheme} />
+      {isLegacyWishlist(wishlist) && !blocks.some(b => b.type === 'wishlist') && presents.length > 0 && <section className="space-y-6"><h2 className="text-3xl font-bold">Желанные подарки</h2><GiftsSection wishlist={wishlist} presents={presents} owner={isMyWishlist} preview={disableBodyTheme} /></section>}
     </div>
-  )
+    <footer className="border-t px-4 py-8"><div className="max-w-5xl mx-auto flex flex-wrap items-center justify-between gap-4 text-sm">
+      <Link href="/" className="font-bold">просто намекни;)</Link>
+      <Link href="/wishlist" className="rounded-full bg-primary px-5 py-3 font-semibold text-primary-foreground">Хочу такой же!</Link>
+    </div></footer>
+  </div>
 }

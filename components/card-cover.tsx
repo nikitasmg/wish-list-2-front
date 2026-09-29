@@ -1,39 +1,17 @@
+'use client'
 import { cn } from '@/lib/utils'
-import Image from 'next/image'
-import * as React from 'react'
+import { ImageOff } from 'lucide-react'
+import { useState } from 'react'
 
-type Props = {
-  cover: string
-  title?: string
-  className?: string
-};
-
-export const CardCover = ({ cover, title, className}: Props) => {
-  return (
-    <div className= {cn("relative w-full h-[150px] overflow-hidden rounded-t-2xl", className)}>
-      {/* Размазанная картинка */}
-      <div className="absolute inset-0 bg-cover bg-center filter blur-lg rounded-t-2xl">
-        <Image
-          src={cover}
-          alt="Background"
-          fill
-          unoptimized
-          style={{ objectFit: 'cover' }}
-          className="object-center"
-        />
-      </div>
-
-      {/* Основной контент */}
-      <div className="relative w-full h-full rounded-t-md">
-        <Image
-          className="rounded-t-md"
-          src={cover}
-          alt={title ?? 'wishlist cover'}
-          fill
-          unoptimized
-          style={{ objectFit: 'contain' }}
-        />
-      </div>
-    </div>
-  )
+export function CardCover({ cover, title, className }: { cover: string; title?: string; className?: string }) {
+  return <CoverImage key={cover} cover={cover} title={title} className={className} />
+}
+function CoverImage({ cover, title, className }: { cover: string; title?: string; className?: string }) {
+  const [state, setState] = useState<'loading' | 'ready' | 'error'>(cover ? 'loading' : 'error')
+  return <div className={cn('relative w-full h-[150px] overflow-hidden rounded-xl bg-muted', className)} aria-busy={state === 'loading'}>
+    {state === 'loading' && <div className="absolute inset-0 motion-safe:animate-pulse bg-muted" role="status"><span className="sr-only">Загрузка фотографии</span></div>}
+    {state === 'error' ? <div className="flex h-full items-center justify-center gap-2 text-sm text-muted-foreground"><ImageOff size={20} />Фото недоступно</div>
+      // eslint-disable-next-line @next/next/no-img-element
+      : <img src={cover} alt={title ?? ''} loading="lazy" onLoad={() => setState('ready')} onError={() => setState('error')} className={cn('h-full w-full object-cover transition-opacity', state !== 'ready' && 'opacity-0')} />}
+  </div>
 }

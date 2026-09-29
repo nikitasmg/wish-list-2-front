@@ -63,6 +63,17 @@ export default {
       fontFamily: {
         manrope: [ 'var(--font-manrope)', 'system-ui', 'sans-serif' ],
       },
+      /*
+       * Шкала заголовков из макета. Трекинг отрицательный и растёт по модулю
+       * вместе с кеглем: на 44px и больше дефолтный интервал разваливает
+       * заголовок на отдельные буквы.
+       */
+      fontSize: {
+        'display-sm': [ '2rem',   { lineHeight: '1.1',  letterSpacing: '-0.025em', fontWeight: '800' } ],
+        'display':    [ '2.75rem', { lineHeight: '1.03', letterSpacing: '-0.033em', fontWeight: '800' } ],
+        'display-lg': [ '4rem',   { lineHeight: '1',    letterSpacing: '-0.04em',  fontWeight: '800' } ],
+        'display-xl': [ '7rem',   { lineHeight: '1',    letterSpacing: '-0.045em', fontWeight: '800' } ],
+      },
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',

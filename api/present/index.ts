@@ -7,6 +7,7 @@ export const useApiGetAllPresents = (wishlistId: string) => {
   return useQuery({
     queryKey: [ 'presents', wishlistId ],
     queryFn: async () => api.get<{ data: Present[] }>(`wishlists/${wishlistId}/presents`),
+    enabled: Boolean(wishlistId),
   })
 }
 

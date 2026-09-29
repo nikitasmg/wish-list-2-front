@@ -10,12 +10,15 @@ import './globals.css'
 
 const manrope = Manrope({
   variable: '--font-manrope',
-  subsets: [ 'latin' ],
+  // Кириллица нужна явно: без неё Manrope подгружается только для латиницы,
+  // а русский текст отваливается на системный шрифт.
+  subsets: [ 'latin', 'cyrillic' ],
+  weight: [ '400', '500', '600', '700', '800' ],
 })
 
 export const metadata: Metadata = {
-  title: 'Get wishlist - Бесплатный сервис по созданию вишлистов',
-  description: 'Создай свой вишлист и делись с друзьями',
+  title: 'Просто намекни — бесплатный сервис для вишлистов',
+  description: 'Соберите страницу праздника и список подарков, поделитесь ссылкой с гостями',
 }
 
 export default function RootLayout({

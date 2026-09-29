@@ -21,7 +21,9 @@ export function LocationBlockEditor({ data, onChange }: Props) {
         />
       </div>
       <div className="space-y-2">
-        <Label>Ссылка на карту (2GIS / Yandex)</Label>
+        <Label>Адрес</Label>
+        <Input value={String(data.address ?? '')} onChange={e => onChange({ ...data, address: e.target.value })} />
+        <Label>Ссылка на место</Label>
         <Input
           placeholder="https://2gis.ru/..."
           value={(data.link as string) ?? ''}

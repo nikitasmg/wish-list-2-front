@@ -12,21 +12,32 @@ import { TextBlockView } from '@/app/s/[shortId]/components/blocks/text-block-vi
 import { TextImageBlockView } from '@/app/s/[shortId]/components/blocks/text-image-block-view'
 import { TimingBlockView } from '@/app/s/[shortId]/components/blocks/timing-block-view'
 import { VideoBlockView } from '@/app/s/[shortId]/components/blocks/video-block-view'
-import { Block } from '@/shared/types'
+import { Block, Wishlist, Present } from '@/shared/types'
+import { CoverBlockView } from './cover-block-view'
+import { ListBlockView } from './list-block-view'
+import { MediaBlockView } from './media-block-view'
+import { SecretBlockView } from './secret-block-view'
+import { GuestBlockView } from './guest-block-view'
+import { GiftsSection } from '../gifts-section'
+import { BLOCK_CATALOG } from '@/shared/editor-model'
 import React from 'react'
 
 type Props = {
   blocks: Block[]
+  wishlist?: Wishlist
+  presents?: Present[]
+  preview?: boolean
+  owner?: boolean
 }
 
-export function BlockRenderer({ blocks }: Props) {
+export function BlockRenderer({ blocks, ...context }: Props) {
   const sorted = [...blocks].sort((a, b) => a.position - b.position)
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:auto-rows-[minmax(100px,auto)]">
-      {sorted.map((block) => (
+      {sorted.filter(block => !block.hidden).map((block) => (
         <div
-          key={block.position}
+          key={block.id || block.position}
           className="block-grid-item"
           style={{
             '--mobile-order': block.mobilePosition ?? block.position,
@@ -34,6 +45,25 @@ export function BlockRenderer({ blocks }: Props) {
             '--row-span': `span ${block.rowSpan ?? 1}`,
           } as React.CSSProperties}
         >
+          <BlockContent block={block} {...context} />
+        </div>
+      ))}
+    </div>
+  )
+}
+
+export function BlockContent({ block, wishlist, presents = [], preview, owner }: Omit<Props, 'blocks'> & { block: Block }) {
+  if (block.revealAt && (new Date(block.revealAt).getTime() > Date.now() || !Object.keys(block.data ?? {}).length)) return <SecretBlockView revealAt={block.revealAt} />
+  const interactive = ['rsvp', 'poll', 'playlist', 'guestbook'].includes(block.type)
+  const known = BLOCK_CATALOG.some(item => item.type === block.type) || ['text_image', 'image', 'gallery', 'agenda', 'checklist'].includes(block.type)
+  return <div className="space-y-4 min-w-0">
+          {block.type !== 'cover' && <>{block.caption && <p className="text-sm text-primary">{block.caption}</p>}{block.title && <h2 className="text-2xl font-bold">{block.title}</h2>}</>}
+          {block.type === 'cover' && <CoverBlockView block={block} wishlist={wishlist} />}
+          {block.type === 'list' && <ListBlockView block={block} />}
+          {block.type === 'media' && <MediaBlockView block={block} />}
+          {block.type === 'wishlist' && wishlist && <GiftsSection wishlist={wishlist} presents={presents} owner={owner} preview={preview} view={block.view} />}
+          {interactive && (preview || !wishlist ? <div className="rounded-xl border border-dashed p-6 text-muted-foreground">{BLOCK_CATALOG.find(item => item.type === block.type)?.label}. Ответы гостей доступны на опубликованной странице.</div> : <GuestBlockView block={block} wishlistId={wishlist.id} owner={owner} />)}
+          {!known && <div className="rounded-xl border border-dashed p-5 text-sm text-muted-foreground">Блок из другой версии. Владелец может заменить его в редакторе.</div>}
           {block.type === 'text' && <TextBlockView block={block} />}
           {block.type === 'text_image' && <TextImageBlockView block={block} />}
           {block.type === 'image' && <ImageBlockView block={block} />}
@@ -49,7 +79,4 @@ export function BlockRenderer({ blocks }: Props) {
           {block.type === 'video' && <VideoBlockView block={block} />}
           {block.type === 'checklist' && <ChecklistBlockView block={block} />}
         </div>
-      ))}
-    </div>
-  )
 }

@@ -1,23 +1,12 @@
+'use client'
 import { Block } from '@/shared/types'
-import { MapPinIcon } from 'lucide-react'
-import React from 'react'
-
+import { safeLink } from '@/shared/editor-model'
+import { MapPin } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { toast } from '@/hooks/use-toast'
 export function LocationBlockView({ block }: { block: Block }) {
-  const name = block.data.name as string
-  const link = block.data.link as string | undefined
-  if (!name) return null
-  return (
-    <div className="flex gap-4 items-center bg-card p-6 rounded-2xl shadow-md max-w-sm">
-      <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center shrink-0">
-        <MapPinIcon className="w-6 h-6 text-primary" />
-      </div>
-      {link ? (
-        <a href={link} target="_blank" rel="noopener noreferrer" className="text-xl font-medium text-primary hover:text-accent underline underline-offset-4">
-          {name}
-        </a>
-      ) : (
-        <span className="text-xl font-medium text-foreground">{name}</span>
-      )}
-    </div>
-  )
+  const name = String(block.data.name ?? '')
+  const address = String(block.data.address ?? '')
+  const link = safeLink(block.data.link)
+  return <div className="rounded-2xl border bg-card p-6 space-y-3"><MapPin className="text-primary" /><p className="text-xl font-semibold">{name || 'Место встречи'}</p><p className="text-muted-foreground">{address}</p><div className="flex flex-wrap gap-2">{address && <Button variant="outline" onClick={async () => { try { await navigator.clipboard.writeText(address); toast({ title: 'Адрес скопирован' }) } catch { toast({ title: 'Не удалось скопировать адрес', variant: 'destructive' }) } }}>Скопировать адрес</Button>}{link && <Button asChild variant="ghost"><a href={link} target="_blank" rel="noopener noreferrer">Открыть ссылку</a></Button>}</div></div>
 }
