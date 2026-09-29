@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { useGuestData } from '@/api/guestdata'
 import api from '@/lib/api'
 import { Block, GuestbookEntry, PlaylistTrack, PollResults, RSVPResponse, RSVPSummary } from '@/shared/types'
+import { CardCover } from '@/components/card-cover'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -54,7 +55,7 @@ function PlaylistView({ block, wishlistId, owner }: Props) {
 function GuestbookView({ block, wishlistId, owner }: Props) {
   const q = useGuestData<GuestbookEntry[]>(wishlistId, block.id, 'guestbook', owner)
   const [pending, setPending] = useState(false)
-  return <div className="space-y-4">{q.result?.map(entry => <article key={entry.id} className={cn('rounded-xl border bg-card p-4 space-y-2', entry.hidden && 'opacity-50')}><p className="font-semibold">{entry.name}{entry.hidden && ' · скрыто'}</p><p className="whitespace-pre-wrap break-words">{entry.text}</p>{owner && <Button size="sm" variant="ghost" disabled={pending} onClick={async () => { setPending(true); try { await api.put(`wishlists/guestbook/${entry.id}/hidden`, { hidden: !entry.hidden }); await q.refresh() } catch { toast({ title: 'Не удалось изменить видимость', variant: 'destructive' }) } finally { setPending(false) } }}>{entry.hidden ? 'Показать' : 'Скрыть'}</Button>}</article>)}
+  return <div className="space-y-4">{q.result?.map(entry => <article key={entry.id} className={cn('rounded-xl border bg-card p-4 space-y-2', entry.hidden && 'opacity-50')}><p className="font-semibold">{entry.name}{entry.hidden && ' · скрыто'}</p><p className="whitespace-pre-wrap break-words">{entry.text}</p>{entry.photoUrl && <CardCover cover={entry.photoUrl} title={`Фото от ${entry.name}`} className="h-48" />}{owner && <Button size="sm" variant="ghost" disabled={pending} onClick={async () => { setPending(true); try { await api.put(`wishlists/guestbook/${entry.id}/hidden`, { hidden: !entry.hidden }); await q.refresh() } catch { toast({ title: 'Не удалось изменить видимость', variant: 'destructive' }) } finally { setPending(false) } }}>{entry.hidden ? 'Показать' : 'Скрыть'}</Button>}</article>)}
     {!owner && <form className="space-y-3" onSubmit={e => { e.preventDefault(); const form = e.currentTarget; const f = new FormData(form); q.mutation.mutate({ name: f.get('name'), text: f.get('text'), photoUrl: '' }, { onSuccess: () => form.reset() }) }}><Input name="name" aria-label="Ваше имя" placeholder="Ваше имя" maxLength={60} required /><Textarea name="text" aria-label="Поздравление" placeholder="Пара тёплых слов" maxLength={1000} required /><Button disabled={q.mutation.isPending}>Оставить поздравление</Button></form>}<ErrorText error={q.error || q.mutation.error} />
   </div>
 }

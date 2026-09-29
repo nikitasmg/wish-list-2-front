@@ -26,6 +26,7 @@ function Editor({ wishlist }: { wishlist: Wishlist }) {
   const { draft, change, status, dirty, flush, retry, error } = useWishlistDraft(wishlist)
   const [mode, setMode] = useState<'editor' | 'preview' | 'presents' | 'responses'>('editor')
   const [tab, setTab] = useState<'block' | 'page' | 'access'>('block')
+  const [previewWidth, setPreviewWidth] = useState<'desktop' | 'phone'>('desktop')
   const [selected, setSelected] = useState<string>()
   const [presentModalOpen, setPresentModalOpen] = useState(false)
   const { data: presentsData } = useApiGetAllPresents(wishlist.id)
@@ -64,7 +65,27 @@ function Editor({ wishlist }: { wishlist: Wishlist }) {
         </aside>
       </div>
     </>}
-    {mode === 'preview' && <div className="overflow-hidden rounded-2xl border"><WishlistLanding wishlist={draft} presents={presents} isMyWishlist={false} disableBodyTheme /></div>}
+    {mode === 'preview' && <div className="space-y-3">
+      {/* Переключатель ширины: половина гостей приходит с телефона, а
+          проверить это, не меняя размер окна, было нечем. Заодно у
+          mobilePosition появляется способ себя показать. */}
+      <div className="flex justify-end">
+        <div className="inline-flex gap-1 rounded-xl border p-1" role="group" aria-label="Ширина предпросмотра">
+          {([['desktop', 'Компьютер'], ['phone', 'Телефон']] as const).map(([value, label]) => (
+            <Button
+              key={value}
+              size="sm"
+              variant={previewWidth === value ? 'default' : 'ghost'}
+              aria-pressed={previewWidth === value}
+              onClick={() => setPreviewWidth(value)}
+            >{label}</Button>
+          ))}
+        </div>
+      </div>
+      <div className={previewWidth === 'phone' ? 'mx-auto w-[390px] max-w-full overflow-hidden rounded-2xl border' : 'overflow-hidden rounded-2xl border'}>
+        <WishlistLanding wishlist={draft} presents={presents} isMyWishlist={false} disableBodyTheme />
+      </div>
+    </div>}
     {mode === 'responses' && <div className="space-y-6"><p className="text-sm text-muted-foreground">Ответы для сохранённых блоков. Настройки нового блока сначала нужно сохранить.</p>{(wishlist.blocks ?? []).filter(b => ['rsvp', 'poll', 'playlist', 'guestbook'].includes(b.type)).map(b => <section key={b.id} className="rounded-xl border p-5 space-y-4"><h2 className="text-xl font-bold">{b.title || ({ rsvp: 'Ответы гостей', poll: 'Голосование', playlist: 'Плейлист', guestbook: 'Гостевая книга' } as Record<string, string>)[b.type]}</h2><GuestBlockView block={b} wishlistId={wishlist.id} owner /></section>)}</div>}
     {mode === 'presents' && <div className="space-y-4"><Button variant="outline" className="w-full border-dashed" onClick={() => setPresentModalOpen(true)}>Добавить подарок</Button><div className="flex flex-col gap-4 md:flex-row md:flex-wrap">{presents.map(present => <PresentCard key={present.id} present={present} wishlistId={wishlist.id} />)}</div>{!presents.length && <p className="text-sm text-muted-foreground">Подарков пока нет. Добавьте первый!</p>}</div>}
     <PresentModal wishlistId={wishlist.id} open={presentModalOpen} onOpenChange={setPresentModalOpen} />
