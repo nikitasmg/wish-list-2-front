@@ -5,10 +5,12 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
+import type { SchemeTheme } from './scheme-config'
 import { ReactNode } from 'react'
 
 type Props = {
-  theme: string
+  /** Класс и переменные схемы: диалог живёт в портале на body. */
+  theme: SchemeTheme
   disabled?: boolean
   onClick: () => void
   children: ReactNode
@@ -18,7 +20,7 @@ export function ConfirmReserveModal({ theme, disabled,  onClick, children }: Pro
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild disabled={disabled}>{children}</AlertDialogTrigger>
-      <AlertDialogContent className={theme}>
+      <AlertDialogContent className={theme.className} style={theme.style}>
         <AlertDialogHeader>
           <AlertDialogTitle className="text-primary">Забронировать подарок?</AlertDialogTitle>
           <AlertDialogDescription>

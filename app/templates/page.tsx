@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input'
 import { useToast } from '@/hooks/use-toast'
 import { cn } from '@/lib/utils'
 import { colorSchema, normalizeScheme } from '@/shared/constants'
-import { pluralRu } from '@/shared/event-date'
+import { localNoon, pluralRu } from '@/shared/event-date'
 import { Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -51,8 +51,10 @@ export default function TemplatesPage() {
       {
         template_id: selected.id,
         title: title.trim() || undefined,
-        // Из datetime-local приходит местное время без зоны — бэк ждёт RFC3339.
-        event_date: eventDate ? new Date(eventDate).toISOString() : undefined,
+        // Поле даёт «ГГГГ-ММ-ДД», а такую строку Date разбирает как полночь
+        // UTC: у гостей западнее Гринвича праздник уезжал на день назад.
+        // Собираем дату по частям — она получается местной.
+        event_date: localNoon(eventDate),
       },
       {
         onSuccess: res => router.push(`/wishlist/edit/${res.data.id}`),

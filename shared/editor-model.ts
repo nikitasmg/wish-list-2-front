@@ -1,7 +1,42 @@
 import type { Block, BlockType, Wishlist } from './types'
 
+/**
+ * Идентификатор блока.
+ *
+ * crypto.randomUUID доступен только в защищённом контексте: по http с
+ * LAN-адреса — а именно так редактор и открывают, когда проверяют его на
+ * телефоне, — он бросает TypeError и роняет весь конструктор, а не одно
+ * действие. Запасной вариант уникален в пределах страницы, и этого хватает:
+ * дальше id всё равно уезжает на сервер вместе с остальными блоками.
+ */
+export function newBlockId(): string {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID()
+  }
+  return `b-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`
+}
+
 export function isLegacyWishlist(wishlist: { blocksVersion?: number }): boolean {
   return (wishlist.blocksVersion ?? 1) < 2
+}
+
+/**
+ * Блок ещё не раскрылся — вместо содержимого гость видит таймер.
+ *
+ * Решает только дата. Прежняя проверка добавляла «или data пустая» как
+ * признак того, что бэк вырезал содержимое, — но divider, location, contact
+ * и ещё полдюжины типов законно живут с пустой data, и такие блоки
+ * оставались закрытыми навсегда: кнопка «Открыть сюрприз» перезагружала
+ * страницу в то же состояние.
+ */
+export function isSecretHidden(
+  block: { revealAt?: string | null },
+  now: Date = new Date(),
+): boolean {
+  if (!block.revealAt) return false
+  const reveal = new Date(block.revealAt).getTime()
+  if (Number.isNaN(reveal)) return false
+  return reveal > now.getTime()
 }
 
 /** Go adds zero-valued fields and may reorder data keys on JSON round trips. */
@@ -39,14 +74,14 @@ export function makeBlock(type: BlockType, position: number): Block {
     : type === 'list' ? { items: [{ v: 'Новый пункт' }] }
     : type === 'rsvp' ? { fields: ['plusOne'] }
     : type === 'playlist' ? { votes: true } : type === 'guestbook' ? { photos: false } : {}
-  return { id: crypto.randomUUID(), type, position, colSpan: 2, rowSpan: 1, view: BLOCK_CATALOG.find(b => b.type === type)?.views?.[0][0], data }
+  return { id: newBlockId(), type, position, colSpan: 2, rowSpan: 1, view: BLOCK_CATALOG.find(b => b.type === type)?.views?.[0][0], data }
 }
 
 /** Convert known v1 shapes without losing text, images or existing identities. */
 export function prepareBlocks(wishlist: Pick<Wishlist, 'blocks' | 'cover' | 'title'>): Block[] {
   const blocks = structuredClone(wishlist.blocks ?? []).sort((a, b) => a.position - b.position)
   for (const block of blocks) {
-    block.id ||= crypto.randomUUID()
+    block.id ||= newBlockId()
     block.data ||= {}
     if (block.type === 'image' || block.type === 'gallery') {
       const single = block.type === 'image'
@@ -91,7 +126,7 @@ export function addBlockAfter(blocks: Block[], id: string, type: BlockType): Blo
 export function duplicateBlock(blocks: Block[], id: string): Block[] {
   const index = blocks.findIndex(b => b.id === id)
   if (index < 0) return blocks
-  const copy = { ...structuredClone(blocks[index]), id: crypto.randomUUID(), mobilePosition: undefined }
+  const copy = { ...structuredClone(blocks[index]), id: newBlockId(), mobilePosition: undefined }
   return [...blocks.slice(0, index + 1), copy, ...blocks.slice(index + 1)].map((b, position) => ({ ...b, position }))
 }
 

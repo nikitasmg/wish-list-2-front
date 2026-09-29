@@ -74,3 +74,21 @@ test('поиск не зависит от регистра и лишних пр�
   assert.equal(searchWishlists(lists, '   ').length, 3)
   assert.equal(searchWishlists(lists, 'ничего').length, 0)
 })
+
+const { localNoon } = load('shared/event-date.ts')
+
+test('дата из поля «дата» остаётся местной, а не уезжает в UTC', () => {
+  const iso = localNoon('2026-11-14')
+  const back = new Date(iso)
+  // Именно 14-е по местному календарю: new Date('2026-11-14') дал бы
+  // полночь UTC, и западнее Гринвича праздник съехал бы на 13-е.
+  assert.equal(back.getFullYear(), 2026)
+  assert.equal(back.getMonth(), 10)
+  assert.equal(back.getDate(), 14)
+})
+
+test('пустая и битая дата не превращаются в мусор', () => {
+  assert.equal(localNoon(''), undefined)
+  assert.equal(localNoon('не дата'), undefined)
+  assert.equal(localNoon(undefined), undefined)
+})

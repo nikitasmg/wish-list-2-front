@@ -82,6 +82,25 @@ export function InlineTextEditor({ html, onChange, onSplit, onConvert, className
     commit()
   }
 
+  /**
+   * Выделение акцентом.
+   *
+   * Через hiliteColor не выходит: execCommand оборачивает выделение в
+   * <span style> или <font>, а чистилка их вырезает — подсветка появлялась
+   * и тут же пропадала. Вставляем <mark> руками: этот тег разрешён и на
+   * странице гостя, и здесь.
+   */
+  const applyHighlight = () => {
+    const selection = window.getSelection()
+    const text = selection?.toString()
+    if (!text) return
+
+    const inside = ref.current?.contains(selection!.anchorNode ?? null)
+    if (!inside) return
+
+    format('insertHTML', `<mark>${text.replace(/[<>&]/g, char => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' }[char] ?? char))}</mark>`)
+  }
+
   const addLink = () => {
     const url = window.prompt('Адрес ссылки', 'https://')
     if (!url) return
@@ -135,7 +154,7 @@ export function InlineTextEditor({ html, onChange, onSplit, onConvert, className
           <span className="mx-1 h-5 w-px bg-border" aria-hidden />
           <ToolbarButton label="Ссылка" onClick={addLink}><Link2 className="h-4 w-4" /></ToolbarButton>
           <ToolbarButton label="Список" onClick={() => format('insertUnorderedList')}><List className="h-4 w-4" /></ToolbarButton>
-          <ToolbarButton label="Выделить акцентом" onClick={() => format('hiliteColor', 'transparent')}>
+          <ToolbarButton label="Выделить акцентом" onClick={applyHighlight}>
             <span className="h-4 w-4 rounded-full bg-primary" />
           </ToolbarButton>
         </div>

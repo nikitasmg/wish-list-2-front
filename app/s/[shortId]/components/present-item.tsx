@@ -1,4 +1,5 @@
 'use client'
+import type { SchemeTheme } from './scheme-config'
 
 import { ConfirmReserveModal } from '@/app/s/[shortId]/components/confirm-modal'
 import { useReservation } from '@/app/s/[shortId]/components/use-reservation'
@@ -10,7 +11,7 @@ import * as React from 'react'
 
 type Props = {
   present: Present
-  theme: string
+  theme: SchemeTheme
   isHidden: boolean
   wishlistId: string
   onDetails?: (present: Present) => void
@@ -85,7 +86,7 @@ export function ReserveControl({
 }: {
   state: 'free' | 'mine' | 'taken'
   isPending: boolean
-  theme: string
+  theme: SchemeTheme
   onReserve: () => void
   onRelease: () => void
   size?: 'sm'

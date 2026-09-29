@@ -3,7 +3,7 @@
 import { ReserveControl, shopName } from '@/app/s/[shortId]/components/present-item'
 import { useReservation } from '@/app/s/[shortId]/components/use-reservation'
 import { Present } from '@/shared/types'
-import { SchemeConfig } from './scheme-config'
+import type { SchemeConfig, SchemeTheme } from './scheme-config'
 import { cn } from '@/lib/utils'
 import { CardCover } from '@/components/card-cover'
 import { ExternalLinkIcon } from 'lucide-react'
@@ -12,7 +12,7 @@ import * as React from 'react'
 type Props = {
   presents: Present[]
   wishlistId: string
-  theme: string
+  theme: SchemeTheme
   config: SchemeConfig
   isHidden: boolean
   onDetails?: (present: Present) => void
@@ -43,7 +43,7 @@ function PresentRow({
 }: {
   present: Present
   wishlistId: string
-  theme: string
+  theme: SchemeTheme
   config: SchemeConfig
   isHidden: boolean
   onDetails?: (present: Present) => void

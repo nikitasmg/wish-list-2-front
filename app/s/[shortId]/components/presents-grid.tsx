@@ -1,3 +1,4 @@
+import type { SchemeTheme } from './scheme-config'
 import { Present } from '@/shared/types'
 import { PresentItem } from './present-item'
 import * as React from 'react'
@@ -5,7 +6,7 @@ import * as React from 'react'
 type Props = {
   presents: Present[]
   wishlistId: string
-  theme: string
+  theme: SchemeTheme
   isHidden: boolean
   columns: 2 | 3
   /** Открыть подробности: модалка живёт одна на всю секцию. */

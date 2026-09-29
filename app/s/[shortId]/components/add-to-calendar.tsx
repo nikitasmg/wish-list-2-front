@@ -28,9 +28,9 @@ export function AddToCalendar({ wishlist }: { wishlist: Wishlist }) {
     document.body.appendChild(link)
     link.click()
     link.remove()
-    // Ссылку на blob освобождаем сразу: иначе файл висит в памяти вкладки до
-    // её закрытия.
-    URL.revokeObjectURL(url)
+    // Освобождаем не сразу: Firefox начинает скачивание асинхронно, и
+    // синхронный revoke отменяет его молча — файл просто не появляется.
+    setTimeout(() => URL.revokeObjectURL(url), 1000)
   }
 
   return (

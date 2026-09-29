@@ -44,6 +44,7 @@ export function BlockCanvas({ wishlist, presents, selected, onSelect, onChange }
             onDuplicate={() => { const next = duplicateBlock(blocks, block.id); sync(next); onSelect(next[blocks.findIndex(b => b.id === block.id) + 1].id) }}
             onDelete={() => { if (window.confirm('Удалить блок? Ответы гостей для него больше не будут видны на странице.')) sync(blocks.filter(b => b.id !== block.id)) }}
             onResize={() => sync(blocks.map(b => b.id === block.id ? { ...b, colSpan: b.colSpan === 1 ? 2 : 1 } : b))}
+            interactive={block.type === 'text'}
           >{block.type === 'text'
             // Текст правится прямо на холсте: открывать панель ради одной
             // опечатки — лишний шаг, а текстовых блоков на странице больше
@@ -62,8 +63,11 @@ export function BlockCanvas({ wishlist, presents, selected, onSelect, onChange }
   </div>
 }
 
-function CanvasItem({ block, mobile, selected, onSelect, onDuplicate, onDelete, onResize, children }: {
-  block: Block; mobile: boolean; selected: boolean; onSelect: () => void; onDuplicate: () => void; onDelete: () => void; onResize: () => void; children: React.ReactNode
+function CanvasItem({ block, mobile, selected, onSelect, onDuplicate, onDelete, onResize, interactive = false, children }: {
+  block: Block; mobile: boolean; selected: boolean; onSelect: () => void; onDuplicate: () => void; onDelete: () => void; onResize: () => void
+  /** Блок правится прямо на холсте — превью-обёртку к нему применять нельзя. */
+  interactive?: boolean
+  children: React.ReactNode
 }) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: block.id })
   return <article ref={setNodeRef} style={{ transform: CSS.Transform.toString(transform), transition }} className={cn('min-w-0 rounded-2xl border bg-card p-3', !mobile && block.colSpan !== 1 && 'md:col-span-2', selected && 'ring-2 ring-primary', block.hidden && 'opacity-60')}>
@@ -74,7 +78,12 @@ function CanvasItem({ block, mobile, selected, onSelect, onDuplicate, onDelete, 
       <Button size="sm" variant="ghost" aria-label="Дублировать блок" onClick={onDuplicate}><Copy size={14} /></Button>
       <Button size="sm" variant="ghost" aria-label="Удалить блок" onClick={onDelete}><Trash2 size={14} /></Button>
     </div>
-    <div onClick={onSelect} className="cursor-pointer"><div className="pointer-events-none select-none" inert>{children}</div></div>
+    {/* Превью нельзя трогать мышью: клик по нему выбирает блок, а не уходит
+        внутрь. Редактируемый блок — наоборот: inert убрал бы его из дерева
+        фокуса, и курсор в поле было бы не поставить. */}
+    {interactive
+      ? <div onFocusCapture={onSelect}>{children}</div>
+      : <div onClick={onSelect} className="cursor-pointer"><div className="pointer-events-none select-none" inert>{children}</div></div>}
     <Button size="sm" variant="ghost" className="mt-3 w-full" onClick={onSelect}>Настроить блок</Button>
   </article>
 }

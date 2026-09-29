@@ -79,3 +79,27 @@ test('неизвестный блок — список остаётся преж
   const blocks = [{ id: 'a', type: 'text', position: 0, data: {} }]
   assert.equal(addBlockAfter(blocks, 'нет-такого', 'text').length, 1)
 })
+
+const { isSecretHidden } = load('shared/editor-model.ts')
+const now = new Date('2026-09-29T12:00:00Z')
+
+test('секрет скрыт, пока не наступила дата', () => {
+  assert.equal(isSecretHidden({ type: 'text', revealAt: '2026-10-01T00:00:00Z', data: {} }, now), true)
+})
+
+test('после даты секрет раскрывается, даже если data пустая', () => {
+  // divider, location, contact и ещё полдюжины типов законно живут с data: {}.
+  // Прежняя проверка «пустая data — значит секрет» держала их закрытыми
+  // навсегда, а кнопка «Открыть сюрприз» перезагружала страницу по кругу.
+  assert.equal(isSecretHidden({ type: 'divider', revealAt: '2026-09-01T00:00:00Z', data: {} }, now), false)
+  assert.equal(isSecretHidden({ type: 'location', revealAt: '2026-09-28T00:00:00Z', data: {} }, now), false)
+})
+
+test('без revealAt блок не секретный', () => {
+  assert.equal(isSecretHidden({ type: 'text', data: {} }, now), false)
+  assert.equal(isSecretHidden({ type: 'text', revealAt: null, data: {} }, now), false)
+})
+
+test('мусор вместо даты не прячет блок', () => {
+  assert.equal(isSecretHidden({ type: 'text', revealAt: 'не дата', data: {} }, now), false)
+})

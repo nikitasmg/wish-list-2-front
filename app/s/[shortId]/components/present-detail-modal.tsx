@@ -1,10 +1,12 @@
 'use client'
+import type { SchemeTheme } from './scheme-config'
 
 import { ReserveControl, shopName } from '@/app/s/[shortId]/components/present-item'
 import { useReservation } from '@/app/s/[shortId]/components/use-reservation'
 import { CardCover } from '@/components/card-cover'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Present } from '@/shared/types'
+import { cn } from '@/lib/utils'
 import { ExternalLink } from 'lucide-react'
 import * as React from 'react'
 
@@ -21,7 +23,7 @@ export function PresentDetailModal({
 }: {
   present: Present | null
   wishlistId: string
-  theme: string
+  theme: SchemeTheme
   isHidden: boolean
   open: boolean
   onOpenChange: (open: boolean) => void
@@ -30,7 +32,7 @@ export function PresentDetailModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className={`${theme} max-w-lg max-h-[90vh] overflow-y-auto`}>
+      <DialogContent className={cn(theme.className, 'max-w-lg max-h-[90vh] overflow-y-auto')} style={theme.style}>
         <PresentDetail
           present={present}
           wishlistId={wishlistId}
@@ -47,7 +49,7 @@ function PresentDetail({
 }: {
   present: Present
   wishlistId: string
-  theme: string
+  theme: SchemeTheme
   isHidden: boolean
 }) {
   const { state, isPending, reserve, release } = useReservation(present, wishlistId)

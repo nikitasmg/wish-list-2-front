@@ -19,7 +19,7 @@ import { MediaBlockView } from './media-block-view'
 import { SecretBlockView } from './secret-block-view'
 import { GuestBlockView } from './guest-block-view'
 import { GiftsSection } from '../gifts-section'
-import { BLOCK_CATALOG } from '@/shared/editor-model'
+import { BLOCK_CATALOG, isSecretHidden } from '@/shared/editor-model'
 import React from 'react'
 
 type Props = {
@@ -53,7 +53,7 @@ export function BlockRenderer({ blocks, ...context }: Props) {
 }
 
 export function BlockContent({ block, wishlist, presents = [], preview, owner }: Omit<Props, 'blocks'> & { block: Block }) {
-  if (block.revealAt && (new Date(block.revealAt).getTime() > Date.now() || !Object.keys(block.data ?? {}).length)) return <SecretBlockView revealAt={block.revealAt} />
+  if (block.revealAt && isSecretHidden(block)) return <SecretBlockView revealAt={block.revealAt} />
   const interactive = ['rsvp', 'poll', 'playlist', 'guestbook'].includes(block.type)
   const known = BLOCK_CATALOG.some(item => item.type === block.type) || ['text_image', 'image', 'gallery', 'agenda', 'checklist'].includes(block.type)
   return <div className="space-y-4 min-w-0">

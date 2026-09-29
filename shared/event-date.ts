@@ -95,3 +95,21 @@ export function searchWishlists<T extends Searchable>(wishlists: T[], query: str
   return wishlists.filter(w =>
     `${w.title} ${w.occasion ?? ''}`.toLocaleLowerCase('ru').includes(needle))
 }
+
+/**
+ * «ГГГГ-ММ-ДД» из поля типа `date` → RFC3339 в местном времени.
+ *
+ * new Date('2026-11-14') разбирается как полночь UTC, и у гостей западнее
+ * Гринвича праздник уезжает на день назад. Собираем дату по частям и берём
+ * полдень: так она переживает любой сдвиг часового пояса, не меняя число.
+ */
+export function localNoon(value: string | null | undefined): string | undefined {
+  if (!value) return undefined
+
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value.trim())
+  if (!match) return undefined
+
+  const [, year, month, day] = match
+  const date = new Date(Number(year), Number(month) - 1, Number(day), 12)
+  return Number.isNaN(date.getTime()) ? undefined : date.toISOString()
+}

@@ -1,4 +1,7 @@
-import { normalizeScheme } from '@/shared/constants'
+import { CUSTOM_SCHEME, normalizeScheme } from '@/shared/constants'
+import { deriveSchemeStyle } from '@/shared/derive-scheme'
+import type { Wishlist } from '@/shared/types'
+import type { CSSProperties } from 'react'
 
 export type SchemeConfig = {
   /** Tailwind gradient classes for hero overlay (bottom-to-top) */
@@ -41,3 +44,20 @@ const schemeConfigs: Record<string, SchemeConfig> = {
 /** Старые значения colorScheme сначала переводятся в новые (normalizeScheme). */
 export const getSchemeConfig = (scheme: string): SchemeConfig =>
   schemeConfigs[normalizeScheme(scheme)] ?? defaultConfig
+
+/**
+ * Класс и инлайновые переменные схемы для содержимого порталов.
+ *
+ * Диалоги Radix рендерятся в document.body, вне обёртки страницы, поэтому
+ * тему им нужно передать явно. Одной строкой класса не обойтись: у «своей
+ * схемы» класса нет вовсе — её цвета живут в CSS-переменных, — а у старых
+ * вишлистов в colorScheme лежит имя, которого в globals.css уже нет.
+ */
+export type SchemeTheme = { className: string; style?: CSSProperties }
+
+export function schemeTheme(settings: Wishlist['settings']): SchemeTheme {
+  const scheme = normalizeScheme(settings.colorScheme)
+  return scheme === CUSTOM_SCHEME
+    ? { className: '', style: deriveSchemeStyle(settings.customScheme) }
+    : { className: scheme }
+}
