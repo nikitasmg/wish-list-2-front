@@ -48,3 +48,6 @@ Dockerfile
 # git worktrees
 .worktrees/
 .superpowers/
+
+# лог локального dev-сервера
+dev.log
