@@ -1,6 +1,7 @@
 'use client'
 
 import { useApiGetAllWishlists } from '@/api/wishlist'
+import { WhatsNewDialog } from '@/app/wishlist/components/whats-new-dialog'
 import { WishlistCard } from '@/app/wishlist/components/wishlist-card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -36,6 +37,7 @@ export default function Page() {
 
   return (
     <div className="space-y-6">
+      <WhatsNewDialog wishlists={wishlists} />
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight">Мои вишлисты</h2>
