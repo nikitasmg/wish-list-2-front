@@ -15,6 +15,13 @@ RUN pnpm install
 # Копируем остальные файлы
 COPY . .
 
+# NEXT_PUBLIC_* вшиваются в сборку, поэтому приходят аргументами сборки
+# (в Dokploy — Build-time Arguments). Не переданы — берутся боевые значения.
+ARG NEXT_PUBLIC_API_URL
+ARG NEXT_PUBLIC_APP_URL
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_APP_URL=$NEXT_PUBLIC_APP_URL
+
 # Собираем приложение
 RUN pnpm run build
 
