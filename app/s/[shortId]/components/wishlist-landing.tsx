@@ -11,6 +11,8 @@ import { cn } from '@/lib/utils'
 import { isLegacyWishlist } from '@/shared/editor-model'
 import { ShareWishlist } from './share-wishlist'
 import Link from 'next/link'
+import { useRef } from 'react'
+import { usePageBackground } from './use-page-background'
 
 type Props = {
   wishlist: Wishlist
@@ -25,7 +27,10 @@ export function WishlistLanding({ wishlist, presents, isMyWishlist, isExample, d
   const scheme = normalizeScheme(wishlist.settings.colorScheme)
   const look = pageLook(wishlist.settings)
   const blocks = wishlist.blocks ?? []
-  return <div className={cn('min-h-screen bg-background text-foreground', look.className)} style={look.style}>
+  const pageRef = useRef<HTMLDivElement>(null)
+  // В предпросмотре редактора страница живёт внутри интерфейса — фон сайта не трогаем.
+  usePageBackground(pageRef, !disableBodyTheme, JSON.stringify(wishlist.settings))
+  return <div ref={pageRef} className={cn('min-h-screen bg-background text-foreground', look.className)} style={look.style}>
     {/* В предпросмотре шапки нет: она принадлежит опубликованной странице,
         а в редакторе только съедала бы место. */}
     {!disableBodyTheme && <div className="mx-auto flex max-w-[1120px] items-center justify-between px-4 pt-5 md:px-8">
