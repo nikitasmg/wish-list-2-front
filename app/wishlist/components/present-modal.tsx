@@ -190,6 +190,8 @@ export function PresentModal({ wishlistId, present, open, onOpenChange, onCreate
                   <FormItem>
                     <FormControl>
                       <ImageUpload
+                        pasteAnywhere
+                        label="Фото"
                         previewUrl={field.value}
                         onUploadingChange={setIsImageUploading}
                         onChange={(val: ImageUploadValue | null) => {
