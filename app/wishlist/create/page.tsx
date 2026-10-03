@@ -113,10 +113,12 @@ export default function CreateWishlistPage() {
               type="button"
               onClick={handleBlank}
               disabled={blankPending}
-              className="text-sm font-semibold text-primary hover:underline whitespace-nowrap disabled:opacity-60"
+              className="hidden text-sm font-semibold text-primary hover:underline whitespace-nowrap disabled:opacity-60 lg:inline"
             >
               Собрать с нуля →
             </button>
+            {/* Конструктор на телефоне не открывается — с нуля собирают на компьютере. */}
+            <span className="text-xs text-muted-foreground lg:hidden">Собрать с нуля — на компьютере</span>
           </div>
 
           {templates.length === 0 ? (

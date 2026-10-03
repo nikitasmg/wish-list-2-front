@@ -139,7 +139,8 @@ export function PresentModal({ wishlistId, present, open, onOpenChange, onCreate
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
+      {/* На телефоне форма — шторка снизу, как в макете AddGiftMobile. */}
+      <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto max-sm:bottom-0 max-sm:top-auto max-sm:max-w-full max-sm:translate-y-0 max-sm:rounded-b-none max-sm:rounded-t-3xl">
         <DialogHeader>
           <DialogTitle>{isEdit ? 'Редактировать подарок' : 'Новый подарок'}</DialogTitle>
         </DialogHeader>
