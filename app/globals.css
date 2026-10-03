@@ -364,12 +364,9 @@ html:not(.dark) .demo-scheme {
   background-size: 52px 52px;
 }
 .look-pattern-confetti {
-  background-image:
-    radial-gradient(hsl(var(--primary) / 0.35) 2px, transparent 2.6px),
-    radial-gradient(hsl(var(--accent) / 0.3) 1.6px, transparent 2.2px),
-    linear-gradient(45deg, transparent 47%, hsl(var(--primary) / 0.18) 47% 53%, transparent 53%);
-  background-size: 64px 64px, 40px 40px, 90px 90px;
-  background-position: 0 0, 20px 26px, 10px 50px;
+  background-image: url('/patterns/confetti.svg');
+  background-size: 360px 280px;
+  background-position: 0 0;
 }
 .look-pattern-lines {
   background-image: repeating-linear-gradient(135deg, hsl(var(--border) / 0.7) 0 1px, transparent 1px 22px);

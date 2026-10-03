@@ -1,6 +1,7 @@
 'use client'
 
 import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { cn } from '@/lib/utils'
 import { DressColor, Person, Place, RSVPQuestion, contactPeople, dressColors, locationPoints, pollSettings, rsvpSettings } from '@/shared/block-data'
@@ -160,16 +161,19 @@ function pushRecent(hex: string) {
 }
 
 /** Выбор цвета: цвета-подсказки, недавние и свой код. */
-function ColorPicker({ value, onChange, children }: { value: string; onChange: (hex: string) => void; children: React.ReactNode }) {
+function ColorPicker({ value, onChange, children, confirmLabel = 'Применить' }: { value: string; onChange: (hex: string) => void; children: React.ReactNode; confirmLabel?: string }) {
+  const [open, setOpen] = useState(false)
   const [recent, setRecent] = useState<string[]>([])
   const [code, setCode] = useState(value)
   useEffect(() => { setCode(value) }, [value])
-  const pick = (hex: string) => { onChange(hex); pushRecent(hex); setRecent(readRecent()) }
+  const pick = (hex: string) => {
+    setCode(hex)
+  }
   return (
-    <Popover onOpenChange={open => { if (open) setRecent(readRecent()) }}>
+    <Popover open={open} onOpenChange={next => { setOpen(next); if (next) { setRecent(readRecent()); setCode(value) } }}>
       <PopoverTrigger asChild>{children}</PopoverTrigger>
       <PopoverContent className="w-[232px] space-y-3 p-3">
-        <input type="color" aria-label="Палитра" value={value} onChange={e => pick(e.target.value.toUpperCase())} className="h-16 w-full cursor-pointer rounded-lg border-0 bg-transparent p-0" />
+        <input type="color" aria-label="Палитра" value={/^#[0-9a-f]{6}$/i.test(code) ? code : value} onChange={e => pick(e.target.value.toUpperCase())} className="h-16 w-full cursor-pointer rounded-lg border-0 bg-transparent p-0" />
         <div className="flex flex-wrap gap-1.5">
           {PRESET.map(hex => <Swatch key={hex} hex={hex} onClick={() => pick(hex)} />)}
         </div>
@@ -188,6 +192,12 @@ function ColorPicker({ value, onChange, children }: { value: string; onChange: (
           }}
           placeholder="#3B6FD8"
         />
+        <Button type="button" className="w-full" disabled={!/^#[0-9a-f]{6}$/i.test(code)} onClick={() => {
+          const hex = code.toUpperCase()
+          onChange(hex)
+          pushRecent(hex)
+          setOpen(false)
+        }}>{confirmLabel}</Button>
       </PopoverContent>
     </Popover>
   )
@@ -225,7 +235,7 @@ export function DressCodeFields({ data, onChange, blockId }: Props) {
             </div>
           ))}
           {colors.length < 8 && (
-            <ColorPicker value="#3B6FD8" onChange={hex => set([...colors, { hex, name: '' }])}>
+            <ColorPicker confirmLabel="Добавить" value="#3B6FD8" onChange={hex => set([...colors, { hex, name: '' }])}>
               <button type="button" aria-label="Добавить цвет" className="flex h-11 w-11 items-center justify-center rounded-full border border-dashed text-muted-foreground hover:border-primary hover:text-primary">
                 <Plus size={18} aria-hidden />
               </button>
