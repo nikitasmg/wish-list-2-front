@@ -131,3 +131,25 @@ export const useApiLeaveGroupPresent = (wishlistId: string) => {
     },
   })
 }
+
+/** Порядок подарков: ids — все подарки вишлиста сверху вниз. */
+export const useApiReorderPresents = (wishlistId: string) => {
+  const queryClient = useQueryClient()
+  return useMutation<unknown, AxiosError, { ids: string[] }>({
+    mutationFn: async ({ ids }) => api.put(`wishlists/${wishlistId}/presents/order`, { ids }),
+    onSettled: async () => {
+      await queryClient.invalidateQueries({ queryKey: [ 'presents', wishlistId ] })
+    },
+  })
+}
+
+/** «Уже подарено» — ставит только владелец. */
+export const useApiSetGifted = (wishlistId: string) => {
+  const queryClient = useQueryClient()
+  return useMutation<unknown, AxiosError, { presentId: string; gifted: boolean }>({
+    mutationFn: async ({ presentId, gifted }) => api.put(`presents/${presentId}/gifted`, { gifted }),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: [ 'presents', wishlistId ] })
+    },
+  })
+}

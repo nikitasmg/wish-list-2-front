@@ -2,7 +2,6 @@
 
 import { useApiGetWishlistById } from '@/api/wishlist'
 import { ConstructorEditor } from '@/app/wishlist/components/constructor-editor'
-import { Breadcrumbs } from '@/components/breadcrumbs'
 import { useParams } from 'next/navigation'
 import * as React from 'react'
 
@@ -12,17 +11,8 @@ export default function Page() {
   const wishlist = data?.data
 
   if (!wishlist) {
-    return null
+    return <div className="flex min-h-screen items-center justify-center text-sm text-muted-foreground">Открываем конструктор…</div>
   }
 
-  return (
-    <>
-      <Breadcrumbs
-        className="mb-4"
-        items={[{ name: 'Мои вишлисты', url: '/wishlist' }]}
-        page={wishlist.title}
-      />
-      <ConstructorEditor wishlist={wishlist} />
-    </>
-  )
+  return <ConstructorEditor wishlist={wishlist} />
 }

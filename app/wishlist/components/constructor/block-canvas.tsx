@@ -159,12 +159,14 @@ function CanvasRow(props: Props & { row: RowView; dragging: boolean }) {
   const gridRef = useRef<HTMLDivElement>(null)
   const columns = row.settings.columns ?? 1
   const rowSelected = selection?.kind === 'row' && selection.index === row.index
+  // У выделенного блока своя метка — метка ряда легла бы прямо на неё.
+  const blockSelected = selection?.kind === 'block' && row.cells.some(cell => cell?.id === selection.id)
   const [liveRatio, setLiveRatio] = useState<RowRatio | null>(null)
   const settings = liveRatio ? { ...row.settings, ratio: liveRatio } : row.settings
 
   return (
     <div className={cn('group/row relative rounded-2xl', rowSelected && 'outline outline-2 outline-offset-8 outline-primary')}>
-      {columns > 1 && !dragging && (
+      {columns > 1 && !dragging && !blockSelected && (
         <button
           type="button"
           onClick={() => onSelect({ kind: 'row', index: row.index })}
@@ -417,6 +419,9 @@ function CanvasBlock(props: Props & { block: Block; draggable: boolean; alone?: 
             {secretDate && ` · скрыт до ${secretDate.toLocaleDateString('ru', { day: '2-digit', month: '2-digit' })}`}
           </span>
           <div className="absolute -top-4 right-3 z-10 flex gap-0.5 rounded-lg border bg-popover p-1 text-popover-foreground shadow-lg">
+            {draggable && !alone && (
+              <ToolbarButton label="Настроить ряд" onClick={() => onSelect({ kind: 'row', index: block.row })}><Columns2 size={14} aria-hidden /></ToolbarButton>
+            )}
             <ToolbarButton label="Выше (Alt+↑)" onClick={() => onLayout(nudge(layout, block.id, -1))}><ArrowUp size={14} aria-hidden /></ToolbarButton>
             <ToolbarButton label="Ниже (Alt+↓)" onClick={() => onLayout(nudge(layout, block.id, 1))}><ArrowDown size={14} aria-hidden /></ToolbarButton>
             <ToolbarButton label="Дублировать блок" onClick={() => onLayout(duplicateBlock(layout, block.id))}><Copy size={14} aria-hidden /></ToolbarButton>

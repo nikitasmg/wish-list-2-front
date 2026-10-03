@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils'
 import { colorSchema, normalizeScheme } from '@/shared/constants'
 import { eventTiming, formatEventDate } from '@/shared/event-date'
 import { Wishlist } from '@/shared/types'
-import { Eye, Link2, Pencil } from 'lucide-react'
+import { Eye, Link2, Pencil, Plus } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -131,6 +131,9 @@ export const WishlistCard = ({ wishlist }: WishlistCardProps) => {
           >
             <Pencil size={13} className="mr-1" aria-hidden />
             Редактировать
+          </Button>
+          <Button size="sm" variant="outline" aria-label="Добавить подарок" title="Добавить подарок" onClick={() => router.push(`/wishlist/edit/${wishlist.id}?add=gift`)}>
+            <Plus size={13} aria-hidden />
           </Button>
           {shareUrl && (
             <>

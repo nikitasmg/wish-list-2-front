@@ -338,6 +338,13 @@
  * «Оформление» страницы вишлиста: шрифт заголовков и узор фона. Классы
  * ставит pageLook() — один и тот же на холсте конструктора и у гостя.
  */
+:root {
+  --font-unbounded: 'Unbounded';
+  --font-comfortaa: 'Comfortaa';
+  --font-oswald: 'Oswald';
+  --font-cormorant: 'Cormorant Garamond';
+  --font-playfair: 'Playfair Display';
+}
 .wishlist-page :is(h1, h2, h3, .heading) { font-family: var(--heading-font, inherit); }
 .look-font-accent { --heading-font: var(--font-unbounded), var(--font-manrope), sans-serif; }
 .look-font-strict { --heading-font: var(--font-manrope), system-ui, sans-serif; }

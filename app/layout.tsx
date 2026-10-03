@@ -6,7 +6,7 @@ import Providers from '@/app/providers'
 import { Toaster } from '@/components/ui/toaster'
 import { CookieBanner } from '@/components/cookie-banner'
 import type { Metadata } from 'next'
-import { Comfortaa, Cormorant_Garamond, Manrope, Oswald, Playfair_Display, Unbounded } from 'next/font/google'
+import { Manrope } from 'next/font/google'
 import './globals.css'
 
 const manrope = Manrope({
@@ -18,15 +18,12 @@ const manrope = Manrope({
 })
 
 /*
- * Шрифты заголовков из «Оформления». Без preload: они нужны только на
- * страницах вишлистов, и браузер скачивает файл, лишь когда шрифт реально
- * применён, — остальные страницы за них не платят.
+ * Шрифты заголовков из «Оформления» — обычной ссылкой, а не next/font:
+ * Turbopack не собирает next/font для части этих семейств. @font-face
+ * из этой таблицы стилей ничего не скачивает, пока шрифт не применён, так
+ * что остальные страницы за них не платят.
  */
-const unbounded = Unbounded({ variable: '--font-unbounded', subsets: ['latin', 'cyrillic'], weight: ['700', '800'], preload: false })
-const comfortaa = Comfortaa({ variable: '--font-comfortaa', subsets: ['latin', 'cyrillic'], weight: ['700'], preload: false })
-const oswald = Oswald({ variable: '--font-oswald', subsets: ['latin', 'cyrillic'], weight: ['600', '700'], preload: false })
-const cormorant = Cormorant_Garamond({ variable: '--font-cormorant', subsets: ['latin', 'cyrillic'], weight: ['600', '700'], preload: false })
-const playfair = Playfair_Display({ variable: '--font-playfair', subsets: ['latin', 'cyrillic'], weight: ['700', '800'], preload: false })
+const HEADING_FONTS_CSS = 'https://fonts.googleapis.com/css2?family=Comfortaa:wght@700&family=Cormorant+Garamond:wght@600;700&family=Oswald:wght@600;700&family=Playfair+Display:wght@700;800&family=Unbounded:wght@700;800&display=swap'
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://prosto-namekni.ru'),
@@ -65,8 +62,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ru" suppressHydrationWarning>
+    <head>
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+      <link rel="stylesheet" href={HEADING_FONTS_CSS} />
+    </head>
     <body
-      className={`${manrope.variable} ${unbounded.variable} ${comfortaa.variable} ${oswald.variable} ${cormorant.variable} ${playfair.variable} antialiased`}
+      className={`${manrope.variable} antialiased`}
     >
     <Suspense fallback={null}>
       <Metrika />

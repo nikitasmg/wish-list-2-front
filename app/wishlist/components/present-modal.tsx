@@ -30,7 +30,7 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
 const FormSchema = z.object({
-  title: z.string().min(1, { message: 'Название обязательно' }),
+  title: z.string().trim().min(1, { message: 'Как называется подарок?' }),
   // Тот же лимит проверяет бэк — расхождение дало бы ошибку уже после отправки.
   description: z
     .string()
@@ -51,6 +51,7 @@ const FormSchema = z.object({
   type: z.enum(['single', 'group', 'multi']),
   images: z.array(z.string()).optional(),
   links: z.array(z.string()).optional(),
+  isMain: z.boolean().optional(),
 })
 
 type FormValues = z.infer<typeof FormSchema>
@@ -85,6 +86,7 @@ export function PresentModal({ wishlistId, present, open, onOpenChange, onCreate
       type: present?.type ?? 'single',
       images: present?.images ?? [],
       links: present?.links ?? [],
+      isMain: present?.isMain ?? false,
     },
   })
 
@@ -102,6 +104,7 @@ export function PresentModal({ wishlistId, present, open, onOpenChange, onCreate
         type: present?.type ?? 'single',
         images: present?.images ?? [],
         links: present?.links ?? [],
+        isMain: present?.isMain ?? false,
       })
     }
   }, [open, present, form])
@@ -119,6 +122,7 @@ export function PresentModal({ wishlistId, present, open, onOpenChange, onCreate
     if (data.price) formData.append('price', data.price)
     if (data.coverUrl) formData.append('cover_url', data.coverUrl)
     formData.append('type', data.type)
+    formData.append('is_main', String(Boolean(data.isMain)))
     if (data.type === 'multi') {
       formData.append('images', JSON.stringify(data.images ?? []))
       formData.append('links', JSON.stringify((data.links ?? []).filter(Boolean)))
@@ -324,6 +328,22 @@ export function PresentModal({ wishlistId, present, open, onOpenChange, onCreate
               }}
             />
 
+            <button
+              type="button"
+              aria-pressed={Boolean(form.watch('isMain'))}
+              onClick={() => form.setValue('isMain', !form.watch('isMain'))}
+              className={cn(
+                'flex w-full items-center gap-3 rounded-xl border p-3 text-left transition-colors',
+                form.watch('isMain') ? 'border-primary bg-primary/10' : 'hover:border-primary/50',
+              )}
+            >
+              <span className={cn('text-xl', form.watch('isMain') ? 'text-primary' : 'text-muted-foreground')} aria-hidden>★</span>
+              <span>
+                <span className="block text-sm font-bold">Главная мечта</span>
+                <span className="block text-xs text-muted-foreground">Покажем первой и крупнее остальных</span>
+              </span>
+            </button>
+
             <div className="flex gap-2 pt-1">
               <Button
                 type="button"
@@ -336,7 +356,7 @@ export function PresentModal({ wishlistId, present, open, onOpenChange, onCreate
               <Button
                 type="submit"
                 className="flex-1"
-                disabled={isPending || isImageUploading || !form.watch('title')}
+                disabled={isPending || isImageUploading}
                 loading={isPending}
               >
                 {isImageUploading ? 'Загрузка фото…' : isEdit ? 'Сохранить' : 'Добавить'}

@@ -20,6 +20,7 @@ export function DesignPanel({ settings, onChange }: { settings: Settings; onChan
   return (
     <div className="space-y-6 p-5">
       <ColorsSelect
+        compact
         value={settings.colorScheme}
         customScheme={settings.customScheme}
         onChange={colorScheme => onChange({

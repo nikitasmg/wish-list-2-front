@@ -12,14 +12,57 @@ type Props = {
   /** Своя схема: показываем настройку и превью, когда выбрано «Своя». */
   customScheme?: CustomScheme
   onCustomChange?: (scheme: CustomScheme) => void
+  /** Узкая панель конструктора: схемы — кружками в ряд, имя выбранной — в заголовке. */
+  compact?: boolean
 }
 
 const DEFAULT_CUSTOM: CustomScheme = { base: 'dark', accent: CUSTOM_ACCENTS[0].dark }
 
-export const ColorsSelect = ({ value, onChange, customScheme, onCustomChange }: Props) => {
+export const ColorsSelect = ({ value, onChange, customScheme, onCustomChange, compact }: Props) => {
   const current = normalizeScheme(value)
   const custom = customScheme ?? DEFAULT_CUSTOM
   const editable = Boolean(onCustomChange)
+
+  if (compact) {
+    const currentName = current === CUSTOM_SCHEME ? 'Своя' : colorSchema.find(s => s.value === current)?.name
+    return (
+      <section aria-label="Цветовая схема" className="space-y-3">
+        <div className="flex items-baseline justify-between">
+          <span className="text-xs font-semibold text-muted-foreground">Цветовая схема</span>
+          <span className="text-sm font-semibold">{currentName}</span>
+        </div>
+        <div role="group" aria-label="Схемы" className="flex flex-wrap gap-2">
+          {colorSchema.map(scheme => (
+            <button
+              key={scheme.value}
+              type="button"
+              aria-pressed={current === scheme.value}
+              aria-label={`${scheme.name}, ${scheme.kind === 'dark' ? 'тёмная' : 'светлая'}`}
+              title={scheme.name}
+              onClick={() => onChange(scheme.value)}
+              className={cn('relative h-9 w-9 overflow-hidden rounded-full border-2 transition-transform hover:scale-110', current === scheme.value ? 'border-primary' : 'border-border')}
+              style={{ backgroundColor: scheme.colors[0] }}
+            >
+              <span className="absolute bottom-1 right-1 h-3.5 w-3.5 rounded-full" style={{ backgroundColor: scheme.colors[1] }} />
+            </button>
+          ))}
+          {editable && (
+            <button
+              type="button"
+              aria-pressed={current === CUSTOM_SCHEME}
+              aria-label="Своя схема"
+              title="Своя схема"
+              onClick={() => onChange(CUSTOM_SCHEME)}
+              className={cn('flex h-9 w-9 items-center justify-center rounded-full border-2 border-dashed text-muted-foreground', current === CUSTOM_SCHEME ? 'border-primary text-primary' : 'border-border')}
+            >
+              +
+            </button>
+          )}
+        </div>
+        {editable && current === CUSTOM_SCHEME && <CustomSchemeEditor scheme={custom} onChange={onCustomChange!} />}
+      </section>
+    )
+  }
 
   return (
     <section aria-label="Цветовая схема" className="space-y-3">

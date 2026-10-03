@@ -116,7 +116,7 @@ function MobileBlockCard({ block, open, first, last, onOpen, onChange, onMove }:
 }) {
   const info = BLOCK_CATALOG.find(c => c.type === block.type)
   const Icon = blockIcon(block.type)
-  const subtitle = block.type === 'cover' ? block.title : block.title || block.caption
+  const subtitle = block.type === 'cover' ? block.title : block.title || (typeof block.data.name === 'string' ? block.data.name : '') || block.caption
   return (
     <article className={cn('rounded-2xl border bg-card', open && 'ring-2 ring-primary', block.hidden && !open && 'opacity-60')}>
       <div className="flex items-center gap-3 p-3.5">

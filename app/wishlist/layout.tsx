@@ -1,17 +1,10 @@
-import { Header } from '@/components/header'
 import * as React from 'react'
+import { SiteChrome } from './site-chrome'
 
 export default function Layout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  return (
-    <>
-      <Header />
-      <div className="p-5 max-w-[90rem] mx-auto">
-        {children}
-      </div>
-    </>
-  )
+  return <SiteChrome>{children}</SiteChrome>
 }

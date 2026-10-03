@@ -30,7 +30,8 @@ function CoverImage({ cover, title, className, style, letter }: Props) {
   return <div className={cn('relative h-[150px] w-full overflow-hidden rounded-xl bg-muted', className)} style={style} aria-busy={state === 'loading'}>
     {state === 'loading' && <div className="absolute inset-0 bg-muted motion-safe:animate-pulse" role="status"><span className="sr-only">Загрузка фотографии</span></div>}
     {state === 'error' && !cover && initial
-      ? <div className="flex h-full items-center justify-center bg-primary/10 text-primary" aria-hidden><span className="heading text-[2.5em] font-extrabold">{initial}</span></div>
+      // Буква растёт вместе с плиткой: в строке таблицы 44px, в карточке 260.
+      ? <div className="flex h-full items-center justify-center bg-primary/10 text-primary [container-type:size]" aria-hidden><span className="heading text-[38cqmin] font-extrabold leading-none">{initial}</span></div>
       : state === 'error'
         ? <div className="flex h-full items-center justify-center gap-2 text-sm text-muted-foreground"><ImageOff size={20} aria-hidden />Фото недоступно</div>
         // eslint-disable-next-line @next/next/no-img-element

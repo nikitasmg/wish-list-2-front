@@ -57,7 +57,8 @@ const GUEST_BLOCKS = ['rsvp', 'poll', 'playlist', 'guestbook']
 function Editor({ wishlist }: { wishlist: Wishlist }) {
   const draftState = useWishlistDraft(wishlist)
   const { draft, layout, change, setLayout, undo, redo, status, error, retry } = draftState
-  const [mode, setMode] = useState<EditorMode>('page')
+  const [autoAdd] = useState(() => typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('add') === 'gift')
+  const [mode, setMode] = useState<EditorMode>(autoAdd ? 'presents' : 'page')
   const [panel, setPanel] = useState<Panel>(null)
   const [tab, setTab] = useState<Tab>('block')
   const [device, setDevice] = useState<'desktop' | 'phone'>('desktop')
@@ -214,7 +215,7 @@ function Editor({ wishlist }: { wishlist: Wishlist }) {
           onDragCancel={() => setDragId(null)}
         >
           <div className="flex min-h-0 flex-1">
-            <nav aria-label="Инструменты" className="flex w-14 shrink-0 flex-col items-center gap-1.5 border-r py-3">
+            <nav aria-label="Инструменты" data-tour="block-palette" className="flex w-14 shrink-0 flex-col items-center gap-1.5 border-r py-3">
               <IconButton label="Добавить блок" active={panel === 'add'} onClick={() => setPanel(panel === 'add' ? null : 'add')}><Plus size={20} aria-hidden /></IconButton>
               <IconButton label="Структура" active={panel === 'structure'} onClick={() => setPanel(panel === 'structure' ? null : 'structure')}><ListTree size={20} aria-hidden /></IconButton>
               <IconButton label="Оформление" active={tab === 'design'} onClick={() => setTab('design')}><Palette size={20} aria-hidden /></IconButton>
@@ -224,7 +225,7 @@ function Editor({ wishlist }: { wishlist: Wishlist }) {
             </nav>
 
             {panel && (
-              <aside data-tour="block-palette" className="flex w-[264px] shrink-0 flex-col border-r p-3">
+              <aside className="flex w-[264px] shrink-0 flex-col border-r p-3">
                 <div className="px-1.5 pb-3 text-[15px] font-bold">{panel === 'add' ? 'Добавить блок' : 'Структура'}</div>
                 {panel === 'add'
                   ? <LibraryList onPick={insert} />
@@ -311,7 +312,7 @@ function Editor({ wishlist }: { wishlist: Wishlist }) {
 
       {mode === 'presents' && (
         <div className="min-h-0 flex-1 overflow-y-auto">
-          <PresentsManager wishlist={draft} presents={presents} />
+          <PresentsManager wishlist={draft} presents={presents} autoAdd={autoAdd} />
         </div>
       )}
 

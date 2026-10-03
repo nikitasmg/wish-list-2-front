@@ -4,7 +4,7 @@ import { useApiGetAllWishlists } from '@/api/wishlist'
 import { WishlistCard } from '@/app/wishlist/components/wishlist-card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { pluralRu, searchWishlists } from '@/shared/event-date'
+import { eventTiming, pluralRu, searchWishlists } from '@/shared/event-date'
 import { Plus, Search } from 'lucide-react'
 import Link from 'next/link'
 import * as React from 'react'
@@ -16,7 +16,8 @@ export default function Page() {
   const wishlists = useMemo(() => data?.data ?? [], [data])
   const visible = useMemo(() => searchWishlists(wishlists, query), [wishlists, query])
 
-  const reserved = wishlists.reduce((sum, w) => sum + (w.reservedCount ?? 0), 0)
+  // «Скоро» — праздник ещё впереди: прошедшие и без даты не считаются.
+  const upcoming = wishlists.filter(w => { const t = eventTiming(w.eventDate ?? w.location?.time); return t && !t.past }).length
 
   if (wishlists.length === 0) {
     return (
@@ -40,7 +41,7 @@ export default function Page() {
           <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight">Мои вишлисты</h2>
           <p className="mt-2 text-sm text-muted-foreground">
             {wishlists.length} {pluralRu(wishlists.length, ['вишлист', 'вишлиста', 'вишлистов'])}
-            {reserved > 0 && <> · {reserved} {pluralRu(reserved, ['подарок занят', 'подарка заняты', 'подарков заняты'])}</>}
+            {upcoming > 0 && <> · {upcoming} {pluralRu(upcoming, ['праздник скоро', 'праздника скоро', 'праздников скоро'])}</>}
           </p>
         </div>
         <Button asChild>
