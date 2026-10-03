@@ -3,13 +3,13 @@ import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
 import { JsonLd } from '@/components/json-ld'
 import { HeroSection } from '@/app/(landing)/components/hero-section'
-import { MarqueeSection } from '@/app/(landing)/components/marquee-section'
-import { StorySection } from '@/app/(landing)/components/story-section'
+import { HowSection, OccasionsStrip } from '@/app/(landing)/components/how-section'
 import { ConstructorSection } from '@/app/(landing)/components/constructor-section'
+import { BlocksSection } from '@/app/(landing)/components/blocks-section'
+import { GiftsShowcase } from '@/app/(landing)/components/gifts-showcase'
 import { ThemesSection } from '@/app/(landing)/components/themes-section'
-import { FeaturesSection } from '@/app/(landing)/components/features-section'
 import { TemplatesSection } from '@/app/(landing)/components/templates-section'
-import { CtaSection } from '@/app/(landing)/components/cta-section'
+import { CtaSection, PhoneSection } from '@/app/(landing)/components/cta-section'
 
 export const metadata: Metadata = {
   title: 'Просто намекни — Создай вишлист и отправь ссылку',
@@ -47,12 +47,14 @@ export default function Home() {
           description: 'Бесплатный сервис создания вишлистов онлайн',
         }} />
         <HeroSection />
-        <MarqueeSection />
-        <StorySection />
+        <OccasionsStrip />
+        <HowSection />
         <ConstructorSection />
+        <BlocksSection />
+        <GiftsShowcase />
         <ThemesSection />
-        <FeaturesSection />
         <TemplatesSection />
+        <PhoneSection />
         <CtaSection />
       </main>
       <Footer />

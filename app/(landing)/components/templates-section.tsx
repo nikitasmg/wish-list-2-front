@@ -1,163 +1,44 @@
-'use client'
-
 import Link from 'next/link'
-import AnimatedContent from '@/components/ui/animated-content'
-import FadeContent from '@/components/ui/fade-content'
-import { useTheme } from 'next-themes'
-import {
-  Calendar,
-  CheckSquare,
-  FileText,
-  LayoutGrid,
-  MapPin,
-  Timer,
-  User,
-} from 'lucide-react'
+import * as React from 'react'
+import { Container, Eyebrow } from './landing-ui'
 
-const MOCK_TEMPLATES = [
-  {
-    name: 'День рождения',
-    author: 'Анна М.',
-    blocks: [
-      { icon: FileText, label: 'Текст' },
-      { icon: Calendar, label: 'Дата' },
-      { icon: MapPin, label: 'Место' },
-      { icon: Timer, label: 'Таймер' },
-    ],
-    accent: '#06b6d4',
-    bg: 'rgba(6,182,212,0.07)',
-    border: 'rgba(6,182,212,0.2)',
-    lightBg: 'rgba(6,182,212,0.06)',
-    lightBorder: 'rgba(6,182,212,0.25)',
-  },
-  {
-    name: 'Свадьба',
-    author: 'Дмитрий К.',
-    blocks: [
-      { icon: FileText, label: 'Текст' },
-      { icon: LayoutGrid, label: 'Галерея' },
-      { icon: MapPin, label: 'Место' },
-      { icon: User, label: 'Контакт' },
-      { icon: CheckSquare, label: 'Чеклист' },
-    ],
-    accent: '#a855f7',
-    bg: 'rgba(168,85,247,0.07)',
-    border: 'rgba(168,85,247,0.2)',
-    lightBg: 'rgba(168,85,247,0.06)',
-    lightBorder: 'rgba(168,85,247,0.25)',
-  },
-  {
-    name: 'Новый год',
-    author: 'Мария П.',
-    blocks: [
-      { icon: FileText, label: 'Текст' },
-      { icon: Timer, label: 'Таймер' },
-      { icon: CheckSquare, label: 'Чеклист' },
-      { icon: LayoutGrid, label: 'Галерея' },
-    ],
-    accent: '#10b981',
-    bg: 'rgba(16,185,129,0.07)',
-    border: 'rgba(16,185,129,0.2)',
-    lightBg: 'rgba(16,185,129,0.06)',
-    lightBorder: 'rgba(16,185,129,0.25)',
-  },
+type Card = { name: string; scheme: string; className: string; cover: React.ReactNode }
+
+/** Обложки — в схеме и шрифте самого шаблона, как на экране выбора. */
+const TEMPLATES: Card[] = [
+  { name: 'ДР мальчика', scheme: 'Полночь', className: 'midnight look-pattern-stars', cover: <><span className="font-unbounded text-[54px] font-extrabold leading-none text-primary">7</span><span className="font-unbounded text-[17px] font-extrabold">Тёме — семь!</span></> },
+  { name: 'ДР девочки', scheme: 'Пудра', className: 'powder', cover: <><span className="h-16 w-16 rounded-full border-[5px] border-card bg-secondary" /><span className="text-lg font-bold" style={{ fontFamily: 'var(--font-comfortaa)' }}>Соне <span className="text-primary">5 лет</span></span></> },
+  { name: 'Свадьба', scheme: 'Лён', className: 'linen', cover: <><span className="h-[84px] w-[70px] rounded-b-md rounded-t-full bg-secondary" /><span className="text-[22px] font-bold" style={{ fontFamily: 'var(--font-cormorant)' }}>Аня и Лев</span></> },
+  { name: 'Юбилей', scheme: 'Малахит', className: 'malachite look-pattern-lines', cover: <><span className="text-[66px] font-bold leading-none text-primary" style={{ fontFamily: 'var(--font-playfair)' }}>60</span><span className="text-base" style={{ fontFamily: 'var(--font-playfair)' }}>Сергей Петрович</span></> },
+  { name: 'ДР мужчины', scheme: 'Графит', className: 'graphite look-pattern-lines', cover: <span className="text-[40px] font-semibold uppercase leading-none" style={{ fontFamily: 'var(--font-oswald)' }}>Диме <span className="text-primary">35</span></span> },
+  { name: 'ДР женщины', scheme: 'Лаванда', className: 'lavender look-pattern-stars', cover: <span className="text-[34px] font-bold" style={{ fontFamily: 'var(--font-playfair)' }}>Ане — <span className="text-primary">28</span></span> },
+  { name: 'Гендер-пати', scheme: 'Пастель', className: 'pastel look-pattern-confetti', cover: <span className="text-[34px] font-bold" style={{ fontFamily: 'var(--font-comfortaa)' }}><span className="text-[#2F6FAE]">?</span> или <span className="text-primary">?</span></span> },
+  { name: 'Вечеринка', scheme: 'Лагуна', className: 'lagoon look-pattern-confetti', cover: <span className="text-[34px] font-semibold uppercase leading-[1.05]" style={{ fontFamily: 'var(--font-oswald)' }}>Тусим <span className="text-primary">до утра</span></span> },
 ]
 
 export function TemplatesSection() {
-  const { resolvedTheme } = useTheme()
-  const isDark = resolvedTheme !== 'light'
-
   return (
-    <section
-      className="relative py-8 md:py-24 px-4"
-      style={{ background: isDark ? '#080014' : '#faf5ff' }}
-    >
-      <div className="max-w-5xl mx-auto">
-        <AnimatedContent direction="vertical" reverse={false} delay={0}>
-          <div className="text-center mb-8 md:mb-12">
-            <p
-              className="text-xs font-bold uppercase tracking-widest mb-3"
-              style={{ color: isDark ? '#a855f7' : '#9333ea' }}
-            >
-              Сообщество
-            </p>
-            <h2
-              className="text-3xl md:text-4xl font-black tracking-tight mb-3"
-              style={{ color: isDark ? '#e9d5ff' : '#581c87' }}
-            >
-              Не начинай с нуля
-            </h2>
-            <p
-              className="text-base max-w-md mx-auto"
-              style={{ color: isDark ? '#475569' : '#64748b' }}
-            >
-              Другие пользователи уже собрали готовые структуры —
-              бери любой шаблон и настраивай под себя
-            </p>
+    <section className="border-y bg-muted/30 py-20 md:py-28">
+      <Container className="space-y-10">
+        <div className="flex items-end justify-between gap-6">
+          <div className="space-y-4">
+            <Eyebrow>Шаблоны</Eyebrow>
+            <h2 className="font-unbounded text-[30px] font-extrabold leading-[1.05] tracking-[-0.04em] md:text-[52px]">Готовая страница под повод</h2>
           </div>
-        </AnimatedContent>
-
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
-          {MOCK_TEMPLATES.map((t, i) => (
-            <FadeContent key={t.name} duration={600} delay={i * 120}>
-              <div
-                className="rounded-2xl p-5 flex flex-col gap-3 h-full"
-                style={{
-                  background: isDark ? t.bg : t.lightBg,
-                  border: `1px solid ${isDark ? t.border : t.lightBorder}`,
-                }}
-              >
-                <div>
-                  <p
-                    className="font-bold text-base"
-                    style={{ color: isDark ? '#f1f5f9' : '#0f172a' }}
-                  >
-                    {t.name}
-                  </p>
-                  <p
-                    className="text-xs mt-0.5"
-                    style={{ color: isDark ? '#475569' : '#94a3b8' }}
-                  >
-                    от {t.author}
-                  </p>
-                </div>
-
-                <div className="flex flex-wrap gap-1.5 mt-auto">
-                  {t.blocks.map((b) => (
-                    <span
-                      key={b.label}
-                      className="flex items-center gap-1 text-[10px] font-medium rounded-full px-2 py-0.5"
-                      style={{
-                        background: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)',
-                        color: t.accent,
-                        border: `1px solid ${t.accent}30`,
-                      }}
-                    >
-                      <b.icon size={9} />
-                      {b.label}
-                    </span>
-                  ))}
-                </div>
+          <Link href="/wishlist/create" className="hidden whitespace-nowrap text-[17px] font-bold text-primary hover:underline md:inline">Все шаблоны →</Link>
+        </div>
+        <div className="-mx-5 flex snap-x gap-3 overflow-x-auto px-5 pb-2 md:mx-0 md:grid md:grid-cols-4 md:gap-4 md:overflow-visible md:px-0 md:pb-0">
+          {TEMPLATES.map(t => (
+            <Link key={t.name} href="/wishlist/create" className="w-[160px] shrink-0 snap-start overflow-hidden rounded-[20px] border transition-transform hover:-translate-y-1 md:w-auto">
+              <div className={`${t.className} flex h-[124px] flex-col items-center justify-center gap-1 bg-background px-4 text-center text-foreground md:h-[180px]`}>{t.cover}</div>
+              <div className="flex items-center justify-between bg-card px-4 py-3.5 text-sm">
+                <b>{t.name}</b><span className="hidden text-muted-foreground md:inline">{t.scheme}</span>
               </div>
-            </FadeContent>
+            </Link>
           ))}
         </div>
-
-        <AnimatedContent direction="vertical" reverse={false} delay={200}>
-          <div className="text-center">
-            <Link
-              href="/templates"
-              className="inline-flex items-center gap-2 px-8 py-3.5 rounded-2xl font-bold text-sm text-white transition-opacity hover:opacity-90"
-              style={{
-                background: 'linear-gradient(135deg, #a855f7, #8b5cf6)',
-                boxShadow: isDark ? '0 0 24px rgba(168,85,247,0.3)' : '0 4px 16px rgba(168,85,247,0.25)',
-              }}
-            >
-              Смотреть шаблоны сообщества
-            </Link>
-          </div>
-        </AnimatedContent>
-      </div>
+        <Link href="/wishlist/create" className="flex h-14 items-center justify-center rounded-2xl border bg-card font-semibold md:hidden">Все 8 шаблонов</Link>
+      </Container>
     </section>
   )
 }

@@ -64,6 +64,8 @@ export default {
       },
       fontFamily: {
         manrope: [ 'var(--font-manrope)', 'system-ui', 'sans-serif' ],
+        // Заголовки главной — тот же «Акцидент», что в «Оформлении».
+        unbounded: [ 'var(--font-unbounded)', 'var(--font-manrope)', 'sans-serif' ],
       },
       /*
        * Шкала заголовков из макета. Трекинг отрицательный и растёт по модулю

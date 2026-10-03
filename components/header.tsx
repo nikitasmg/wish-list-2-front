@@ -73,9 +73,10 @@ export const Header = () => {
             <Button className="max-w-max" variant="ghost" size="sm" onClick={() => navigate.push('/login')}>
               Войти
             </Button>
-            <Button variant="outline" size="sm" onClick={() => navigate.push('/registration')}>
-              <span className="hidden sm:inline">Зарегистрироваться</span>
-              <span className="sm:hidden">Регистрация</span>
+            {/* На узком экране регистрация не влезала рядом со входом и
+                раздвигала страницу вбок — со входа до неё один шаг. */}
+            <Button variant="outline" size="sm" className="hidden sm:inline-flex" onClick={() => navigate.push('/registration')}>
+              Зарегистрироваться
             </Button>
           </div>
         )}
