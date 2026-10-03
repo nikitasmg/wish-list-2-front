@@ -1,5 +1,6 @@
 import { CardCover } from '@/components/card-cover'
 import { Block } from '@/shared/types'
+import { ImageIcon } from 'lucide-react'
 
 /** «16:9» → «16 / 9» для CSS aspect-ratio. Мусор — пропорция по умолчанию. */
 export function aspectRatio(value: unknown, fallback: string): string {
@@ -16,7 +17,10 @@ export function MediaBlockView({ block }: { block: Block }) {
   if (!visible.length) return <CardCover cover="" className="w-full rounded-2xl" style={{ aspectRatio: ratio }} />
   return <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${visible.length}, minmax(0, 1fr))` }}>
     {visible.map((url, i) => <figure key={i} className="min-w-0">
-      <CardCover cover={url} title={captions[i] ?? ''} className="h-auto w-full rounded-2xl" style={{ aspectRatio: ratio }} />
+      {url
+        ? <CardCover cover={url} title={captions[i] ?? ''} className="h-auto w-full rounded-2xl" style={{ aspectRatio: ratio }} />
+        // Пустое место под фото из шаблона — ещё не загружено, а не сломано.
+        : <div className="flex w-full items-center justify-center rounded-2xl bg-muted text-muted-foreground" style={{ aspectRatio: ratio }}><ImageIcon size={28} strokeWidth={1.4} aria-hidden /></div>}
       {captions[i] && <figcaption className="mt-2 text-sm text-muted-foreground">{captions[i]}</figcaption>}
     </figure>)}
   </div>

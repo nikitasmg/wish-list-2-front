@@ -229,6 +229,8 @@ export type SystemTemplate = {
   sampleTitle: string
   occasion: string
   blocks: Block[]
+  rows?: RowSettings[] | null
+  look?: Look
 }
 
 export type SystemTemplateCategory = {
