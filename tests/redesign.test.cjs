@@ -36,21 +36,22 @@ test('failed save retains latest draft and stops automatic writes until explicit
   assert.equal(queue.dirty, false)
 })
 test('migration keeps content and IDs, converts legacy blocks without mutating source', () => {
-  assert.equal(typeof model.prepareBlocks, 'function')
+  assert.equal(typeof model.prepareLayout, 'function')
   const original = [{ id: 'a', type: 'agenda', row: 0, col: 0, colSpan: 2, data: { items: [{ time: '12:00', text: 'Сбор' }] } }, { id: 'b', type: 'image', row: 1, col: 0, colSpan: 2, data: { url: 'https://example.com/a.png' } }]
-  const result = model.prepareBlocks({ blocks: original, cover: '', title: 'Праздник' })
+  const prepared = model.prepareLayout({ blocks: original, cover: '', title: 'Праздник' })
+  const result = prepared.blocks
   assert.equal(result[0].id, 'a')
   assert.equal(result[0].type, 'list')
   assert.deepEqual(result[0].data.items, [{ t: '12:00', v: 'Сбор' }])
   assert.equal(result[1].type, 'media')
   assert.deepEqual(result[1].data.images, ['https://example.com/a.png'])
   assert.equal(original[0].type, 'agenda')
-  assert.deepEqual(model.prepareBlocks({ blocks: result, cover: '', title: 'Праздник' }), result)
+  assert.deepEqual(model.prepareLayout({ ...prepared, cover: '', title: 'Праздник' }), prepared, 'повторная подготовка ничего не меняет')
 })
 test('duplicate has new identity, independent data, and lands in the freed row', () => {
-  assert.equal(typeof model.duplicateBlock, 'function')
+  const layout = load('shared/layout.ts')
   const blocks = [{ id: 'a', type: 'list', row: 0, col: 0, colSpan: 2, data: { items: [{ v: 'Один' }] } }, { id: 'b', type: 'text', row: 1, col: 0, colSpan: 2, data: {} }]
-  const result = model.duplicateBlock(blocks, 'a')
+  const result = layout.duplicateBlock(layout.normalizeLayout(blocks), 'a').blocks
   const byId = Object.fromEntries(result.map(b => [b.id, b]))
   const copy = result.find(b => b.id !== 'a' && b.id !== 'b')
   assert.equal(result.length, 3)

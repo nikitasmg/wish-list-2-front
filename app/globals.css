@@ -334,6 +334,37 @@
   }
 }
 
+/*
+ * «Оформление» страницы вишлиста: шрифт заголовков и узор фона. Классы
+ * ставит pageLook() — один и тот же на холсте конструктора и у гостя.
+ */
+.wishlist-page :is(h1, h2, h3, .heading) { font-family: var(--heading-font, inherit); }
+.look-font-accent { --heading-font: var(--font-unbounded), var(--font-manrope), sans-serif; }
+.look-font-strict { --heading-font: var(--font-manrope), system-ui, sans-serif; }
+.look-font-soft { --heading-font: var(--font-comfortaa), var(--font-manrope), sans-serif; }
+.look-font-poster { --heading-font: var(--font-oswald), var(--font-manrope), sans-serif; }
+.look-font-elegant { --heading-font: var(--font-cormorant), Georgia, serif; }
+.look-font-classic { --heading-font: var(--font-playfair), Georgia, serif; }
+/* У «Плаката» узкие буквы: отрицательный трекинг слепляет их. */
+.look-font-poster :is(h1, h2, h3, .heading) { letter-spacing: 0; text-transform: uppercase; }
+.look-font-elegant :is(h1, h2, h3, .heading) { letter-spacing: 0; font-weight: 700; }
+
+.look-pattern-stars {
+  background-image: radial-gradient(hsl(var(--primary) / 0.28) 1.6px, transparent 2.2px);
+  background-size: 52px 52px;
+}
+.look-pattern-confetti {
+  background-image:
+    radial-gradient(hsl(var(--primary) / 0.35) 2px, transparent 2.6px),
+    radial-gradient(hsl(var(--accent) / 0.3) 1.6px, transparent 2.2px),
+    linear-gradient(45deg, transparent 47%, hsl(var(--primary) / 0.18) 47% 53%, transparent 53%);
+  background-size: 64px 64px, 40px 40px, 90px 90px;
+  background-position: 0 0, 20px 26px, 10px 50px;
+}
+.look-pattern-lines {
+  background-image: repeating-linear-gradient(135deg, hsl(var(--border) / 0.7) 0 1px, transparent 1px 22px);
+}
+
 /* Suppress Tiptap's default ProseMirror focus outline */
 .ProseMirror-focused {
   outline: none;

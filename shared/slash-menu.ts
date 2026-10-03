@@ -62,7 +62,7 @@ export function convertBlock(blocks: Block[], id: string, type: BlockType): Bloc
   if (index < 0) return blocks
 
   const current = blocks[index]
-  const fresh = makeBlock(type, current.row, current.col, current.colSpan)
+  const fresh = makeBlock(type)
 
   return blocks.map((block, i) => i === index
     ? { ...fresh, id: current.id, row: current.row, col: current.col, colSpan: current.colSpan }

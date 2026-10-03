@@ -11,8 +11,10 @@ import { Present } from '@/shared/types'
 import { AxiosError } from 'axios'
 import { useEffect, useState } from 'react'
 
+import { giftStatus, type GiftStatus } from '@/shared/gifts'
+
 /** Состояние карточки подарка глазами текущего гостя. */
-export type ReservationState = 'free' | 'mine' | 'taken'
+export type ReservationState = GiftStatus
 
 /** Текст ошибки от бэка: «подарок уже забронировали» лучше общей фразы. */
 function showError(error: AxiosError) {
@@ -35,26 +37,23 @@ function showError(error: AxiosError) {
 export function useReservation(present: Present, wishlistId: string, isExample = false) {
   const reserve = useApiReservePresent(wishlistId)
   const release = useApiReleasePresent(wishlistId)
-  const [exampleState, setExampleState] = useState<ReservationState>(
-    present.reserved ? 'taken' : 'free',
-  )
+  const [exampleState, setExampleState] = useState<ReservationState>(giftStatus(present))
 
-  const state: ReservationState = isExample
-    ? exampleState
-    : present.reservedByMe ? 'mine' : present.reserved ? 'taken' : 'free'
+  const state: ReservationState = isExample ? exampleState : giftStatus(present)
 
   return {
     state,
     isPending: reserve.isPending || release.isPending,
 
-    reserve: () => {
+    /** name — как подписать бронь; пусто или anonymous — без имени. */
+    reserve: (name = '', anonymous = false, onDone?: () => void) => {
       if (isExample) {
         setExampleState('mine')
-        toast({ title: 'Подарок забронирован!', variant: 'success' })
+        onDone?.()
         return
       }
-      reserve.mutate({ presentId: present.id }, {
-        onSuccess: () => toast({ title: 'Подарок забронирован!', variant: 'success' }),
+      reserve.mutate({ presentId: present.id, name, anonymous }, {
+        onSuccess: () => onDone?.(),
         onError: showError,
       })
     },

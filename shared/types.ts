@@ -42,17 +42,20 @@ export const LEGACY_BLOCK_TYPES: BlockType[] = [
 
 /** Версии формата блоков — совпадают с константами бэка. */
 export const BLOCKS_VERSION_LEGACY = 1
-export const BLOCKS_VERSION_CURRENT = 2
+export const BLOCKS_VERSION_CURRENT = 3
 
 export type Block = {
   /** Стабильный id. К нему привязаны ответы гостей, голоса и треки —
    *  позиция для этого не годится, она меняется при перестановке блоков. */
   id: string
   type: BlockType
-  /** Координаты в сетке: строка, колонка (0 — левая) и ширина в колонках. */
+  /** Ряд и колонка в нём. Настройки ряда — в Wishlist.rows по номеру ряда.
+   *  colSpan у v3 всегда 1; 2 бывает только у вишлистов формата v2. */
   row: number
-  col: 0 | 1
-  colSpan: 1 | 2
+  col: number
+  colSpan: number
+  /** Ширина содержимого, когда блок один в ряду. */
+  width?: 'narrow' | 'full' | ''
   /** Вариант отображения внутри типа. */
   view?: string
   caption?: string
@@ -61,7 +64,34 @@ export type Block = {
   hidden?: boolean
   /** «Секрет до даты»: пока не наступила, бэк отдаёт блок без data. */
   revealAt?: string | null
+  /** Что гость видит до revealAt: замок с таймером, только замок или ничего. */
+  secretMode?: 'timer' | 'lock' | 'hidden' | ''
+  /** Надпись на замке. Вне data: data до даты бэк вырезает. */
+  secretText?: string
   data: Record<string, unknown>
+}
+
+export type RowRatio = '' | '1:1' | '2:1' | '1:2' | '1:1:1'
+
+/** Настройки ряда. Ряд — блоки с одинаковым row. */
+export type RowSettings = {
+  columns?: number
+  ratio?: RowRatio
+  height?: '' | 'equal' | 'auto'
+  gap?: '' | 's' | 'm' | 'l'
+  mobileReverse?: boolean
+}
+
+export type HeadingFont = 'accent' | 'strict' | 'soft' | 'poster' | 'elegant' | 'classic'
+export type BackgroundPattern = 'none' | 'stars' | 'confetti' | 'lines'
+
+/** «Оформление» конструктора. */
+export type Look = {
+  headingFont?: HeadingFont | ''
+  pattern?: BackgroundPattern | ''
+  mainDreamLarge?: boolean
+  confettiOnReserve?: boolean
+  liveTimer?: boolean
 }
 
 // Вид (view) по типам блоков:
@@ -111,7 +141,7 @@ export type Wishlist = {
     showGiftAvailability: boolean
     presentsLayout?: 'list' | 'grid3' | 'grid2'
     customScheme?: CustomScheme
-  }
+  } & Look
   location: {
     name: string,
     link?: string,
@@ -122,7 +152,11 @@ export type Wishlist = {
   occasion?: string
   shortId?: string
   blocks?: Block[]
+  /** Настройки рядов по номеру ряда (формат v3). */
+  rows?: RowSettings[] | null
   blocksVersion: number
+  /** Шаблон, из которого создан вишлист, — только для подписи. */
+  templateName?: string
   createdAt: string,
   updatedAt: string,
 }
@@ -140,6 +174,13 @@ export type Present = {
   reserved: boolean;
   /** Бронь поставил текущий гость — значит, он же может её снять. */
   reservedByMe?: boolean;
+  /** Как подписался забронировавший гость. Владельцу бэк его не отдаёт. */
+  reservedByName?: string;
+  /** Главная мечта: первой и крупнее. Одна на вишлист. */
+  isMain?: boolean;
+  sortOrder?: number;
+  /** Владелец отметил подарок подаренным. */
+  gifted?: boolean;
   /** single — один даритель, group — скидываются, multi — набор вещей. */
   type: 'single' | 'group' | 'multi';
   participantsCount: number;
@@ -150,7 +191,7 @@ export type Present = {
 }
 
 /** Лимит описания подарка. Тот же, что проверяет бэк. */
-export const MAX_PRESENT_DESCRIPTION = 500
+export const MAX_PRESENT_DESCRIPTION = 1000
 
 /**
  * Пользовательский шаблон: человек сохранил свой вишлист как заготовку и,
@@ -206,9 +247,17 @@ export type RSVPResponse = {
   menu: string
   transfer: boolean
   comment: string
+  /** Ответы на свои вопросы организатора, ключ — id вопроса. */
+  answers?: Record<string, string> | null
   mine: boolean
   createdAt: string
   updatedAt: string
+}
+
+/** «Кто идёт»: имена согласившихся и сколько всего людей. */
+export type RSVPGuests = {
+  names: string[]
+  total: number
 }
 
 export type RSVPSummary = {
@@ -222,10 +271,15 @@ export type RSVPSummary = {
 }
 
 export type PollResults = {
-  /** Голоса по индексу варианта из data блока. */
-  votes: number[]
+  /** Голоса по id варианта; null — результаты этому зрителю пока скрыты. */
+  votes: Record<string, number> | null
   total: number
-  myVote: number | null
+  myVotes: string[] | null
+  /** Скрыты настройкой блока: «после голоса» или «только организатору». */
+  hidden: boolean
+  closed: boolean
+  /** Варианты, которые добавили гости. */
+  guestOptions: { id: string; text: string; mine: boolean; hidden: boolean }[]
 }
 
 export type PlaylistTrack = {

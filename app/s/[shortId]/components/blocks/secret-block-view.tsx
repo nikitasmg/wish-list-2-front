@@ -1,10 +1,46 @@
 'use client'
-import { useEffect, useState } from 'react'
-import { LockKeyhole } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-export function SecretBlockView({ revealAt }: { revealAt: string }) {
+import { pluralRu } from '@/shared/event-date'
+import { Block } from '@/shared/types'
+import { LockKeyhole } from 'lucide-react'
+import { useEffect, useState } from 'react'
+
+/**
+ * Секрет до даты. «Замок и таймер» показывает отсчёт, «только замок» — одну
+ * надпись: дату бэк в этом режиме не отдаёт вовсе. Режим «ничего» сюда не
+ * доходит — такой блок бэк не присылает.
+ */
+export function SecretBlockView({ block }: { block: Pick<Block, 'revealAt' | 'secretMode' | 'secretText'> }) {
   const [now, setNow] = useState<number | null>(null)
-  useEffect(() => { setNow(Date.now()); const timer = setInterval(() => setNow(Date.now()), 1000); return () => clearInterval(timer) }, [])
-  const seconds = now === null ? null : Math.max(0, Math.floor((new Date(revealAt).getTime() - now) / 1000))
-  return <div className="flex flex-col items-center gap-4 rounded-2xl border border-dashed bg-muted/30 p-8 text-center"><LockKeyhole className="text-primary" /><p className="font-semibold">Пока это секрет</p>{seconds === 0 ? <Button onClick={() => window.location.reload()}>Открыть сюрприз</Button> : <p className="text-sm text-muted-foreground">{seconds === null ? 'Откроется на празднике' : `${Math.floor(seconds / 86400)} дн. ${Math.floor(seconds / 3600) % 24} ч. ${Math.floor(seconds / 60) % 60} мин.`}</p>}</div>
+  const timed = Boolean(block.revealAt) && block.secretMode !== 'lock'
+  useEffect(() => {
+    if (!timed) return
+    setNow(Date.now())
+    const timer = setInterval(() => setNow(Date.now()), 1000)
+    return () => clearInterval(timer)
+  }, [timed])
+  const seconds = !timed || now === null ? null : Math.max(0, Math.floor((new Date(block.revealAt!).getTime() - now) / 1000))
+  const parts: [number, [string, string, string]][] = seconds === null ? [] : [
+    [Math.floor(seconds / 86400), ['день', 'дня', 'дней']],
+    [Math.floor(seconds / 3600) % 24, ['час', 'часа', 'часов']],
+    [Math.floor(seconds / 60) % 60, ['минута', 'минуты', 'минут']],
+  ]
+
+  return (
+    <div className="flex h-full flex-col items-center justify-center gap-4 rounded-[22px] border bg-card p-8 text-center text-card-foreground">
+      <LockKeyhole className="text-muted-foreground" size={26} aria-hidden />
+      <p className="heading text-lg font-bold">{block.secretText || 'Секрет откроется на празднике'}</p>
+      {seconds === 0 && <Button onClick={() => window.location.reload()}>Открыть сюрприз</Button>}
+      {seconds !== null && seconds > 0 && (
+        <div className="flex gap-5">
+          {parts.map(([value, forms]) => (
+            <div key={forms[0]}>
+              <div className="heading text-2xl font-extrabold tabular-nums">{String(value).padStart(2, '0')}</div>
+              <div className="text-xs text-muted-foreground">{pluralRu(value, forms)}</div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
 }

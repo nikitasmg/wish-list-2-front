@@ -11,7 +11,7 @@ import { useEffect, useState } from 'react'
  * рендера и приехало бы к гостю уже неверным, а расхождение разметки дало бы
  * ошибку гидратации.
  */
-export function Countdown({ target }: { target: string }) {
+export function Countdown({ target, live = false }: { target: string; live?: boolean }) {
   const [left, setLeft] = useState<number | null>(null)
 
   useEffect(() => {
@@ -20,11 +20,11 @@ export function Countdown({ target }: { target: string }) {
 
     const tick = () => setLeft(date - Date.now())
     tick()
-    // Раз в минуту: секунды в этом отсчёте никому не нужны, а таймер раз в
-    // секунду будил бы вкладку без повода.
-    const timer = setInterval(tick, 60_000)
+    // Раз в минуту, если организатор не включил «живой таймер»: без секунд
+    // будить вкладку каждую секунду незачем.
+    const timer = setInterval(tick, live ? 1000 : 60_000)
     return () => clearInterval(timer)
-  }, [target])
+  }, [target, live])
 
   if (left === null || left <= 0) return null
 
@@ -33,6 +33,7 @@ export function Countdown({ target }: { target: string }) {
     { value: Math.floor(minutes / (60 * 24)), forms: ['день', 'дня', 'дней'] as [string, string, string] },
     { value: Math.floor(minutes / 60) % 24, forms: ['час', 'часа', 'часов'] as [string, string, string] },
     { value: minutes % 60, forms: ['минута', 'минуты', 'минут'] as [string, string, string] },
+    ...(live ? [{ value: Math.floor(left / 1000) % 60, forms: ['секунда', 'секунды', 'секунд'] as [string, string, string] }] : []),
   ]
 
   return (
@@ -41,7 +42,7 @@ export function Countdown({ target }: { target: string }) {
         <React.Fragment key={part.forms[0]}>
           {index > 0 && <span className="w-px h-10 bg-border" aria-hidden />}
           <div className="text-center">
-            <div className="text-3xl sm:text-4xl font-extrabold tracking-tight tabular-nums">
+            <div className="heading text-3xl sm:text-4xl font-extrabold tracking-tight tabular-nums">
               {String(part.value).padStart(2, '0')}
             </div>
             <div className="text-xs text-muted-foreground">{pluralRu(part.value, part.forms)}</div>

@@ -1,38 +1,24 @@
 import { Block } from '@/shared/types'
-import React from 'react'
+import { contactLink, contactPeople } from '@/shared/block-data'
+import { Button } from '@/components/ui/button'
 
+/** «Контакты»: буква-аватар, имя, кто это и «Написать». */
 export function ContactBlockView({ block }: { block: Block }) {
-  const name = block.data.name as string | undefined
-  const role = block.data.role as string | undefined
-  const phone = block.data.phone as string | undefined
-  const telegram = block.data.telegram as string | undefined
-
-  if (!name && !phone && !telegram) return null
-
-  return (
-    <div className="flex flex-col gap-1.5">
-      {name && <p className="text-lg font-semibold text-foreground">{name}</p>}
-      {role && <p className="text-sm text-muted-foreground">{role}</p>}
-      <div className="flex flex-wrap gap-3 mt-1">
-        {phone && (
-          <a
-            href={`tel:${phone}`}
-            className="text-sm text-primary hover:underline"
-          >
-            {phone}
-          </a>
-        )}
-        {telegram && (
-          <a
-            href={`https://t.me/${telegram.replace(/^@/, '')}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-sm text-primary hover:underline"
-          >
-            {telegram.startsWith('@') ? telegram : `@${telegram}`}
-          </a>
-        )}
+  const people = contactPeople(block.data)
+  if (!people.length) return null
+  return <div className="space-y-4">
+    {people.map((person, i) => {
+      const link = contactLink(person)
+      return <div key={i} className="flex items-center gap-4">
+        <span className="heading flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary/15 text-lg font-extrabold text-primary" aria-hidden>
+          {person.name.trim().charAt(0).toLocaleUpperCase('ru') || '?'}
+        </span>
+        <div className="min-w-0 flex-1">
+          <p className="font-bold">{person.name}</p>
+          {person.role && <p className="text-sm text-muted-foreground">{person.role}</p>}
+        </div>
+        {link && <Button variant="outline" asChild><a href={link} target={link.startsWith('http') ? '_blank' : undefined} rel="noopener noreferrer">Написать</a></Button>}
       </div>
-    </div>
-  )
+    })}
+  </div>
 }

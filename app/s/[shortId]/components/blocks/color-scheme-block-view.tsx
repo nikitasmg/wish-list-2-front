@@ -1,27 +1,41 @@
+import { cn } from '@/lib/utils'
+import { dressColors } from '@/shared/block-data'
 import { Block } from '@/shared/types'
-import React from 'react'
 
+/**
+ * «Дресс-код»: круги, полосы или арки. «Взять из схемы» показывает цвета
+ * самой страницы — они всегда совпадают с тем, что гость видит вокруг.
+ */
 export function ColorSchemeBlockView({ block }: { block: Block }) {
-  const colors = block.data.colors as string[] | undefined
-  const label = block.data.label as string | undefined
+  const fromScheme = block.data.fromScheme === true
+  const colors = fromScheme
+    ? [{ hex: 'hsl(var(--background))', name: 'Фон' }, { hex: 'hsl(var(--card))', name: 'Карточки' }, { hex: 'hsl(var(--primary))', name: 'Акцент' }, { hex: 'hsl(var(--foreground))', name: 'Текст' }]
+    : dressColors(block.data)
+  const showNames = block.data.showNames !== false
+  const note = String(block.data.note ?? block.data.label ?? '')
+  const view = block.view ?? 'circles'
+  if (!colors.length) return null
 
-  if (!colors?.length) return null
-
-  return (
-    <div className="flex flex-col gap-3">
-      {label && (
-        <p className="text-sm font-medium text-muted-foreground">{label}</p>
-      )}
-      <div className="flex gap-3 flex-wrap">
-        {colors.map((color, i) => (
-          <div
-            key={i}
-            className="w-12 h-12 rounded-full shadow-md border-2 border-background"
-            style={{ background: color }}
-            title={color}
-          />
-        ))}
+  return <div className="space-y-4">
+    {view === 'stripes' ? (
+      <div className="space-y-2">
+        <div className="flex h-14 overflow-hidden rounded-xl border">
+          {colors.map((c, i) => <span key={i} className="flex-1" style={{ background: c.hex }} />)}
+        </div>
+        {showNames && <div className="flex text-xs text-muted-foreground">{colors.map((c, i) => <span key={i} className="flex-1 truncate text-center">{c.name}</span>)}</div>}
       </div>
-    </div>
-  )
+    ) : (
+      <div className="flex flex-wrap gap-4">
+        {colors.map((c, i) => <div key={i} className="flex flex-col items-center gap-1.5">
+          <span
+            className={cn('block border shadow-sm', view === 'arches' ? 'h-16 w-12 rounded-t-full' : 'h-12 w-12 rounded-full')}
+            style={{ background: c.hex }}
+            title={c.name || undefined}
+          />
+          {showNames && c.name && <span className="text-xs">{c.name}</span>}
+        </div>)}
+      </div>
+    )}
+    {note && <p className="text-sm text-muted-foreground">{note}</p>}
+  </div>
 }

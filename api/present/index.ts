@@ -82,9 +82,9 @@ export const useApiRemovePresent = (wishlistId: string) => {
 
 export const useApiReservePresent = (wishlistId: string) => {
   const queryClient = useQueryClient()
-  return useMutation<unknown, AxiosError, { presentId: string }>({
-    mutationFn: async ({ presentId }) => {
-      return api.put(`presents/${presentId}/reserve`, {})
+  return useMutation<unknown, AxiosError, { presentId: string; name?: string; anonymous?: boolean }>({
+    mutationFn: async ({ presentId, name, anonymous }) => {
+      return api.put(`presents/${presentId}/reserve`, { name: name ?? '', anonymous: Boolean(anonymous) })
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: [ 'presents', wishlistId ] })

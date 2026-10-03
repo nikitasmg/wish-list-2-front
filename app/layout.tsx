@@ -6,7 +6,7 @@ import Providers from '@/app/providers'
 import { Toaster } from '@/components/ui/toaster'
 import { CookieBanner } from '@/components/cookie-banner'
 import type { Metadata } from 'next'
-import { Manrope } from 'next/font/google'
+import { Comfortaa, Cormorant_Garamond, Manrope, Oswald, Playfair_Display, Unbounded } from 'next/font/google'
 import './globals.css'
 
 const manrope = Manrope({
@@ -16,6 +16,17 @@ const manrope = Manrope({
   subsets: ['latin', 'cyrillic'],
   weight: ['400', '500', '600', '700', '800'],
 })
+
+/*
+ * Шрифты заголовков из «Оформления». Без preload: они нужны только на
+ * страницах вишлистов, и браузер скачивает файл, лишь когда шрифт реально
+ * применён, — остальные страницы за них не платят.
+ */
+const unbounded = Unbounded({ variable: '--font-unbounded', subsets: ['latin', 'cyrillic'], weight: ['700', '800'], preload: false })
+const comfortaa = Comfortaa({ variable: '--font-comfortaa', subsets: ['latin', 'cyrillic'], weight: ['700'], preload: false })
+const oswald = Oswald({ variable: '--font-oswald', subsets: ['latin', 'cyrillic'], weight: ['600', '700'], preload: false })
+const cormorant = Cormorant_Garamond({ variable: '--font-cormorant', subsets: ['latin', 'cyrillic'], weight: ['600', '700'], preload: false })
+const playfair = Playfair_Display({ variable: '--font-playfair', subsets: ['latin', 'cyrillic'], weight: ['700', '800'], preload: false })
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://prosto-namekni.ru'),
@@ -55,7 +66,7 @@ export default function RootLayout({
   return (
     <html lang="ru" suppressHydrationWarning>
     <body
-      className={`${manrope.variable} antialiased`}
+      className={`${manrope.variable} ${unbounded.variable} ${comfortaa.variable} ${oswald.variable} ${cormorant.variable} ${playfair.variable} antialiased`}
     >
     <Suspense fallback={null}>
       <Metrika />

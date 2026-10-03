@@ -5,362 +5,349 @@ import { GuestBlockView } from '@/app/s/[shortId]/components/blocks/guest-block-
 import { WishlistLanding } from '@/app/s/[shortId]/components/wishlist-landing'
 import { PresentsManager } from '@/app/wishlist/components/presents-manager'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
 import { toast } from '@/hooks/use-toast'
 import { useConstructorTour } from '@/hooks/use-constructor-tour'
 import { useWishlistDraft } from '@/hooks/use-wishlist-draft'
 import { cn } from '@/lib/utils'
 import { colorSchema, normalizeScheme } from '@/shared/constants'
-import { deriveSchemeStyle } from '@/shared/derive-scheme'
-import { appendLibraryBlock, localDateTime } from '@/shared/editor-model'
-import { resizeBlock } from '@/shared/grid'
+import { BLOCK_CATALOG, LibraryItem, libraryBlock } from '@/shared/editor-model'
+import { insertRow, layoutRows, moveToCell, moveToRow, nudge, placeBeside, replaceBlock } from '@/shared/layout'
+import { pageLook, schemeLook } from '@/shared/look'
 import { Wishlist } from '@/shared/types'
-import { CircleHelp, Eye, Link2, Monitor, Smartphone } from 'lucide-react'
-import { useState } from 'react'
-import { ColorsSelect } from './colors-select'
-import { BlockCanvas } from './constructor/block-canvas'
+import {
+  DndContext,
+  DragEndEvent,
+  DragOverlay,
+  DragStartEvent,
+  PointerSensor,
+  pointerWithin,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core'
+import { CircleHelp, ListTree, Palette, Plus, Undo2 } from 'lucide-react'
+import { useCallback, useEffect, useState } from 'react'
+import { AccessPanel } from './constructor/access-panel'
+import { BlockCanvas, DragData, DropData, Selection } from './constructor/block-canvas'
+import { blockIcon } from './constructor/block-icons'
 import { BlockInspector } from './constructor/block-inspector'
-import { BlockLibrary } from './constructor/block-library'
-import { Toggle } from './constructor/controls'
+import { DesignPanel } from './constructor/design-panel'
+import { EditorHeader, EditorMode, IconButton } from './constructor/editor-header'
+import { LibraryList } from './constructor/insert-menu'
+import { MobileEditor } from './constructor/mobile-editor'
+import { RowInspector } from './constructor/row-inspector'
+import { StructurePanel } from './constructor/structure-panel'
 
 export function ConstructorEditor({ wishlist }: { wishlist: Wishlist }) {
   return <Editor key={wishlist.id} wishlist={wishlist} />
 }
 
-type Mode = 'editor' | 'presents' | 'preview' | 'responses'
+type Panel = 'add' | 'structure' | null
+type Tab = 'block' | 'design' | 'access'
 
+const GUEST_BLOCKS = ['rsvp', 'poll', 'playlist', 'guestbook']
+
+/**
+ * Конструктор по макету: шапка, рельс слева (добавить блок, структура,
+ * оформление, отменить), холст по центру и инспектор справа — «Блок» или
+ * «Ряд», «Оформление», «Доступ».
+ *
+ * Редактор занимает весь экран: у него своя шапка, и шапка сайта над ней
+ * только отнимала бы высоту у холста.
+ */
 function Editor({ wishlist }: { wishlist: Wishlist }) {
-  const { draft, change, status, dirty, flush, retry, error } = useWishlistDraft(wishlist)
-  const [mode, setMode] = useState<Mode>('editor')
-  const [tab, setTab] = useState<'block' | 'page' | 'access'>('block')
-  const [width, setWidth] = useState<'desktop' | 'phone'>('desktop')
-  const [selected, setSelected] = useState<string>()
+  const draftState = useWishlistDraft(wishlist)
+  const { draft, layout, change, setLayout, undo, redo, status, error, retry } = draftState
+  const [mode, setMode] = useState<EditorMode>('page')
+  const [panel, setPanel] = useState<Panel>(null)
+  const [tab, setTab] = useState<Tab>('block')
+  const [device, setDevice] = useState<'desktop' | 'phone'>('desktop')
+  const [selection, setSelection] = useState<Selection>(null)
+  const [dragId, setDragId] = useState<string | null>(null)
+  const narrow = useNarrowScreen()
   const { data: presentsData } = useApiGetAllPresents(wishlist.id)
   const presents = presentsData?.data ?? []
-  const blocks = draft.blocks ?? []
-  const block = blocks.find(b => b.id === selected)
   const { startTour } = useConstructorTour()
 
   const scheme = normalizeScheme(draft.settings.colorScheme)
-  const schemeName = colorSchema.find(s => s.value === scheme)?.name ?? 'Своя'
-  const schemeColors = colorSchema.find(s => s.value === scheme)?.colors ?? ['#0B1226', '#8BE9F5']
+  const schemeInfo = colorSchema.find(s => s.value === scheme)
+  const look = pageLook(draft.settings)
+  const schemeOnly = schemeLook(draft.settings)
+
+  const selectedBlock = selection?.kind === 'block' ? layout.blocks.find(b => b.id === selection.id) : undefined
+  const selectedRowColumns = selectedBlock ? layoutRows(layout)[selectedBlock.row]?.settings.columns ?? 1 : 1
+
+  const select = useCallback((next: Selection) => {
+    setSelection(next)
+    if (next) setTab('block')
+  }, [])
 
   const copyLink = async () => {
+    const url = `${window.location.origin}/s/${wishlist.shortId}`
     try {
-      await navigator.clipboard.writeText(`${window.location.origin}/s/${wishlist.shortId}`)
-      toast({ title: 'Ссылка скопирована' })
+      if (narrow && navigator.share) { await navigator.share({ title: draft.title, url }); return }
+      await navigator.clipboard.writeText(url)
+      toast({ title: 'Ссылка скопирована', description: 'Отправьте её гостям — регистрация им не нужна.' })
     } catch {
       toast({ title: 'Не удалось скопировать ссылку', variant: 'destructive' })
     }
   }
 
-  const modes: [Mode, string][] = [
-    ['editor', 'Страница'],
-    ['presents', `Подарки${presents.length ? ` · ${presents.length}` : ''}`],
-    ['preview', 'Предпросмотр'],
-    ['responses', 'Ответы гостей'],
-  ]
+  const insert = (item: LibraryItem) => {
+    const block = libraryBlock(item)
+    // Блок встаёт под выделенным, а без выделения — в конец страницы.
+    const anchor = selectedBlock ? selectedBlock.row + 1 : layout.rows.length
+    setLayout(insertRow(layout, anchor, block))
+    select({ kind: 'block', id: block.id })
+  }
+
+  // Клавиатура: отмена/повтор и Alt+стрелки. В полях ввода отмену оставляем
+  // браузеру — там Ctrl+Z должен откатывать набранные буквы, а не всю правку.
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement
+      const editing = target.closest('input, textarea, [contenteditable="true"]')
+      const mod = event.ctrlKey || event.metaKey
+      if (mod && !editing && event.code === 'KeyZ') {
+        event.preventDefault()
+        if (event.shiftKey) redo(); else undo()
+      } else if (mod && !editing && event.code === 'KeyY') {
+        event.preventDefault(); redo()
+      } else if (event.altKey && selection?.kind === 'block' && (event.key === 'ArrowUp' || event.key === 'ArrowDown')) {
+        event.preventDefault()
+        setLayout(nudge(layout, selection.id, event.key === 'ArrowUp' ? -1 : 1))
+      } else if (event.key === 'Escape' && !editing && !dragId) {
+        setSelection(null)
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [undo, redo, selection, layout, setLayout, dragId])
+
+  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }))
+
+  const onDragStart = (event: DragStartEvent) => setDragId((event.active.data.current as DragData).blockId)
+  const onDragEnd = (event: DragEndEvent) => {
+    setDragId(null)
+    const drag = event.active.data.current as DragData | undefined
+    const drop = event.over?.data.current as DropData | undefined
+    if (!drag || !drop) return
+    const next = drop.kind === 'gap' ? moveToRow(layout, drag.blockId, drop.at)
+      : drop.kind === 'side' ? placeBeside(layout, drag.blockId, drop.target, drop.side)
+      : moveToCell(layout, drag.blockId, drop.row, drop.col)
+    if (next !== layout) setLayout(next)
+    select({ kind: 'block', id: drag.blockId })
+  }
+
+  if (narrow) {
+    return (
+      <MobileEditor
+        wishlist={wishlist}
+        draft={draftState}
+        presents={presents}
+        onShare={copyLink}
+      />
+    )
+  }
+
+  const dragBlock = dragId ? layout.blocks.find(b => b.id === dragId) : undefined
+  const DragIcon = dragBlock ? blockIcon(dragBlock.type) : Plus
+  const hasGuestBlocks = layout.blocks.some(b => GUEST_BLOCKS.includes(b.type))
 
   return (
-    <div className="space-y-4">
-      <header className="flex flex-wrap items-center gap-3">
-        <div data-tour="title" className="min-w-0">
-          <h1 className="truncate text-2xl font-bold tracking-tight">{draft.title || 'Мой праздник'}</h1>
-          <p role="status" className={cn('text-sm', error ? 'text-destructive' : 'text-muted-foreground')}>
-            {status}
-          </p>
-        </div>
-
-        <div className="ml-auto flex flex-wrap items-center gap-2">
-          {/* Схема лежит на вкладке «Страница», но смотреть на неё хочется с
-              холста — поэтому показываем прямо в шапке и туда же ведём. */}
-          <button
-            type="button"
-            onClick={() => { setMode('editor'); setTab('page') }}
-            className="flex h-9 items-center gap-2 rounded-xl border px-3 text-sm font-semibold hover:bg-accent"
-          >
-            <span className="flex" aria-hidden>
-              <span className="h-3.5 w-3.5 rounded-full border" style={{ backgroundColor: schemeColors[0] }} />
-              <span className="-ml-1.5 h-3.5 w-3.5 rounded-full" style={{ backgroundColor: schemeColors[1] }} />
-            </span>
-            {schemeName}
-          </button>
-
-          <div className="flex gap-0.5 rounded-xl border p-[3px]" role="group" aria-label="Ширина страницы">
-            {([['desktop', Monitor, 'Компьютер'], ['phone', Smartphone, 'Телефон']] as const).map(([value, Icon, label]) => (
-              <button
-                key={value}
-                type="button"
-                aria-label={label}
-                aria-pressed={width === value}
-                title={label}
-                onClick={() => setWidth(value)}
-                className={cn(
-                  'flex h-7 w-8 items-center justify-center rounded-lg',
-                  width === value ? 'bg-accent text-foreground' : 'text-muted-foreground hover:text-foreground',
-                )}
-              >
-                <Icon size={15} aria-hidden />
-              </button>
-            ))}
-          </div>
-
-          <Button variant="outline" disabled={!dirty || Boolean(error)} onClick={() => void flush()}>
-            Сохранить
-          </Button>
-          {wishlist.shortId && (
-            <Button variant="outline" onClick={copyLink}>
-              <Link2 size={15} className="mr-1.5" aria-hidden />
-              Поделиться
-            </Button>
-          )}
-          {wishlist.shortId && (
-            <Button variant="outline" asChild>
-              <a href={`/s/${wishlist.shortId}`} target="_blank" rel="noopener noreferrer">
-                <Eye size={15} className="mr-1.5" aria-hidden />
-                Открыть
-              </a>
-            </Button>
-          )}
-          <Button
-            variant="ghost"
-            size="icon"
-            title="Как пользоваться редактором"
-            aria-label="Как пользоваться редактором"
-            onClick={startTour}
-          >
-            <CircleHelp size={16} aria-hidden />
-          </Button>
-        </div>
-      </header>
+    <div className="fixed inset-0 z-40 flex flex-col bg-background text-foreground">
+      <EditorHeader
+        title={draft.title}
+        templateName={draft.templateName}
+        status={status}
+        error={error != null}
+        mode={mode}
+        presentsCount={presents.length}
+        onMode={setMode}
+        scheme={{ name: schemeInfo?.name ?? 'Своя', colors: schemeInfo?.colors ?? ['#101216', draft.settings.customScheme?.accent ?? '#FF8A65'] }}
+        onScheme={() => { setMode('page'); setTab('design') }}
+        device={device}
+        onDevice={setDevice}
+        canUndo={draftState.canUndo}
+        canRedo={draftState.canRedo}
+        onUndo={undo}
+        onRedo={redo}
+        onShare={copyLink}
+      />
 
       {error != null && (
-        <div role="alert" className="space-y-3 rounded-xl border border-destructive p-4 text-sm">
-          <p>
-            Черновик остаётся в редакторе. При конфликте скопируйте нужные изменения, затем
-            загрузите актуальную страницу. Повторная отправка не снимает защиту от конфликта.
-          </p>
-          <div className="flex flex-wrap gap-2">
-            <Button variant="outline" onClick={() => void retry()}>Повторить</Button>
-            <Button
-              variant="outline"
-              onClick={() => {
-                const blob = new Blob([JSON.stringify(draft, null, 2)], { type: 'application/json' })
-                const url = URL.createObjectURL(blob)
-                const a = document.createElement('a')
-                a.href = url
-                a.download = 'wishlist-draft.json'
-                a.click()
-                setTimeout(() => URL.revokeObjectURL(url), 1000)
-              }}
-            >
-              Скачать черновик
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => {
-                if (window.confirm('Локальные несохранённые изменения будут потеряны. Загрузить серверную версию?')) {
-                  window.location.reload()
-                }
-              }}
-            >
-              Загрузить актуальную
-            </Button>
-          </div>
+        <div role="alert" className="flex flex-wrap items-center gap-3 border-b border-destructive bg-destructive/10 px-4 py-2 text-sm">
+          <span className="flex-1">Изменения не сохранились. Черновик остался в редакторе.</span>
+          <Button size="sm" variant="outline" onClick={() => void retry()}>Повторить</Button>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => {
+              const blob = new Blob([JSON.stringify(draft, null, 2)], { type: 'application/json' })
+              const url = URL.createObjectURL(blob)
+              const a = document.createElement('a')
+              a.href = url
+              a.download = 'wishlist-draft.json'
+              a.click()
+              setTimeout(() => URL.revokeObjectURL(url), 1000)
+            }}
+          >
+            Скачать черновик
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => {
+              if (window.confirm('Локальные несохранённые изменения будут потеряны. Загрузить серверную версию?')) window.location.reload()
+            }}
+          >
+            Загрузить актуальную
+          </Button>
         </div>
       )}
 
-      <nav className="flex w-max gap-0.5 rounded-xl border p-[3px]" aria-label="Режим редактора">
-        {modes.map(([value, label]) => (
-          <button
-            key={value}
-            type="button"
-            data-tour={value === 'presents' ? 'tab-presents' : undefined}
-            aria-pressed={mode === value}
-            onClick={() => setMode(value)}
-            className={cn(
-              'h-8 rounded-lg px-4 text-sm font-semibold transition-colors',
-              mode === value ? 'bg-accent text-foreground' : 'text-muted-foreground hover:text-foreground',
+      {mode === 'page' && (
+        <DndContext
+          sensors={sensors}
+          collisionDetection={pointerWithin}
+          onDragStart={onDragStart}
+          onDragEnd={onDragEnd}
+          onDragCancel={() => setDragId(null)}
+        >
+          <div className="flex min-h-0 flex-1">
+            <nav aria-label="Инструменты" className="flex w-14 shrink-0 flex-col items-center gap-1.5 border-r py-3">
+              <IconButton label="Добавить блок" active={panel === 'add'} onClick={() => setPanel(panel === 'add' ? null : 'add')}><Plus size={20} aria-hidden /></IconButton>
+              <IconButton label="Структура" active={panel === 'structure'} onClick={() => setPanel(panel === 'structure' ? null : 'structure')}><ListTree size={20} aria-hidden /></IconButton>
+              <IconButton label="Оформление" active={tab === 'design'} onClick={() => setTab('design')}><Palette size={20} aria-hidden /></IconButton>
+              <div className="flex-1" />
+              <IconButton label="Отменить (Ctrl+Z)" disabled={!draftState.canUndo} onClick={undo}><Undo2 size={18} aria-hidden /></IconButton>
+              <IconButton label="Как пользоваться редактором" onClick={startTour}><CircleHelp size={18} aria-hidden /></IconButton>
+            </nav>
+
+            {panel && (
+              <aside data-tour="block-palette" className="flex w-[264px] shrink-0 flex-col border-r p-3">
+                <div className="px-1.5 pb-3 text-[15px] font-bold">{panel === 'add' ? 'Добавить блок' : 'Структура'}</div>
+                {panel === 'add'
+                  ? <LibraryList onPick={insert} />
+                  : <StructurePanel layout={layout} selection={selection} onSelect={select} onLayout={setLayout} />}
+              </aside>
             )}
-          >
-            {label}
-          </button>
-        ))}
-      </nav>
 
-      {mode === 'editor' && (
-        <>
-          <p className="rounded-xl bg-muted p-3 text-sm lg:hidden">
-            Полный конструктор удобнее на компьютере. Здесь можно настроить страницу, блоки и подарки.
-          </p>
+            <BlockCanvas
+              wishlist={draft}
+              layout={layout}
+              presents={presents}
+              selection={selection}
+              phone={device === 'phone'}
+              schemeClass={look.className}
+              schemeStyle={look.style}
+              onSelect={select}
+              onLayout={setLayout}
+            />
 
-          <div className={cn(
-            'grid grid-cols-1 overflow-hidden rounded-2xl border',
-            'lg:h-[calc(100vh-15rem)] lg:min-h-[520px] lg:grid-cols-[minmax(0,1fr)_340px]',
-            'xl:grid-cols-[248px_minmax(0,1fr)_340px]',
-          )}>
-            <div className="hidden min-h-0 xl:flex xl:flex-col">
-              <BlockLibrary
-                onAdd={item => {
-                  const next = appendLibraryBlock(blocks, item)
-                  change({ blocks: next })
-                  setSelected(next[next.length - 1].id)
-                  setTab('block')
-                }}
-              />
-            </div>
-
-            {/* Схема вишлиста красит только холст: вокруг остаётся интерфейс
-                приложения, он живёт в своей теме. */}
-            <div
-              data-tour="block-canvas"
-              className={cn('flex min-h-0 flex-col', scheme !== 'custom' && scheme)}
-              style={draft.settings.colorScheme === 'custom' ? deriveSchemeStyle(draft.settings.customScheme) : undefined}
-            >
-              <BlockCanvas
-                wishlist={draft}
-                presents={presents}
-                selected={selected}
-                mobile={width === 'phone'}
-                onSelect={id => { setSelected(id); if (id) setTab('block') }}
-                onChange={next => change({ blocks: next })}
-              />
-            </div>
-
-            <aside className="min-h-0 overflow-y-auto border-t lg:border-l lg:border-t-0">
-              <nav className="flex gap-5 border-b px-4" aria-label="Настройки страницы">
-                {([['block', 'Блок'], ['page', 'Страница'], ['access', 'Доступ']] as const).map(([value, label]) => (
+            <aside className="flex w-[340px] shrink-0 flex-col border-l">
+              <nav className="flex shrink-0 gap-5 border-b px-5" aria-label="Настройки">
+                {([['block', selection?.kind === 'row' ? 'Ряд' : 'Блок'], ['design', 'Оформление'], ['access', 'Доступ']] as const).map(([value, label]) => (
                   <button
                     key={value}
                     type="button"
                     aria-pressed={tab === value}
                     onClick={() => setTab(value)}
                     className={cn(
-                      'h-11 border-b-2 text-sm transition-colors',
-                      tab === value
-                        ? 'border-primary font-bold text-foreground'
-                        : 'border-transparent font-semibold text-muted-foreground hover:text-foreground',
+                      'h-[46px] border-b-2 text-sm transition-colors',
+                      tab === value ? 'border-primary font-bold text-foreground' : 'border-transparent font-semibold text-muted-foreground hover:text-foreground',
                     )}
                   >
                     {label}
                   </button>
                 ))}
               </nav>
-
-              {tab === 'block' && (
-                <BlockInspector
-                  block={block}
-                  onChange={next => {
-                    // Ширина меняет раскладку соседей, поэтому идёт через сетку,
-                    // а не простой заменой блока: иначе широкий блок наехал бы
-                    // на соседа по строке.
-                    const patched = blocks.map(b => (b.id === next.id ? next : b))
-                    const previous = blocks.find(b => b.id === next.id)
-                    change({
-                      blocks: previous && previous.colSpan !== next.colSpan
-                        ? resizeBlock(patched, next.id, next.colSpan)
-                        : patched,
-                    })
-                  }}
-                />
-              )}
-
-              {tab === 'page' && (
-                <div className="space-y-5 p-4">
-                  <label className="block space-y-1 text-sm">
-                    <span className="text-xs font-semibold text-muted-foreground">Название</span>
-                    <Input value={draft.title} onChange={e => change({ title: e.target.value })} />
-                  </label>
-                  <label className="block space-y-1 text-sm">
-                    <span className="text-xs font-semibold text-muted-foreground">Описание</span>
-                    <Textarea value={draft.description} onChange={e => change({ description: e.target.value })} />
-                  </label>
-                  <label className="block space-y-1 text-sm">
-                    <span className="text-xs font-semibold text-muted-foreground">Дата праздника</span>
-                    <Input
-                      type="datetime-local"
-                      value={localDateTime(draft.eventDate)}
-                      onChange={e => change({ eventDate: e.target.value ? new Date(e.target.value).toISOString() : null })}
-                    />
-                  </label>
-                  <label className="block space-y-1 text-sm">
-                    <span className="text-xs font-semibold text-muted-foreground">Повод</span>
-                    <Input value={draft.occasion ?? ''} onChange={e => change({ occasion: e.target.value })} />
-                  </label>
-                  <ColorsSelect
-                    value={draft.settings.colorScheme}
-                    customScheme={draft.settings.customScheme}
-                    onChange={colorScheme => change({
-                      settings: {
-                        ...draft.settings,
-                        colorScheme,
-                        ...(colorScheme === 'custom' && !draft.settings.customScheme
-                          ? { customScheme: { base: 'dark' as const, accent: '#a78bfa' } }
-                          : {}),
-                      },
-                    })}
-                    onCustomChange={customScheme => change({ settings: { ...draft.settings, customScheme } })}
+              <div className="min-h-0 flex-1 overflow-y-auto">
+                {tab === 'block' && selection?.kind === 'row' && (
+                  <RowInspector layout={layout} index={selection.index} onLayout={setLayout} onDone={() => setSelection(null)} />
+                )}
+                {tab === 'block' && selection?.kind !== 'row' && (
+                  <BlockInspector
+                    block={selectedBlock}
+                    alone={selectedRowColumns === 1}
+                    wishlist={draft}
+                    onChange={(block, key) => setLayout(replaceBlock(layout, block), key)}
+                    onWishlist={change}
                   />
-                </div>
-              )}
-
-              {tab === 'access' && (
-                <div className="space-y-4 p-4 text-sm">
-                  <p className="text-muted-foreground">
-                    Страница доступна по ссылке. Видимость и время раскрытия настраиваются
-                    отдельно для каждого блока.
-                  </p>
-                  <Toggle
-                    label="Показывать мне, какие подарки заняты"
-                    checked={draft.settings.showGiftAvailability}
-                    onChange={showGiftAvailability => change({
-                      settings: { ...draft.settings, showGiftAvailability },
-                    })}
+                )}
+                {tab === 'design' && (
+                  <DesignPanel settings={draft.settings} onChange={(settings, key) => change({ settings }, key)} />
+                )}
+                {tab === 'access' && (
+                  <AccessPanel
+                    wishlist={draft}
+                    onSettings={settings => change({ settings })}
+                    onCopy={copyLink}
+                    hasGuestBlocks={hasGuestBlocks}
+                    onResponses={() => setMode('responses')}
                   />
-                  {wishlist.shortId && (
-                    <Button variant="outline" onClick={copyLink}>Скопировать ссылку</Button>
-                  )}
-                </div>
-              )}
+                )}
+              </div>
             </aside>
           </div>
-        </>
+
+          <DragOverlay dropAnimation={null}>
+            {dragBlock && (
+              <div className="flex items-center gap-2 rounded-xl border bg-popover px-3 py-2 text-sm font-semibold shadow-2xl">
+                <DragIcon size={15} className="text-primary" aria-hidden />
+                {dragBlock.caption || BLOCK_CATALOG.find(c => c.type === dragBlock.type)?.label}
+              </div>
+            )}
+          </DragOverlay>
+        </DndContext>
       )}
 
       {mode === 'preview' && (
-        <div className={cn(
-          'overflow-hidden rounded-2xl border',
-          width === 'phone' && 'mx-auto w-[390px] max-w-full',
-        )}>
-          <WishlistLanding wishlist={draft} presents={presents} isMyWishlist={false} disableBodyTheme />
+        <div className="min-h-0 flex-1 overflow-y-auto bg-muted/50 p-6">
+          <div className={cn('mx-auto overflow-hidden rounded-2xl border shadow-2xl', device === 'phone' ? 'w-[390px] max-w-full' : 'max-w-[1280px]')}>
+            <WishlistLanding wishlist={draft} presents={presents} isMyWishlist={false} disableBodyTheme />
+          </div>
         </div>
       )}
 
-      {mode === 'presents' && <PresentsManager wishlist={draft} presents={presents} />}
+      {mode === 'presents' && (
+        <div className="min-h-0 flex-1 overflow-y-auto">
+          <PresentsManager wishlist={draft} presents={presents} />
+        </div>
+      )}
 
       {mode === 'responses' && (
-        <div className="space-y-6">
-          <p className="text-sm text-muted-foreground">
-            Ответы для сохранённых блоков. Настройки нового блока сначала нужно сохранить.
-          </p>
-          {(wishlist.blocks ?? [])
-            .filter(b => ['rsvp', 'poll', 'playlist', 'guestbook'].includes(b.type))
-            .map(b => (
-              <section key={b.id} className="space-y-4 rounded-xl border p-5">
+        <div className="min-h-0 flex-1 overflow-y-auto">
+          <div className="mx-auto max-w-3xl space-y-6 p-6">
+            <div className="flex items-center justify-between gap-3">
+              <h1 className="text-2xl font-extrabold">Ответы гостей</h1>
+              <Button variant="outline" onClick={() => setMode('page')}>К странице</Button>
+            </div>
+            {(wishlist.blocks ?? []).filter(b => GUEST_BLOCKS.includes(b.type)).map(b => (
+              <section key={b.id} className={cn('space-y-4 rounded-2xl border p-5', schemeOnly.className)} style={schemeOnly.style}>
                 <h2 className="text-xl font-bold">
-                  {b.title || ({
-                    rsvp: 'Ответы гостей',
-                    poll: 'Голосование',
-                    playlist: 'Плейлист',
-                    guestbook: 'Гостевая книга',
-                  } as Record<string, string>)[b.type]}
+                  {b.title || BLOCK_CATALOG.find(c => c.type === b.type)?.label}
                 </h2>
                 <GuestBlockView block={b} wishlistId={wishlist.id} owner />
               </section>
             ))}
+            <p className="text-sm text-muted-foreground">Показаны сохранённые блоки. Новый блок появится здесь после сохранения.</p>
+          </div>
         </div>
       )}
     </div>
   )
 }
+
+/** Узкий экран: конструктор там не открывается — по макету только простая правка. */
+function useNarrowScreen() {
+  const [narrow, setNarrow] = useState(false)
+  useEffect(() => {
+    const query = window.matchMedia('(max-width: 1023px)')
+    setNarrow(query.matches)
+    const onChange = (event: MediaQueryListEvent) => setNarrow(event.matches)
+    query.addEventListener('change', onChange)
+    return () => query.removeEventListener('change', onChange)
+  }, [])
+  return narrow
+}
+

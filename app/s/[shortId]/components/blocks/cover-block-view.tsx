@@ -17,6 +17,8 @@ export function CoverBlockView({ block, wishlist, preview = false }: { block: Bl
   const badge = [wishlist?.occasion, formatEventDate(eventDate)].filter(Boolean).join(' · ')
 
   const hasGifts = (wishlist?.blocks ?? []).some(b => b.type === 'wishlist')
+  // У свадьбы и вечеринок главное действие — ответить на приглашение.
+  const rsvp = (wishlist?.blocks ?? []).find(b => b.type === 'rsvp' && !b.hidden)
 
   return <div className={cn('relative isolate overflow-hidden rounded-3xl px-6 py-14', view === 'left' ? 'text-left' : 'text-center')}>
     {view === 'photo' && image && <><CardCover cover={image} className="absolute inset-0 h-full rounded-none" /><div className="absolute inset-0 bg-background/80" /></>}
@@ -31,14 +33,19 @@ export function CoverBlockView({ block, wishlist, preview = false }: { block: Bl
           ноль и смотрелся бы поломкой. */}
       {timing && !timing.past && eventDate && (
         <div className={cn('flex', view === 'left' ? 'justify-start' : 'justify-center')}>
-          <Countdown target={eventDate} />
+          <Countdown target={eventDate} live={Boolean(wishlist?.settings.liveTimer)} />
         </div>
       )}
 
       {wishlist && !preview && (
         <div className={cn('flex flex-wrap gap-3 pt-2', view === 'left' ? 'justify-start' : 'justify-center')}>
-          {hasGifts && (
+          {rsvp && (
             <Button size="lg" asChild>
+              <a href={`#b-${rsvp.id}`}>Ответить на приглашение</a>
+            </Button>
+          )}
+          {hasGifts && (
+            <Button size="lg" variant={rsvp ? 'outline' : 'default'} asChild>
               <a href="#gifts">Смотреть подарки</a>
             </Button>
           )}
