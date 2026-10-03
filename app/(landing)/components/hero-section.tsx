@@ -27,7 +27,7 @@ export function HeroSection() {
           </p>
           <div className="flex flex-col gap-3 sm:flex-row">
             <PrimaryLink href="/wishlist/create">Собрать страницу<ArrowRight size={18} aria-hidden /></PrimaryLink>
-            <SecondaryLink href="/wishlist-for/birthday"><Eye size={18} aria-hidden />Смотреть пример</SecondaryLink>
+            <SecondaryLink href="/wishlist-for"><Eye size={18} aria-hidden />Смотреть шаблоны</SecondaryLink>
           </div>
           <ul className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted-foreground">
             {['Бесплатно', 'Гостям без регистрации', 'Сюрприз остаётся сюрпризом'].map(text => (

@@ -25,11 +25,11 @@ export function TemplatesSection() {
             <Eyebrow>Шаблоны</Eyebrow>
             <h2 className="font-unbounded text-[30px] font-extrabold leading-[1.05] tracking-[-0.04em] md:text-[52px]">Готовая страница под повод</h2>
           </div>
-          <Link href="/wishlist/create" className="hidden whitespace-nowrap text-[17px] font-bold text-primary hover:underline md:inline">Все шаблоны →</Link>
+          <Link href="/wishlist-for" className="hidden whitespace-nowrap text-[17px] font-bold text-primary hover:underline md:inline">Все шаблоны →</Link>
         </div>
         <div className="-mx-5 flex snap-x gap-3 overflow-x-auto px-5 pb-2 md:mx-0 md:grid md:grid-cols-4 md:gap-4 md:overflow-visible md:px-0 md:pb-0">
           {TEMPLATES.map(t => (
-            <Link key={t.name} href="/wishlist/create" className="w-[160px] shrink-0 snap-start overflow-hidden rounded-[20px] border transition-transform hover:-translate-y-1 md:w-auto">
+            <Link key={t.name} href="/wishlist-for" className="w-[160px] shrink-0 snap-start overflow-hidden rounded-[20px] border transition-transform hover:-translate-y-1 md:w-auto">
               <div className={`${t.className} flex h-[124px] flex-col items-center justify-center gap-1 bg-background px-4 text-center text-foreground md:h-[180px]`}>{t.cover}</div>
               <div className="flex items-center justify-between bg-card px-4 py-3.5 text-sm">
                 <b>{t.name}</b><span className="hidden text-muted-foreground md:inline">{t.scheme}</span>
@@ -37,7 +37,7 @@ export function TemplatesSection() {
             </Link>
           ))}
         </div>
-        <Link href="/wishlist/create" className="flex h-14 items-center justify-center rounded-2xl border bg-card font-semibold md:hidden">Все 8 шаблонов</Link>
+        <Link href="/wishlist-for" className="flex h-14 items-center justify-center rounded-2xl border bg-card font-semibold md:hidden">Все 8 шаблонов</Link>
       </Container>
     </section>
   )

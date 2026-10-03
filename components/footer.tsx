@@ -6,7 +6,7 @@ import React from 'react'
 
 const NAV_LINKS = [
   { label: 'Как это работает', href: '/how-it-works' },
-  { label: 'Примеры вишлистов', href: '/wishlist-for' },
+  { label: 'Шаблоны', href: '/wishlist-for' },
   { label: 'Блог', href: '/blog' },
 ]
 

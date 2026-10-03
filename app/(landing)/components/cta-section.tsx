@@ -58,7 +58,7 @@ export function CtaSection() {
           <p className="relative text-white/75 md:text-[19px]">Бесплатно. Гостям ничего устанавливать не нужно.</p>
           <div className="relative flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
             <PrimaryLink href="/wishlist/create" className="bg-none bg-white text-[#070B16]">Собрать страницу</PrimaryLink>
-            <SecondaryLink href="/wishlist-for/birthday" className="hidden border-white/20 bg-black/30 text-white sm:inline-flex">Смотреть пример</SecondaryLink>
+            <SecondaryLink href="/wishlist-for" className="hidden border-white/20 bg-black/30 text-white sm:inline-flex">Смотреть шаблоны</SecondaryLink>
           </div>
         </div>
       </Container>

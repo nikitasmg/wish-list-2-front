@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 
 import { useRouter } from 'next/navigation'
 import { USER_TEMPLATES_ENABLED } from '@/shared/constants'
-import { LayoutList, LayoutTemplate, Sparkles } from 'lucide-react'
+import { LayoutList, LayoutTemplate } from 'lucide-react'
 import * as React from 'react'
 
 export const Header = () => {
@@ -50,8 +50,8 @@ export const Header = () => {
           onClick={() => navigate.push('/wishlist-for')}
           className="gap-1.5"
         >
-          <Sparkles size={16} />
-          <span className="hidden md:inline">Примеры</span>
+          <LayoutTemplate size={16} />
+          <span className="hidden md:inline">Шаблоны</span>
         </Button>
         {USER_TEMPLATES_ENABLED && (
           <Button

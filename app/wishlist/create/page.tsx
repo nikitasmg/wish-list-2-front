@@ -16,7 +16,7 @@ import { LayoutTemplate, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import * as React from 'react'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 /**
  * Экран создания вишлиста.
@@ -57,6 +57,13 @@ export default function CreateWishlistPage() {
 
   // Выбранным считается первый подходящий, пока человек не ткнул сам: пустая
   // правая колонка при заполненной сетке выглядит как поломка.
+  // Пришли с публичной витрины шаблонов — сразу показываем выбранный.
+  // Читаем из location, а не useSearchParams: тому нужен Suspense вокруг страницы.
+  useEffect(() => {
+    const id = new URLSearchParams(window.location.search).get('template')
+    if (id) setPickedId(id)
+  }, [])
+
   const shown = category === 'all' ? templates : templates.filter(t => t.category === category)
   const selected = templates.find(t => t.id === pickedId) ?? shown[0] ?? null
 
