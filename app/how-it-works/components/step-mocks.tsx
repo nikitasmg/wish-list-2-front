@@ -66,39 +66,42 @@ export function TemplatePickerMock() {
   )
 }
 
-/** 02 — правка текста прямо на странице. */
-export function InlineEditMock() {
+/** 02 — выделенный блок на странице и его поля в панели справа. */
+export function BlockPanelMock() {
   return (
-    <Frame>
-      <div className="flex h-9 items-center gap-1.5 border-b bg-muted/40 px-3.5">
-        {[0, 1, 2].map(i => <span key={i} className="h-2.5 w-2.5 rounded-full bg-border" />)}
-        <span className="ml-3 text-[11px] text-muted-foreground">Редактирование · сохранено</span>
-      </div>
-      <div className={cn(PAGE, 'flex flex-col gap-4 px-5 py-7 md:h-[464px] md:px-10')}>
+    <Frame className="grid md:h-[500px] md:grid-cols-[minmax(0,1fr)_250px]">
+      <div className={cn(PAGE, 'hidden flex-col gap-4 px-7 py-8 md:flex')}>
         <div className="flex flex-col items-center gap-1.5 text-center">
           <span className="text-xs font-bold text-primary">суббота, 18 октября · 12:00</span>
-          <span className="heading text-[26px] font-extrabold tracking-tight md:text-[38px]">Тёме — семь!</span>
+          <span className="heading text-[34px] font-extrabold tracking-tight">Тёме — семь!</span>
         </div>
-        <div className="relative mt-9">
-          <div className="absolute -top-11 right-0 flex gap-0.5 rounded-[10px] border bg-popover p-1 text-[13px] font-bold text-popover-foreground shadow-xl">
-            <span className="flex h-7 w-[30px] items-center justify-center rounded-md bg-muted">Ж</span>
-            <span className="flex h-7 w-[30px] items-center justify-center italic">К</span>
-            <span className="flex h-7 items-center px-2 text-muted-foreground">Ссылка</span>
-          </div>
-          <MiniCard className="p-4 outline outline-2 outline-offset-4 outline-[#22C3E6] md:p-[18px]">
-            <MiniLabel>Приглашение</MiniLabel>
-            <MiniTitle className="text-lg">Привет! Это Тёма</MiniTitle>
-            <span className="text-sm leading-relaxed text-foreground/85 md:text-[15px]">
-              Мне исполняется семь, и я зову тебя на праздник про космос и динозавров. Будут торт, квест и{' '}
-              <span className="bg-[#22C3E6]/25">настоящий телескоп</span>
-              <span className="ml-px inline-block h-[17px] w-0.5 bg-[#22C3E6] align-[-3px]" />
-            </span>
-          </MiniCard>
+        <MiniCard className="relative mt-3 outline outline-2 outline-offset-4 outline-[#22C3E6]">
+          <span className="absolute -top-[18px] left-2.5 rounded-md bg-[#22C3E6] px-2 py-0.5 text-[11px] font-extrabold text-[#04202A]">Список · Время</span>
+          <MiniLabel>Программа</MiniLabel>
+          <MiniTitle className="text-lg">Как пройдёт праздник</MiniTitle>
+          <span className="text-sm"><b className="text-primary">12:00</b>&nbsp; Сбор и квест</span>
+          <span className="text-sm"><b className="text-primary">13:30</b>&nbsp; Торт и свечи</span>
+          <span className="text-sm"><b className="text-primary">14:00</b>&nbsp; Телескоп</span>
+        </MiniCard>
+        <MiniCard><MiniLabel>Место</MiniLabel><MiniTitle>Детский клуб «Орбита»</MiniTitle><MiniLabel>ул. Ленина, 24</MiniLabel></MiniCard>
+      </div>
+      <div className="flex flex-col gap-3.5 bg-card p-5 md:border-l">
+        <div className="flex gap-4 border-b pb-3 text-[13px] font-bold">
+          <span className="-mb-[13px] border-b-2 border-primary pb-2.5">Блок</span>
+          <span className="text-muted-foreground">Доступ</span>
         </div>
-        <div className="grid grid-cols-[2fr_1fr] gap-3">
-          <MiniCard><MiniLabel>Место</MiniLabel><MiniTitle>Детский клуб «Орбита»</MiniTitle><MiniLabel>ул. Ленина, 24</MiniLabel></MiniCard>
-          <MiniCard className="border-dashed"><MiniLabel>Размеры</MiniLabel><span className="text-[13px] italic text-muted-foreground">Рост, размер обуви…</span></MiniCard>
+        <Field label="Подпись" value="Программа" />
+        <Field label="Заголовок" value="Как пройдёт праздник" />
+        <div className="flex flex-col gap-1.5 text-xs font-bold text-muted-foreground">
+          Пункты · время и событие
+          {[['12:00', 'Сбор и квест'], ['13:30', 'Торт и свечи'], ['14:00', 'Телескоп']].map(([t, v], i) => (
+            <div key={t} className="grid grid-cols-[64px_1fr] gap-1.5">
+              <span className="flex h-9 items-center rounded-[10px] border bg-background px-2.5 text-[13px] font-medium text-foreground">{t}</span>
+              <span className={cn('flex h-9 items-center rounded-[10px] border bg-background px-2.5 text-[13px] font-medium text-foreground', i === 2 && 'border-primary')}>{v}</span>
+            </div>
+          ))}
         </div>
+        <span className="mt-auto text-[11px] text-muted-foreground">Сохранено · Ctrl + Z — отменить</span>
       </div>
     </Frame>
   )

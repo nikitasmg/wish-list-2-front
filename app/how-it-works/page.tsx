@@ -4,7 +4,7 @@ import { JsonLd } from '@/components/json-ld'
 import { Container, Eyebrow, PrimaryLink, SecondaryLink } from '@/app/(landing)/components/landing-ui'
 import { CtaSection } from '@/app/(landing)/components/cta-section'
 import {
-  BlocksMock, CheckItem, GiftFormMock, InlineEditMock, ResponsesMock, ShareMock, TemplatePickerMock,
+  BlockPanelMock, BlocksMock, CheckItem, GiftFormMock, ResponsesMock, ShareMock, TemplatePickerMock,
 } from '@/app/how-it-works/components/step-mocks'
 import { cn } from '@/lib/utils'
 import { ArrowRight, CalendarDays, Check, ChevronDown, Gift, Monitor } from 'lucide-react'
@@ -48,10 +48,10 @@ const STEPS: Step[] = [
   },
   {
     id: 's2', short: 'Впишите своё', time: '3 мин', meta: 'пара минут',
-    title: 'Впишите своё прямо на странице',
-    lead: 'Щёлкните по любому тексту и пишите — страница выглядит ровно так, как её увидят гости. Подсказки в пустых блоках подскажут, что туда просится.',
+    title: 'Впишите своё — страница рядом',
+    lead: 'Выделите блок — справа откроются его поля: заголовок, пункты программы, адрес, дата. Страница рядом сразу показывает, как это увидят гости.',
     points: ['Всё сохраняется само, любую правку отменит Ctrl + Z', 'Лишний блок можно скрыть — он не пропадёт'],
-    mock: <InlineEditMock />,
+    mock: <BlockPanelMock />,
   },
   {
     id: 's3', short: 'Соберите из блоков', time: 'по желанию', meta: 'по желанию',
