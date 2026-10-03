@@ -2,10 +2,10 @@ import Link from 'next/link'
 import * as React from 'react'
 import { Container, Eyebrow } from './landing-ui'
 
-type Card = { name: string; scheme: string; className: string; cover: React.ReactNode }
+export type TemplateCard = { name: string; scheme: string; className: string; cover: React.ReactNode }
 
 /** Обложки — в схеме и шрифте самого шаблона, как на экране выбора. */
-const TEMPLATES: Card[] = [
+export const TEMPLATES: TemplateCard[] = [
   { name: 'ДР мальчика', scheme: 'Полночь', className: 'midnight look-pattern-stars', cover: <><span className="font-unbounded text-[54px] font-extrabold leading-none text-primary">7</span><span className="font-unbounded text-[17px] font-extrabold">Тёме — семь!</span></> },
   { name: 'ДР девочки', scheme: 'Пудра', className: 'powder', cover: <><span className="h-16 w-16 rounded-full border-[5px] border-card bg-secondary" /><span className="text-lg font-bold" style={{ fontFamily: 'var(--font-comfortaa)' }}>Соне <span className="text-primary">5 лет</span></span></> },
   { name: 'Свадьба', scheme: 'Лён', className: 'linen', cover: <><span className="h-[84px] w-[70px] rounded-b-md rounded-t-full bg-secondary" /><span className="text-[22px] font-bold" style={{ fontFamily: 'var(--font-cormorant)' }}>Аня и Лев</span></> },

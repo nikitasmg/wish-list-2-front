@@ -48,13 +48,14 @@ export function PhoneSection() {
   )
 }
 
-export function CtaSection() {
+/** Финальный призыв; заголовок свой у каждой страницы. */
+export function CtaSection({ title = <>Праздник уже скоро.<br />Намекните заранее</> }: { title?: React.ReactNode }) {
   return (
     <section className="pb-20 md:pb-28">
       <Container>
         <div className="relative flex flex-col items-start gap-5 overflow-hidden rounded-[28px] border bg-gradient-to-br from-[#0F3B4A] to-[#2A1F5C] px-6 py-9 text-white md:items-center md:gap-6 md:rounded-[32px] md:py-20 md:text-center">
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(rgba(255,255,255,0.12)_1.4px,transparent_2px)] [background-size:34px_34px]" aria-hidden />
-          <h2 className="relative font-unbounded text-[32px] font-extrabold leading-[1.05] tracking-[-0.04em] md:text-[58px]">Праздник уже скоро.<br />Намекните заранее</h2>
+          <h2 className="relative font-unbounded text-[32px] font-extrabold leading-[1.05] tracking-[-0.04em] md:text-[58px]">{title}</h2>
           <p className="relative text-white/75 md:text-[19px]">Бесплатно. Гостям ничего устанавливать не нужно.</p>
           <div className="relative flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
             <PrimaryLink href="/wishlist/create" className="bg-none bg-white text-[#070B16]">Собрать страницу</PrimaryLink>
