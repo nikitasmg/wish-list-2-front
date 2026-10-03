@@ -57,7 +57,7 @@ function EditorMock() {
       </div>
 
       <div className="bg-muted/40 px-10 pt-6">
-        <div className="midnight wishlist-page look-font-accent look-pattern-stars flex h-[620px] flex-col gap-4 rounded-t-2xl bg-background p-6 text-foreground">
+        <div className="demo-scheme wishlist-page look-font-accent look-pattern-stars flex h-[620px] flex-col gap-4 rounded-t-2xl bg-background p-6 text-foreground">
           <div className="text-center"><span className="heading text-3xl font-extrabold">Тёме — семь!</span></div>
           <div className="relative grid grid-cols-[2fr_1fr] gap-3.5">
             <MiniCard className="relative outline outline-2 outline-offset-4 outline-[#22C3E6]">

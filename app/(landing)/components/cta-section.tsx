@@ -35,7 +35,7 @@ export function PhoneSection() {
             <div className="flex items-center justify-between rounded-xl border p-2.5"><span><span className="block text-muted-foreground">Место</span><b className="text-[13px]">Лофт «Веранда»</b></span><Pencil size={14} className="text-muted-foreground" /></div>
             <div className="mt-auto flex h-9 items-center justify-center rounded-xl bg-gradient-to-r from-[#17B6D6] to-[#7B5CF0] text-[13px] font-bold text-white">Поделиться</div>
           </div>
-          <div className="midnight wishlist-page look-font-accent mt-16 hidden h-[500px] w-[236px] flex-col gap-2.5 rounded-[40px] border-8 border-border bg-background p-4 text-foreground sm:flex">
+          <div className="demo-scheme wishlist-page look-font-accent mt-16 hidden h-[500px] w-[236px] flex-col gap-2.5 rounded-[40px] border-8 border-border bg-background p-4 text-foreground sm:flex">
             <span className="text-center text-[10px] text-primary">суббота, 18 октября</span>
             <span className="heading text-center text-[22px] font-extrabold">Тёме — семь!</span>
             <MiniCard className="p-2.5"><MiniLabel>Интересы</MiniLabel><div className="flex flex-wrap gap-1"><Pill>Космос</Pill><Pill>Футбол</Pill></div></MiniCard>

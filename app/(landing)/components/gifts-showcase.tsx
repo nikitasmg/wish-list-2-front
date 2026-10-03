@@ -32,7 +32,7 @@ export function GiftsShowcase() {
           </ul>
         </div>
 
-        <div className="midnight wishlist-page look-font-accent grid gap-3.5 rounded-3xl bg-background p-4 text-foreground sm:grid-cols-[1.4fr_1fr_1fr] md:p-5" aria-hidden>
+        <div className="demo-scheme wishlist-page look-font-accent grid gap-3.5 rounded-3xl bg-background p-4 text-foreground sm:grid-cols-[1.4fr_1fr_1fr] md:p-5" aria-hidden>
           <div className="flex flex-col overflow-hidden rounded-[18px] border bg-card sm:row-span-2">
             <Cover letter="Н" className="h-[150px] sm:h-auto sm:min-h-[220px] sm:flex-1" main />
             <div className="flex flex-col gap-1.5 p-3.5">
@@ -51,7 +51,7 @@ export function GiftsShowcase() {
           <div className="flex flex-col overflow-hidden rounded-[18px] border border-primary/60 bg-card">
             <Cover letter="К" className="hidden h-[120px] sm:flex" />
             <div className="flex flex-col gap-1.5 p-3.5"><b>Конструктор «Вулкан»</b><span className="text-sm font-bold text-primary">3 490 ₽</span>
-              <span className="flex h-10 items-center justify-between rounded-xl border border-primary px-3 text-[13px] font-bold text-primary"><span className="flex items-center gap-1"><Check size={14} />Вы дарите</span><span className="text-xs font-semibold text-muted-foreground">Отменить</span></span></div>
+              <span className="flex h-10 items-center justify-between gap-2 whitespace-nowrap rounded-xl border border-primary px-2.5 text-[13px] font-bold text-primary"><span className="flex items-center gap-1"><Check size={14} />Вы дарите</span><span className="hidden text-xs font-semibold text-muted-foreground xl:inline">Отменить</span></span></div>
           </div>
           <div className="flex flex-col overflow-hidden rounded-[18px] border bg-card opacity-55">
             <Cover letter="М" className="hidden h-[120px] sm:flex" />

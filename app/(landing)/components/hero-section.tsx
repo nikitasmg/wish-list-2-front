@@ -54,7 +54,7 @@ function Tag({ className, children }: { className: string; children: React.React
 function HeroPreview() {
   return (
     <div className="relative mx-auto h-[600px] w-full max-w-[600px] sm:h-[690px]" aria-hidden>
-      <div className="midnight wishlist-page look-font-accent look-pattern-stars absolute inset-x-0 top-0 mx-auto h-[590px] w-full max-w-[520px] overflow-hidden rounded-[22px] border bg-background text-foreground shadow-[0_40px_100px_rgba(0,0,0,0.45)] sm:h-[660px]">
+      <div className="demo-scheme wishlist-page look-font-accent look-pattern-stars absolute inset-x-0 top-0 mx-auto h-[590px] w-full max-w-[520px] overflow-hidden rounded-[22px] border bg-background text-foreground shadow-[0_40px_100px_rgba(0,0,0,0.45)] sm:h-[660px]">
         <div className="flex h-9 items-center gap-1.5 border-b bg-card px-3.5">
           <span className="h-2.5 w-2.5 rounded-full bg-border" /><span className="h-2.5 w-2.5 rounded-full bg-border" /><span className="h-2.5 w-2.5 rounded-full bg-border" />
           <span className="ml-3 text-[11px] text-muted-foreground">prosto-namekni.ru/s/teme-7</span>

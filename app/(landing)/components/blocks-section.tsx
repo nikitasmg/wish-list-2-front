@@ -5,7 +5,7 @@ import { Container, MiniLabel, MiniTitle, SectionTitle } from './landing-ui'
 /** Сцена блока — кусочек страницы в «Полуночи», как у гостей. */
 function Stage({ children, center }: { children: React.ReactNode; center?: boolean }) {
   return (
-    <div className={`midnight wishlist-page look-font-accent flex min-h-[156px] flex-col gap-2.5 rounded-2xl bg-background p-4 text-foreground ${center ? 'items-center justify-center text-center' : ''}`} aria-hidden>
+    <div className={`demo-scheme wishlist-page look-font-accent flex min-h-[156px] flex-col gap-2.5 rounded-2xl bg-background p-4 text-foreground ${center ? 'items-center justify-center text-center' : ''}`} aria-hidden>
       {children}
     </div>
   )

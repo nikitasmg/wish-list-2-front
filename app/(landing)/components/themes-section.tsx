@@ -5,7 +5,8 @@ import { colorSchema } from '@/shared/constants'
 import { HEADING_FONTS, pageLook } from '@/shared/look'
 import type { HeadingFont } from '@/shared/types'
 import * as React from 'react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useTheme } from 'next-themes'
 import { Container, SectionTitle } from './landing-ui'
 
 /**
@@ -14,7 +15,15 @@ import { Container, SectionTitle } from './landing-ui'
  * быть не может — это она и есть.
  */
 export function ThemesSection() {
-  const [scheme, setScheme] = useState<string>('midnight')
+  // Пока схему не выбрали, превью — в тон теме сайта: светлая «Пудра» или
+  // тёмная «Полночь», как остальные примеры на главной.
+  // Тему сервер не знает — до монтирования рисуем тёмную, иначе разметка
+  // разошлась бы при гидрации.
+  const { resolvedTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
+  const [picked, setScheme] = useState<string | null>(null)
+  const scheme = picked ?? (mounted && resolvedTheme === 'light' ? 'powder' : 'midnight')
   const [font, setFont] = useState<HeadingFont>('accent')
   const look = pageLook({ colorScheme: scheme, showGiftAvailability: true, headingFont: font, pattern: 'stars' })
 
