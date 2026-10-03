@@ -127,8 +127,10 @@ export type LibraryItem = {
 
 export const BLOCK_LIBRARY: LibraryItem[] = [
   { id: 'cover', type: 'cover', label: 'Обложка', group: 'Основа', hint: '6 видов' },
-  { id: 'text', type: 'text', label: 'Текст', group: 'Основа', hint: '± фото' },
-  { id: 'quote', type: 'quote', label: 'Цитата', group: 'Основа' },
+  { id: 'text', type: 'text', label: 'Текст', group: 'Основа', hint: '± фото', title: 'Привет!',
+    data: { html: '<p>Расскажите гостям о празднике: что будет и почему вы их ждёте.</p>' } },
+  { id: 'quote', type: 'quote', label: 'Цитата', group: 'Основа',
+    data: { text: 'Лучший подарок — это вы. Но если очень хочется что-то подарить, ниже есть подсказки' } },
   { id: 'media', type: 'media', label: 'Фото и галерея', group: 'Основа' },
   { id: 'video', type: 'video', label: 'Видео', group: 'Основа' },
 

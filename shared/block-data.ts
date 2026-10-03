@@ -128,3 +128,20 @@ export function rsvpClosed(settings: Pick<RSVPSettings, 'deadline'>, now: Date =
   const moment = deadlineMoment(settings.deadline)
   return Boolean(moment && now >= moment)
 }
+
+/**
+ * Блок, которому нечего показать: гостю он не виден вовсе, а на холсте
+ * превратился бы в пустое место, на которое не попасть мышью.
+ */
+export function isEmptyBlock(block: { type: string; data: Record<string, unknown> }): boolean {
+  const d = block.data ?? {}
+  switch (block.type) {
+    case 'quote': return !String(d.text ?? '').trim()
+    case 'video': return !String(d.url ?? '').trim()
+    case 'location': return locationPoints(d).length === 0
+    case 'contact': return contactPeople(d).length === 0
+    case 'color_scheme': return d.fromScheme !== true && dressColors(d).length === 0
+    case 'list': return !(Array.isArray(d.items) && d.items.length)
+    default: return false
+  }
+}

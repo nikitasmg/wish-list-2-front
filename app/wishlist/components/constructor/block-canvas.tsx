@@ -21,6 +21,7 @@ import {
   updateRow,
 } from '@/shared/layout'
 import { convertBlock } from '@/shared/slash-menu'
+import { isEmptyBlock } from '@/shared/block-data'
 import { Block, Present, RowRatio, Wishlist } from '@/shared/types'
 import { useDraggable, useDroppable, useDndContext } from '@dnd-kit/core'
 import { ArrowDown, ArrowUp, Columns2, Copy, Lock, Trash2 } from 'lucide-react'
@@ -465,7 +466,9 @@ function CanvasBlock(props: Props & { block: Block; draggable: boolean; alone?: 
                   <Lock size={12} aria-hidden /> Гости увидят после {secretDate?.toLocaleString('ru', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })}
                 </div>
               )}
-              <BlockContent block={{ ...shown, hidden: false, revealAt: null }} wishlist={wishlist} presents={presents} preview />
+              {isEmptyBlock(block)
+                ? <div className="flex min-h-[96px] items-center justify-center rounded-2xl border border-dashed text-sm text-muted-foreground">{block.caption || info?.label}: пусто — заполните справа</div>
+                : <BlockContent block={{ ...shown, hidden: false, revealAt: null }} wishlist={wishlist} presents={presents} preview />}
             </div>
           </div>
         )}

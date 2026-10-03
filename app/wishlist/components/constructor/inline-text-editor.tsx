@@ -20,6 +20,9 @@ import { useEffect, useRef, useState } from 'react'
 const ALLOWED_TAGS = ['b', 'strong', 'i', 'em', 'u', 'h2', 'h3', 'p', 'br', 'ul', 'ol', 'li', 'a', 'mark']
 const ALLOWED_ATTR = ['href', 'target', 'rel']
 
+/** Сколько знаков в тексте блока: длиннее — уже не абзац, а статья. */
+const MAX_TEXT = 2000
+
 export function sanitizeRichText(html: string): string {
   return DOMPurify.sanitize(html, { ALLOWED_TAGS, ALLOWED_ATTR })
 }
@@ -42,7 +45,9 @@ export function InlineTextEditor({ html, onChange, onSplit, onConvert, className
   // Меню открывается, только когда «/» — это всё содержимое блока: иначе
   // «ул. Мира 7/2» открывало бы его посреди набора адреса.
   const query = onConvert ? slashQuery(html) : null
-  const matches = query === null ? [] : slashMatches(BLOCK_CATALOG, query)
+  // В меню — те же блоки, что и в библиотеке: дата, таймер и разделитель
+  // остались только для чтения старых страниц.
+  const matches = query === null ? [] : slashMatches(BLOCK_CATALOG.filter(item => !['date', 'timing', 'divider'].includes(item.type)), query)
   const menuOpen = active && query !== null && matches.length > 0
 
   // Подсветка возвращается на первый пункт, когда список поменялся: иначе
@@ -142,12 +147,37 @@ export function InlineTextEditor({ html, onChange, onSplit, onConvert, className
     }
   }
 
-  const isEmpty = !html.replace(/<[^>]*>/g, '').trim()
+  const plain = html.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ')
+  const isEmpty = !plain.trim()
+  const length = plain.length
 
   return (
-    <div className="relative">
+    // Фокус ловим на обёртке: выбор стиля абзаца уводит его в select, и
+    // тулбар не должен от этого исчезать.
+    <div
+      className="relative"
+      onFocus={() => setActive(true)}
+      onBlur={event => {
+        if (event.currentTarget.contains(event.relatedTarget as Node | null)) return
+        setActive(false)
+        commit()
+      }}
+    >
       {active && (
         <div className="absolute -top-11 left-0 z-20 flex items-center gap-0.5 rounded-xl border bg-popover p-1 shadow-lg">
+          <select
+            aria-label="Стиль абзаца"
+            defaultValue=""
+            onMouseDown={event => event.stopPropagation()}
+            onChange={event => { if (event.target.value) format('formatBlock', event.target.value); event.target.value = '' }}
+            className="h-8 rounded-lg bg-transparent px-2 text-sm font-semibold text-foreground outline-none hover:bg-accent"
+          >
+            <option value="" disabled>Текст</option>
+            <option value="p">Обычный</option>
+            <option value="h2">Заголовок</option>
+            <option value="h3">Подзаголовок</option>
+          </select>
+          <span className="mx-1 h-5 w-px bg-border" aria-hidden />
           <ToolbarButton label="Жирный" onClick={() => format('bold')}><Bold className="h-4 w-4" /></ToolbarButton>
           <ToolbarButton label="Курсив" onClick={() => format('italic')}><Italic className="h-4 w-4" /></ToolbarButton>
           <ToolbarButton label="Подчёркнутый" onClick={() => format('underline')}><Underline className="h-4 w-4" /></ToolbarButton>
@@ -168,8 +198,6 @@ export function InlineTextEditor({ html, onChange, onSplit, onConvert, className
         tabIndex={0}
         contentEditable
         suppressContentEditableWarning
-        onFocus={() => setActive(true)}
-        onBlur={() => { setActive(false); commit() }}
         onInput={commit}
         onKeyDown={onKeyDown}
         className={cn(
@@ -205,6 +233,12 @@ export function InlineTextEditor({ html, onChange, onSplit, onConvert, className
             </li>
           ))}
         </ul>
+      )}
+
+      {active && (
+        <span className={cn('pointer-events-none absolute -bottom-5 right-1 text-[11px] tabular-nums', length > MAX_TEXT ? 'text-destructive' : 'text-muted-foreground')}>
+          {length} / {MAX_TEXT}
+        </span>
       )}
 
       {/* Подсказки поверх пустого поля: contenteditable не умеет placeholder */}

@@ -48,3 +48,11 @@ test('настройки ответа гостя: дедлайн до конца
   assert.equal(D.rsvpClosed(s, new Date('2026-10-10T20:00:00Z')), false, 'весь день 10-го ещё можно')
   assert.equal(D.rsvpClosed(s, new Date('2026-10-11T12:00:00Z')), true)
 })
+
+test('пустой блок узнаётся по своему типу', () => {
+  assert.equal(D.isEmptyBlock({ type: 'quote', data: { text: '  ' } }), true)
+  assert.equal(D.isEmptyBlock({ type: 'quote', data: { text: 'Ура' } }), false)
+  assert.equal(D.isEmptyBlock({ type: 'location', data: {} }), true)
+  assert.equal(D.isEmptyBlock({ type: 'color_scheme', data: { fromScheme: true } }), false)
+  assert.equal(D.isEmptyBlock({ type: 'cover', data: {} }), false)
+})

@@ -1,20 +1,17 @@
 import { Block } from '@/shared/types'
 import React from 'react'
 
+/** Цитата — крупно и по центру, как в макете: это пауза между блоками. */
 export function QuoteBlockView({ block }: { block: Block }) {
-  const text = block.data.text as string | undefined
-  const author = block.data.author as string | undefined
-
+  const text = String(block.data.text ?? '').trim()
+  const author = String(block.data.author ?? '').trim()
   if (!text) return null
-
   return (
-    <figure className="pl-8 md:pl-12 border-l-4 border-accent space-y-2">
-      <blockquote className="text-xl md:text-2xl italic text-foreground leading-relaxed">
-        {text}
+    <figure className="mx-auto max-w-3xl space-y-4 text-center">
+      <blockquote className="heading text-2xl font-semibold leading-snug md:text-[32px]">
+        «{text.replace(/^[«"]|[»"]$/g, '')}»
       </blockquote>
-      {author && (
-        <figcaption className="text-sm text-muted-foreground">— {author}</figcaption>
-      )}
+      {author && <figcaption className="text-sm text-muted-foreground">— {author}</figcaption>}
     </figure>
   )
 }

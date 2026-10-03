@@ -293,7 +293,7 @@ function Editor({ wishlist }: { wishlist: Wishlist }) {
 
           <DragOverlay dropAnimation={null}>
             {dragBlock && (
-              <div className="flex items-center gap-2 rounded-xl border bg-popover px-3 py-2 text-sm font-semibold shadow-2xl">
+              <div className="inline-flex items-center gap-2 rounded-xl border bg-popover px-3 py-2 text-sm font-semibold shadow-2xl">
                 <DragIcon size={15} className="text-primary" aria-hidden />
                 {dragBlock.caption || BLOCK_CATALOG.find(c => c.type === dragBlock.type)?.label}
               </div>
