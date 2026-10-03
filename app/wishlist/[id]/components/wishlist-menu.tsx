@@ -9,6 +9,7 @@ import { Ellipsis } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import * as React from 'react'
 import { SaveAsTemplateModal } from '@/app/wishlist/components/save-as-template-modal'
+import { USER_TEMPLATES_ENABLED } from '@/shared/constants'
 
 type MenuProps = {
   wishlist: Wishlist
@@ -28,9 +29,11 @@ export const WishlistMenu = ({ wishlist }: MenuProps) => {
           <DropdownMenuItem onClick={() => navigate.push(`/wishlist/edit/${wishlist.id}`)}>
             Редактировать
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setSaveTemplateOpen(true)}>
-            Сохранить как шаблон
-          </DropdownMenuItem>
+          {USER_TEMPLATES_ENABLED && (
+            <DropdownMenuItem onClick={() => setSaveTemplateOpen(true)}>
+              Сохранить как шаблон
+            </DropdownMenuItem>
+          )}
           <DropdownMenuItem onClick={() => mutate()}>
             Удалить
           </DropdownMenuItem>

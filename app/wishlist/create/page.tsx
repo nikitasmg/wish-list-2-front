@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useToast } from '@/hooks/use-toast'
 import { cn } from '@/lib/utils'
-import { colorSchema, normalizeScheme } from '@/shared/constants'
+import { USER_TEMPLATES_ENABLED, colorSchema, normalizeScheme } from '@/shared/constants'
 import { localNoon, pluralRu } from '@/shared/event-date'
 import { Template } from '@/shared/types'
 import { LayoutTemplate, Loader2 } from 'lucide-react'
@@ -23,14 +23,15 @@ import { useMemo, useState } from 'react'
  *
  * Здесь и только здесь живут системные заготовки — они идут вместе с релизом
  * и одинаковы для всех. Шаблоны, которые люди сохраняют из своих вишлистов и
- * публикуют, — это другая сущность, её витрина лежит на /templates.
+ * публикуют, — это другая сущность, её витрина лежит на /templates
+ * (пока скрыта флагом USER_TEMPLATES_ENABLED).
  */
 export default function CreateWishlistPage() {
   const { data, isLoading } = useApiGetSystemTemplates()
   const { mutate: createFromTemplate, isPending } = useApiCreateFromSystemTemplate()
   const { mutate: createBlank, isPending: blankPending } = useApiCreateConstructorWishlist()
   const { mutate: createFromUserTemplate, isPending: userPending } = useApiCreateWishlistFromTemplate()
-  const { data: myTemplatesData } = useApiGetMyTemplates()
+  const { data: myTemplatesData } = useApiGetMyTemplates(USER_TEMPLATES_ENABLED)
   const router = useRouter()
   const { toast } = useToast()
 
@@ -236,7 +237,7 @@ export default function CreateWishlistPage() {
 
       {/* Свои сохранённые шаблоны — уже другая сущность: они принадлежат
           человеку и могут быть опубликованы в общей витрине. */}
-      <section className="space-y-4">
+      {USER_TEMPLATES_ENABLED && <section className="space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h2 className="text-xl font-bold tracking-tight">Мои шаблоны</h2>
           <Button variant="ghost" size="sm" asChild className="gap-1.5 text-xs">
@@ -270,7 +271,7 @@ export default function CreateWishlistPage() {
             ))}
           </div>
         )}
-      </section>
+      </section>}
 
       <FromUserTemplateDialog
         template={userTemplate}

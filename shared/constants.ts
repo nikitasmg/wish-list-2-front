@@ -76,3 +76,10 @@ export const CUSTOM_ACCENTS = [
   { name: 'Лимон',  dark: '#FDE68A', light: '#A47A10' },
   { name: 'Песок',  dark: '#E7C9A0', light: '#85693A' },
 ] as const
+
+/**
+ * Пользовательские шаблоны (витрина /templates, «Сохранить как шаблон»,
+ * «Мои шаблоны» на экране создания) временно скрыты. Код и API на месте —
+ * чтобы вернуть, достаточно включить флаг.
+ */
+export const USER_TEMPLATES_ENABLED = false

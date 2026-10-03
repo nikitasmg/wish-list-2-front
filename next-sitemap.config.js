@@ -2,7 +2,7 @@ module.exports = {
   siteUrl: 'https://prosto-namekni.ru',
   generateRobotsTxt: false,
   sitemapSize: 7000,
-  exclude: ['/oauth', '/wishlist', '/wishlist/*', '/s/*', '/login', '/registration'],
+  exclude: ['/oauth', '/wishlist', '/wishlist/*', '/s/*', '/login', '/registration', '/templates'],
   robotsTxtOptions: {
     policies: [
       {

@@ -13,10 +13,11 @@ export const useApiGetPublicTemplates = (page: number) => {
   })
 }
 
-export const useApiGetMyTemplates = () => {
+export const useApiGetMyTemplates = (enabled = true) => {
   return useQuery({
     queryKey: ['templates-my'],
     queryFn: async () => api.get<{ data: Template[] }>('templates/my'),
+    enabled,
   })
 }
 

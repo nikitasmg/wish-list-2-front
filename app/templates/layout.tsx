@@ -1,5 +1,7 @@
 import { Header } from '@/components/header'
+import { USER_TEMPLATES_ENABLED } from '@/shared/constants'
 import type { Metadata } from 'next'
+import { notFound } from 'next/navigation'
 import * as React from 'react'
 
 export const metadata: Metadata = {
@@ -17,6 +19,8 @@ export default function Layout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  // Витрина скрыта вместе с остальными пользовательскими шаблонами.
+  if (!USER_TEMPLATES_ENABLED) notFound()
   return (
     <>
       <Header />
