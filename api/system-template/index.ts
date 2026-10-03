@@ -28,6 +28,8 @@ export const useApiGetSystemTemplates = () => {
 export type CreateFromSystemTemplateInput = {
   template_id: string
   title?: string
+  /** Имя для {name} в текстах шаблона; пусто — имя-пример. */
+  name?: string
   /** RFC3339; бэк отвергает другие форматы. */
   event_date?: string
 }

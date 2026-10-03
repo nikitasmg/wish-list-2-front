@@ -5,6 +5,7 @@ import { TemplatePreview } from '@/app/wishlist/create/components/template-previ
 import { cn } from '@/lib/utils'
 import { colorSchema, normalizeScheme } from '@/shared/constants'
 import { pluralRu } from '@/shared/event-date'
+import { withName } from '@/shared/template-name'
 import { Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import * as React from 'react'
@@ -61,7 +62,7 @@ export function TemplatesGallery() {
               className="group flex flex-col gap-2"
             >
               <TemplatePreview
-                template={template}
+                template={withName(template)}
                 className="h-[230px] ring-1 ring-border transition-shadow group-hover:ring-2 group-hover:ring-primary"
               />
               <span className="px-0.5">

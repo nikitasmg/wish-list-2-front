@@ -12,6 +12,7 @@ import { cn } from '@/lib/utils'
 import { USER_TEMPLATES_ENABLED, colorSchema, normalizeScheme } from '@/shared/constants'
 import { localNoon, pluralRu } from '@/shared/event-date'
 import { Template } from '@/shared/types'
+import { usesName, withName } from '@/shared/template-name'
 import { LayoutTemplate, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -53,6 +54,7 @@ export default function CreateWishlistPage() {
   const [pickedId, setPickedId] = useState<string | null>(null)
   const [title, setTitle] = useState('')
   const [eventDate, setEventDate] = useState('')
+  const [name, setName] = useState('')
   const [userTemplate, setUserTemplate] = useState<Template | null>(null)
 
   // Выбранным считается первый подходящий, пока человек не ткнул сам: пустая
@@ -75,6 +77,7 @@ export default function CreateWishlistPage() {
       {
         template_id: selected.id,
         title: title.trim() || undefined,
+        name: usesName(selected) ? name.trim() || undefined : undefined,
         // Поле даёт «ГГГГ-ММ-ДД», а такую строку Date разбирает как полночь
         // UTC: у гостей западнее Гринвича праздник уезжал на день назад.
         // Собираем дату по частям — она получается местной.
@@ -167,7 +170,7 @@ export default function CreateWishlistPage() {
                       className="flex flex-col gap-2 text-left focus-visible:outline-none group"
                     >
                       <TemplatePreview
-                        template={template}
+                        template={withName(template)}
                         className={cn(
                           'h-[230px] ring-1 transition-shadow',
                           active ? 'ring-2 ring-primary' : 'ring-border group-hover:ring-primary/40',
@@ -191,7 +194,7 @@ export default function CreateWishlistPage() {
         {selected && (
           <aside className="rounded-2xl border bg-card p-5 space-y-5 lg:sticky lg:top-4">
             <div className="flex gap-4">
-              <TemplatePhonePreview template={selected} />
+              <TemplatePhonePreview template={withName(selected, name)} />
               <div className="min-w-0 space-y-2">
                 <h2 className="text-lg font-extrabold leading-tight tracking-tight">{selected.name}</h2>
                 <p className="text-xs text-muted-foreground">
@@ -230,12 +233,21 @@ export default function CreateWishlistPage() {
               </label>
             </div>
 
+            {/* Имя нужно не всем шаблонам — только тем, где оно есть в текстах */}
+            {usesName(selected) && (
+              <label className="block space-y-1 text-sm">
+                <span className="font-semibold">Как зовут виновника праздника</span>
+                <Input value={name} onChange={e => setName(e.target.value)} placeholder={selected.sampleName} maxLength={40} />
+                <span className="block text-xs text-muted-foreground">Подставится в тексты страницы</span>
+              </label>
+            )}
+
             <div className="space-y-2">
               <Button className="w-full" onClick={handleCreate} disabled={isPending} loading={isPending}>
                 Создать по шаблону
               </Button>
               <p className="text-center text-xs text-muted-foreground">
-                Тексты-подсказки заменятся вашими, лишние блоки можно скрыть
+                Тексты шаблона — пример: поправьте под себя, лишние блоки можно скрыть
               </p>
             </div>
           </aside>

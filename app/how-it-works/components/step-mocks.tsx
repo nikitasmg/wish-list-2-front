@@ -60,7 +60,7 @@ export function TemplatePickerMock() {
         <Field label="Дата праздника" value="18 октября, 12:00" />
         <span className="flex-1" />
         <span className="flex h-[46px] items-center justify-center rounded-[13px] bg-gradient-to-r from-[#17B6D6] to-[#7B5CF0] text-[15px] font-bold text-white">Создать по шаблону</span>
-        <span className="text-center text-[11px] text-muted-foreground">Тексты-подсказки заменятся вашими</span>
+        <span className="text-center text-[11px] text-muted-foreground">Тексты — пример, поправьте под себя</span>
       </div>
     </Frame>
   )

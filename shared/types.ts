@@ -227,6 +227,8 @@ export type SystemTemplate = {
   colorScheme: string
   /** Название-пример: подставляется в превью и в поле «Для кого». */
   sampleTitle: string
+  /** Имя-пример для {name} в текстах блоков — только у шаблонов, где оно есть. */
+  sampleName?: string
   occasion: string
   blocks: Block[]
   rows?: RowSettings[] | null
