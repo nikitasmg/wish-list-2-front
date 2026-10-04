@@ -122,31 +122,36 @@ export const WishlistCard = ({ wishlist }: WishlistCardProps) => {
           </div>
         )}
 
-        <div className="flex gap-1.5 mt-auto pt-1">
+        {/* В узкой карточке (две колонки на телефоне) кнопки в один ряд не
+            помещаются: иконки целиком переезжают на свою строку и делят её
+            поровну. В широкой — всё остаётся в одном ряду. */}
+        <div className="flex flex-wrap gap-1.5 mt-auto pt-1">
           <Button
             size="sm"
             variant="outline"
-            className="flex-1"
+            className="flex-[1_1_8.5rem]"
             onClick={() => router.push(`/wishlist/edit/${wishlist.id}`)}
           >
             <Pencil size={13} className="mr-1" aria-hidden />
             Редактировать
           </Button>
-          <Button size="sm" variant="outline" aria-label="Добавить подарок" title="Добавить подарок" onClick={() => router.push(`/wishlist/edit/${wishlist.id}?add=gift`)}>
-            <Plus size={13} aria-hidden />
-          </Button>
-          {shareUrl && (
-            <>
-              <Button size="sm" variant="outline" aria-label="Скопировать ссылку" onClick={copyLink}>
-                <Link2 size={13} aria-hidden />
-              </Button>
-              <Button size="sm" variant="outline" asChild aria-label="Открыть страницу для гостей">
-                <Link href={`/s/${wishlist.shortId}`} target="_blank">
-                  <Eye size={13} aria-hidden />
-                </Link>
-              </Button>
-            </>
-          )}
+          <div className="flex flex-[1_0_auto] gap-1.5">
+            <Button size="sm" variant="outline" className="flex-1" aria-label="Добавить подарок" title="Добавить подарок" onClick={() => router.push(`/wishlist/edit/${wishlist.id}?add=gift`)}>
+              <Plus size={13} aria-hidden />
+            </Button>
+            {shareUrl && (
+              <>
+                <Button size="sm" variant="outline" className="flex-1" aria-label="Скопировать ссылку" onClick={copyLink}>
+                  <Link2 size={13} aria-hidden />
+                </Button>
+                <Button size="sm" variant="outline" className="flex-1" asChild aria-label="Открыть страницу для гостей">
+                  <Link href={`/s/${wishlist.shortId}`} target="_blank">
+                    <Eye size={13} aria-hidden />
+                  </Link>
+                </Button>
+              </>
+            )}
+          </div>
         </div>
       </div>
     </div>
