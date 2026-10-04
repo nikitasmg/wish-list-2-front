@@ -36,10 +36,10 @@
 
 | Токен | Кегль | Интерлиньяж | Трекинг | Вес | Роль |
 |---|---|---|---|---|---|
-| `text-micro` | 11 | 1.3 | 0 | 600 | бейджи, «новый», «главная мечта» |
+| `text-micro` | 11 | 1.3 | 0 | — | бейджи, «новый», «главная мечта» |
 | `text-eyebrow` | 11 | 1.3 | 0.08em, капс | 700 | надпись над заголовком |
 | `text-caption` | 12 | 1.4 | 0 | — | шапки таблиц, подсказки, даты |
-| `text-label` | 13 | 1.4 | 0 | 600 | подписи полей, сегменты, метаданные |
+| `text-label` | 13 | 1.4 | 0 | — | подписи полей, сегменты, метаданные |
 | `text-body-sm` | 14 | 1.5 | 0 | — | второстепенный текст, малые кнопки |
 | `text-body` | 15 | 1.5 | 0 | — | основной текст, кнопки, поля |
 | `text-lead` | 16 | 1.5 | 0 | — | подзаголовок под H1 |
@@ -51,8 +51,9 @@
 | `text-display` | 64 | 1 | −0.04em | 800 | лендинг |
 | `text-display-xl` | 112 | 1 | −0.045em | 800 | герой лендинга |
 
-`text-micro` и `text-label` задают вес по умолчанию; `font-*` рядом
-допустим, когда роль требует другого веса. Вес «—» = наследуется.
+Вес «—» = не задан токеном: ставится классом `font-*` рядом (подписи полей
+и сегменты — `font-semibold`). Так перевод не делает текст жирнее молча.
+Заголовки (`title-*`, `display-*`) вес задают всегда.
 
 Нынешние `display-sm` (32) и `display` (44) переименовываются:
 32 → `title-lg`, 44 → `display-sm`, 64 → `display`, 112 → `display-xl`.
@@ -71,6 +72,7 @@
 | `rounded-sheet` | 24px | модалки, шторки, макеты телефона |
 | `rounded-full` | 9999px | аватары, точки, таблетки |
 | `rounded-block` | `var(--radius)` | блоки страницы гостя — у каждой схемы свой |
+| `rounded-block-sm` | `calc(var(--radius) - 4px)` | элементы внутри блока гостя (фото, кнопки) |
 | `rounded-none` | 0 | — |
 
 Направленные варианты (`rounded-t-sheet`, `rounded-b-card`) работают
@@ -83,7 +85,8 @@
 ## 3. Отступы
 
 Шкала Tailwind (шаг 4px). Разрешённые шаги: `0 px 0.5 1 1.5 2 2.5 3 3.5 4
-5 6 7 8 9 10 12 14 16 18 20`. Произвольные `p-[…]`, `gap-[…]`, `m-[…]`
+5 6 7 8 9 10 12 14 16 18 20`, на лендинге и в «Как это работает» ещё
+`24 28 32` для вертикальных отступов секций. Произвольные `p-[…]`, `gap-[…]`, `m-[…]`
 запрещены.
 
 Роли `gap` (близость: внутри группы меньше, чем между группами):
@@ -171,7 +174,7 @@ Hex и `rgba()` в TSX запрещены, кроме данных: палитр
 | Компонент | Спецификация |
 |---|---|
 | `Button` | Варианты: `primary` (`bg-brand`, белый текст), `scheme` (`bg-primary text-primary-foreground` — кнопка в цвете схемы), `secondary` (`bg-card border border-border`), `ghost`, `destructive`, `link`. Размеры: `sm` (`h-control-sm rounded-tag text-body-sm px-3`), `md` (`h-control rounded-control text-body-sm px-4`), `lg` (`h-control-lg rounded-control-lg text-body px-5`), `xl` (`h-control-xl rounded-control-lg text-body px-6`), `icon-sm`, `icon`, `icon-lg`. Вес 600 (primary — 700). Нажатие `active:scale-[.97]`, `transition-[transform,background-color,color,opacity] duration-fast`. `disabled:opacity-50`. `loading` — спиннер. По умолчанию `md`. |
-| `Input`, `Textarea`, `SelectTrigger` | `h-control-lg rounded-control-lg border border-input bg-background px-3.5 text-body`; placeholder `text-muted-foreground`; фокус — общий. |
+| `Input`, `Textarea` | `h-control-lg rounded-control-lg border border-input bg-background px-3.5 text-lead md:text-body` (16px на телефоне — иначе iOS увеличивает страницу при фокусе); placeholder `text-muted-foreground`; фокус — общий. |
 | `Segmented` | Контейнер `inline-flex p-0.5 gap-0.5 rounded-control border border-border`, сегмент `h-control-sm px-3 rounded-tag text-label`, выбранный `bg-secondary text-foreground`, остальные `text-muted-foreground`. `role="radiogroup"` / `aria-pressed`. Размер `sm` для инспектора. |
 | `Toggle`, `Switch` | один компонент — `Switch` (radix); `Toggle` из конструктора становится обёрткой с подписью. |
 | `Field` | подпись `text-label`, подсказка `text-caption text-muted-foreground`, `gap-1.5`. |
@@ -179,7 +182,7 @@ Hex и `rgba()` в TSX запрещены, кроме данных: палитр
 | `Card` | `rounded-card border border-border bg-card`; паддинг по месту (`p-5`/`p-6`). |
 | `Dialog`, `AlertDialog` | `rounded-sheet shadow-overlay p-6 gap-5`, подложка `bg-overlay`, заголовок `text-title`. Появление: opacity + scale .96→1, `duration-slow ease-out-soft`. |
 | `Sheet` | `rounded-t-sheet` снизу на телефоне, `shadow-overlay`. |
-| `Popover`, `DropdownMenu`, `Tooltip`, `Select` (контент) | `rounded-control-lg shadow-float border`, пункты `h-control-sm rounded-tag text-body-sm`. `transform-origin` от триггера (radix-переменная). |
+| `Popover`, `DropdownMenu` | `rounded-control-lg shadow-float border`, пункты `h-control-sm rounded-tag text-body-sm`. `transform-origin` от триггера (radix-переменная). |
 | `Toast` | `rounded-control-lg shadow-float text-body-sm`. |
 
 **Фокус** у всего интерактивного:
@@ -220,16 +223,23 @@ focus-visible:ring-offset-2 focus-visible:ring-offset-background`.
    страницы, `[userId]`.
 4. **Замок.** В `tailwind.config.ts` `fontSize`, `borderRadius`,
    `boxShadow`, `transitionDuration` переходят из `extend` в `theme` —
-   стоковые ключи исчезают. ESLint (`eslint-plugin-tailwindcss`):
-   `no-arbitrary-value` (error) с разрешёнными префиксами раскладки
-   (`w-`, `h-`, `min-*`, `max-*`, `grid-cols-`, `grid-rows-`, `col-span-`,
-   `inset`, `top/left/right/bottom-`, `translate-`, `aspect-`,
-   `bg-[url`, `scale-[`), `no-custom-classname` выключен. Правило
-   `no-restricted-syntax` на `#[0-9a-f]{3,6}` в `className`.
+   стоковые ключи исчезают. Запрет — без новых зависимостей:
+   - тест-сторож `tests/design-tokens.test.cjs` сканирует `app/`,
+     `components/`, `shared/` и падает на стоковых и произвольных
+     `text-*`, `rounded-*`, `shadow-*`, произвольных отступах,
+     `transition-all`, `duration-<число>`, hex/`rgba(` вне файлов-данных;
+   - то же правило в ESLint через встроенный `no-restricted-syntax`
+     (селекторы `Literal` и `TemplateElement` по регулярному выражению),
+     чтобы ошибка была видна прямо в редакторе.
+   Произвольные значения раскладки (`w-[…]`, `h-[…]`, `max-w-[…]`,
+   `grid-cols-[…]`, `inset-[…]`, `translate-[…]`, `aspect-[…]`,
+   `scale-[.97]`) разрешены.
 
-`components/ui/` из reactbits (`splash-cursor`, `particles`, `glare-hover`,
-`click-spark` и т.п.) — сторонние эффекты: переводим только если они
-используются, неиспользуемые удаляем.
+Неиспользуемые файлы `components/ui/` удаляются: 12 эффектов reactbits
+(`animated-content`, `blur-text`, `bounce-cards`, `carousel`, `click-spark`,
+`fade-content`, `glare-hover`, `particles`, `scroll-reveal`,
+`scroll-velocity`, `splash-cursor`, `star-border`), а также `mode-toggle`,
+`tooltip`, `select` — ни один нигде не импортируется.
 
 ## 11. Проверка
 
