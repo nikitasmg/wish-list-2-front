@@ -14,17 +14,17 @@ export default function PrivacyPolicyPage() {
 
       <div className="min-h-screen py-8">
         <div className="container mx-auto px-4 py-8 max-w-4xl">
-          <div className="bg-card rounded-lg shadow-md p-6 md:p-8">
-            <h1 className="text-2xl font-bold mb-2 text-foreground">
+          <div className="bg-card rounded-control-lg shadow-float p-6 md:p-8">
+            <h1 className="text-title font-bold mb-2 text-foreground">
               Политика в отношении обработки персональных данных
             </h1>
-            <p className="text-sm text-muted-foreground mb-6 border-b pb-4">
+            <p className="text-body-sm text-muted-foreground mb-6 border-b pb-4">
               Редакция от 18 июня 2026 г. Действует для сайта{' '}
-              <a href="https://prosto-namekni.ru" className="text-blue-600 hover:underline">prosto-namekni.ru</a>
+              <a href="https://prosto-namekni.ru" className="text-primary hover:underline">prosto-namekni.ru</a>
             </p>
 
             <section className="mb-8">
-              <h2 className="text-xl font-semibold mb-4 text-foreground">1. Общие положения</h2>
+              <h2 className="text-title-sm font-semibold mb-4 text-foreground">1. Общие положения</h2>
               <div className="space-y-4 text-foreground">
                 <p>
                   1.1. Настоящая Политика в отношении обработки персональных данных (далее — Политика) составлена в
@@ -44,7 +44,7 @@ export default function PrivacyPolicyPage() {
                 </p>
                 <p>
                   1.4. Настоящая Политика применяется ко всей информации, которую Оператор может получить о
-                  посетителях сайта <a href="https://prosto-namekni.ru" className="text-blue-600 hover:underline">prosto-namekni.ru</a> (далее — Сайт) и его зарегистрированных
+                  посетителях сайта <a href="https://prosto-namekni.ru" className="text-primary hover:underline">prosto-namekni.ru</a> (далее — Сайт) и его зарегистрированных
                   пользователях.
                 </p>
                 <p>
@@ -55,7 +55,7 @@ export default function PrivacyPolicyPage() {
             </section>
 
             <section className="mb-8">
-              <h2 className="text-xl font-semibold mb-4 text-foreground">2. Основные понятия</h2>
+              <h2 className="text-title-sm font-semibold mb-4 text-foreground">2. Основные понятия</h2>
               <div className="space-y-4 text-foreground">
                 <p>
                   2.1. <span className="font-medium">Персональные данные</span> — любая информация, относящаяся к прямо
@@ -79,7 +79,7 @@ export default function PrivacyPolicyPage() {
             </section>
 
             <section className="mb-8">
-              <h2 className="text-xl font-semibold mb-4 text-foreground">3. Какие персональные данные обрабатываются</h2>
+              <h2 className="text-title-sm font-semibold mb-4 text-foreground">3. Какие персональные данные обрабатываются</h2>
               <div className="space-y-4 text-foreground">
                 <p>3.1. Оператор может обрабатывать следующие персональные данные Пользователя:</p>
                 <ul className="list-disc pl-6 space-y-2">
@@ -110,7 +110,7 @@ export default function PrivacyPolicyPage() {
             </section>
 
             <section className="mb-8">
-              <h2 className="text-xl font-semibold mb-4 text-foreground">4. Цели обработки персональных данных</h2>
+              <h2 className="text-title-sm font-semibold mb-4 text-foreground">4. Цели обработки персональных данных</h2>
               <div className="space-y-4 text-foreground">
                 <ul className="list-disc pl-6 space-y-2">
                   <li>регистрация и идентификация Пользователя, предоставление доступа к личному кабинету;</li>
@@ -124,7 +124,7 @@ export default function PrivacyPolicyPage() {
             </section>
 
             <section className="mb-8">
-              <h2 className="text-xl font-semibold mb-4 text-foreground">5. Правовые основания обработки</h2>
+              <h2 className="text-title-sm font-semibold mb-4 text-foreground">5. Правовые основания обработки</h2>
               <div className="space-y-4 text-foreground">
                 <ul className="list-disc pl-6 space-y-2">
                   <li>согласие Пользователя на обработку его персональных данных;</li>
@@ -142,7 +142,7 @@ export default function PrivacyPolicyPage() {
             </section>
 
             <section className="mb-8">
-              <h2 className="text-xl font-semibold mb-4 text-foreground">6. Файлы cookie и веб-аналитика</h2>
+              <h2 className="text-title-sm font-semibold mb-4 text-foreground">6. Файлы cookie и веб-аналитика</h2>
               <div className="space-y-4 text-foreground">
                 <p>
                   6.1. Сайт использует файлы cookie для обеспечения работы (например, сохранение сессии авторизации) и
@@ -164,7 +164,7 @@ export default function PrivacyPolicyPage() {
             </section>
 
             <section className="mb-8">
-              <h2 className="text-xl font-semibold mb-4 text-foreground">7. Передача персональных данных</h2>
+              <h2 className="text-title-sm font-semibold mb-4 text-foreground">7. Передача персональных данных</h2>
               <div className="space-y-4 text-foreground">
                 <p>
                   7.1. Оператор не продаёт и не передаёт персональные данные третьим лицам, за исключением случаев,
@@ -182,7 +182,7 @@ export default function PrivacyPolicyPage() {
             </section>
 
             <section className="mb-8">
-              <h2 className="text-xl font-semibold mb-4 text-foreground">8. Трансграничная передача и локализация данных</h2>
+              <h2 className="text-title-sm font-semibold mb-4 text-foreground">8. Трансграничная передача и локализация данных</h2>
               <div className="space-y-4 text-foreground">
                 <p>
                   8.1. Запись, систематизация, накопление, хранение, уточнение и извлечение персональных данных граждан
@@ -199,7 +199,7 @@ export default function PrivacyPolicyPage() {
             </section>
 
             <section className="mb-8">
-              <h2 className="text-xl font-semibold mb-4 text-foreground">9. Сроки и условия хранения</h2>
+              <h2 className="text-title-sm font-semibold mb-4 text-foreground">9. Сроки и условия хранения</h2>
               <div className="space-y-4 text-foreground">
                 <p>
                   9.1. Персональные данные обрабатываются до достижения целей обработки, отзыва согласия Пользователем
@@ -213,7 +213,7 @@ export default function PrivacyPolicyPage() {
             </section>
 
             <section className="mb-8">
-              <h2 className="text-xl font-semibold mb-4 text-foreground">10. Защита персональных данных</h2>
+              <h2 className="text-title-sm font-semibold mb-4 text-foreground">10. Защита персональных данных</h2>
               <div className="space-y-4 text-foreground">
                 <p>
                   10.1. Оператор принимает правовые, организационные и технические меры для защиты персональных данных
@@ -225,7 +225,7 @@ export default function PrivacyPolicyPage() {
             </section>
 
             <section className="mb-8">
-              <h2 className="text-xl font-semibold mb-4 text-foreground">11. Права Пользователя</h2>
+              <h2 className="text-title-sm font-semibold mb-4 text-foreground">11. Права Пользователя</h2>
               <div className="space-y-4 text-foreground">
                 <p>11.1. Пользователь как субъект персональных данных вправе:</p>
                 <ul className="list-disc pl-6 space-y-2">
@@ -244,7 +244,7 @@ export default function PrivacyPolicyPage() {
             </section>
 
             <section className="mb-8">
-              <h2 className="text-xl font-semibold mb-4 text-foreground">12. Отзыв согласия</h2>
+              <h2 className="text-title-sm font-semibold mb-4 text-foreground">12. Отзыв согласия</h2>
               <div className="space-y-4 text-foreground">
                 <p>
                   12.1. Согласие на обработку персональных данных может быть отозвано Пользователем путём направления
@@ -256,7 +256,7 @@ export default function PrivacyPolicyPage() {
             </section>
 
             <section className="mb-8">
-              <h2 className="text-xl font-semibold mb-4 text-foreground">13. Обработка данных несовершеннолетних</h2>
+              <h2 className="text-title-sm font-semibold mb-4 text-foreground">13. Обработка данных несовершеннолетних</h2>
               <div className="space-y-4 text-foreground">
                 <p>
                   13.1. Сайт предназначен для лиц, достигших 18 лет. Лица младше 18 лет могут использовать Сайт только с
@@ -267,19 +267,19 @@ export default function PrivacyPolicyPage() {
             </section>
 
             <section className="mb-8">
-              <h2 className="text-xl font-semibold mb-4 text-foreground">14. Изменение Политики</h2>
+              <h2 className="text-title-sm font-semibold mb-4 text-foreground">14. Изменение Политики</h2>
               <div className="space-y-4 text-foreground">
                 <p>
                   14.1. Оператор вправе вносить изменения в настоящую Политику. Новая редакция вступает в силу с момента
                   её размещения на Сайте, если иное не предусмотрено новой редакцией. Действующая редакция всегда
                   доступна по адресу{' '}
-                  <a href="https://prosto-namekni.ru/privacy-policy" className="text-blue-600 hover:underline">prosto-namekni.ru/privacy-policy</a>.
+                  <a href="https://prosto-namekni.ru/privacy-policy" className="text-primary hover:underline">prosto-namekni.ru/privacy-policy</a>.
                 </p>
               </div>
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold mb-4 text-foreground">15. Контакты</h2>
+              <h2 className="text-title-sm font-semibold mb-4 text-foreground">15. Контакты</h2>
               <div className="space-y-4 text-foreground">
                 <p>
                   15.1. По всем вопросам, связанным с обработкой персональных данных, Пользователь может обратиться к

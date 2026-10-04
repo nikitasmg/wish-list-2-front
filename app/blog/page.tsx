@@ -20,10 +20,10 @@ export default function BlogPage() {
       <Header />
       <main className="container mx-auto px-4 py-16 md:py-24">
         <div className="max-w-2xl mx-auto">
-          <h1 className="text-4xl md:text-5xl font-bold text-primary mb-4">
+          <h1 className="text-title-lg md:text-display-sm font-bold text-primary mb-4">
             Блог
           </h1>
-          <p className="text-muted-foreground text-lg mb-12">
+          <p className="text-muted-foreground text-lead mb-12">
             Советы по вишлистам, идеи подарков и руководства для всех поводов.
           </p>
 
@@ -31,11 +31,11 @@ export default function BlogPage() {
             {posts.map((post) => (
               <article key={post.slug} className="border-b border-border pb-8">
                 <Link href={`/blog/${post.slug}`} className="group">
-                  <h2 className="text-xl md:text-2xl font-bold text-foreground group-hover:text-primary transition-colors mb-2">
+                  <h2 className="text-title-sm md:text-title font-bold text-foreground group-hover:text-primary transition-colors mb-2">
                     {post.title}
                   </h2>
                   <p className="text-muted-foreground mb-3">{post.description}</p>
-                  <span className="text-sm text-muted-foreground">
+                  <span className="text-body-sm text-muted-foreground">
                     {new Date(post.date).toLocaleDateString('ru-RU', {
                       year: 'numeric',
                       month: 'long',

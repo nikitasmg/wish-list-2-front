@@ -138,7 +138,7 @@ export default function Page() {
               >
                 <Heart
                   size={16}
-                  className={template.likedByMe ? 'fill-current text-rose-500' : ''}
+                  className={template.likedByMe ? 'fill-current text-tone-pink' : ''}
                 />
                 {template.likesCount > 0 && (
                   <span>{template.likesCount}</span>

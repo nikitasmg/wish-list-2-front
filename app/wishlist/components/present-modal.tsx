@@ -309,7 +309,7 @@ export function PresentModal({ wishlistId, present, open, onOpenChange, onCreate
                       <FormLabel>Описание</FormLabel>
                       <span className={cn(
                         'text-caption tabular-nums',
-                        nearLimit ? 'text-amber-500 font-semibold' : 'text-muted-foreground',
+                        nearLimit ? 'text-warning font-semibold' : 'text-muted-foreground',
                       )}>
                         {used} / {MAX_PRESENT_DESCRIPTION}
                       </span>
@@ -323,7 +323,7 @@ export function PresentModal({ wishlistId, present, open, onOpenChange, onCreate
                       />
                     </FormControl>
                     {nearLimit && left >= 0 && (
-                      <p className="text-caption text-amber-500">Осталось {left} символов</p>
+                      <p className="text-caption text-warning">Осталось {left} символов</p>
                     )}
                     <FormMessage />
                   </FormItem>

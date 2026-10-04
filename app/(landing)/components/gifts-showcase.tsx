@@ -32,7 +32,7 @@ export function GiftsShowcase() {
           </ul>
         </div>
 
-        <div className={`demo-scheme wishlist-page look-font-accent relative grid gap-3.5 rounded-sheet bg-background p-4 pt-11 text-foreground sm:grid-cols-[1.4fr_1fr_1fr] md:p-5 md:pt-12 ${EXAMPLE}`} aria-hidden>
+        <div className={`demo-scheme wishlist-page look-font-accent relative grid gap-3.5 rounded-sheet bg-background p-4 pt-12 text-foreground sm:grid-cols-[1.4fr_1fr_1fr] md:p-5 md:pt-12 ${EXAMPLE}`} aria-hidden>
           <ExampleBadge className="absolute left-4 top-3.5 md:left-5">Пример · так видят гости</ExampleBadge>
           <div className="flex flex-col overflow-hidden rounded-card border bg-card sm:row-span-2">
             <Cover letter="Н" className="h-[150px] sm:h-auto sm:min-h-[220px] sm:flex-1" main />

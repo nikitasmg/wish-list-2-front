@@ -14,37 +14,37 @@ export default function TermsOfServicePage() {
 
       <div className="min-h-screen py-8">
         <div className="container mx-auto px-4 py-8 max-w-4xl">
-          <div className="bg-card rounded-lg shadow-md p-6 md:p-8">
-            <h1 className="text-2xl font-bold mb-2 text-foreground">
+          <div className="bg-card rounded-control-lg shadow-float p-6 md:p-8">
+            <h1 className="text-title font-bold mb-2 text-foreground">
               Пользовательское Соглашение
             </h1>
-            <p className="text-sm text-muted-foreground mb-6 border-b pb-4">
+            <p className="text-body-sm text-muted-foreground mb-6 border-b pb-4">
               Редакция от 18 июня 2026 г.
             </p>
 
             <p className="mb-6 text-foreground">
               Настоящее Пользовательское Соглашение (Далее - Соглашение) регулирует отношения между владельцем <a
               href="https://prosto-namekni.ru"
-              className="text-blue-600 hover:underline">prosto-namekni.ru</a> с одной стороны и Пользователем сайта с
+              className="text-primary hover:underline">prosto-namekni.ru</a> с одной стороны и Пользователем сайта с
               другой.
             </p>
 
             <p className="mb-6 text-foreground">
               Обработка персональных данных Пользователя осуществляется в соответствии с{' '}
-              <a href="/privacy-policy" className="text-blue-600 hover:underline">Политикой конфиденциальности</a>,
+              <a href="/privacy-policy" className="text-primary hover:underline">Политикой конфиденциальности</a>,
               которая является неотъемлемой частью настоящего Соглашения.
             </p>
 
             <p className="mb-6 text-foreground">
               Сайт <a
               href="https://prosto-namekni.ru"
-              className="text-blue-600 hover:underline">prosto-namekni.ru</a> не является средством массовой
+              className="text-primary hover:underline">prosto-namekni.ru</a> не является средством массовой
               информации. Используя сайт, Вы соглашаетесь с условиями
               данного соглашения.
             </p>
 
             <section className="mb-8">
-              <h2 className="text-xl font-semibold mb-4 text-foreground">Термины:</h2>
+              <h2 className="text-title-sm font-semibold mb-4 text-foreground">Термины:</h2>
               <ul className="list-disc pl-6 space-y-3 text-foreground">
                 <li>
                   <span className="font-medium">Пользовательское соглашение</span> – предложение Администрации заключить
@@ -60,7 +60,7 @@ export default function TermsOfServicePage() {
                 <li>
                   <span className="font-medium">Сайт</span> – интернет-сайт по адресу <a
                   href="https://prosto-namekni.ru"
-                  className="text-blue-600 hover:underline">https://prosto-namekni.ru</a>.
+                  className="text-primary hover:underline">https://prosto-namekni.ru</a>.
                 </li>
                 <li>
                   <span className="font-medium">Профиль/личный кабинет</span> – персональная страница пользователя,
@@ -88,7 +88,7 @@ export default function TermsOfServicePage() {
             </section>
 
             <section className="mb-8">
-              <h2 className="text-xl font-semibold mb-4 text-foreground">1. Общие положения</h2>
+              <h2 className="text-title-sm font-semibold mb-4 text-foreground">1. Общие положения</h2>
               <div className="space-y-4 text-foreground">
                 <p>1.1. Администрация предоставляет Пользователю на условиях простой (неисключительной) безвозмездной
                   лицензии возможность пользоваться интерфейсом Сайта по размещению:</p>
@@ -105,7 +105,7 @@ export default function TermsOfServicePage() {
             </section>
 
             <section className="mb-8">
-              <h2 className="text-xl font-semibold mb-4 text-foreground">2. Регистрация</h2>
+              <h2 className="text-title-sm font-semibold mb-4 text-foreground">2. Регистрация</h2>
               <div className="space-y-4 text-foreground">
                 <p>2.1. Пользователь регистрируется на Сайте и заполняет следующие сведения:</p>
                 <ul className="list-disc pl-6 space-y-2">
@@ -128,7 +128,7 @@ export default function TermsOfServicePage() {
               </div>
             </section>
             <section className="mb-8">
-              <h2 className="text-xl font-semibold mb-4 text-foreground">3. Работа с Сайтом</h2>
+              <h2 className="text-title-sm font-semibold mb-4 text-foreground">3. Работа с Сайтом</h2>
               <div className="space-y-4 text-foreground">
                 <p>3.1. После регистрации Пользователь получает доступ к возможностям Сайта по созданию вишлистов.</p>
                 <p>3.2. После регистрации Пользователь получает право самостоятельно в личных целях создавать,
@@ -164,7 +164,7 @@ export default function TermsOfServicePage() {
               </div>
             </section>
             <section className="mb-8">
-              <h2 className="text-xl font-semibold mb-4 text-foreground">4. Доступ к сайту, удаление аккаунта</h2>
+              <h2 className="text-title-sm font-semibold mb-4 text-foreground">4. Доступ к сайту, удаление аккаунта</h2>
               <div className="space-y-4 text-foreground">
                 <p>4.1. Администрация оставляет за собой право изменять или прекращать действие Сайта.</p>
                 <p>4.2. Администрация вправе заблокировать аккаунт Пользователя при нарушении условий Соглашения, в
@@ -179,7 +179,7 @@ export default function TermsOfServicePage() {
               </div>
             </section>
             <section className="mb-8">
-              <h2 className="text-xl font-semibold mb-4 text-foreground">5. Авторское право</h2>
+              <h2 className="text-title-sm font-semibold mb-4 text-foreground">5. Авторское право</h2>
               <div className="space-y-4 text-foreground">
                 <p>
                   5.1. При размещении ссылок на фото и видеоизображения (далее – изображения) в своем аккаунте
@@ -205,7 +205,7 @@ export default function TermsOfServicePage() {
               </div>
             </section>
             <section className="mb-8">
-              <h2 className="text-xl font-semibold mb-4 text-foreground">6. Ответственность</h2>
+              <h2 className="text-title-sm font-semibold mb-4 text-foreground">6. Ответственность</h2>
               <div className="space-y-4 text-foreground">
                 <p>
                   6.1. Сайт предоставляет Пользователю безвозмездную возможность создавать и публиковать свои вишлисты и
@@ -253,7 +253,7 @@ export default function TermsOfServicePage() {
               </div>
             </section>
             <section className="mb-8">
-              <h2 className="text-xl font-semibold mb-4 text-foreground"> 7. Разрешение споров</h2>
+              <h2 className="text-title-sm font-semibold mb-4 text-foreground"> 7. Разрешение споров</h2>
               <div className="space-y-4 text-foreground">
                 <p>
                   7.1. Все претензии направляются Пользователем с адреса электронной почты, который он указал при
@@ -274,7 +274,7 @@ export default function TermsOfServicePage() {
               </div>
             </section>
             <section className="mb-8">
-              <h2 className="text-xl font-semibold mb-4 text-foreground"> 8. Изменение соглашения</h2>
+              <h2 className="text-title-sm font-semibold mb-4 text-foreground"> 8. Изменение соглашения</h2>
               <div className="space-y-4 text-foreground">
                 <p>
                   8.1. Администрация вправе в любое время изменить условия Соглашения. Все изменения публикуются в соответствующем
