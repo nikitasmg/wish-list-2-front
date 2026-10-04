@@ -103,16 +103,16 @@ export function TemplatePreviewSheet({ template, open, onOpenChange, onUse, isPe
           className="px-6 py-8 shrink-0"
           style={{ background: `linear-gradient(135deg, ${bg}, ${accent}30)` }}
         >
-          <SheetTitle className="text-xl mb-1">{template.name}</SheetTitle>
+          <SheetTitle className="text-body-lg mb-1">{template.name}</SheetTitle>
           {template.userDisplayName && (
-            <p className="text-sm opacity-60">от {template.userDisplayName}</p>
+            <p className="text-body-sm opacity-60">от {template.userDisplayName}</p>
           )}
           <div className="mt-3 flex items-center gap-2 flex-wrap">
-            <span className="text-xs bg-black/10 dark:bg-white/10 rounded-full px-2.5 py-0.5">
+            <span className="text-caption bg-black/10 dark:bg-white/10 rounded-full px-2.5 py-0.5">
               {template.blocks?.length ?? 0} блоков
             </span>
             {scheme && (
-              <span className="text-xs bg-black/10 dark:bg-white/10 rounded-full px-2.5 py-0.5 flex items-center gap-1.5">
+              <span className="text-caption bg-black/10 dark:bg-white/10 rounded-full px-2.5 py-0.5 flex items-center gap-1.5">
                 <span className="inline-block w-2.5 h-2.5 rounded-full" style={{ background: accent }} />
                 {scheme.name}
               </span>
@@ -122,12 +122,12 @@ export function TemplatePreviewSheet({ template, open, onOpenChange, onUse, isPe
 
         {/* Структура блоков */}
         <div className="px-6 py-5 flex-1">
-          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-4">
+          <p className="text-caption font-semibold text-muted-foreground uppercase tracking-widest mb-4">
             Структура шаблона
           </p>
 
           {rows.length === 0 ? (
-            <p className="text-sm text-muted-foreground">Блоков нет</p>
+            <p className="text-body-sm text-muted-foreground">Блоков нет</p>
           ) : (
             <div className="space-y-2">
               {rows.map((rowBlocks, rowIdx) => (
@@ -139,15 +139,15 @@ export function TemplatePreviewSheet({ template, open, onOpenChange, onUse, isPe
                     return (
                       <div
                         key={`${block.row}-${block.col}`}
-                        className="rounded-lg border border-border bg-muted/40 px-3 py-2.5 flex flex-col gap-1 min-w-0"
+                        className="rounded-control-lg border border-border bg-muted/40 px-3 py-2.5 flex flex-col gap-1 min-w-0"
                         style={{ gridColumn: block.colSpan === 2 ? 'span 2' : undefined }}
                       >
                         <div className="flex items-center gap-1.5 text-muted-foreground">
                           {Icon && <Icon size={13} className="shrink-0" />}
-                          <span className="text-[11px] font-medium truncate">{meta?.label}</span>
+                          <span className="text-micro font-medium truncate">{meta?.label}</span>
                         </div>
                         {snippet && (
-                          <p className="text-xs text-foreground/60 line-clamp-1">{snippet}</p>
+                          <p className="text-caption text-foreground/60 line-clamp-1">{snippet}</p>
                         )}
                       </div>
                     )

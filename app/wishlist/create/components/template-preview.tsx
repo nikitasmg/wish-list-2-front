@@ -47,13 +47,13 @@ export function TemplatePreview({ template, className }: { template: SystemTempl
           {view === 'circle' && (
             <div className="flex flex-col items-center gap-2 text-center">
               <span className="w-12 h-12 rounded-full bg-border" />
-              <span className="text-caption font-extrabold line-clamp-1">{template.sampleTitle}</span>
+              <span className="text-caption font-extrabold tracking-tight line-clamp-1">{template.sampleTitle}</span>
             </div>
           )}
   
           {view === 'left' && (
             <div className="flex flex-col gap-2">
-              <span className="text-body font-extrabold leading-tight line-clamp-2 text-primary">
+              <span className="text-body font-extrabold leading-tight tracking-tighter line-clamp-2 text-primary">
                 {template.sampleTitle}
               </span>
               <span className="h-6 rounded-control bg-border" />
@@ -63,13 +63,13 @@ export function TemplatePreview({ template, className }: { template: SystemTempl
           {view === 'photo' && (
             <div className="flex flex-col gap-2">
               <span className="h-14 rounded-control-lg bg-border" />
-              <span className="text-caption font-extrabold line-clamp-1">{template.sampleTitle}</span>
+              <span className="text-caption font-extrabold tracking-tight line-clamp-1">{template.sampleTitle}</span>
             </div>
           )}
   
           {view === 'arch' && (
             <div className="flex flex-col items-center gap-2 text-center">
-              <span className="text-caption font-extrabold line-clamp-1">{template.sampleTitle}</span>
+              <span className="text-caption font-extrabold tracking-tight line-clamp-1">{template.sampleTitle}</span>
               <span className="w-16 h-9 rounded-t-full bg-border" />
             </div>
           )}
@@ -80,7 +80,7 @@ export function TemplatePreview({ template, className }: { template: SystemTempl
                 <span className="flex-1 bg-border" />
                 <span className="flex-1 bg-primary/35" />
               </span>
-              <span className="text-caption font-extrabold line-clamp-1">{template.sampleTitle}</span>
+              <span className="text-caption font-extrabold tracking-tight line-clamp-1">{template.sampleTitle}</span>
             </div>
           )}
         </div>
@@ -107,7 +107,7 @@ export function TemplatePhonePreview({ template }: { template: SystemTemplate })
       className={cn(schemeClass(template.colorScheme), 'w-[150px] shrink-0 overflow-hidden rounded-card border-4 border-border bg-background p-2 text-foreground')}
       aria-hidden
     >
-      <div className="py-2 text-center text-label font-extrabold line-clamp-1 text-primary">
+      <div className="py-2 text-center text-label font-extrabold tracking-tight line-clamp-1 text-primary">
         {template.sampleTitle}
       </div>
       <div className="flex flex-col gap-1">

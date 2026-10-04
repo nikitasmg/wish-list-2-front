@@ -100,7 +100,7 @@ export default function Page() {
     <div className="max-w-5xl mx-auto p-5">
       <div className="mb-8">
         <LayoutTemplate size={24} className="mb-3 text-muted-foreground" />
-        <h1 className="text-3xl sm:text-4xl font-bold mb-2">Пользовательские шаблоны</h1>
+        <h1 className="text-title-lg font-bold mb-2">Пользовательские шаблоны</h1>
         <p className="text-muted-foreground">
           Шаблоны от сообщества — бери готовую структуру и создавай свой вишлист
         </p>
@@ -116,23 +116,23 @@ export default function Page() {
         {allTemplates.map((template) => (
           <div
             key={template.id}
-            className="rounded-2xl border border-border overflow-hidden flex flex-col cursor-pointer hover:border-primary transition-colors"
+            className="rounded-card border border-border overflow-hidden flex flex-col cursor-pointer hover:border-primary transition-colors"
             onClick={() => openPreview(template)}
           >
             <div className="px-4 pt-5 pb-4 bg-muted/40 flex-1">
-              <p className="font-semibold text-base mb-1">{template.name}</p>
-              <p className="text-xs text-muted-foreground mb-3">
+              <p className="font-semibold text-lead mb-1">{template.name}</p>
+              <p className="text-caption text-muted-foreground mb-3">
                 {template.blocks?.length ?? 0} блоков · {template.settings?.colorScheme ?? ''}
               </p>
               {template.userDisplayName && (
-                <p className="text-xs text-muted-foreground">
+                <p className="text-caption text-muted-foreground">
                   от {template.userDisplayName}
                 </p>
               )}
             </div>
             <div className="px-4 py-3 border-t border-border flex items-center gap-2">
               <button
-                className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                className="flex items-center gap-1 text-body-sm text-muted-foreground hover:text-foreground transition-colors"
                 onClick={(e) => handleLike(e, template)}
                 aria-label={template.likedByMe ? 'Убрать лайк' : 'Поставить лайк'}
               >

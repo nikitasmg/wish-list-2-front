@@ -50,6 +50,22 @@ export default {
           DEFAULT: 'hsl(var(--warning))',
           foreground: 'hsl(var(--warning-foreground))',
         },
+        // Фирменная палитра — одинаковая в обеих темах (макет). Только для
+        // лендинга и иллюстраций; интерфейс красится ролями схемы.
+        brand: {
+          cyan: '#22C3E6',
+          sky: '#17B6D6',
+          violet: '#7B5CF0',
+          ink: '#04202A',
+          night: '#070B16',
+          chat: '#2A4BB8',
+        },
+        // Тона иконок и плашек: на светлом темнее, на тёмном светлее.
+        tone: {
+          cyan: 'hsl(var(--tone-cyan) / <alpha-value>)',
+          violet: 'hsl(var(--tone-violet) / <alpha-value>)',
+          pink: 'hsl(var(--tone-pink) / <alpha-value>)',
+        },
         // Подложка модалок и шторок
         overlay: 'rgb(var(--overlay) / 0.72)',
         border: 'hsl(var(--border))',
@@ -70,6 +86,9 @@ export default {
         // Шапка объявлений: ночное небо бренда и светлый точечный узор поверх
         'hero-night': 'linear-gradient(135deg, #0F3B4A, #2A1F5C)',
         'dots': 'radial-gradient(rgba(255,255,255,0.12) 1.4px, transparent 2px)',
+        // Свечения за первым экраном лендинга
+        'glow-cyan': 'radial-gradient(closest-side, rgba(23,182,214,0.16), transparent)',
+        'glow-violet': 'radial-gradient(closest-side, rgba(123,92,240,0.2), transparent)',
         'heart': "url('/icons/heart.svg')",
         'star': "url('/icons/star.svg')",
         'party': "url('/icons/party.svg')",
@@ -89,20 +108,23 @@ export default {
        * буквы. Вес задают только заголовки: у текста он ставится рядом.
        */
       fontSize: {
-        'micro':      [ '0.6875rem', { lineHeight: '1.3' } ],
+        // У текста трекинг явно 0: иначе он наследует отрицательный трекинг
+        // заголовка-родителя и пробелы между словами схлопываются.
+        'micro':      [ '0.6875rem', { lineHeight: '1.3',  letterSpacing: '0' } ],
         'eyebrow':    [ '0.6875rem', { lineHeight: '1.3',  letterSpacing: '0.08em',   fontWeight: '700' } ],
-        'caption':    [ '0.75rem',   { lineHeight: '1.4' } ],
-        'label':      [ '0.8125rem', { lineHeight: '1.4' } ],
-        'body-sm':    [ '0.875rem',  { lineHeight: '1.5' } ],
-        'body':       [ '0.9375rem', { lineHeight: '1.5' } ],
-        'lead':       [ '1rem',      { lineHeight: '1.5' } ],
+        'caption':    [ '0.75rem',   { lineHeight: '1.4',  letterSpacing: '0' } ],
+        'label':      [ '0.8125rem', { lineHeight: '1.4',  letterSpacing: '0' } ],
+        'body-sm':    [ '0.875rem',  { lineHeight: '1.5',  letterSpacing: '0' } ],
+        'body':       [ '0.9375rem', { lineHeight: '1.5',  letterSpacing: '0' } ],
+        'lead':       [ '1rem',      { lineHeight: '1.5',  letterSpacing: '0' } ],
         // Крупный абзац — блок «Текст» размера «Крупный», цитата. Не заголовок: без веса.
-        'body-lg':    [ '1.25rem',   { lineHeight: '1.5' } ],
+        'body-lg':    [ '1.25rem',   { lineHeight: '1.5',  letterSpacing: '0' } ],
         'title-xs':   [ '1.0625rem', { lineHeight: '1.3',  letterSpacing: '-0.01em',  fontWeight: '700' } ],
         'title-sm':   [ '1.25rem',   { lineHeight: '1.25', letterSpacing: '-0.02em',  fontWeight: '800' } ],
         'title':      [ '1.5rem',    { lineHeight: '1.2',  letterSpacing: '-0.02em',  fontWeight: '800' } ],
         'title-lg':   [ '2rem',      { lineHeight: '1.1',  letterSpacing: '-0.03em',  fontWeight: '800' } ],
         'display-sm': [ '2.75rem',   { lineHeight: '1.03', letterSpacing: '-0.033em', fontWeight: '800' } ],
+        'display-md': [ '3.5rem',    { lineHeight: '1.02', letterSpacing: '-0.04em',  fontWeight: '800' } ],
         'display':    [ '4rem',      { lineHeight: '1',    letterSpacing: '-0.04em',  fontWeight: '800' } ],
         'display-xl': [ '7rem',      { lineHeight: '1',    letterSpacing: '-0.045em', fontWeight: '800' } ],
       },

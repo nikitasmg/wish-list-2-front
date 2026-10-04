@@ -67,7 +67,7 @@ export function GiftsSection({ wishlist, presents, owner = false, preview = fals
   return <section className="space-y-6">
     {block && <header className="space-y-2">
       {block.caption && block.title && <p className="text-body-sm font-semibold text-primary">{block.caption}</p>}
-      <h2 className="heading text-title-lg font-extrabold text-primary md:text-display md:leading-none">{block.title || block.caption || 'Вишлист'}</h2>
+      <h2 className="heading text-title-lg font-extrabold text-primary md:text-display-md md:leading-none">{block.title || block.caption || 'Вишлист'}</h2>
       <p className="text-muted-foreground">
         {presents.length} {pluralRu(presents.length, ['подарок', 'подарка', 'подарков'])} · бронь без регистрации. Организатор не узнает, кто что дарит.
       </p>

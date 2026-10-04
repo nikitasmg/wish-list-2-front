@@ -33,8 +33,8 @@ export default function WishlistForPage() {
         <div className="max-w-6xl mx-auto space-y-8">
           <Breadcrumbs items={[]} page="Шаблоны" />
           <div className="space-y-2">
-            <h1 className="text-4xl font-bold text-primary">Шаблоны</h1>
-            <p className="text-lg text-muted-foreground">
+            <h1 className="text-title-lg font-bold text-primary">Шаблоны</h1>
+            <p className="text-lead text-muted-foreground">
               Готовая страница под повод: блоки, тексты-подсказки и цветовая схема. Выберите — и поправьте под себя
             </p>
           </div>

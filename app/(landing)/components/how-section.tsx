@@ -7,8 +7,8 @@ const OCCASIONS = ['День рождения', 'Свадьба', 'Юбилей'
 export function OccasionsStrip() {
   return (
     <section className="border-y py-6 md:py-8">
-      <Container className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm font-bold text-muted-foreground md:justify-between md:text-[17px]">
-        <span className="hidden text-sm font-semibold md:inline">Для любого повода</span>
+      <Container className="flex flex-wrap items-center gap-x-5 gap-y-2 text-body-sm font-bold text-muted-foreground md:justify-between md:text-title-xs">
+        <span className="hidden text-body-sm font-semibold md:inline">Для любого повода</span>
         {OCCASIONS.map((name, i) => (
           <React.Fragment key={name}>
             {i > 0 && <span className="hidden text-border md:inline" aria-hidden>✦</span>}
@@ -21,9 +21,9 @@ export function OccasionsStrip() {
 }
 
 const STEPS = [
-  { title: 'Выберите шаблон', text: 'Восемь готовых страниц под повод — с блоками, текстами-подсказками и цветовой схемой. Замените пару строк — и готово.', tone: 'bg-[#22C3E6]/15 text-[#0E9CBB] dark:text-[#22C3E6]' },
-  { title: 'Соберите под себя', text: 'Добавляйте блоки «+» между блоками, ставьте их рядом в ряд, меняйте шрифт и узор фона. Всё сохраняется само.', tone: 'bg-[#7B5CF0]/15 text-[#6A4BE0] dark:text-[#A78BFA]' },
-  { title: 'Отправьте ссылку', text: 'Гости бронируют подарки и отвечают на приглашение без регистрации. Вы видите ответы, но не знаете, кто что дарит.', tone: 'bg-[#F472B6]/15 text-[#D0438F] dark:text-[#F472B6]' },
+  { title: 'Выберите шаблон', text: 'Восемь готовых страниц под повод — с блоками, текстами-подсказками и цветовой схемой. Замените пару строк — и готово.', tone: 'bg-tone-cyan/15 text-tone-cyan' },
+  { title: 'Соберите под себя', text: 'Добавляйте блоки «+» между блоками, ставьте их рядом в ряд, меняйте шрифт и узор фона. Всё сохраняется само.', tone: 'bg-tone-violet/15 text-tone-violet' },
+  { title: 'Отправьте ссылку', text: 'Гости бронируют подарки и отвечают на приглашение без регистрации. Вы видите ответы, но не знаете, кто что дарит.', tone: 'bg-tone-pink/15 text-tone-pink' },
 ]
 
 export function HowSection() {
@@ -37,9 +37,9 @@ export function HowSection() {
         />
         <ol className="grid gap-4 md:grid-cols-3 md:gap-5">
           {STEPS.map((step, i) => (
-            <li key={step.title} className="flex flex-col gap-4 rounded-3xl border bg-card p-6 md:p-8">
-              <span className={`flex h-11 w-11 items-center justify-center rounded-2xl font-unbounded text-lg font-extrabold ${step.tone}`}>{i + 1}</span>
-              <h3 className="font-unbounded text-[22px] font-bold tracking-[-0.03em] md:text-2xl">{step.title}</h3>
+            <li key={step.title} className="flex flex-col gap-4 rounded-sheet border bg-card p-6 md:p-8">
+              <span className={`flex h-11 w-11 items-center justify-center rounded-card font-unbounded text-title-xs font-extrabold ${step.tone}`}>{i + 1}</span>
+              <h3 className="font-unbounded text-title font-bold">{step.title}</h3>
               <p className="leading-relaxed text-muted-foreground">{step.text}</p>
             </li>
           ))}

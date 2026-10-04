@@ -28,7 +28,7 @@ export function TemplatesGallery() {
 
   if (templates.length === 0) {
     return (
-      <div className="rounded-2xl border border-dashed p-8 text-center text-muted-foreground">
+      <div className="rounded-card border border-dashed p-8 text-center text-muted-foreground">
         Шаблоны сейчас недоступны — <Link href="/wishlist/create" className="text-primary hover:underline">соберите страницу с нуля</Link>.
       </div>
     )
@@ -43,7 +43,7 @@ export function TemplatesGallery() {
             type="button"
             onClick={() => setCategory(c.id)}
             className={cn(
-              'h-9 rounded-full border px-4 text-sm font-semibold transition-colors',
+              'h-9 rounded-full border px-4 text-body-sm font-semibold transition-colors',
               category === c.id ? 'border-primary bg-primary text-primary-foreground' : 'hover:border-primary/50',
             )}
           >
@@ -66,8 +66,8 @@ export function TemplatesGallery() {
                 className="h-[230px] ring-1 ring-border transition-shadow group-hover:ring-2 group-hover:ring-primary"
               />
               <span className="px-0.5">
-                <span className="block text-sm font-bold leading-snug group-hover:text-primary">{template.name}</span>
-                <span className="mt-0.5 flex items-center gap-1.5 text-xs text-muted-foreground">
+                <span className="block text-body-sm font-bold leading-snug group-hover:text-primary">{template.name}</span>
+                <span className="mt-0.5 flex items-center gap-1.5 text-caption text-muted-foreground">
                   <span className="h-2 w-2 rounded-full" style={{ backgroundColor: scheme.colors[1] }} aria-hidden />
                   {scheme.name} · {template.blocks.length} {pluralRu(template.blocks.length, ['блок', 'блока', 'блоков'])}
                 </span>

@@ -1,7 +1,7 @@
 import { Footer } from '@/components/footer'
 import { Header } from '@/components/header'
 import { JsonLd } from '@/components/json-ld'
-import { Container, Eyebrow, PrimaryLink, SecondaryLink } from '@/app/(landing)/components/landing-ui'
+import { Container, EXAMPLE, Eyebrow, PrimaryLink, SecondaryLink } from '@/app/(landing)/components/landing-ui'
 import { CtaSection } from '@/app/(landing)/components/cta-section'
 import {
   BlockPanelMock, BlocksMock, CheckItem, GiftFormMock, ResponsesMock, ShareMock, TemplatePickerMock,
@@ -59,7 +59,7 @@ const STEPS: Step[] = [
     lead: 'Наведите между блоками — появится «+». Программа, дресс-код, голосование, плейлист — 14 видов. Тяните блок к краю соседа, и они встанут в один ряд.',
     points: ['Шрифт заголовков, узор фона и схема — в «Оформлении»', 'Любой блок можно спрятать до даты праздника'],
     note: (
-      <p className="flex items-start gap-2.5 self-start rounded-xl border border-[#7B5CF0]/35 bg-[#7B5CF0]/10 px-3.5 py-2.5 text-sm text-[#5B3FD0] dark:text-[#C9C2FF]">
+      <p className="flex items-start gap-2.5 self-start rounded-control-lg border border-tone-violet/35 bg-tone-violet/10 px-3.5 py-2.5 text-body-sm text-tone-violet">
         <Monitor size={16} className="mt-0.5 shrink-0" aria-hidden />
         Конструктор — на компьютере. С телефона правятся тексты, порядок блоков, тема и подарки
       </p>
@@ -130,18 +130,18 @@ export default function HowItWorks() {
 function Hero() {
   return (
     <section className="relative overflow-hidden bg-[radial-gradient(hsl(var(--primary)/0.14)_1.4px,transparent_2px)] [background-size:46px_46px]">
-      <div className="pointer-events-none absolute -left-52 top-10 h-[640px] w-[640px] rounded-full bg-[radial-gradient(closest-side,rgba(23,182,214,0.16),transparent)]" aria-hidden />
-      <div className="pointer-events-none absolute -right-32 -top-10 h-[700px] w-[700px] rounded-full bg-[radial-gradient(closest-side,rgba(123,92,240,0.2),transparent)]" aria-hidden />
-      <Container className="relative grid items-center gap-10 pb-16 pt-8 md:pb-24 md:pt-16 lg:grid-cols-[minmax(0,600px)_minmax(0,1fr)] lg:gap-[72px]">
+      <div className="pointer-events-none absolute -left-52 top-10 h-[640px] w-[640px] rounded-full bg-glow-cyan" aria-hidden />
+      <div className="pointer-events-none absolute -right-32 -top-10 h-[700px] w-[700px] rounded-full bg-glow-violet" aria-hidden />
+      <Container className="relative grid items-center gap-10 pb-16 pt-8 md:pb-24 md:pt-16 lg:grid-cols-[minmax(0,600px)_minmax(0,1fr)] lg:gap-18">
         <div className="flex flex-col gap-6 md:gap-7">
-          <span className="inline-flex h-8 items-center gap-2 self-start rounded-full border px-3 text-xs font-semibold text-foreground/80 md:text-[13px]">
+          <span className="inline-flex h-8 items-center gap-2 self-start rounded-full border px-3 text-caption font-semibold text-foreground/80 md:text-label">
             <span className="h-2 w-2 rounded-full bg-primary" />
             Как это работает
           </span>
-          <h1 className="font-unbounded text-[36px] font-extrabold leading-[1.02] tracking-[-0.05em] md:text-[56px] xl:text-[62px]">
+          <h1 className="font-unbounded text-title-lg font-extrabold md:text-display-md">
             От шаблона до ссылки <span className="text-primary">за&nbsp;один вечер</span>
           </h1>
-          <p className="text-base leading-relaxed text-muted-foreground md:text-xl">
+          <p className="text-lead leading-relaxed text-muted-foreground md:text-body-lg">
             Шесть шагов — и у праздника есть своя страница: программа, место, ответ гостя и вишлист, где подарки не повторяются.
           </p>
           <div className="hidden flex-col gap-3 sm:flex sm:flex-row">
@@ -150,15 +150,15 @@ function Hero() {
           </div>
         </div>
 
-        <nav aria-label="Шаги" className="flex flex-col gap-1 rounded-3xl border bg-card p-2 shadow-[0_40px_100px_rgba(0,0,0,0.12)] dark:shadow-[0_40px_100px_rgba(0,0,0,0.4)] md:p-6">
-          <div className="hidden items-center justify-between px-2.5 pb-3.5 text-[13px] font-bold md:flex">
+        <nav aria-label="Шаги" className="flex flex-col gap-1 rounded-sheet border bg-card p-2 shadow-overlay dark:shadow-overlay md:p-6">
+          <div className="hidden items-center justify-between px-2.5 pb-3.5 text-label font-bold md:flex">
             <span className="text-muted-foreground">Весь путь</span><span className="text-primary">≈ 15 минут</span>
           </div>
           {STEPS.map((s, i) => (
-            <a key={s.id} href={`#${s.id}`} className="group flex items-center gap-3.5 rounded-[14px] px-2.5 py-2.5 transition-colors hover:bg-muted md:py-3">
-              <span className="w-[30px] font-unbounded text-[13px] font-extrabold text-muted-foreground group-hover:text-primary md:w-[34px] md:text-[15px]">{String(i + 1).padStart(2, '0')}</span>
-              <span className="flex-1 text-[15px] font-bold md:text-base">{s.short}</span>
-              <span className="text-xs text-muted-foreground md:text-[13px]">{s.time}</span>
+            <a key={s.id} href={`#${s.id}`} className="group flex items-center gap-3.5 rounded-control-lg px-2.5 py-2.5 transition-colors hover:bg-muted md:py-3">
+              <span className="w-[30px] font-unbounded text-label font-extrabold text-muted-foreground group-hover:text-primary md:w-[34px] md:text-body">{String(i + 1).padStart(2, '0')}</span>
+              <span className="flex-1 text-body font-bold md:text-lead">{s.short}</span>
+              <span className="text-caption text-muted-foreground md:text-label">{s.time}</span>
             </a>
           ))}
         </nav>
@@ -173,16 +173,16 @@ function StepSection({ step, index }: { step: Step; index: number }) {
   const flip = index % 2 === 1
   return (
     <section id={step.id} className={cn('scroll-mt-20 py-14 md:py-24', index % 2 === 0 && 'border-y bg-muted/30')}>
-      <Container className={cn('grid items-center gap-8 lg:gap-[72px]', flip ? 'lg:grid-cols-[minmax(0,1fr)_460px]' : 'lg:grid-cols-[460px_minmax(0,1fr)]')}>
+      <Container className={cn('grid items-center gap-8 lg:gap-18', flip ? 'lg:grid-cols-[minmax(0,1fr)_460px]' : 'lg:grid-cols-[460px_minmax(0,1fr)]')}>
         <div className={cn('flex flex-col gap-4 md:gap-5', flip && 'lg:order-2')}>
           <div className="flex items-center gap-3 md:flex-col md:items-start md:gap-4">
-            <span className="bg-gradient-to-r from-[#17B6D6] to-[#7B5CF0] bg-clip-text font-unbounded text-[44px] font-extrabold leading-[0.9] tracking-[-0.05em] text-transparent md:text-[84px]">
+            <span className="bg-gradient-to-r from-brand-sky to-brand-violet bg-clip-text font-unbounded text-display-sm font-extrabold text-transparent md:text-display-md">
               {String(index + 1).padStart(2, '0')}
             </span>
-            <span className="text-xs font-bold text-muted-foreground md:text-[13px]"><b className="text-primary">Шаг {index + 1}</b> · {step.meta}</span>
+            <span className="text-caption font-bold text-muted-foreground md:text-label"><b className="text-primary">Шаг {index + 1}</b> · {step.meta}</span>
           </div>
-          <h2 className="font-unbounded text-[26px] font-extrabold leading-[1.06] tracking-[-0.04em] md:text-[44px]">{step.title}</h2>
-          <p className="text-[15px] leading-relaxed text-muted-foreground md:text-lg">{step.lead}</p>
+          <h2 className="font-unbounded text-title font-extrabold md:text-display-sm">{step.title}</h2>
+          <p className="text-body leading-relaxed text-muted-foreground md:text-lead">{step.lead}</p>
           <ul className="flex flex-col gap-3">{step.points.map(p => <CheckItem key={p}>{p}</CheckItem>)}</ul>
           {step.note}
         </div>
@@ -194,41 +194,41 @@ function StepSection({ step, index }: { step: Step; index: number }) {
 
 const GUEST_CARDS = [
   {
-    icon: Check, tone: 'bg-[#22C3E6]/15 text-[#0E9CBB] dark:text-[#22C3E6]',
+    icon: Check, tone: 'bg-tone-cyan/15 text-tone-cyan',
     title: 'Отвечает на приглашение', text: 'Придёт ли, с кем, сколько детей, что из меню. Свои вопросы тоже можно задать.',
-    demo: <div className="grid grid-cols-2 gap-2 text-[13px]"><span className="flex h-[38px] items-center justify-center rounded-[10px] bg-primary font-bold text-primary-foreground">Придём</span><span className="flex h-[38px] items-center justify-center rounded-[10px] border">Не сможем</span></div>,
+    demo: <div className="grid grid-cols-2 gap-2 text-label"><span className="flex h-control items-center justify-center rounded-control bg-primary font-bold text-primary-foreground">Придём</span><span className="flex h-control items-center justify-center rounded-control border">Не сможем</span></div>,
   },
   {
-    icon: Gift, tone: 'bg-[#7B5CF0]/15 text-[#6A4BE0] dark:text-[#A78BFA]',
+    icon: Gift, tone: 'bg-tone-violet/15 text-tone-violet',
     title: 'Бронирует подарок', text: 'Подписывается как хочет или анонимно. Другие гости видят «Дарит Аня» — и не купят то же самое.',
-    demo: <span className="flex h-[38px] items-center justify-center gap-1.5 rounded-[10px] border border-primary text-[13px] font-bold text-primary"><Check size={14} />Вы дарите · отменить</span>,
+    demo: <span className="flex h-control items-center justify-center gap-1.5 rounded-control border border-primary text-label font-bold text-primary"><Check size={14} />Вы дарите · отменить</span>,
   },
   {
-    icon: CalendarDays, tone: 'bg-[#F472B6]/15 text-[#D0438F] dark:text-[#F472B6]',
+    icon: CalendarDays, tone: 'bg-tone-pink/15 text-tone-pink',
     title: 'Не забывает про дату', text: 'Добавляет праздник в календарь одним нажатием и строит маршрут до места.',
-    demo: <div className="grid grid-cols-2 gap-2 text-[13px]"><span className="flex h-[38px] items-center justify-center rounded-[10px] border">В календарь</span><span className="flex h-[38px] items-center justify-center rounded-[10px] border">Маршрут</span></div>,
+    demo: <div className="grid grid-cols-2 gap-2 text-label"><span className="flex h-control items-center justify-center rounded-control border">В календарь</span><span className="flex h-control items-center justify-center rounded-control border">Маршрут</span></div>,
   },
 ]
 
 function GuestsSection() {
   return (
     <section className="border-y bg-muted/30 py-16 md:py-24">
-      <Container className="space-y-8 md:space-y-11">
+      <Container className="space-y-8 md:space-y-10">
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between md:gap-10">
           <div className="space-y-4">
             <Eyebrow>А что у гостей</Eyebrow>
-            <h2 className="font-unbounded text-[26px] font-extrabold leading-[1.06] tracking-[-0.04em] md:text-[48px]">Гостю — три нажатия</h2>
+            <h2 className="font-unbounded text-title font-extrabold md:text-display-sm">Гостю — три нажатия</h2>
           </div>
-          <p className="max-w-[440px] text-[15px] leading-relaxed text-muted-foreground md:text-lg">Открыл ссылку, ответил на приглашение, забронировал подарок. Без аккаунта, пароля и приложения.</p>
+          <p className="max-w-[440px] text-body leading-relaxed text-muted-foreground md:text-lead">Открыл ссылку, ответил на приглашение, забронировал подарок. Без аккаунта, пароля и приложения.</p>
         </div>
         <div className="grid gap-3 md:grid-cols-3 md:gap-5">
           {GUEST_CARDS.map(({ icon: Icon, tone, title, text, demo }) => (
-            <article key={title} className="flex gap-3 rounded-[18px] border bg-card p-4 md:flex-col md:gap-3.5 md:rounded-[20px] md:p-[26px]">
-              <span className={cn('flex h-9 w-9 shrink-0 items-center justify-center rounded-xl md:h-11 md:w-11 md:rounded-[14px]', tone)}><Icon size={20} aria-hidden /></span>
+            <article key={title} className="flex gap-3 rounded-card border bg-card p-4 md:flex-col md:gap-3.5 md:p-6">
+              <span className={cn('flex h-9 w-9 shrink-0 items-center justify-center rounded-control md:h-11 md:w-11 md:rounded-control-lg', tone)}><Icon size={20} aria-hidden /></span>
               <div className="flex flex-1 flex-col gap-1 md:gap-3.5">
-                <h3 className="text-[15px] font-extrabold md:text-[19px]">{title}</h3>
-                <p className="text-[13px] leading-relaxed text-muted-foreground md:text-[15px]">{text}</p>
-                <div className="hidden md:block" aria-hidden>{demo}</div>
+                <h3 className="text-body font-extrabold md:text-title-xs">{title}</h3>
+                <p className="text-label leading-relaxed text-muted-foreground md:text-body">{text}</p>
+                <div className={`hidden md:block ${EXAMPLE}`} aria-hidden>{demo}</div>
               </div>
             </article>
           ))}
@@ -244,19 +244,19 @@ function FaqSection() {
       <Container className="grid gap-8 lg:grid-cols-[380px_minmax(0,1fr)] lg:gap-20">
         <div className="flex flex-col gap-4">
           <Eyebrow>Вопросы</Eyebrow>
-          <h2 className="font-unbounded text-[26px] font-extrabold leading-[1.06] tracking-[-0.04em] md:text-[48px]">Частые вопросы</h2>
-          <p className="text-[15px] leading-relaxed text-muted-foreground md:text-lg">
+          <h2 className="font-unbounded text-title font-extrabold md:text-display-sm">Частые вопросы</h2>
+          <p className="text-body leading-relaxed text-muted-foreground md:text-lead">
             Не нашли ответ — загляните в <Link href="/blog" className="font-semibold text-primary hover:underline">блог</Link>, там разбираем праздники по шагам.
           </p>
         </div>
         <div className="flex flex-col gap-2.5">
           {FAQ.map((f, i) => (
-            <details key={f.q} open={i === 0} className="group rounded-[18px] border border-transparent border-b-border open:border-border open:bg-card">
-              <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 px-4 text-[15px] font-bold md:min-h-16 md:px-[22px] md:text-[17px] [&::-webkit-details-marker]:hidden">
+            <details key={f.q} open={i === 0} className="group rounded-card border border-transparent border-b-border open:border-border open:bg-card">
+              <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 px-4 text-body font-bold md:min-h-16 md:px-5 md:text-title-xs [&::-webkit-details-marker]:hidden">
                 {f.q}
                 <ChevronDown size={18} className="shrink-0 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden />
               </summary>
-              <p className="px-4 pb-4 text-sm leading-relaxed text-muted-foreground md:px-[22px] md:pb-5 md:text-[15px]">{f.a}</p>
+              <p className="px-4 pb-4 text-body-sm leading-relaxed text-muted-foreground md:px-5 md:pb-5 md:text-body">{f.a}</p>
             </details>
           ))}
         </div>

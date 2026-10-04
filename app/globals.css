@@ -64,6 +64,9 @@
     --warning: 36 90% 38%;
     --warning-foreground: 0 0% 100%;
     --overlay: 3 5 12;
+    --tone-cyan: 191 86% 39%;
+    --tone-violet: 253 72% 59%;
+    --tone-pink: 328 59% 54%;
     --shadow-alpha: 0.12;
     --shadow-alpha-strong: 0.18;
   }
@@ -74,6 +77,9 @@
     --success-foreground: 222 55% 10%;
     --warning: 43 100% 70%;
     --warning-foreground: 45 100% 9%;
+    --tone-cyan: 191 80% 52%;
+    --tone-violet: 255 92% 76%;
+    --tone-pink: 330 86% 70%;
     --shadow-alpha: 0.45;
     --shadow-alpha-strong: 0.5;
   }
