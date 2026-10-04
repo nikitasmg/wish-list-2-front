@@ -19,7 +19,7 @@ export function TextImageBlockView({ block }: { block: Block }) {
   return (
     <div className="grid md:grid-cols-2 gap-6 items-center">
       {(textContent || content) && (
-        <div className="pl-8 border-l-4 border-accent text-xl leading-relaxed">
+        <div className="pl-8 border-l-4 border-accent text-body-lg leading-relaxed">
           {textContent ? (
             <div
               className="prose prose-sm max-w-none"
@@ -31,7 +31,7 @@ export function TextImageBlockView({ block }: { block: Block }) {
         </div>
       )}
       {imageUrl && (
-        <div className="rounded-2xl overflow-hidden">
+        <div className="rounded-block overflow-hidden">
           <Image src={imageUrl} alt="block image" width={600} height={400} className="w-full object-cover" unoptimized />
         </div>
       )}

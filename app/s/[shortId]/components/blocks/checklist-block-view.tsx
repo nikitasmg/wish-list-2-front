@@ -11,12 +11,12 @@ export function ChecklistBlockView({ block }: { block: Block }) {
 
   return (
     <div className="space-y-3">
-      {title && <p className="text-base font-semibold text-foreground">{title}</p>}
+      {title && <p className="text-lead font-semibold text-foreground">{title}</p>}
       <ul className="space-y-2">
         {items.map((item, i) => (
           <li key={i} className="flex items-start gap-3">
-            <div className="mt-0.5 w-5 h-5 rounded border-2 border-muted-foreground/40 shrink-0" />
-            <span className="text-base text-foreground">{item.text}</span>
+            <div className="mt-0.5 w-5 h-5 rounded-xs border-2 border-muted-foreground/40 shrink-0" />
+            <span className="text-lead text-foreground">{item.text}</span>
           </li>
         ))}
       </ul>

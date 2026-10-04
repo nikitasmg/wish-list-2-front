@@ -27,16 +27,16 @@ export function SecretBlockView({ block }: { block: Pick<Block, 'revealAt' | 'se
   ]
 
   return (
-    <div className="flex h-full flex-col items-center justify-center gap-4 rounded-[22px] border bg-card p-8 text-center text-card-foreground">
+    <div className="flex h-full flex-col items-center justify-center gap-4 rounded-block border bg-card p-8 text-center text-card-foreground">
       <LockKeyhole className="text-muted-foreground" size={26} aria-hidden />
-      <p className="heading text-lg font-bold">{block.secretText || 'Секрет откроется на празднике'}</p>
+      <p className="heading text-title-xs font-bold">{block.secretText || 'Секрет откроется на празднике'}</p>
       {seconds === 0 && <Button onClick={() => window.location.reload()}>Открыть сюрприз</Button>}
       {seconds !== null && seconds > 0 && (
         <div className="flex gap-5">
           {parts.map(([value, forms]) => (
             <div key={forms[0]}>
-              <div className="heading text-2xl font-extrabold tabular-nums">{String(value).padStart(2, '0')}</div>
-              <div className="text-xs text-muted-foreground">{pluralRu(value, forms)}</div>
+              <div className="heading text-title font-extrabold tabular-nums">{String(value).padStart(2, '0')}</div>
+              <div className="text-caption text-muted-foreground">{pluralRu(value, forms)}</div>
             </div>
           ))}
         </div>

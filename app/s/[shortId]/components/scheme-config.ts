@@ -17,7 +17,7 @@ export type SchemeConfig = {
 const defaultConfig: SchemeConfig = {
   heroOverlay: 'from-background via-background/60 to-transparent',
   titleBold: true,
-  cardRounded: 'rounded-2xl',
+  cardRounded: 'rounded-block',
   decorativeEmoji: '🎁',
 }
 
@@ -30,14 +30,14 @@ const defaultConfig: SchemeConfig = {
 const schemeConfigs: Record<string, SchemeConfig> = {
   // тёмные
   space:     { ...defaultConfig, heroOverlay: 'from-background via-background/70 to-transparent', decorativeEmoji: '🌌' },
-  midnight:  { ...defaultConfig, heroOverlay: 'from-background via-background/70 to-transparent', decorativeEmoji: '🚀', cardRounded: 'rounded-2xl' },
-  graphite:  { ...defaultConfig, heroOverlay: 'from-background via-background/75 to-transparent', decorativeEmoji: '🥃', cardRounded: 'rounded-lg' },
-  lavender:  { ...defaultConfig, heroOverlay: 'from-background via-background/70 to-transparent', decorativeEmoji: '🪻', cardRounded: 'rounded-3xl' },
-  malachite: { ...defaultConfig, heroOverlay: 'from-background via-background/75 to-transparent', decorativeEmoji: '🌿', cardRounded: 'rounded-xl' },
+  midnight:  { ...defaultConfig, heroOverlay: 'from-background via-background/70 to-transparent', decorativeEmoji: '🚀', cardRounded: 'rounded-block' },
+  graphite:  { ...defaultConfig, heroOverlay: 'from-background via-background/75 to-transparent', decorativeEmoji: '🥃', cardRounded: 'rounded-block' },
+  lavender:  { ...defaultConfig, heroOverlay: 'from-background via-background/70 to-transparent', decorativeEmoji: '🪻', cardRounded: 'rounded-block' },
+  malachite: { ...defaultConfig, heroOverlay: 'from-background via-background/75 to-transparent', decorativeEmoji: '🌿', cardRounded: 'rounded-block' },
   lagoon:    { ...defaultConfig, heroOverlay: 'from-background via-background/70 to-transparent', decorativeEmoji: '🌊' },
   // светлые
-  powder:    { ...defaultConfig, decorativeEmoji: '🌸', cardRounded: 'rounded-3xl' },
-  linen:     { ...defaultConfig, decorativeEmoji: '🕊️', cardRounded: 'rounded-md' },
+  powder:    { ...defaultConfig, decorativeEmoji: '🌸', cardRounded: 'rounded-block' },
+  linen:     { ...defaultConfig, decorativeEmoji: '🕊️', cardRounded: 'rounded-block-sm' },
   pastel:    { ...defaultConfig, decorativeEmoji: '🎈' },
 }
 

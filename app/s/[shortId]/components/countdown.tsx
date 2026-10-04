@@ -42,10 +42,10 @@ export function Countdown({ target, live = false }: { target: string; live?: boo
         <React.Fragment key={part.forms[0]}>
           {index > 0 && <span className="w-px h-10 bg-border" aria-hidden />}
           <div className="text-center">
-            <div className="heading text-3xl sm:text-4xl font-extrabold tracking-tight tabular-nums">
+            <div className="heading text-title-lg font-extrabold tabular-nums">
               {String(part.value).padStart(2, '0')}
             </div>
-            <div className="text-xs text-muted-foreground">{pluralRu(part.value, part.forms)}</div>
+            <div className="text-caption text-muted-foreground">{pluralRu(part.value, part.forms)}</div>
           </div>
         </React.Fragment>
       ))}

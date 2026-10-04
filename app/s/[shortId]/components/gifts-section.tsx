@@ -66,8 +66,8 @@ export function GiftsSection({ wishlist, presents, owner = false, preview = fals
 
   return <section className="space-y-6">
     {block && <header className="space-y-2">
-      {block.caption && block.title && <p className="text-sm font-semibold text-primary">{block.caption}</p>}
-      <h2 className="heading text-4xl font-extrabold tracking-tight text-primary md:text-[56px] md:leading-none">{block.title || block.caption || 'Вишлист'}</h2>
+      {block.caption && block.title && <p className="text-body-sm font-semibold text-primary">{block.caption}</p>}
+      <h2 className="heading text-title-lg font-extrabold text-primary md:text-display md:leading-none">{block.title || block.caption || 'Вишлист'}</h2>
       <p className="text-muted-foreground">
         {presents.length} {pluralRu(presents.length, ['подарок', 'подарка', 'подарков'])} · бронь без регистрации. Организатор не узнает, кто что дарит.
       </p>
@@ -84,7 +84,7 @@ export function GiftsSection({ wishlist, presents, owner = false, preview = fals
               aria-pressed={filter === id}
               onClick={() => { setFilter(id); setExpanded(false) }}
               className={cn(
-                'h-9 rounded-full border px-4 text-sm font-semibold transition-colors',
+                'h-9 rounded-full border px-4 text-body-sm font-semibold transition-colors',
                 filter === id ? 'border-transparent bg-secondary text-secondary-foreground' : 'text-muted-foreground hover:text-foreground',
               )}
             >
@@ -95,9 +95,9 @@ export function GiftsSection({ wishlist, presents, owner = false, preview = fals
     )}
 
     {thanks && (
-      <div role="status" className="flex flex-wrap items-center gap-4 rounded-2xl border border-primary/40 bg-primary/10 p-5">
+      <div role="status" className="flex flex-wrap items-center gap-4 rounded-block border border-primary/40 bg-primary/10 p-5">
         <Gift className="shrink-0 text-primary" aria-hidden />
-        <p className="min-w-0 flex-1 text-sm">
+        <p className="min-w-0 flex-1 text-body-sm">
           <b>Ура! Вы дарите «{thanks}».</b> Организатор не узнает, кто это, — сюрприз сохранится. Передумаете — отмените бронь в карточке.
         </p>
         <Button size="sm" onClick={() => setThanks(null)}>Отлично</Button>
@@ -107,7 +107,7 @@ export function GiftsSection({ wishlist, presents, owner = false, preview = fals
     {!shown.length
       ? <p className="text-muted-foreground">{!presents.length ? 'Подарков пока нет' : 'В этой категории пока нет подарков'}</p>
       : layout === 'list'
-        ? <div className="divide-y rounded-2xl border bg-card">{shown.map(p => <GiftRow key={p.id} present={p} {...context} />)}</div>
+        ? <div className="divide-y rounded-block border bg-card">{shown.map(p => <GiftRow key={p.id} present={p} {...context} />)}</div>
         : layout === 'tiles'
           ? <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">{shown.map(p => <GiftTile key={p.id} present={p} {...context} />)}</div>
           : <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -125,7 +125,7 @@ export function GiftsSection({ wishlist, presents, owner = false, preview = fals
 }
 
 function MainBadge() {
-  return <span className="inline-flex items-center gap-1 rounded-full bg-primary px-2.5 py-0.5 text-xs font-bold text-primary-foreground"><Star size={11} fill="currentColor" aria-hidden />Главная мечта</span>
+  return <span className="inline-flex items-center gap-1 rounded-full bg-primary px-2.5 py-0.5 text-caption font-bold text-primary-foreground"><Star size={11} fill="currentColor" aria-hidden />Главная мечта</span>
 }
 
 /** Карточка: 2 строки названия, 3 строки описания, «Подробнее», если не влезло. */
@@ -137,7 +137,7 @@ function GiftCard({ present, large, ...context }: Context & { present: Present; 
   const cover = present.images?.[0] || present.cover
   return (
     <article className={cn(
-      'flex min-w-0 flex-col overflow-hidden rounded-[20px] border bg-card text-card-foreground',
+      'flex min-w-0 flex-col overflow-hidden rounded-block border bg-card text-card-foreground',
       large && 'sm:col-span-2',
       status === 'mine' && !context.hidden && 'border-primary/60',
     )}>
@@ -146,10 +146,10 @@ function GiftCard({ present, large, ...context }: Context & { present: Present; 
         {present.isMain && <span className="absolute left-3 top-3"><MainBadge /></span>}
       </button>
       <div className={cn('flex flex-1 flex-col gap-2 p-4', dim && 'opacity-60')}>
-        <h3 className={cn('heading line-clamp-2 font-bold leading-snug [overflow-wrap:anywhere]', large ? 'text-2xl' : 'text-lg')}>{present.title}</h3>
+        <h3 className={cn('heading line-clamp-2 font-bold leading-snug [overflow-wrap:anywhere]', large ? 'text-title' : 'text-title-xs')}>{present.title}</h3>
         {present.price != null && <p className={cn('font-bold', dim ? 'text-muted-foreground' : 'text-primary')}>{formatPrice(present.price)}</p>}
-        {present.description && <p className="line-clamp-3 whitespace-pre-line text-sm text-muted-foreground [overflow-wrap:anywhere]">{present.description}</p>}
-        {long && <button type="button" onClick={() => context.onDetails(present)} className="self-start text-sm font-semibold text-primary hover:underline">Подробнее</button>}
+        {present.description && <p className="line-clamp-3 whitespace-pre-line text-body-sm text-muted-foreground [overflow-wrap:anywhere]">{present.description}</p>}
+        {long && <button type="button" onClick={() => context.onDetails(present)} className="self-start text-body-sm font-semibold text-primary hover:underline">Подробнее</button>}
       </div>
       <div className="p-4 pt-0">
         <GiftAction present={present} reservation={reservation} context={context} />
@@ -164,13 +164,13 @@ function GiftRow({ present, ...context }: Context & { present: Present }) {
   const dim = !context.hidden && (reservation.state === 'taken' || reservation.state === 'gifted')
   return (
     <div className={cn('flex items-center gap-4 p-3 pr-4', dim && 'opacity-60')}>
-      <CardCover cover={present.images?.[0] || present.cover} letter={present.title} className="h-14 w-14 shrink-0 rounded-xl" />
+      <CardCover cover={present.images?.[0] || present.cover} letter={present.title} className="h-14 w-14 shrink-0 rounded-block" />
       <button type="button" onClick={() => context.onDetails(present)} className="min-w-0 flex-1 text-left">
         <div className="flex items-center gap-2">
           <span className="truncate font-semibold">{present.title}</span>
           {present.isMain && <Star size={13} className="shrink-0 text-primary" fill="currentColor" aria-label="Главная мечта" />}
         </div>
-        {present.description && <p className="truncate text-sm text-muted-foreground">{present.description}</p>}
+        {present.description && <p className="truncate text-body-sm text-muted-foreground">{present.description}</p>}
       </button>
       {present.price != null && <span className="shrink-0 font-bold text-primary">{formatPrice(present.price)}</span>}
       <div className="hidden shrink-0 sm:block"><GiftAction present={present} reservation={reservation} context={context} compact /></div>
@@ -184,14 +184,14 @@ function GiftTile({ present, ...context }: Context & { present: Present }) {
   const status = useReservation(present, context.wishlistId, context.isExample).state
   const dim = !context.hidden && (status === 'taken' || status === 'gifted')
   return (
-    <button type="button" onClick={() => context.onDetails(present)} className="group relative block overflow-hidden rounded-2xl border text-left">
+    <button type="button" onClick={() => context.onDetails(present)} className="group relative block overflow-hidden rounded-block border text-left">
       <CardCover cover={present.images?.[0] || present.cover} letter={present.title} className={cn('aspect-square h-auto rounded-none', dim && 'opacity-40')} />
       {present.description && <StickyNote size={15} className="absolute right-2.5 top-2.5 text-white drop-shadow" aria-label="Есть описание" />}
       {present.isMain && <span className="absolute left-2.5 top-2.5"><MainBadge /></span>}
       <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 to-transparent p-3 pt-10 text-white">
-        <span className="line-clamp-2 text-sm font-semibold opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">{present.title}</span>
-        <span className="text-sm font-bold">{formatPrice(present.price)}</span>
-        {!context.hidden && status !== 'free' && <span className="ml-2 text-xs opacity-80">· {status === 'gifted' ? 'подарено' : status === 'mine' ? 'вы дарите' : 'занято'}</span>}
+        <span className="line-clamp-2 text-body-sm font-semibold opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">{present.title}</span>
+        <span className="text-body-sm font-bold">{formatPrice(present.price)}</span>
+        {!context.hidden && status !== 'free' && <span className="ml-2 text-caption opacity-80">· {status === 'gifted' ? 'подарено' : status === 'mine' ? 'вы дарите' : 'занято'}</span>}
       </span>
     </button>
   )
@@ -221,23 +221,23 @@ function GiftAction({ present, reservation, context, compact }: {
   if (present.type === 'group' && state !== 'gifted') {
     return <div className="space-y-1.5">
       {!context.owner && <Button className="w-full" size={compact ? 'sm' : 'default'} loading={group.isPending} variant={group.joined ? 'outline' : 'default'} onClick={group.toggle}>{group.joined ? 'Не участвую' : 'Скинусь'}</Button>}
-      <p className="text-center text-xs text-muted-foreground">{group.count} {pluralRu(group.count, ['человек', 'человека', 'человек'])} уже {pluralRu(group.count, ['скидывается', 'скидываются', 'скидываются'])}</p>
+      <p className="text-center text-caption text-muted-foreground">{group.count} {pluralRu(group.count, ['человек', 'человека', 'человек'])} уже {pluralRu(group.count, ['скидывается', 'скидываются', 'скидываются'])}</p>
     </div>
   }
   if (state === 'gifted') {
-    return <p className="flex items-center gap-1.5 text-sm text-muted-foreground"><Gift size={15} aria-hidden />Уже подарено</p>
+    return <p className="flex items-center gap-1.5 text-body-sm text-muted-foreground"><Gift size={15} aria-hidden />Уже подарено</p>
   }
   if (context.owner) {
-    return <p className="text-sm text-muted-foreground">{state === 'free' ? 'Свободен' : 'Занят'}</p>
+    return <p className="text-body-sm text-muted-foreground">{state === 'free' ? 'Свободен' : 'Занят'}</p>
   }
   if (state === 'mine') {
-    return <div className="flex h-10 items-center justify-between gap-2 rounded-xl border border-primary/50 px-3">
-      <span className="flex items-center gap-1.5 text-sm font-semibold text-primary"><Check size={15} aria-hidden />Вы дарите</span>
-      <button type="button" onClick={reservation.release} disabled={reservation.isPending} className="text-xs font-semibold text-muted-foreground hover:text-foreground disabled:opacity-50">Отменить</button>
+    return <div className="flex h-10 items-center justify-between gap-2 rounded-block border border-primary/50 px-3">
+      <span className="flex items-center gap-1.5 text-body-sm font-semibold text-primary"><Check size={15} aria-hidden />Вы дарите</span>
+      <button type="button" onClick={reservation.release} disabled={reservation.isPending} className="text-caption font-semibold text-muted-foreground hover:text-foreground disabled:opacity-50">Отменить</button>
     </div>
   }
   if (state === 'taken') {
-    return <p className="flex items-center gap-1.5 text-sm text-muted-foreground"><Lock size={14} aria-hidden />{takenLabel(present)}</p>
+    return <p className="flex items-center gap-1.5 text-body-sm text-muted-foreground"><Lock size={14} aria-hidden />{takenLabel(present)}</p>
   }
   if (editing) {
     return <form
@@ -252,11 +252,11 @@ function GiftAction({ present, reservation, context, compact }: {
         })
       }}
     >
-      <label className="block space-y-1 text-sm">
+      <label className="block space-y-1 text-body-sm">
         <span className="font-semibold">Как вас подписать?</span>
         <Input autoFocus value={name} onChange={e => setName(e.target.value)} placeholder="Имя" maxLength={60} disabled={anonymous} />
       </label>
-      <label className="flex items-center gap-2 text-sm text-muted-foreground">
+      <label className="flex items-center gap-2 text-body-sm text-muted-foreground">
         <input type="checkbox" checked={anonymous} onChange={e => setAnonymous(e.target.checked)} className="h-4 w-4 accent-[hsl(var(--primary))]" />
         Анонимно
       </label>
@@ -277,7 +277,7 @@ function GiftAction({ present, reservation, context, compact }: {
 }
 
 function ShopLink({ link }: { link: string }) {
-  return <a href={link} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline">
+  return <a href={link} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-body-sm font-semibold text-primary hover:underline">
     {shopName(link)} <ExternalLink size={13} aria-hidden />
   </a>
 }
@@ -299,15 +299,15 @@ function GiftDetailBody({ present, context }: { present: Present; context: Conte
   const images = present.images?.length ? present.images : present.cover ? [present.cover] : []
   return (
     <div className="space-y-5 pt-6 text-foreground">
-      <CardCover cover={images[0] ?? ''} letter={present.title} title={present.title} className="h-60 rounded-2xl" />
+      <CardCover cover={images[0] ?? ''} letter={present.title} title={present.title} className="h-60 rounded-block" />
       {present.isMain && <MainBadge />}
-      <SheetTitle className="heading text-2xl font-extrabold leading-snug [overflow-wrap:anywhere]">{present.title}</SheetTitle>
-      {present.price != null && <p className="text-xl font-bold text-primary">{formatPrice(present.price)}</p>}
+      <SheetTitle className="heading text-title font-extrabold [overflow-wrap:anywhere]">{present.title}</SheetTitle>
+      {present.price != null && <p className="text-title-sm font-bold text-primary">{formatPrice(present.price)}</p>}
       {present.description && <div className="space-y-3 whitespace-pre-wrap leading-relaxed text-muted-foreground [overflow-wrap:anywhere]">{present.description}</div>}
       {links.length > 0 && (
         <div className="flex flex-wrap gap-2">
           {links.map(link => (
-            <a key={link} href={link} target="_blank" rel="noopener noreferrer" className="inline-flex h-9 items-center gap-1.5 rounded-full border px-3.5 text-sm hover:border-primary">
+            <a key={link} href={link} target="_blank" rel="noopener noreferrer" className="inline-flex h-9 items-center gap-1.5 rounded-full border px-3.5 text-body-sm hover:border-primary">
               {shopName(link)} <ExternalLink size={13} aria-hidden />
             </a>
           ))}

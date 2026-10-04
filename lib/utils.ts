@@ -10,7 +10,7 @@ const CONTROLS = ['control-sm', 'control', 'control-lg', 'control-xl']
 const twMerge = extendTailwindMerge({
   extend: {
     classGroups: {
-      'font-size': [{ text: ['micro', 'eyebrow', 'caption', 'label', 'body-sm', 'body', 'lead', 'title-xs', 'title-sm', 'title', 'title-lg', 'display-sm', 'display', 'display-xl'] }],
+      'font-size': [{ text: ['micro', 'eyebrow', 'caption', 'label', 'body-sm', 'body', 'body-lg', 'lead', 'title-xs', 'title-sm', 'title', 'title-lg', 'display-sm', 'display', 'display-xl'] }],
       rounded: [{ rounded: RADII }],
       'rounded-t': [{ 'rounded-t': RADII }],
       'rounded-b': [{ 'rounded-b': RADII }],

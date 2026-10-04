@@ -44,12 +44,12 @@ export function TimingBlockView({ block }: { block: Block }) {
   })
 
   return (
-    <div className="flex flex-col gap-4 bg-card p-6 rounded-2xl shadow-md max-w-md">
+    <div className="flex flex-col gap-4 bg-card p-6 rounded-block shadow-float max-w-md">
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center shrink-0">
+        <div className="w-10 h-10 bg-primary/10 rounded-block flex items-center justify-center shrink-0">
           <TimerIcon className="w-5 h-5 text-primary" />
         </div>
-        <p className="text-sm text-muted-foreground">{formattedDate}</p>
+        <p className="text-body-sm text-muted-foreground">{formattedDate}</p>
       </div>
 
       {!past && timeLeft && (
@@ -60,16 +60,16 @@ export function TimingBlockView({ block }: { block: Block }) {
             { unit: 'minutes', value: timeLeft.minutes, label: pluralizeRu(timeLeft.minutes, ['минута', 'минуты', 'минут']) },
             { unit: 'seconds', value: timeLeft.seconds, label: pluralizeRu(timeLeft.seconds, ['секунда', 'секунды', 'секунд']) },
           ].map(({ unit, value, label }) => (
-            <div key={unit} className="bg-primary/10 rounded-xl px-4 py-2 text-center min-w-[60px]">
-              <p className="text-2xl font-bold text-primary tabular-nums">{String(value).padStart(2, '0')}</p>
-              <p className="text-xs text-muted-foreground uppercase tracking-wide">{label}</p>
+            <div key={unit} className="bg-primary/10 rounded-block px-4 py-2 text-center min-w-[60px]">
+              <p className="text-title font-bold text-primary tabular-nums">{String(value).padStart(2, '0')}</p>
+              <p className="text-caption text-muted-foreground uppercase tracking-wide">{label}</p>
             </div>
           ))}
         </div>
       )}
 
       {past && (
-        <p className="text-lg font-semibold text-muted-foreground">Уже прошло</p>
+        <p className="text-title-xs font-semibold text-muted-foreground">Уже прошло</p>
       )}
     </div>
   )

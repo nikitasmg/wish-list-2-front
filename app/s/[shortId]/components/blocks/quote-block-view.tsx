@@ -8,10 +8,10 @@ export function QuoteBlockView({ block }: { block: Block }) {
   if (!text) return null
   return (
     <figure className="mx-auto max-w-3xl space-y-4 text-center">
-      <blockquote className="heading text-2xl font-semibold leading-snug md:text-[32px]">
+      <blockquote className="heading text-title font-semibold md:text-title-lg">
         «{text.replace(/^[«"]|[»"]$/g, '')}»
       </blockquote>
-      {author && <figcaption className="text-sm text-muted-foreground">— {author}</figcaption>}
+      {author && <figcaption className="text-body-sm text-muted-foreground">— {author}</figcaption>}
     </figure>
   )
 }

@@ -11,7 +11,7 @@ export function GalleryBlockView({ block }: { block: Block }) {
     <div className="space-y-3">
       <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
         {images.map((src, i) => (
-          <div key={i} className="aspect-square overflow-hidden rounded-lg">
+          <div key={i} className="aspect-square overflow-hidden rounded-block">
             <img
               src={src}
               alt=""
@@ -21,7 +21,7 @@ export function GalleryBlockView({ block }: { block: Block }) {
         ))}
       </div>
       {caption && (
-        <p className="text-sm text-muted-foreground text-center">{caption}</p>
+        <p className="text-body-sm text-muted-foreground text-center">{caption}</p>
       )}
     </div>
   )

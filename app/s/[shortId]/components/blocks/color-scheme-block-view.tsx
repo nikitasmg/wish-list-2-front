@@ -19,23 +19,23 @@ export function ColorSchemeBlockView({ block }: { block: Block }) {
   return <div className="space-y-4">
     {view === 'stripes' ? (
       <div className="space-y-2">
-        <div className="flex h-14 overflow-hidden rounded-xl border">
+        <div className="flex h-14 overflow-hidden rounded-block border">
           {colors.map((c, i) => <span key={i} className="flex-1" style={{ background: c.hex }} />)}
         </div>
-        {showNames && <div className="flex text-xs text-muted-foreground">{colors.map((c, i) => <span key={i} className="flex-1 truncate text-center">{c.name}</span>)}</div>}
+        {showNames && <div className="flex text-caption text-muted-foreground">{colors.map((c, i) => <span key={i} className="flex-1 truncate text-center">{c.name}</span>)}</div>}
       </div>
     ) : (
       <div className="flex flex-wrap gap-4">
         {colors.map((c, i) => <div key={i} className="flex flex-col items-center gap-1.5">
           <span
-            className={cn('block border shadow-sm', view === 'arches' ? 'h-16 w-12 rounded-t-full' : 'h-12 w-12 rounded-full')}
+            className={cn('block border', view === 'arches' ? 'h-16 w-12 rounded-t-full' : 'h-12 w-12 rounded-full')}
             style={{ background: c.hex }}
             title={c.name || undefined}
           />
-          {showNames && c.name && <span className="text-xs">{c.name}</span>}
+          {showNames && c.name && <span className="text-caption">{c.name}</span>}
         </div>)}
       </div>
     )}
-    {note && <p className="text-sm text-muted-foreground">{note}</p>}
+    {note && <p className="text-body-sm text-muted-foreground">{note}</p>}
   </div>
 }

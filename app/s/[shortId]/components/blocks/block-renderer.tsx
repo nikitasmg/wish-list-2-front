@@ -34,7 +34,7 @@ type Props = {
   isExample?: boolean
 }
 
-const GAP: Record<string, string> = { s: 'md:gap-x-4', m: 'md:gap-x-7', l: 'md:gap-x-11', '': 'md:gap-x-7' }
+const GAP: Record<string, string> = { s: 'md:gap-x-4', m: 'md:gap-x-7', l: 'md:gap-x-12', '': 'md:gap-x-7' }
 
 /**
  * Страница из рядов. На компьютере ряд — сетка с пропорциями колонок, на
@@ -89,8 +89,8 @@ export function BlockHeader({ block, className }: { block: Block; className?: st
   if (!block.caption && !block.title) return null
   return (
     <header className={cn('space-y-1.5', className)}>
-      {block.caption && <p className="text-sm font-semibold text-primary">{block.caption}</p>}
-      {block.title && <h2 className="heading text-[26px] font-extrabold leading-tight tracking-tight md:text-[32px]">{block.title}</h2>}
+      {block.caption && <p className="text-body-sm font-semibold text-primary">{block.caption}</p>}
+      {block.title && <h2 className="heading text-title font-extrabold md:text-title-lg">{block.title}</h2>}
     </header>
   )
 }
@@ -103,7 +103,7 @@ export function BlockContent({ block, wishlist, presents = [], preview, owner, i
   // Шапку «Вишлиста» рисует сам GiftsSection: у него рядом с заголовком счётчик.
   const ownHeader = block.type === 'cover' || block.type === 'wishlist'
   return (
-    <div className={cn('min-w-0 space-y-5', card && 'h-full rounded-[22px] border bg-card p-6 text-card-foreground md:p-8')}>
+    <div className={cn('min-w-0 space-y-5', card && 'h-full rounded-block border bg-card p-6 text-card-foreground md:p-8')}>
       {!ownHeader && <BlockHeader block={block} />}
       {block.type === 'cover' && <CoverBlockView block={block} wishlist={wishlist} preview={preview} />}
       {block.type === 'list' && <ListBlockView block={block} />}
@@ -111,9 +111,9 @@ export function BlockContent({ block, wishlist, presents = [], preview, owner, i
       {/* id="gifts" — цель кнопки «Смотреть подарки» из обложки */}
       {block.type === 'wishlist' && wishlist && <div id="gifts" className="scroll-mt-6"><GiftsSection wishlist={wishlist} presents={presents} owner={owner} preview={preview} view={block.view} isExample={isExample} block={block} /></div>}
       {interactive && (preview || !wishlist
-        ? <div className="rounded-xl border border-dashed p-6 text-muted-foreground">{BLOCK_CATALOG.find(item => item.type === block.type)?.label}. Ответы гостей доступны на опубликованной странице.</div>
+        ? <div className="rounded-block border border-dashed p-6 text-muted-foreground">{BLOCK_CATALOG.find(item => item.type === block.type)?.label}. Ответы гостей доступны на опубликованной странице.</div>
         : <GuestBlockView block={block} wishlistId={wishlist.id} owner={owner} />)}
-      {!known && <div className="rounded-xl border border-dashed p-5 text-sm text-muted-foreground">Блок из другой версии. Владелец может заменить его в редакторе.</div>}
+      {!known && <div className="rounded-block border border-dashed p-5 text-body-sm text-muted-foreground">Блок из другой версии. Владелец может заменить его в редакторе.</div>}
       {block.type === 'text' && <TextBlockView block={block} />}
       {block.type === 'text_image' && <TextImageBlockView block={block} />}
       {block.type === 'image' && <ImageBlockView block={block} />}

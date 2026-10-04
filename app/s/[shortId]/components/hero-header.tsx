@@ -37,7 +37,7 @@ export function HeroHeader({ wishlist, config }: Props) {
       <div className="relative mt-auto px-6 md:px-12 pb-16 pt-32 space-y-4 max-w-4xl">
         {/* Title */}
         <h1 className={cn(
-          'text-5xl md:text-7xl leading-[0.95] text-foreground',
+          'text-display-sm md:text-display text-foreground',
           config.titleBold ? 'font-black' : 'font-bold',
         )}>
           {wishlist.title}

@@ -20,7 +20,7 @@ export function LocationBlockView({ block }: { block: Block }) {
       {points.map((point, i) => <div key={i} className="flex gap-3">
         {points.length > 1 && <MapPin size={20} className="mt-1 shrink-0 text-primary" aria-hidden />}
         <div className="space-y-1">
-          <p className="heading text-xl font-bold">{point.name || point.address}</p>
+          <p className="heading text-title-sm font-bold">{point.name || point.address}</p>
           {point.name && point.address && <p className="text-muted-foreground">{point.address}</p>}
         </div>
       </div>)}

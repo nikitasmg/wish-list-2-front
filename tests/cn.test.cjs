@@ -10,6 +10,7 @@ test('кегль-токен и цвет текста не вытесняют д�
 
 test('два кегля — побеждает последний', () => {
   assert.equal(cn('text-body', 'text-label'), 'text-label')
+  assert.equal(cn('text-body-lg', 'text-primary'), 'text-body-lg text-primary')
   assert.equal(cn('text-sm', 'text-title'), 'text-title')
 })
 

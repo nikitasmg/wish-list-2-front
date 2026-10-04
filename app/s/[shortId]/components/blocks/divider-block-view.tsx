@@ -20,7 +20,7 @@ export function DividerBlockView({ block }: { block: Block }) {
 
   if (style === 'stars') {
     return (
-      <div className="flex justify-center gap-3 py-2 text-muted-foreground/60 text-sm">
+      <div className="flex justify-center gap-3 py-2 text-muted-foreground/60 text-body-sm">
         ✦ ✦ ✦
       </div>
     )

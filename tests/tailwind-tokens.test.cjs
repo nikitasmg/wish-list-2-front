@@ -21,6 +21,7 @@ const rule = (out, cls) => {
 test('смысловые токены порождают CSS', async () => {
   const want = {
     'text-label': 'font-size: 0.8125rem',
+    'text-body-lg': 'font-size: 1.25rem',
     'text-title': 'letter-spacing: -0.02em',
     'text-eyebrow': 'letter-spacing: 0.08em',
     'rounded-control': 'border-radius: 10px',

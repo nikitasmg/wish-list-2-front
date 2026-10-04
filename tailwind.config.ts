@@ -96,6 +96,8 @@ export default {
         'body-sm':    [ '0.875rem',  { lineHeight: '1.5' } ],
         'body':       [ '0.9375rem', { lineHeight: '1.5' } ],
         'lead':       [ '1rem',      { lineHeight: '1.5' } ],
+        // Крупный абзац — блок «Текст» размера «Крупный», цитата. Не заголовок: без веса.
+        'body-lg':    [ '1.25rem',   { lineHeight: '1.5' } ],
         'title-xs':   [ '1.0625rem', { lineHeight: '1.3',  letterSpacing: '-0.01em',  fontWeight: '700' } ],
         'title-sm':   [ '1.25rem',   { lineHeight: '1.25', letterSpacing: '-0.02em',  fontWeight: '800' } ],
         'title':      [ '1.5rem',    { lineHeight: '1.2',  letterSpacing: '-0.02em',  fontWeight: '800' } ],

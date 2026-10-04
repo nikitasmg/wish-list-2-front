@@ -32,7 +32,7 @@ export function VideoBlockView({ block }: { block: Block }) {
 
   if (!embedUrl) {
     return (
-      <div className="rounded-lg border border-border p-4 text-sm text-muted-foreground text-center">
+      <div className="rounded-block border border-border p-4 text-body-sm text-muted-foreground text-center">
         Неподдерживаемая ссылка на видео
       </div>
     )
@@ -40,7 +40,7 @@ export function VideoBlockView({ block }: { block: Block }) {
 
   return (
     <div className="space-y-2">
-      <div className="relative w-full aspect-video rounded-lg overflow-hidden bg-muted">
+      <div className="relative w-full aspect-video rounded-block overflow-hidden bg-muted">
         <iframe
           src={embedUrl}
           className="absolute inset-0 w-full h-full"
@@ -49,7 +49,7 @@ export function VideoBlockView({ block }: { block: Block }) {
         />
       </div>
       {caption && (
-        <p className="text-sm text-muted-foreground text-center">{caption}</p>
+        <p className="text-body-sm text-muted-foreground text-center">{caption}</p>
       )}
     </div>
   )

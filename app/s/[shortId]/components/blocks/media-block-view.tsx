@@ -14,14 +14,14 @@ export function MediaBlockView({ block }: { block: Block }) {
   const visible = block.view === 'row' ? images.slice(0, 3) : images.slice(0, 1)
   // Высоту фото задаёт ручка на холсте; без неё одно фото — 16:9, ряд — 4:5.
   const ratio = aspectRatio(block.data.aspect, block.view === 'row' ? '4 / 5' : '16 / 9')
-  if (!visible.length) return <CardCover cover="" className="w-full rounded-2xl" style={{ aspectRatio: ratio }} />
+  if (!visible.length) return <CardCover cover="" className="w-full rounded-block" style={{ aspectRatio: ratio }} />
   return <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${visible.length}, minmax(0, 1fr))` }}>
     {visible.map((url, i) => <figure key={i} className="min-w-0">
       {url
-        ? <CardCover cover={url} title={captions[i] ?? ''} className="h-auto w-full rounded-2xl" style={{ aspectRatio: ratio }} />
+        ? <CardCover cover={url} title={captions[i] ?? ''} className="h-auto w-full rounded-block" style={{ aspectRatio: ratio }} />
         // Пустое место под фото из шаблона — ещё не загружено, а не сломано.
-        : <div className="flex w-full items-center justify-center rounded-2xl bg-muted text-muted-foreground" style={{ aspectRatio: ratio }}><ImageIcon size={28} strokeWidth={1.4} aria-hidden /></div>}
-      {captions[i] && <figcaption className="mt-2 text-sm text-muted-foreground">{captions[i]}</figcaption>}
+        : <div className="flex w-full items-center justify-center rounded-block bg-muted text-muted-foreground" style={{ aspectRatio: ratio }}><ImageIcon size={28} strokeWidth={1.4} aria-hidden /></div>}
+      {captions[i] && <figcaption className="mt-2 text-body-sm text-muted-foreground">{captions[i]}</figcaption>}
     </figure>)}
   </div>
 }

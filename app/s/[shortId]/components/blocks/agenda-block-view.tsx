@@ -12,17 +12,17 @@ export function AgendaBlockView({ block }: { block: Block }) {
   return (
     <div className="space-y-4">
       {title && (
-        <h3 className="text-xl font-semibold">{title}</h3>
+        <h3 className="text-title-sm font-semibold">{title}</h3>
       )}
       <div className="space-y-3">
       {items.map((item, i) => (
         <div key={i} className="flex gap-4 items-baseline">
-          <span className="text-sm font-mono text-muted-foreground shrink-0 w-16 text-right">
+          <span className="text-body-sm font-mono text-muted-foreground shrink-0 w-16 text-right">
             {item.time}
           </span>
           <div className="flex items-baseline gap-3 flex-1">
             <div className="w-2 h-2 rounded-full bg-accent shrink-0 mt-1.5" />
-            <span className="text-base text-foreground">{item.text}</span>
+            <span className="text-lead text-foreground">{item.text}</span>
           </div>
         </div>
       ))}

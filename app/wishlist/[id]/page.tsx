@@ -36,7 +36,7 @@ export default function Page() {
       <div className='flex flex-col-reverse md:flex-row gap-5'>
         {wishlist.description && (
           <Card>
-            <CardContent className="text-title-sm whitespace-pre-wrap mb-5 py-2 px-5">
+            <CardContent className="text-body-lg whitespace-pre-wrap mb-5 py-2 px-5">
               {wishlist.description}
             </CardContent>
           </Card>
