@@ -15,10 +15,10 @@ export const Logo = ({ className }: { className?: string }) => {
       aria-label="Просто намекни — на главную"
       className={`flex flex-col leading-none text-foreground ${className ?? ''}`}
     >
-      <span className="text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
+      <span className="text-micro uppercase tracking-wider text-muted-foreground">
         просто
       </span>
-      <span className="text-[19px] font-extrabold tracking-tight">
+      <span className="text-title-xs font-extrabold">
         намекни<span className="text-primary">;)</span>
       </span>
     </Link>

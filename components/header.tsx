@@ -25,7 +25,7 @@ export const Header = () => {
 
   return (
     <header
-      className={`sticky top-0 z-50 flex justify-between py-2 items-center px-2 md:px-5 transition-all duration-200 ${
+      className={`sticky top-0 z-50 flex justify-between py-2 items-center px-2 md:px-5 transition-[background-color,border-color] duration-base ${
         isScrolled
           ? 'backdrop-blur-md bg-background/80 border-b border-border/50'
           : ''

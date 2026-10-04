@@ -52,7 +52,7 @@ export function MultiImageUpload({ label = 'Картинки', value, onChange, 
       {(value.length > 0 || pendingCount > 0) && (
         <div className="grid grid-cols-3 gap-2">
           {value.map((url, i) => (
-            <div key={url + i} className="relative h-24 rounded-lg overflow-hidden border">
+            <div key={url + i} className="relative h-24 rounded-control-lg overflow-hidden border">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={url} alt="preview" className="w-full h-full object-cover" />
               <button
@@ -66,17 +66,17 @@ export function MultiImageUpload({ label = 'Картинки', value, onChange, 
             </div>
           ))}
           {Array.from({ length: pendingCount }).map((_, i) => (
-            <div key={`skeleton-${i}`} className="relative h-24 rounded-lg overflow-hidden border bg-muted animate-pulse">
+            <div key={`skeleton-${i}`} className="relative h-24 rounded-control-lg overflow-hidden border bg-muted animate-pulse">
               <Loader2 className="absolute inset-0 m-auto text-muted-foreground animate-spin" size={20} />
             </div>
           ))}
         </div>
       )}
 
-      {error && <p className="text-xs text-destructive">{error}</p>}
+      {error && <p className="text-caption text-destructive">{error}</p>}
 
       <div
-        className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
+        className={`border-2 border-dashed rounded-control-lg p-6 text-center transition-colors ${
           isUploading ? 'border-border opacity-50 cursor-not-allowed' : 'border-border cursor-pointer hover:border-primary'
         }`}
         onClick={() => { if (!isUploading) inputRef.current?.click() }}
@@ -84,10 +84,10 @@ export function MultiImageUpload({ label = 'Картинки', value, onChange, 
         {isUploading
           ? <Loader2 className="mx-auto mb-2 text-muted-foreground animate-spin" size={24} />
           : <UploadIcon className="mx-auto mb-2 text-muted-foreground" size={24} />}
-        <p className="text-sm text-muted-foreground">
+        <p className="text-body-sm text-muted-foreground">
           {isUploading ? 'Загружается...' : 'Перетащи или нажми — можно несколько'}
         </p>
-        <p className="text-xs text-muted-foreground mt-1">JPG, PNG до 10MB</p>
+        <p className="text-caption text-muted-foreground mt-1">JPG, PNG до 10MB</p>
         <input
           ref={inputRef}
           type="file"

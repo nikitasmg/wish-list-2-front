@@ -26,13 +26,13 @@ export function CookieBanner() {
       className={cn(
         "fixed bottom-0 left-0 right-0 z-50",
         "border-t border-border bg-background/95 backdrop-blur-sm",
-        "px-4 py-3 shadow-[0_-4px_12px_hsl(var(--border)/0.3)]",
-        "animate-in slide-in-from-bottom duration-300"
+        "px-4 py-3",
+        "animate-in slide-in-from-bottom duration-slow"
       )}
     >
       <div className="mx-auto flex max-w-7xl items-center gap-4">
-        <span className="text-lg">🍪</span>
-        <p className="flex-1 text-sm text-muted-foreground">
+        <span className="text-lead">🍪</span>
+        <p className="flex-1 text-body-sm text-muted-foreground">
           Мы используем куки для аналитики и улучшения работы сайта. Продолжая пользоваться сайтом, вы соглашаетесь с этим
           и с{' '}
           <Link href="/privacy-policy" className="underline hover:text-primary">

@@ -112,7 +112,7 @@ export function ImageUpload({ label = 'Обложка', onChange, onUploadingCha
 
       {state.kind === 'done' && preview ? (
         <div className="space-y-2">
-          <div className="relative h-40 overflow-hidden rounded-xl border">
+          <div className="relative h-40 overflow-hidden rounded-control-lg border">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={preview} alt="" className="h-full w-full object-cover" />
           </div>
@@ -123,14 +123,14 @@ export function ImageUpload({ label = 'Обложка', onChange, onUploadingCha
           </div>
         </div>
       ) : state.kind === 'uploading' ? (
-        <div className="relative flex h-40 flex-col items-center justify-center gap-2 overflow-hidden rounded-xl border bg-muted/40 p-4 text-center">
+        <div className="relative flex h-40 flex-col items-center justify-center gap-2 overflow-hidden rounded-control-lg border bg-muted/40 p-4 text-center">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           {preview && <img src={preview} alt="" className="absolute inset-0 h-full w-full object-cover opacity-30 blur-sm" />}
-          <span className="relative text-2xl font-extrabold tabular-nums">{Math.round(state.loaded / Math.max(1, state.total) * 100)}%</span>
+          <span className="relative text-title font-extrabold tabular-nums">{Math.round(state.loaded / Math.max(1, state.total) * 100)}%</span>
           <span className="relative h-1.5 w-40 overflow-hidden rounded-full bg-border">
             <span className="block h-full bg-primary transition-[width]" style={{ width: `${state.loaded / Math.max(1, state.total) * 100}%` }} />
           </span>
-          <span className="relative text-xs text-muted-foreground">Загрузка · {formatMb(state.loaded)} из {formatMb(state.total)} МБ</span>
+          <span className="relative text-caption text-muted-foreground">Загрузка · {formatMb(state.loaded)} из {formatMb(state.total)} МБ</span>
           <Button type="button" size="sm" variant="ghost" className="relative" onClick={() => abort.current?.abort()}>Отменить</Button>
         </div>
       ) : (
@@ -145,24 +145,24 @@ export function ImageUpload({ label = 'Обложка', onChange, onUploadingCha
           onDrop={e => { e.preventDefault(); setDragging(false); const file = e.dataTransfer.files?.[0]; if (file) void take(file) }}
           onPaste={e => { const file = Array.from(e.clipboardData.files).find(f => f.type.startsWith('image/')); if (file) { e.preventDefault(); void take(file) } }}
           className={cn(
-            'flex h-40 cursor-pointer flex-col items-center justify-center gap-1.5 rounded-xl border-2 border-dashed p-4 text-center transition-colors',
+            'flex h-40 cursor-pointer flex-col items-center justify-center gap-1.5 rounded-control-lg border-2 border-dashed p-4 text-center transition-colors',
             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
             dragging ? 'border-primary bg-primary/5' : state.kind === 'error' ? 'border-destructive/60' : 'hover:border-primary/60',
           )}
         >
           {dragging ? (
-            <><UploadIcon size={22} className="text-primary" aria-hidden /><span className="text-sm font-semibold">Отпустите файл</span></>
+            <><UploadIcon size={22} className="text-primary" aria-hidden /><span className="text-body-sm font-semibold">Отпустите файл</span></>
           ) : state.kind === 'error' ? (
             <>
-              <span className="text-sm font-semibold text-destructive">{state.message}</span>
-              {state.name && <span className="text-xs text-muted-foreground">{state.name}{state.size ? ` · ${formatMb(state.size)} МБ` : ''}</span>}
-              <span className="text-xs font-semibold text-primary">Выбрать другой</span>
+              <span className="text-body-sm font-semibold text-destructive">{state.message}</span>
+              {state.name && <span className="text-caption text-muted-foreground">{state.name}{state.size ? ` · ${formatMb(state.size)} МБ` : ''}</span>}
+              <span className="text-caption font-semibold text-primary">Выбрать другой</span>
             </>
           ) : (
             <>
               <ImageIcon size={22} className="text-muted-foreground" aria-hidden />
-              <span className="text-sm"><b>Выберите файл</b> или перетащите сюда</span>
-              <span className="text-xs text-muted-foreground">JPG, PNG, WEBP, HEIC до 10 МБ · можно Ctrl + V</span>
+              <span className="text-body-sm"><b>Выберите файл</b> или перетащите сюда</span>
+              <span className="text-caption text-muted-foreground">JPG, PNG, WEBP, HEIC до 10 МБ · можно Ctrl + V</span>
             </>
           )}
         </div>
@@ -187,7 +187,7 @@ export function ImageUpload({ label = 'Обложка', onChange, onUploadingCha
               else clear()
             }}
           />
-        : <button type="button" onClick={() => setByLink(true)} className="text-xs text-muted-foreground hover:text-foreground">или вставить ссылкой</button>)}
+        : <button type="button" onClick={() => setByLink(true)} className="text-caption text-muted-foreground hover:text-foreground">или вставить ссылкой</button>)}
 
       {cropSrc && (
         <CropDialog
@@ -263,7 +263,7 @@ function CropDialog({ src, onClose, onDone }: { src: string; onClose: () => void
       <DialogContent className="max-w-[420px] space-y-4">
         <DialogTitle>Обрезка</DialogTitle>
         <div
-          className="relative mx-auto touch-none overflow-hidden rounded-xl bg-muted"
+          className="relative mx-auto touch-none overflow-hidden rounded-control-lg bg-muted"
           style={{ width: frame, height: frame / aspect[1], cursor: 'grab' }}
           onPointerDown={drag}
         >
@@ -284,11 +284,11 @@ function CropDialog({ src, onClose, onDone }: { src: string; onClose: () => void
             <Button key={a[0]} type="button" size="sm" variant={aspect[0] === a[0] ? 'default' : 'outline'} onClick={() => { setAspect(a); setFocus({ x: 0.5, y: 0.5 }) }}>{a[0]}</Button>
           ))}
         </div>
-        <label className="flex items-center gap-3 text-sm">
+        <label className="flex items-center gap-3 text-body-sm">
           Масштаб
           <input type="range" min={1} max={3} step={0.05} value={zoom} onChange={e => setZoom(Number(e.target.value))} className="flex-1 accent-[hsl(var(--primary))]" />
         </label>
-        {failed && <p className="text-sm text-destructive">Эту картинку не получится обрезать — загрузите её файлом.</p>}
+        {failed && <p className="text-body-sm text-destructive">Эту картинку не получится обрезать — загрузите её файлом.</p>}
         <div className="flex justify-end gap-2">
           <Button type="button" variant="ghost" onClick={onClose}>Отмена</Button>
           <Button type="button" onClick={finish} disabled={!rect}>Готово</Button>

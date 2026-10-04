@@ -7,7 +7,8 @@ const path = require('node:path')
 const SPACING = String.raw`-?(?:p[xytblrse]?|m[xytblrse]?|gap(?:-[xy])?|space-[xy])`
 const RULES = {
   'стоковый кегль': /(?<![\w-])text-(?:xs|sm|base|lg|[2-9]?xl)(?![\w-])/g,
-  'произвольный кегль': /(?<![\w-])text-\[\d[^\]]*\]/g,
+  // Только px/rem/em: text-[38cqmin] — масштаб от контейнера, а не кегль.
+  'произвольный кегль': /(?<![\w-])text-\[\d[\d.]*(?:px|rem|em)\]/g,
   'стоковое скругление': /(?<![\w-])rounded(?:-(?:t|r|b|l|s|e|tl|tr|br|bl|ss|se|es|ee))?(?:-(?:sm|md|lg|xl|2xl|3xl))?(?![\w[-])/g,
   'произвольное скругление': /(?<![\w-])rounded(?:-[a-z]{1,2})?-\[/g,
   'стоковая тень': /(?<![\w-])shadow(?:-(?:sm|md|lg|xl|2xl|inner))?(?![\w[-])/g,

@@ -23,21 +23,21 @@ export const Footer = () => {
           {/* Logo + tagline */}
           <div className="flex flex-col gap-2">
             <Logo />
-            <p className="text-xs text-muted-foreground">
+            <p className="text-caption text-muted-foreground">
               Сервис вишлистов — с 2025 года
             </p>
           </div>
 
           {/* Nav links */}
           <nav className="flex flex-col gap-1.5">
-            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">
+            <span className="text-caption font-semibold text-muted-foreground uppercase tracking-wider mb-1">
               Навигация
             </span>
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-sm text-foreground/70 hover:text-primary transition-colors"
+                className="text-body-sm text-foreground/70 hover:text-primary transition-colors"
               >
                 {link.label}
               </Link>
@@ -46,14 +46,14 @@ export const Footer = () => {
 
           {/* Legal */}
           <nav className="flex flex-col gap-1.5">
-            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">
+            <span className="text-caption font-semibold text-muted-foreground uppercase tracking-wider mb-1">
               Информация
             </span>
             {LEGAL_LINKS.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-sm text-foreground/70 hover:text-primary transition-colors"
+                className="text-body-sm text-foreground/70 hover:text-primary transition-colors"
               >
                 {link.label}
               </Link>
@@ -63,7 +63,7 @@ export const Footer = () => {
 
         {/* Bottom bar */}
         <div className="mt-6 pt-4 border-t border-border/30 text-center">
-          <p className="text-xs text-muted-foreground">
+          <p className="text-caption text-muted-foreground">
             &copy; {new Date().getFullYear()} Просто намекни. Все права защищены.
           </p>
         </div>
