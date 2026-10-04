@@ -84,7 +84,7 @@ export function BlockCanvas(props: Props) {
 
   // Лист страницы на подложке, со скруглением сверху — как в макете.
   const sheet = cn(
-    'wishlist-page min-h-full rounded-t-2xl border border-b-0 bg-background text-foreground shadow-2xl',
+    'wishlist-page min-h-full rounded-t-card border border-b-0 bg-background text-foreground shadow-overlay',
     phone ? 'mx-auto w-[390px] max-w-full px-4 py-6' : 'mx-auto w-full max-w-[880px] px-8 py-10',
   )
 
@@ -122,8 +122,8 @@ export function BlockCanvas(props: Props) {
 
 function EmptyPage(props: Props & { onInsert: (item: LibraryItem) => void }) {
   return (
-    <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed py-16 text-center text-muted-foreground">
-      <p className="text-sm">Страница пустая. Добавьте первый блок.</p>
+    <div className="flex flex-col items-center gap-3 rounded-card border border-dashed py-16 text-center text-muted-foreground">
+      <p className="text-body-sm">Страница пустая. Добавьте первый блок.</p>
       <InsertButton hint="Первый блок страницы" {...props} onInsert={props.onInsert} />
     </div>
   )
@@ -142,7 +142,7 @@ function Gap({ at, dragging, hint, last, onInsert, ...props }: Props & { at: num
         isOver ? 'bg-primary' : 'bg-transparent',
       )} />
       {isOver && (
-        <span className="absolute -top-1 rounded-md bg-primary px-2 py-0.5 text-[11px] font-bold text-primary-foreground">
+        <span className="absolute -top-1 rounded-control-lg bg-primary px-2 py-0.5 text-micro font-bold text-primary-foreground">
           Вставится сюда
         </span>
       )}
@@ -166,13 +166,13 @@ function CanvasRow(props: Props & { row: RowView; dragging: boolean }) {
   const settings = liveRatio ? { ...row.settings, ratio: liveRatio } : row.settings
 
   return (
-    <div className={cn('group/row relative rounded-2xl', rowSelected && 'outline outline-2 outline-offset-8 outline-primary')}>
+    <div className={cn('group/row relative rounded-card', rowSelected && 'outline outline-2 outline-offset-8 outline-primary')}>
       {columns > 1 && !dragging && !blockSelected && (
         <button
           type="button"
           onClick={() => onSelect({ kind: 'row', index: row.index })}
           className={cn(
-            'absolute -top-6 left-0 z-10 flex items-center gap-1 rounded-md px-2 py-0.5 text-[11px] font-bold transition-opacity',
+            'absolute -top-6 left-0 z-10 flex items-center gap-1 rounded-control-lg px-2 py-0.5 text-micro font-bold transition-opacity',
             rowSelected ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground opacity-0 group-hover/row:opacity-100',
           )}
         >
@@ -266,7 +266,7 @@ function Splitter({ gridRef, ratio, onLive, onCommit }: {
         active ? 'bg-primary' : 'bg-transparent group-hover/row:bg-primary/40 group-focus-visible/split:bg-primary',
       )} />
       {active && (
-        <span className="absolute top-1/2 -translate-y-1/2 whitespace-nowrap rounded-md bg-primary px-2 py-0.5 text-xs font-extrabold text-primary-foreground">
+        <span className="absolute top-1/2 -translate-y-1/2 whitespace-nowrap rounded-control-lg bg-primary px-2 py-0.5 text-caption font-extrabold text-primary-foreground">
           {shown.replace(':', ' : ')}
         </span>
       )}
@@ -281,7 +281,7 @@ function EmptyCell(props: Props & { rowIndex: number; col: number }) {
     <div
       ref={setNodeRef}
       className={cn(
-        'flex min-h-[120px] items-center justify-center rounded-2xl border border-dashed transition-colors',
+        'flex min-h-[120px] items-center justify-center rounded-card border border-dashed transition-colors',
         isOver ? 'border-primary bg-primary/5' : 'border-border',
       )}
     >
@@ -313,7 +313,7 @@ function SideTarget({ block, side }: { block: Block; side: 'left' | 'right' }) {
         <>
           <div className={cn('absolute inset-y-2 w-1 rounded-full bg-primary', side === 'left' ? 'left-2' : 'right-2')} />
           <span className={cn(
-            'absolute top-1/2 -translate-y-1/2 whitespace-nowrap rounded-md bg-primary px-2 py-0.5 text-[11px] font-bold text-primary-foreground',
+            'absolute top-1/2 -translate-y-1/2 whitespace-nowrap rounded-control-lg bg-primary px-2 py-0.5 text-micro font-bold text-primary-foreground',
             side === 'left' ? 'left-4' : 'right-4',
           )}>
             Поставить рядом
@@ -361,7 +361,7 @@ function CanvasBlock(props: Props & { block: Block; draggable: boolean; alone?: 
 
   if (isDragging) {
     return (
-      <div className="flex min-h-[96px] items-center justify-center rounded-2xl border-2 border-dashed border-primary/50 text-sm text-muted-foreground">
+      <div className="flex min-h-[96px] items-center justify-center rounded-card border-2 border-dashed border-primary/50 text-body-sm text-muted-foreground">
         Здесь был блок «{block.caption || info?.label}»
       </div>
     )
@@ -396,7 +396,7 @@ function CanvasBlock(props: Props & { block: Block; draggable: boolean; alone?: 
       aria-roledescription="блок"
       aria-label={block.caption || info?.label}
       className={cn(
-        'relative min-w-0 rounded-2xl',
+        'relative min-w-0 rounded-card',
         equal && 'h-full',
         draggable && 'cursor-grab active:cursor-grabbing',
         selected ? 'outline outline-2 outline-offset-4 outline-primary' : 'outline outline-1 outline-offset-4 outline-transparent hover:outline-border',
@@ -413,13 +413,13 @@ function CanvasBlock(props: Props & { block: Block; draggable: boolean; alone?: 
 
       {selected && (
         <>
-          <span className="absolute -top-3 left-3 z-10 flex items-center gap-1 rounded-md bg-primary px-2 py-0.5 text-[11px] font-bold text-primary-foreground">
+          <span className="absolute -top-3 left-3 z-10 flex items-center gap-1 rounded-control-lg bg-primary px-2 py-0.5 text-micro font-bold text-primary-foreground">
             <Icon size={11} aria-hidden />
             {info?.label ?? 'Старый блок'}{viewName && ` · ${viewName}`}
             {block.hidden && ' · скрыт'}
             {secretDate && ` · скрыт до ${secretDate.toLocaleDateString('ru', { day: '2-digit', month: '2-digit' })}`}
           </span>
-          <div className="absolute -top-4 right-3 z-10 flex gap-0.5 rounded-lg border bg-popover p-1 text-popover-foreground shadow-lg">
+          <div className="absolute -top-4 right-3 z-10 flex gap-0.5 rounded-control-lg border bg-popover p-1 text-popover-foreground shadow-float">
             {draggable && !alone && (
               <ToolbarButton label="Настроить ряд" onClick={() => onSelect({ kind: 'row', index: block.row })}><Columns2 size={14} aria-hidden /></ToolbarButton>
             )}
@@ -462,12 +462,12 @@ function CanvasBlock(props: Props & { block: Block; draggable: boolean; alone?: 
           <div onClick={() => onSelect({ kind: 'block', id: block.id })}>
             <div className="pointer-events-none select-none" inert>
               {block.revealAt && (
-                <div className="mb-2 flex items-center gap-1.5 text-xs font-semibold text-muted-foreground">
+                <div className="mb-2 flex items-center gap-1.5 text-caption font-semibold text-muted-foreground">
                   <Lock size={12} aria-hidden /> Гости увидят после {secretDate?.toLocaleString('ru', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })}
                 </div>
               )}
               {isEmptyBlock(block)
-                ? <div className="flex min-h-[96px] items-center justify-center rounded-2xl border border-dashed text-sm text-muted-foreground">{block.caption || info?.label}: пусто — заполните справа</div>
+                ? <div className="flex min-h-[96px] items-center justify-center rounded-card border border-dashed text-body-sm text-muted-foreground">{block.caption || info?.label}: пусто — заполните справа</div>
                 : <BlockContent block={{ ...shown, hidden: false, revealAt: null }} wishlist={wishlist} presents={presents} preview />}
             </div>
           </div>
@@ -487,7 +487,7 @@ function CanvasBlock(props: Props & { block: Block; draggable: boolean; alone?: 
           className="absolute -bottom-3 left-1/2 z-20 flex -translate-x-1/2 cursor-ns-resize flex-col items-center gap-1"
         >
           <span className="h-1.5 w-12 rounded-full bg-primary" />
-          <span className="whitespace-nowrap rounded-md bg-primary px-2 py-0.5 text-[11px] font-bold text-primary-foreground">
+          <span className="whitespace-nowrap rounded-control-lg bg-primary px-2 py-0.5 text-micro font-bold text-primary-foreground">
             Высота · {(aspect || '16:9').replace(':', ' : ')} — тяните вниз
           </span>
         </div>
@@ -509,7 +509,7 @@ function ToolbarButton({ label, onClick, destructive, children }: {
       title={label}
       onClick={e => { e.stopPropagation(); onClick() }}
       className={cn(
-        'flex h-6 w-6 items-center justify-center rounded text-muted-foreground hover:bg-accent hover:text-foreground',
+        'flex h-6 w-6 items-center justify-center rounded-xs text-muted-foreground hover:bg-accent hover:text-foreground',
         destructive && 'hover:text-destructive',
       )}
     >

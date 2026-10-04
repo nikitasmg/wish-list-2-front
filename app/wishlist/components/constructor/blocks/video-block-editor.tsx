@@ -22,7 +22,7 @@ export function VideoBlockEditor({ data, onChange }: Props) {
           value={url}
           onChange={(e) => onChange({ ...data, url: e.target.value })}
         />
-        <p className="text-xs text-muted-foreground">Поддерживаются YouTube и VK Video</p>
+        <p className="text-caption text-muted-foreground">Поддерживаются YouTube и VK Video</p>
       </div>
       <div className="space-y-1.5">
         <Label>Подпись (необязательно)</Label>

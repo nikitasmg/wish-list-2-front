@@ -5,6 +5,7 @@ import { GuestBlockView } from '@/app/s/[shortId]/components/blocks/guest-block-
 import { WishlistLanding } from '@/app/s/[shortId]/components/wishlist-landing'
 import { PresentsManager } from '@/app/wishlist/components/presents-manager'
 import { Button } from '@/components/ui/button'
+import { InputDensity } from '@/components/ui/input-density'
 import { toast } from '@/hooks/use-toast'
 import { useConstructorTour } from '@/hooks/use-constructor-tour'
 import { useWishlistDraft } from '@/hooks/use-wishlist-draft'
@@ -227,9 +228,11 @@ function Editor({ wishlist }: { wishlist: Wishlist }) {
             {panel && (
               <aside className="flex w-[264px] shrink-0 flex-col border-r p-3">
                 <div className="px-1.5 pb-3 text-body font-bold">{panel === 'add' ? 'Добавить блок' : 'Структура'}</div>
-                {panel === 'add'
-                  ? <LibraryList onPick={insert} />
-                  : <StructurePanel layout={layout} selection={selection} onSelect={select} onLayout={setLayout} />}
+                <InputDensity value="md">
+                  {panel === 'add'
+                    ? <LibraryList onPick={insert} />
+                    : <StructurePanel layout={layout} selection={selection} onSelect={select} onLayout={setLayout} />}
+                </InputDensity>
               </aside>
             )}
 
@@ -262,6 +265,8 @@ function Editor({ wishlist }: { wishlist: Wishlist }) {
                   </button>
                 ))}
               </nav>
+              {/* Панели плотные, как в макете инспектора: поля 40px, а не 48. */}
+              <InputDensity value="md">
               <div className="min-h-0 flex-1 overflow-y-auto">
                 {tab === 'block' && selection?.kind === 'row' && (
                   <RowInspector layout={layout} index={selection.index} onLayout={setLayout} onDone={() => setSelection(null)} />
@@ -288,6 +293,7 @@ function Editor({ wishlist }: { wishlist: Wishlist }) {
                   />
                 )}
               </div>
+              </InputDensity>
             </aside>
           </div>
 

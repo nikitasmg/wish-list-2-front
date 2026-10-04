@@ -18,7 +18,7 @@ export function RowInspector({ layout, index, onLayout, onDone }: {
   onDone: () => void
 }) {
   const row = layoutRows(layout)[index]
-  if (!row) return <p className="p-5 text-sm text-muted-foreground">Ряд не найден.</p>
+  if (!row) return <p className="p-5 text-body-sm text-muted-foreground">Ряд не найден.</p>
   const settings = row.settings
   const columns = settings.columns ?? 1
   const blocks = row.cells.filter(Boolean).length
@@ -28,10 +28,10 @@ export function RowInspector({ layout, index, onLayout, onDone }: {
   return (
     <div className="space-y-5 p-5">
       <div className="flex items-center gap-2.5">
-        <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-muted text-primary"><Columns2 size={17} aria-hidden /></span>
+        <span className="flex h-9 w-9 items-center justify-center rounded-control bg-muted text-primary"><Columns2 size={17} aria-hidden /></span>
         <div>
           <div className="font-bold leading-tight">Ряд · {columns} {columns === 1 ? 'колонка' : 'колонки'}</div>
-          <div className="text-xs text-muted-foreground">{blocks} {blocks === 1 ? 'блок' : 'блока'} в ряду</div>
+          <div className="text-caption text-muted-foreground">{blocks} {blocks === 1 ? 'блок' : 'блока'} в ряду</div>
         </div>
       </div>
 

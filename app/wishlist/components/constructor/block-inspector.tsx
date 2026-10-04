@@ -25,7 +25,7 @@ type Props = {
 export function BlockInspector({ block, alone, wishlist, onChange, onWishlist }: Props) {
   if (!block) {
     return (
-      <p className="p-6 text-sm text-muted-foreground">
+      <p className="p-6 text-body-sm text-muted-foreground">
         Выберите блок на странице или добавьте новый: «+» между блоками или панель слева.
       </p>
     )
@@ -38,12 +38,12 @@ export function BlockInspector({ block, alone, wishlist, onChange, onWishlist }:
   return (
     <div className="space-y-5 p-5">
       <div className="flex items-center gap-2.5">
-        <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-muted text-primary">
+        <span className="flex h-9 w-9 items-center justify-center rounded-control bg-muted text-primary">
           <Icon size={17} aria-hidden />
         </span>
         <div className="min-w-0">
           <div className="font-bold leading-tight">{info?.label ?? 'Старый блок'}</div>
-          {block.caption && <div className="truncate text-xs text-muted-foreground">добавлен как «{block.caption}»</div>}
+          {block.caption && <div className="truncate text-caption text-muted-foreground">добавлен как «{block.caption}»</div>}
         </div>
       </div>
 
@@ -146,7 +146,7 @@ function SecretSettings({ block, onChange }: { block: Block; onChange: (patch: P
             </div>
           </Field>
           <Field label="До этого гости видят">
-            <div role="group" aria-label="До этого гости видят" className="flex flex-col gap-0.5 rounded-xl border p-[3px]">
+            <div role="group" aria-label="До этого гости видят" className="flex flex-col gap-0.5 rounded-control border p-0.5">
               {([['timer', 'Замок и таймер'], ['lock', 'Только замок'], ['hidden', 'Ничего — блок скрыт']] as const).map(([value, name]) => (
                 <button
                   key={value}
@@ -154,8 +154,8 @@ function SecretSettings({ block, onChange }: { block: Block; onChange: (patch: P
                   aria-pressed={(block.secretMode || 'timer') === value}
                   onClick={() => onChange({ secretMode: value })}
                   className={(block.secretMode || 'timer') === value
-                    ? 'h-8 rounded-lg bg-accent text-[13px] font-semibold text-foreground'
-                    : 'h-8 rounded-lg text-[13px] font-semibold text-muted-foreground hover:text-foreground'}
+                    ? 'h-control-sm rounded-tag bg-accent text-label font-semibold text-foreground'
+                    : 'h-control-sm rounded-tag text-label font-semibold text-muted-foreground hover:text-foreground'}
                 >
                   {name}
                 </button>
@@ -172,7 +172,7 @@ function SecretSettings({ block, onChange }: { block: Block; onChange: (patch: P
               />
             </Field>
           )}
-          <p className="text-xs text-muted-foreground">В конструкторе блок видно всегда, с пометкой «скрыт до».</p>
+          <p className="text-caption text-muted-foreground">В конструкторе блок видно всегда, с пометкой «скрыт до».</p>
         </>
       )}
     </div>

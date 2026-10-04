@@ -19,13 +19,13 @@ export function AccessPanel({ wishlist, onSettings, onCopy, onResponses, hasGues
 }) {
   const url = wishlist.shortId ? `/s/${wishlist.shortId}` : ''
   return (
-    <div className="space-y-5 p-5 text-sm">
+    <div className="space-y-5 p-5 text-body-sm">
       <section className="space-y-2">
-        <h3 className="text-xs font-semibold text-muted-foreground">Ссылка на страницу</h3>
+        <h3 className="text-caption font-semibold text-muted-foreground">Ссылка на страницу</h3>
         <p className="text-muted-foreground">Страница открыта всем, у кого есть ссылка. Регистрация гостям не нужна.</p>
         {url && (
-          <div className="flex items-center gap-2 rounded-xl border bg-muted/40 p-2 pl-3">
-            <span className="min-w-0 flex-1 truncate font-mono text-xs">prosto-namekni.ru{url}</span>
+          <div className="flex items-center gap-2 rounded-control-lg border bg-muted/40 p-2 pl-3">
+            <span className="min-w-0 flex-1 truncate font-mono text-caption">prosto-namekni.ru{url}</span>
             <Button size="sm" variant="outline" onClick={onCopy}><Copy size={14} className="mr-1.5" aria-hidden />Копировать</Button>
           </div>
         )}
@@ -37,18 +37,18 @@ export function AccessPanel({ wishlist, onSettings, onCopy, onResponses, hasGues
       </section>
 
       <section className="space-y-3 border-t pt-4">
-        <h3 className="text-xs font-semibold text-muted-foreground">Что вижу я</h3>
+        <h3 className="text-caption font-semibold text-muted-foreground">Что вижу я</h3>
         <Toggle
           label="Показывать мне, какие подарки заняты"
           checked={wishlist.settings.showGiftAvailability}
           onChange={showGiftAvailability => onSettings({ ...wishlist.settings, showGiftAvailability })}
         />
-        <p className="text-xs text-muted-foreground">Кто именно дарит — не видно никогда: так обещано гостям.</p>
+        <p className="text-caption text-muted-foreground">Кто именно дарит — не видно никогда: так обещано гостям.</p>
       </section>
 
       {hasGuestBlocks && (
         <section className="space-y-2 border-t pt-4">
-          <h3 className="text-xs font-semibold text-muted-foreground">Ответы гостей</h3>
+          <h3 className="text-caption font-semibold text-muted-foreground">Ответы гостей</h3>
           <Button variant="outline" className="w-full" onClick={onResponses}>
             <MessagesSquare size={15} className="mr-2" aria-hidden />
             Ответы, голоса и поздравления

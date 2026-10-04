@@ -34,7 +34,7 @@ export function LibraryList({ onPick, onHover, compact, autoFocus }: {
 
   return (
     <div className="flex min-h-0 flex-col gap-3">
-      <label className="flex h-9 shrink-0 items-center gap-2 rounded-[9px] border px-2.5 text-muted-foreground focus-within:ring-2 focus-within:ring-ring">
+      <label className="flex h-control shrink-0 items-center gap-2 rounded-control border px-2.5 text-muted-foreground focus-within:ring-2 focus-within:ring-ring">
         <Search size={15} aria-hidden />
         <input
           autoFocus={autoFocus}
@@ -43,13 +43,13 @@ export function LibraryList({ onPick, onHover, compact, autoFocus }: {
           onKeyDown={e => { if (e.key === 'Enter' && items[0]) onPick(items[0]) }}
           placeholder="Найти блок…"
           aria-label="Найти блок"
-          className="w-full bg-transparent text-[13px] text-foreground outline-none placeholder:text-muted-foreground"
+          className="w-full bg-transparent text-label text-foreground outline-none placeholder:text-muted-foreground"
         />
       </label>
       <div className="-mr-1 min-h-0 flex-1 space-y-3 overflow-y-auto pr-1">
         {groups.map(group => (
           <div key={group}>
-            <p className="px-2.5 pb-1 text-[11px] font-bold uppercase tracking-wide text-muted-foreground">{group}</p>
+            <p className="px-2.5 pb-1 text-micro font-bold uppercase tracking-wide text-muted-foreground">{group}</p>
             {items.filter(i => i.group === group).map(item => {
               const Icon = blockIcon(item.type, item.id)
               return (
@@ -60,20 +60,20 @@ export function LibraryList({ onPick, onHover, compact, autoFocus }: {
                   onMouseEnter={() => onHover?.(item)}
                   onFocus={() => onHover?.(item)}
                   className={cn(
-                    'flex w-full items-center gap-2.5 rounded-lg px-2.5 text-left text-[13px] font-medium',
-                    compact ? 'h-8' : 'h-9',
+                    'flex w-full items-center gap-2.5 rounded-control-lg px-2.5 text-left text-label font-medium',
+                    compact ? 'h-control-sm' : 'h-control',
                     'text-foreground/80 hover:bg-accent hover:text-foreground focus-visible:bg-accent focus-visible:outline-none',
                   )}
                 >
                   <Icon size={16} className="shrink-0 text-muted-foreground" aria-hidden />
                   <span className="truncate">{item.label}</span>
-                  {item.hint && <span className="ml-auto shrink-0 text-[10px] font-semibold text-muted-foreground">{item.hint}</span>}
+                  {item.hint && <span className="ml-auto shrink-0 text-micro font-semibold text-muted-foreground">{item.hint}</span>}
                 </button>
               )
             })}
           </div>
         ))}
-        {!items.length && <p className="px-2.5 py-6 text-sm text-muted-foreground">Ничего не найдено</p>}
+        {!items.length && <p className="px-2.5 py-6 text-body-sm text-muted-foreground">Ничего не найдено</p>}
       </div>
     </div>
   )
@@ -84,8 +84,8 @@ export function LibraryPreview({ item, wishlist, presents }: { item: LibraryItem
   const block = useMemo(() => libraryBlock(item), [item])
   return (
     <div className="space-y-2">
-      <p className="text-xs font-semibold text-muted-foreground">{item.label} — так будет выглядеть</p>
-      <div className="pointer-events-none max-h-[320px] select-none overflow-hidden rounded-xl border bg-background p-4 text-foreground" inert>
+      <p className="text-caption font-semibold text-muted-foreground">{item.label} — так будет выглядеть</p>
+      <div className="pointer-events-none max-h-[320px] select-none overflow-hidden rounded-control-lg border bg-background p-4 text-foreground" inert>
         <div className="origin-top-left scale-[0.8] [width:125%]">
           <BlockContent block={block} wishlist={wishlist} presents={presents.slice(0, 2)} preview />
         </div>
@@ -118,7 +118,7 @@ export function InsertButton({ hint, wishlist, presents, schemeClass, schemeStyl
           aria-label={label}
           title={label}
           className={cn(
-            'flex h-7 w-7 items-center justify-center rounded-full border bg-background text-primary shadow-sm',
+            'flex h-7 w-7 items-center justify-center rounded-full border bg-background text-primary',
             'hover:scale-110 hover:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
             className,
           )}
@@ -134,15 +134,15 @@ export function InsertButton({ hint, wishlist, presents, schemeClass, schemeStyl
             onHover={setHover}
             onPick={item => { setOpen(false); setHover(null); onInsert(item) }}
           />
-          <p className="mt-2 shrink-0 border-t pt-2 text-[11px] text-muted-foreground">
+          <p className="mt-2 shrink-0 border-t pt-2 text-micro text-muted-foreground">
             В тексте можно набрать «/»
           </p>
         </div>
         <div className={cn('hidden w-[320px] flex-col justify-between md:flex', schemeClass)} style={schemeStyle}>
           {hover
             ? <LibraryPreview item={hover} wishlist={wishlist} presents={presents} />
-            : <p className="pt-10 text-center text-sm text-muted-foreground">Наведите на блок, чтобы увидеть превью</p>}
-          <p className="pt-3 text-xs text-muted-foreground">{hint}</p>
+            : <p className="pt-10 text-center text-body-sm text-muted-foreground">Наведите на блок, чтобы увидеть превью</p>}
+          <p className="pt-3 text-caption text-muted-foreground">{hint}</p>
         </div>
       </PopoverContent>
     </Popover>

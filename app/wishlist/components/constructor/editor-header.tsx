@@ -40,21 +40,21 @@ export function EditorHeader(props: Props) {
       <Link
         href="/wishlist"
         aria-label="Назад к вишлистам"
-        className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground hover:bg-accent hover:text-foreground"
+        className="flex size-control items-center justify-center rounded-control text-muted-foreground transition-colors duration-fast hover:bg-accent hover:text-foreground"
       >
         <ArrowLeft size={18} aria-hidden />
       </Link>
 
       <div data-tour="title" className="flex min-w-0 items-center gap-2.5">
-        <span className="truncate text-base font-bold">{props.title || 'Мой праздник'}</span>
+        <span className="truncate text-lead font-bold">{props.title || 'Мой праздник'}</span>
         {props.templateName && (
-          <span className="hidden shrink-0 rounded-full border px-2.5 py-1 text-xs text-muted-foreground xl:inline">
+          <span className="hidden shrink-0 rounded-full border px-2.5 py-1 text-caption text-muted-foreground xl:inline">
             по шаблону «{props.templateName}»
           </span>
         )}
         <span
           role="status"
-          className={cn('hidden shrink-0 text-xs md:inline', props.error ? 'text-destructive' : 'text-muted-foreground')}
+          className={cn('hidden shrink-0 text-caption md:inline', props.error ? 'text-destructive' : 'text-muted-foreground')}
         >
           {props.status}
         </span>
@@ -62,7 +62,7 @@ export function EditorHeader(props: Props) {
 
       <div className="flex-1" />
 
-      <nav aria-label="Раздел" className="flex gap-0.5 rounded-xl border p-[3px]">
+      <nav aria-label="Раздел" className="flex gap-0.5 rounded-control border p-0.5">
         <ModeTab active={mode === 'page' || mode === 'responses'} onClick={() => onMode('page')}>Страница</ModeTab>
         <ModeTab active={mode === 'presents'} onClick={() => onMode('presents')} tour="tab-presents">
           Подарки {props.presentsCount > 0 && <span className="text-muted-foreground">{props.presentsCount}</span>}
@@ -79,7 +79,7 @@ export function EditorHeader(props: Props) {
       <button
         type="button"
         onClick={props.onScheme}
-        className="hidden h-[38px] items-center gap-2 rounded-[10px] border bg-card px-3 text-sm font-semibold hover:bg-accent lg:flex"
+        className="hidden h-[38px] items-center gap-2 rounded-control border bg-card px-3 text-body-sm font-semibold hover:bg-accent lg:flex"
       >
         <span className="flex" aria-hidden>
           <span className="h-3.5 w-3.5 rounded-full border" style={{ backgroundColor: props.scheme.colors[0] }} />
@@ -89,7 +89,7 @@ export function EditorHeader(props: Props) {
       </button>
 
       {mode === 'page' && (
-        <div role="group" aria-label="Ширина страницы" className="flex gap-0.5 rounded-[10px] border p-[3px]">
+        <div role="group" aria-label="Ширина страницы" className="flex gap-0.5 rounded-control border p-0.5">
           {([['desktop', Monitor, 'Компьютер'], ['phone', Smartphone, 'Телефон']] as const).map(([value, Icon, label]) => (
             <button
               key={value}
@@ -99,7 +99,7 @@ export function EditorHeader(props: Props) {
               aria-pressed={props.device === value}
               onClick={() => props.onDevice(value)}
               className={cn(
-                'flex h-[30px] w-[34px] items-center justify-center rounded-[7px]',
+                'flex h-[30px] w-[34px] items-center justify-center rounded-tag',
                 props.device === value ? 'bg-accent text-foreground' : 'text-muted-foreground hover:text-foreground',
               )}
             >
@@ -114,7 +114,7 @@ export function EditorHeader(props: Props) {
         aria-pressed={mode === 'preview'}
         onClick={() => onMode(mode === 'preview' ? 'page' : 'preview')}
         className={cn(
-          'h-[38px] rounded-[10px] border px-3.5 text-sm font-semibold',
+          'h-[38px] rounded-control border px-3.5 text-body-sm font-semibold',
           mode === 'preview' ? 'bg-accent' : 'bg-card hover:bg-accent',
         )}
       >
@@ -123,7 +123,7 @@ export function EditorHeader(props: Props) {
       <button
         type="button"
         onClick={props.onShare}
-        className="flex h-[38px] items-center gap-2 rounded-[10px] bg-gradient-to-r from-[#17B6D6] to-[#7B5CF0] px-4 text-sm font-bold text-white"
+        className="flex h-control items-center gap-2 rounded-control bg-brand px-4 text-body-sm font-bold text-white transition-[transform,opacity] duration-fast hover:opacity-90 active:scale-[.97]"
       >
         <Share2 size={15} aria-hidden />
         Поделиться
@@ -140,7 +140,7 @@ function ModeTab({ active, onClick, tour, children }: { active: boolean; onClick
       aria-pressed={active}
       onClick={onClick}
       className={cn(
-        'flex h-8 items-center gap-1.5 rounded-lg px-3.5 text-sm font-semibold transition-colors',
+        'flex h-control-sm items-center gap-1.5 rounded-tag px-3.5 text-body-sm font-semibold transition-colors duration-fast',
         active ? 'bg-accent text-foreground' : 'text-muted-foreground hover:text-foreground',
       )}
     >
@@ -166,7 +166,7 @@ export function IconButton({ label, onClick, disabled, active, children, classNa
       disabled={disabled}
       onClick={onClick}
       className={cn(
-        'flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground',
+        'flex size-control-sm items-center justify-center rounded-tag text-muted-foreground',
         'hover:bg-accent hover:text-foreground disabled:pointer-events-none disabled:opacity-35',
         active && 'bg-accent text-foreground',
         className,

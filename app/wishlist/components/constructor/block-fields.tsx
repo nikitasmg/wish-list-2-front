@@ -48,7 +48,7 @@ export function BlockFields({ block, onChange }: { block: Block; wishlist?: Wish
     case 'text':
       return (
         <div className="space-y-4">
-          <p className="text-xs text-muted-foreground">Текст правится прямо на странице. «/» в пустом блоке меняет его тип.</p>
+          <p className="text-caption text-muted-foreground">Текст правится прямо на странице. «/» в пустом блоке меняет его тип.</p>
           <Field label="Размер текста">
             <Segmented label="Размер текста" value={(data.size as 'sm' | 'md' | 'lg') ?? 'md'} options={[['sm', 'Мелкий'], ['md', 'Обычный'], ['lg', 'Крупный']] as const} onChange={size => onChange({ ...data, size })} />
           </Field>
@@ -85,7 +85,7 @@ export function BlockFields({ block, onChange }: { block: Block; wishlist?: Wish
                   <button type="button" aria-label="Удалить пункт" onClick={() => set(items.filter((_, n) => n !== i))} className="flex h-9 w-6 shrink-0 items-center justify-center text-muted-foreground hover:text-destructive"><X size={14} aria-hidden /></button>
                 </div>
               ))}
-              <button type="button" onClick={() => set([...items, { v: '' }])} className="h-9 w-full rounded-lg border border-dashed text-xs font-semibold text-muted-foreground hover:border-primary hover:text-primary">+ Добавить пункт</button>
+              <button type="button" onClick={() => set([...items, { v: '' }])} className="h-control w-full rounded-control border border-dashed text-caption font-semibold text-muted-foreground hover:border-primary hover:text-primary">+ Добавить пункт</button>
             </div>
           </Field>
         </div>
@@ -100,11 +100,11 @@ export function BlockFields({ block, onChange }: { block: Block; wishlist?: Wish
             <div key={i} className="space-y-2">
               <ImageUpload label={`Фото ${i + 1}`} previewUrl={images[i]} onChange={v => { const next = [...images]; next[i] = v?.type === 'url' ? v.value : ''; onChange({ ...data, images: next }) }} />
               <Input aria-label={`Подпись фото ${i + 1}`} placeholder="Подпись" value={captions[i] ?? ''} onChange={e => { const next = [...captions]; next[i] = e.target.value; onChange({ ...data, captions: next }, key(`caption-${i}`)) }} />
-              {images.length > 1 && <button type="button" className="text-xs text-muted-foreground hover:text-destructive" onClick={() => onChange({ ...data, images: images.filter((_, n) => n !== i), captions: captions.filter((_, n) => n !== i) })}>Удалить фото</button>}
+              {images.length > 1 && <button type="button" className="text-caption text-muted-foreground hover:text-destructive" onClick={() => onChange({ ...data, images: images.filter((_, n) => n !== i), captions: captions.filter((_, n) => n !== i) })}>Удалить фото</button>}
             </div>
           ))}
-          {block.view === 'row' && images.length < 3 && <button type="button" onClick={() => onChange({ ...data, images: [...images, ''] })} className="h-9 w-full rounded-lg border border-dashed text-xs font-semibold text-muted-foreground hover:border-primary hover:text-primary">+ Фото</button>}
-          <p className="text-xs text-muted-foreground">Высота — ручкой снизу у выделенного блока на странице.</p>
+          {block.view === 'row' && images.length < 3 && <button type="button" onClick={() => onChange({ ...data, images: [...images, ''] })} className="h-control w-full rounded-control border border-dashed text-caption font-semibold text-muted-foreground hover:border-primary hover:text-primary">+ Фото</button>}
+          <p className="text-caption text-muted-foreground">Высота — ручкой снизу у выделенного блока на странице.</p>
         </div>
       )
     }
@@ -118,10 +118,10 @@ export function BlockFields({ block, onChange }: { block: Block; wishlist?: Wish
     case 'date': return <DateBlockEditor data={data} onChange={onChange} />
     case 'timing': return <TimingBlockEditor data={data} onChange={onChange} />
     case 'divider': return <DividerBlockEditor data={data} onChange={onChange} />
-    case 'wishlist': return <p className="text-sm text-muted-foreground">Подарки добавляются во вкладке «Подарки» в шапке. Этот блок задаёт их место и вид на странице.</p>
+    case 'wishlist': return <p className="text-body-sm text-muted-foreground">Подарки добавляются во вкладке «Подарки» в шапке. Этот блок задаёт их место и вид на странице.</p>
     case 'playlist': return <Toggle label="Гости голосуют за треки" checked={data.votes !== false} onChange={votes => onChange({ ...data, votes })} />
-    case 'guestbook': return <p className="text-sm text-muted-foreground">Гости оставят имя и пару тёплых слов. Записи можно скрыть в «Доступ → Ответы гостей».</p>
-    default: return <p className="text-sm text-muted-foreground">Этот блок из старой версии. Добавьте новый блок и перенесите содержимое.</p>
+    case 'guestbook': return <p className="text-body-sm text-muted-foreground">Гости оставят имя и пару тёплых слов. Записи можно скрыть в «Доступ → Ответы гостей».</p>
+    default: return <p className="text-body-sm text-muted-foreground">Этот блок из старой версии. Добавьте новый блок и перенесите содержимое.</p>
   }
 }
 

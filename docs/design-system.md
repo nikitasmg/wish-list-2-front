@@ -124,7 +124,8 @@ Hex и `rgba()` в TSX — только в файлах-данных (палит
   `link`; `size`: `sm`, `default`, `lg`, `xl`, `icon-sm`, `icon`, `icon-lg`.
   Нажатие сжимает до 0.97.
 - `Input`, `Textarea` — 48px, 16px текста до `md` (иначе iOS увеличивает
-  страницу при фокусе).
+  страницу при фокусе). В плотных панелях (инспектор конструктора) —
+  обёртка `<InputDensity value="md">`: поля 40px, как в макете.
 - `Segmented`, `Switch`/`Toggle`, `Field`, `ViewTiles`, `Badge`, `Card`,
   `Dialog`, `Sheet`, `Popover`, `DropdownMenu`, `Toast`.
 - Фокус у всего интерактивного: `focus-visible:ring-2 ring-ring

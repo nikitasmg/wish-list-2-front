@@ -27,7 +27,7 @@ export function DividerBlockEditor({ data, onChange }: Props) {
             key={s.value}
             type="button"
             onClick={() => onChange({ ...data, style: s.value })}
-            className={`p-3 rounded-lg border text-sm text-left transition-colors ${
+            className={`p-3 rounded-control-lg border text-body-sm text-left transition-colors ${
               style === s.value
                 ? 'border-primary bg-primary/10 text-primary font-medium'
                 : 'border-border bg-card text-muted-foreground hover:border-primary/50'

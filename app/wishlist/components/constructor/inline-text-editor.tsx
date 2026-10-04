@@ -164,13 +164,13 @@ export function InlineTextEditor({ html, onChange, onSplit, onConvert, className
       }}
     >
       {active && (
-        <div className="absolute -top-11 left-0 z-20 flex items-center gap-0.5 rounded-xl border bg-popover p-1 shadow-lg">
+        <div className="absolute -top-11 left-0 z-20 flex items-center gap-0.5 rounded-control-lg border bg-popover p-1 shadow-float">
           <select
             aria-label="Стиль абзаца"
             defaultValue=""
             onMouseDown={event => event.stopPropagation()}
             onChange={event => { if (event.target.value) format('formatBlock', event.target.value); event.target.value = '' }}
-            className="h-8 rounded-lg bg-transparent px-2 text-sm font-semibold text-foreground outline-none hover:bg-accent"
+            className="h-control-sm rounded-tag bg-transparent px-2 text-body-sm font-semibold text-foreground outline-none hover:bg-accent"
           >
             <option value="" disabled>Текст</option>
             <option value="p">Обычный</option>
@@ -201,7 +201,7 @@ export function InlineTextEditor({ html, onChange, onSplit, onConvert, className
         onInput={commit}
         onKeyDown={onKeyDown}
         className={cn(
-          'wishlist-prose min-w-0 break-words rounded-lg px-3 py-2 outline-none transition-colors',
+          'wishlist-prose min-w-0 break-words rounded-control-lg px-3 py-2 outline-none transition-colors',
           active ? 'ring-2 ring-primary' : 'ring-1 ring-transparent hover:ring-border',
           className,
         )}
@@ -211,7 +211,7 @@ export function InlineTextEditor({ html, onChange, onSplit, onConvert, className
         <ul
           role="listbox"
           aria-label="Тип блока"
-          className="absolute left-0 top-full z-30 mt-1 max-h-64 w-64 overflow-y-auto rounded-xl border bg-popover p-1 shadow-lg"
+          className="absolute left-0 top-full z-30 mt-1 max-h-64 w-64 overflow-y-auto rounded-control-lg border bg-popover p-1 shadow-float"
         >
           {matches.map((item, index) => (
             <li key={item.type}>
@@ -223,12 +223,12 @@ export function InlineTextEditor({ html, onChange, onSplit, onConvert, className
                 // Клик мышью не должен уводить фокус раньше, чем сработает выбор
                 onMouseDown={event => { event.preventDefault(); pick(item.type) }}
                 className={cn(
-                  'flex w-full items-baseline justify-between gap-3 rounded-lg px-3 py-2 text-left text-sm',
+                  'flex w-full items-baseline justify-between gap-3 rounded-control-lg px-3 py-2 text-left text-body-sm',
                   index === highlight ? 'bg-accent text-accent-foreground' : 'text-foreground',
                 )}
               >
                 <span className="font-medium">{item.label}</span>
-                <span className="shrink-0 text-xs text-muted-foreground">{item.group}</span>
+                <span className="shrink-0 text-caption text-muted-foreground">{item.group}</span>
               </button>
             </li>
           ))}
@@ -236,7 +236,7 @@ export function InlineTextEditor({ html, onChange, onSplit, onConvert, className
       )}
 
       {active && (
-        <span className={cn('pointer-events-none absolute -bottom-5 right-1 text-[11px] tabular-nums', length > MAX_TEXT ? 'text-destructive' : 'text-muted-foreground')}>
+        <span className={cn('pointer-events-none absolute -bottom-5 right-1 text-micro tabular-nums', length > MAX_TEXT ? 'text-destructive' : 'text-muted-foreground')}>
           {length} / {MAX_TEXT}
         </span>
       )}
@@ -265,7 +265,7 @@ function ToolbarButton({ label, onClick, children }: { label: string; onClick: (
       // Кнопку нажимают мышью, и обычный клик успел бы снять выделение
       // раньше, чем сработает форматирование.
       onMouseDown={event => { event.preventDefault(); onClick() }}
-      className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground hover:bg-accent hover:text-foreground"
+      className="flex size-control-sm items-center justify-center rounded-tag text-muted-foreground hover:bg-accent hover:text-foreground"
     >
       {children}
     </button>

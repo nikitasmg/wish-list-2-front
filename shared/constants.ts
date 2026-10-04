@@ -66,6 +66,10 @@ export function normalizeScheme(scheme: string | undefined | null): string {
   return LEGACY_SCHEMES[scheme] ?? 'space'
 }
 
+/** Быстрые цвета дресс-кода в выборе цвета; DRESS_DEFAULT — цвет нового пункта. */
+export const DRESS_PRESETS = ['#FFD166', '#F9A8D4', '#C4B5FD', '#7CC4FF', '#5EEAD4', '#6EE7B7', '#FF8A65', '#E7C9A0', '#3B6FD8', '#24211C', '#FFFFFF', '#9AA6D1'] as const
+export const DRESS_DEFAULT = '#3B6FD8'
+
 /** Фон «своей схемы» для образца цвета: тёмная и светлая база. */
 export const CUSTOM_BASES = { dark: '#101216', light: '#F5F5F3' } as const
 

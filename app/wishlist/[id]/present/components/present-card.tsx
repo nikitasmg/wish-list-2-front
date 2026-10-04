@@ -17,16 +17,16 @@ export const PresentCard = ({ present, wishlistId }: Props) => {
 
   return (
     <>
-      <div className="relative w-full md:w-[250px] bg-accent flex flex-col rounded-2xl shadow hover:shadow-xl transition">
+      <div className="relative w-full md:w-[250px] bg-accent flex flex-col rounded-card hover:shadow-float transition">
         {(present.images?.[0] || present.cover) ? (
           <CardCover className="h-[180px]" cover={present.images?.[0] || present.cover} title={present.title} />
         ) : (
-          <div className="flex justify-center items-center bg-primary w-full h-[180px] rounded-t-2xl">
+          <div className="flex justify-center items-center bg-primary w-full h-[180px] rounded-t-card">
             <Heart size={50} />
           </div>
         )}
         {present.type && present.type !== 'single' && (
-          <span className="absolute top-2 left-2 text-xs px-2 py-0.5 rounded-full bg-background/80 text-foreground">
+          <span className="absolute top-2 left-2 text-caption px-2 py-0.5 rounded-full bg-background/80 text-foreground">
             {present.type === 'group' ? 'Групповой' : 'Набор'}
           </span>
         )}
@@ -40,7 +40,7 @@ export const PresentCard = ({ present, wishlistId }: Props) => {
             />
           </div>
           {present.description && (
-            <div className="truncate text-sm text-muted-foreground">{present.description}</div>
+            <div className="truncate text-body-sm text-muted-foreground">{present.description}</div>
           )}
         </div>
       </div>

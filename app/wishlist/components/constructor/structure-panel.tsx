@@ -36,7 +36,7 @@ export function StructurePanel({ layout, selection, onSelect, onLayout }: {
                   type="button"
                   onClick={() => onSelect({ kind: 'row', index: row.index })}
                   className={cn(
-                    'flex h-8 w-full items-center gap-2 rounded-lg px-2 text-left text-[13px] font-semibold',
+                    'flex h-control-sm w-full items-center gap-2 rounded-tag px-2 text-left text-label font-semibold',
                     selection?.kind === 'row' && selection.index === row.index ? 'bg-primary/10 text-foreground' : 'text-muted-foreground hover:bg-accent',
                   )}
                 >
@@ -58,9 +58,9 @@ export function StructurePanel({ layout, selection, onSelect, onLayout }: {
           )
         })}
         <StructureGap at={rows.length} />
-        {!rows.length && <p className="px-2 py-6 text-sm text-muted-foreground">Блоков пока нет.</p>}
+        {!rows.length && <p className="px-2 py-6 text-body-sm text-muted-foreground">Блоков пока нет.</p>}
       </div>
-      <dl className="mt-3 shrink-0 space-y-2 border-t px-2 pt-3 text-xs text-muted-foreground">
+      <dl className="mt-3 shrink-0 space-y-2 border-t px-2 pt-3 text-caption text-muted-foreground">
         <Shortcut label="Переместить выделенный" keys="Alt + ↑ ↓" />
         <Shortcut label="Отменить перенос" keys="Esc" />
         <Shortcut label="Отменить правку" keys="Ctrl + Z" />
@@ -105,9 +105,9 @@ function StructureItem({ block, nested, selected, onSelect, onToggle }: {
     <div
       ref={setNodeRef}
       className={cn(
-        'group flex h-8 items-center gap-1.5 rounded-lg pr-1 text-[13px]',
+        'group flex h-control-sm items-center gap-1.5 rounded-tag pr-1 text-label',
         nested ? 'ml-5 pl-1' : 'pl-1',
-        selected ? 'bg-primary/10 text-foreground shadow-[inset_0_0_0_1px_hsl(var(--primary)/0.4)]' : 'hover:bg-accent',
+        selected ? 'bg-primary/10 text-foreground ring-1 ring-inset ring-primary/40' : 'hover:bg-accent',
         block.hidden && 'opacity-50',
         isDragging && 'border border-dashed border-primary/50 opacity-60',
       )}
@@ -131,7 +131,7 @@ function StructureItem({ block, nested, selected, onSelect, onToggle }: {
         onClick={onToggle}
         aria-label={block.hidden ? `Показать «${label}»` : `Скрыть «${label}»`}
         title={block.hidden ? 'Показать на странице' : 'Скрыть со страницы'}
-        className={cn('flex h-6 w-6 items-center justify-center rounded text-muted-foreground hover:text-foreground', !block.hidden && 'opacity-0 group-hover:opacity-100 focus-visible:opacity-100')}
+        className={cn('flex h-6 w-6 items-center justify-center rounded-xs text-muted-foreground hover:text-foreground', !block.hidden && 'opacity-0 group-hover:opacity-100 focus-visible:opacity-100')}
       >
         {block.hidden ? <EyeOff size={14} aria-hidden /> : <Eye size={14} aria-hidden />}
       </button>

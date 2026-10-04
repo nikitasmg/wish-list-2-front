@@ -30,27 +30,27 @@ export default function Page() {
 
       <Breadcrumbs items={[ { name: 'Мои вишлисты', url: '/wishlist' } ]} page={wishlist.title} />
       <div className="flex items-center justify-between">
-        <h2 className="text-4xl">{wishlist?.title ?? 'День рождения'}</h2>
+        <h2 className="text-title-lg">{wishlist?.title ?? 'День рождения'}</h2>
         <WishlistMenu wishlist={wishlist} />
       </div>
       <div className='flex flex-col-reverse md:flex-row gap-5'>
         {wishlist.description && (
           <Card>
-            <CardContent className="text-xl whitespace-pre-wrap mb-5 py-2 px-5">
+            <CardContent className="text-title-sm whitespace-pre-wrap mb-5 py-2 px-5">
               {wishlist.description}
             </CardContent>
           </Card>
         )}
         {
           wishlist?.cover &&
-          <Image className="rounded-2xl" src={wishlist.cover} alt="wishlist-cover" width={400} height={400} unoptimized />
+          <Image className="rounded-card" src={wishlist.cover} alt="wishlist-cover" width={400} height={400} unoptimized />
         }
       </div>
 
       {
         (wishlist.location.name || wishlist.location.time) && (
           <div className='mb-5'>
-            <h3 className="text-2xl mb-2">Дата и место:</h3>
+            <h3 className="text-title mb-2">Дата и место:</h3>
             {
               wishlist.location.time && <div>
                 Дата - {toDate(wishlist.location.time).toLocaleDateString()}
@@ -67,7 +67,7 @@ export default function Page() {
           </div>
         )
       }
-      <h3 className="text-2xl mb-5">Список подарков:</h3>
+      <h3 className="text-title mb-5">Список подарков:</h3>
       <Button
         variant="outline"
         className="w-full border-dashed mb-4"

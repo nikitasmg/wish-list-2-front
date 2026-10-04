@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { cn } from '@/lib/utils'
 import { DressColor, Person, Place, RSVPQuestion, contactPeople, dressColors, locationPoints, pollSettings, rsvpSettings } from '@/shared/block-data'
+import { DRESS_DEFAULT, DRESS_PRESETS } from '@/shared/constants'
 import { newBlockId } from '@/shared/ids'
 import { ArrowDown, ArrowUp, Plus, X } from 'lucide-react'
 import * as React from 'react'
@@ -27,8 +28,8 @@ export function RSVPFields({ data, onChange, blockId }: Props) {
   const setQuestions = (questions: RSVPQuestion[], key?: string) => onChange({ ...data, questions }, key)
   return (
     <div className="space-y-4">
-      <div className="space-y-3 rounded-2xl border bg-muted/30 p-4">
-        <div className="text-xs font-semibold text-muted-foreground">Что спросить</div>
+      <div className="space-y-3 rounded-card border bg-muted/30 p-4">
+        <div className="text-caption font-semibold text-muted-foreground">Что спросить</div>
         {RSVP_FIELDS.map(([key, label]) => (
           <Toggle
             key={key}
@@ -38,7 +39,7 @@ export function RSVPFields({ data, onChange, blockId }: Props) {
           />
         ))}
         {s.questions.map((question, index) => (
-          <div key={question.id} className="space-y-1.5 rounded-xl border bg-background p-2.5">
+          <div key={question.id} className="space-y-1.5 rounded-control-lg border bg-background p-2.5">
             <div className="flex items-center gap-1.5">
               <Input
                 aria-label="Свой вопрос"
@@ -46,7 +47,7 @@ export function RSVPFields({ data, onChange, blockId }: Props) {
                 value={question.label}
                 onChange={e => setQuestions(s.questions.map((q, i) => i === index ? { ...q, label: e.target.value } : q), `question:${blockId}:${question.id}`)}
               />
-              <button type="button" aria-label="Удалить вопрос" onClick={() => setQuestions(s.questions.filter((_, i) => i !== index))} className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-muted-foreground hover:text-destructive">
+              <button type="button" aria-label="Удалить вопрос" onClick={() => setQuestions(s.questions.filter((_, i) => i !== index))} className="flex h-9 w-9 shrink-0 items-center justify-center rounded-control-lg text-muted-foreground hover:text-destructive">
                 <X size={15} aria-hidden />
               </button>
             </div>
@@ -62,7 +63,7 @@ export function RSVPFields({ data, onChange, blockId }: Props) {
           <button
             type="button"
             onClick={() => setQuestions([...s.questions, { id: newBlockId(), label: '', kind: 'text' }])}
-            className="h-8 w-full rounded-lg border border-dashed text-xs font-semibold text-muted-foreground hover:border-primary hover:text-primary"
+            className="h-control-sm w-full rounded-control border border-dashed text-caption font-semibold text-muted-foreground hover:border-primary hover:text-primary"
           >
             + Свой вопрос
           </button>
@@ -111,7 +112,7 @@ export function PollFields({ data, onChange, blockId }: Props) {
             <button
               type="button"
               onClick={() => setOptions([...s.options, { id: newBlockId(), text: '' }])}
-              className="h-9 w-full rounded-lg border border-dashed px-3 text-left text-[13px] text-muted-foreground hover:border-primary hover:text-primary"
+              className="h-control w-full rounded-control border border-dashed px-3 text-left text-label text-muted-foreground hover:border-primary hover:text-primary"
             >
               + Вариант
             </button>
@@ -122,14 +123,14 @@ export function PollFields({ data, onChange, blockId }: Props) {
         <Segmented label="Сколько вариантов можно выбрать" value={s.multiple ? 'many' : 'one'} options={[['one', 'Один'], ['many', 'Несколько']] as const} onChange={v => onChange({ ...data, multiple: v === 'many' })} />
       </Field>
       <Field label="Результаты видны">
-        <div role="group" aria-label="Результаты видны" className="flex flex-col gap-0.5 rounded-xl border p-[3px]">
+        <div role="group" aria-label="Результаты видны" className="flex flex-col gap-0.5 rounded-control border p-0.5">
           {([['all', 'Сразу всем'], ['after_vote', 'После голоса'], ['owner', 'Только мне']] as const).map(([value, name]) => (
             <button
               key={value}
               type="button"
               aria-pressed={s.results === value}
               onClick={() => onChange({ ...data, results: value })}
-              className={cn('h-8 rounded-lg text-[13px] font-semibold', s.results === value ? 'bg-accent text-foreground' : 'text-muted-foreground hover:text-foreground')}
+              className={cn('h-control-sm rounded-tag text-label font-semibold', s.results === value ? 'bg-accent text-foreground' : 'text-muted-foreground hover:text-foreground')}
             >
               {name}
             </button>
@@ -150,7 +151,7 @@ function swap<T>(list: T[], a: number, b: number): T[] {
   return next
 }
 
-const PRESET = ['#FFD166', '#F9A8D4', '#C4B5FD', '#7CC4FF', '#5EEAD4', '#6EE7B7', '#FF8A65', '#E7C9A0', '#3B6FD8', '#24211C', '#FFFFFF', '#9AA6D1']
+const PRESET = DRESS_PRESETS
 const RECENT_KEY = 'dress-code-recent'
 
 function readRecent(): string[] {
@@ -173,13 +174,13 @@ function ColorPicker({ value, onChange, children, confirmLabel = 'Примени
     <Popover open={open} onOpenChange={next => { setOpen(next); if (next) { setRecent(readRecent()); setCode(value) } }}>
       <PopoverTrigger asChild>{children}</PopoverTrigger>
       <PopoverContent className="w-[232px] space-y-3 p-3">
-        <input type="color" aria-label="Палитра" value={/^#[0-9a-f]{6}$/i.test(code) ? code : value} onChange={e => pick(e.target.value.toUpperCase())} className="h-16 w-full cursor-pointer rounded-lg border-0 bg-transparent p-0" />
+        <input type="color" aria-label="Палитра" value={/^#[0-9a-f]{6}$/i.test(code) ? code : value} onChange={e => pick(e.target.value.toUpperCase())} className="h-16 w-full cursor-pointer rounded-control-lg border-0 bg-transparent p-0" />
         <div className="flex flex-wrap gap-1.5">
           {PRESET.map(hex => <Swatch key={hex} hex={hex} onClick={() => pick(hex)} />)}
         </div>
         {recent.length > 0 && (
           <div className="space-y-1">
-            <div className="text-[11px] font-semibold text-muted-foreground">Недавние</div>
+            <div className="text-micro font-semibold text-muted-foreground">Недавние</div>
             <div className="flex flex-wrap gap-1.5">{recent.map(hex => <Swatch key={hex} hex={hex} onClick={() => pick(hex)} />)}</div>
           </div>
         )}
@@ -190,7 +191,7 @@ function ColorPicker({ value, onChange, children, confirmLabel = 'Примени
             setCode(e.target.value)
             if (/^#[0-9a-f]{6}$/i.test(e.target.value)) pick(e.target.value.toUpperCase())
           }}
-          placeholder="#3B6FD8"
+          placeholder={DRESS_DEFAULT}
         />
         <Button type="button" className="w-full" disabled={!/^#[0-9a-f]{6}$/i.test(code)} onClick={() => {
           const hex = code.toUpperCase()
@@ -204,7 +205,7 @@ function ColorPicker({ value, onChange, children, confirmLabel = 'Примени
 }
 
 function Swatch({ hex, onClick }: { hex: string; onClick: () => void }) {
-  return <button type="button" aria-label={hex} onClick={onClick} className="h-6 w-6 rounded-full border shadow-sm" style={{ backgroundColor: hex }} />
+  return <button type="button" aria-label={hex} onClick={onClick} className="h-6 w-6 rounded-full border" style={{ backgroundColor: hex }} />
 }
 
 /** «Дресс-код»: кружок открывает выбор цвета, название пишется под кружком. */
@@ -219,7 +220,7 @@ export function DressCodeFields({ data, onChange, blockId }: Props) {
             <div key={index} className="flex w-14 flex-col items-center gap-1">
               <div className="relative">
                 <ColorPicker value={color.hex} onChange={hex => set(colors.map((c, i) => i === index ? { ...c, hex } : c))}>
-                  <button type="button" aria-label={`Цвет ${index + 1}: ${color.name || color.hex}`} className="h-11 w-11 rounded-full border shadow-sm" style={{ backgroundColor: color.hex }} />
+                  <button type="button" aria-label={`Цвет ${index + 1}: ${color.name || color.hex}`} className="h-11 w-11 rounded-full border" style={{ backgroundColor: color.hex }} />
                 </ColorPicker>
                 <button type="button" aria-label="Убрать цвет" onClick={() => set(colors.filter((_, i) => i !== index))} className="absolute -right-1.5 -top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-destructive-foreground">
                   <X size={10} aria-hidden />
@@ -230,12 +231,12 @@ export function DressCodeFields({ data, onChange, blockId }: Props) {
                 value={color.name}
                 placeholder="цвет"
                 onChange={e => set(colors.map((c, i) => i === index ? { ...c, name: e.target.value } : c), `color-name:${blockId}:${index}`)}
-                className="w-full bg-transparent text-center text-[11px] outline-none placeholder:text-muted-foreground"
+                className="w-full bg-transparent text-center text-micro outline-none placeholder:text-muted-foreground"
               />
             </div>
           ))}
           {colors.length < 8 && (
-            <ColorPicker confirmLabel="Добавить" value="#3B6FD8" onChange={hex => set([...colors, { hex, name: '' }])}>
+            <ColorPicker confirmLabel="Добавить" value={DRESS_DEFAULT} onChange={hex => set([...colors, { hex, name: '' }])}>
               <button type="button" aria-label="Добавить цвет" className="flex h-11 w-11 items-center justify-center rounded-full border border-dashed text-muted-foreground hover:border-primary hover:text-primary">
                 <Plus size={18} aria-hidden />
               </button>
@@ -263,8 +264,8 @@ export function LocationFields({ data, onChange, blockId }: Props) {
   return (
     <div className="space-y-3">
       {list.map((point, index) => (
-        <div key={index} className="space-y-1.5 rounded-xl border p-3">
-          <div className="flex items-center justify-between text-xs font-semibold text-muted-foreground">
+        <div key={index} className="space-y-1.5 rounded-control-lg border p-3">
+          <div className="flex items-center justify-between text-caption font-semibold text-muted-foreground">
             Точка {index + 1}
             {index > 0 && <button type="button" onClick={() => save(list.filter((_, i) => i !== index))} className="hover:text-destructive">Убрать</button>}
           </div>
@@ -274,7 +275,7 @@ export function LocationFields({ data, onChange, blockId }: Props) {
         </div>
       ))}
       {list.length < 3 && (
-        <button type="button" onClick={() => save([...list, { name: '', address: '', link: '' }])} className="h-9 w-full rounded-lg border border-dashed text-xs font-semibold text-muted-foreground hover:border-primary hover:text-primary">
+        <button type="button" onClick={() => save([...list, { name: '', address: '', link: '' }])} className="h-control w-full rounded-control border border-dashed text-caption font-semibold text-muted-foreground hover:border-primary hover:text-primary">
           + Ещё точка
         </button>
       )}
@@ -304,8 +305,8 @@ export function ContactFields({ data, onChange, blockId }: Props) {
   return (
     <div className="space-y-3">
       {list.map((_, index) => (
-        <div key={index} className="space-y-1.5 rounded-xl border p-3">
-          <div className="flex items-center justify-between text-xs font-semibold text-muted-foreground">
+        <div key={index} className="space-y-1.5 rounded-control-lg border p-3">
+          <div className="flex items-center justify-between text-caption font-semibold text-muted-foreground">
             Человек {index + 1}
             {index > 0 && <button type="button" onClick={() => save(list.filter((__, i) => i !== index))} className="hover:text-destructive">Убрать</button>}
           </div>
@@ -316,7 +317,7 @@ export function ContactFields({ data, onChange, blockId }: Props) {
         </div>
       ))}
       {list.length < 3 && (
-        <button type="button" onClick={() => save([...list, { name: '', role: '', phone: '', telegram: '' }])} className="h-9 w-full rounded-lg border border-dashed text-xs font-semibold text-muted-foreground hover:border-primary hover:text-primary">
+        <button type="button" onClick={() => save([...list, { name: '', role: '', phone: '', telegram: '' }])} className="h-control w-full rounded-control border border-dashed text-caption font-semibold text-muted-foreground hover:border-primary hover:text-primary">
           + Ещё человек
         </button>
       )}

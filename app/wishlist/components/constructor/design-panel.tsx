@@ -1,6 +1,7 @@
 'use client'
 
 import { ColorsSelect } from '@/app/wishlist/components/colors-select'
+import { CUSTOM_ACCENTS } from '@/shared/constants'
 import { cn } from '@/lib/utils'
 import { HEADING_FONTS, PATTERNS, backgroundPattern, headingFont } from '@/shared/look'
 import { BackgroundPattern, Wishlist } from '@/shared/types'
@@ -26,13 +27,13 @@ export function DesignPanel({ settings, onChange }: { settings: Settings; onChan
         onChange={colorScheme => onChange({
           ...settings,
           colorScheme,
-          ...(colorScheme === 'custom' && !settings.customScheme ? { customScheme: { base: 'dark' as const, accent: '#FF8A65' } } : {}),
+          ...(colorScheme === 'custom' && !settings.customScheme ? { customScheme: { base: 'dark' as const, accent: CUSTOM_ACCENTS[0].dark } } : {}),
         })}
         onCustomChange={customScheme => onChange({ ...settings, customScheme }, 'customScheme')}
       />
 
       <section className="space-y-2.5">
-        <h3 className="text-xs font-semibold text-muted-foreground">Шрифт заголовков</h3>
+        <h3 className="text-caption font-semibold text-muted-foreground">Шрифт заголовков</h3>
         <div role="group" aria-label="Шрифт заголовков" className="grid grid-cols-2 gap-1.5">
           {HEADING_FONTS.map(option => (
             <button
@@ -41,11 +42,11 @@ export function DesignPanel({ settings, onChange }: { settings: Settings; onChan
               aria-pressed={font === option.value}
               onClick={() => onChange({ ...settings, headingFont: option.value })}
               className={cn(
-                'flex h-12 items-center gap-2.5 rounded-xl px-3 text-left text-xs font-semibold transition-colors',
+                'flex h-12 items-center gap-2.5 rounded-control-lg px-3 text-left text-caption font-semibold transition-colors',
                 font === option.value ? 'bg-accent text-foreground ring-2 ring-primary' : 'bg-muted/50 text-muted-foreground hover:text-foreground',
               )}
             >
-              <span className="text-xl leading-none text-foreground" style={{ fontFamily: option.family, fontWeight: 700 }} aria-hidden>Аа</span>
+              <span className="text-title-sm leading-none text-foreground" style={{ fontFamily: option.family, fontWeight: 700 }} aria-hidden>Аа</span>
               {option.name}
             </button>
           ))}
@@ -53,7 +54,7 @@ export function DesignPanel({ settings, onChange }: { settings: Settings; onChan
       </section>
 
       <section className="space-y-2.5">
-        <h3 className="text-xs font-semibold text-muted-foreground">Узор фона</h3>
+        <h3 className="text-caption font-semibold text-muted-foreground">Узор фона</h3>
         <div role="group" aria-label="Узор фона" className="grid grid-cols-4 gap-1.5">
           {PATTERNS.map(option => (
             <button
@@ -62,11 +63,11 @@ export function DesignPanel({ settings, onChange }: { settings: Settings; onChan
               aria-pressed={pattern === option.value}
               onClick={() => onChange({ ...settings, pattern: option.value as BackgroundPattern })}
               className={cn(
-                'flex flex-col items-center gap-1.5 rounded-xl p-1.5 text-[11px] font-semibold transition-colors',
+                'flex flex-col items-center gap-1.5 rounded-control-lg p-1.5 text-micro font-semibold transition-colors',
                 pattern === option.value ? 'bg-accent text-foreground ring-2 ring-primary' : 'text-muted-foreground hover:text-foreground',
               )}
             >
-              <span className={cn('block h-10 w-full rounded-lg border bg-background', `look-pattern-${option.value}`)} aria-hidden />
+              <span className={cn('block h-10 w-full rounded-control-lg border bg-background', `look-pattern-${option.value}`)} aria-hidden />
               {option.name}
             </button>
           ))}
@@ -74,7 +75,7 @@ export function DesignPanel({ settings, onChange }: { settings: Settings; onChan
       </section>
 
       <section className="space-y-3">
-        <h3 className="text-xs font-semibold text-muted-foreground">Живость</h3>
+        <h3 className="text-caption font-semibold text-muted-foreground">Живость</h3>
         <Toggle label="Главная мечта крупно" checked={Boolean(settings.mainDreamLarge)} onChange={mainDreamLarge => onChange({ ...settings, mainDreamLarge })} />
         <Toggle label="Конфетти при брони" checked={Boolean(settings.confettiOnReserve)} onChange={confettiOnReserve => onChange({ ...settings, confettiOnReserve })} />
         <Toggle label="Живой таймер до праздника" checked={Boolean(settings.liveTimer)} onChange={liveTimer => onChange({ ...settings, liveTimer })} />

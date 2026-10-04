@@ -41,25 +41,25 @@ export function MobileEditor({ wishlist, draft, presents, onShare }: {
   return (
     <div className="fixed inset-0 z-40 flex flex-col bg-background text-foreground">
       <header className="flex h-14 shrink-0 items-center gap-1 px-2">
-        <Link href="/wishlist" aria-label="Назад" className="flex h-11 w-11 items-center justify-center rounded-lg">
+        <Link href="/wishlist" aria-label="Назад" className="flex size-control-lg items-center justify-center rounded-control-lg">
           <ArrowLeft size={20} aria-hidden />
         </Link>
-        <span className="min-w-0 flex-1 truncate text-[17px] font-bold">{draft.draft.title || 'Мой праздник'}</span>
+        <span className="min-w-0 flex-1 truncate text-title-xs font-bold">{draft.draft.title || 'Мой праздник'}</span>
         {wishlist.shortId && (
-          <a href={`/s/${wishlist.shortId}`} target="_blank" rel="noopener noreferrer" aria-label="Предпросмотр" className="flex h-11 w-11 items-center justify-center rounded-lg">
+          <a href={`/s/${wishlist.shortId}`} target="_blank" rel="noopener noreferrer" aria-label="Предпросмотр" className="flex size-control-lg items-center justify-center rounded-control-lg">
             <Eye size={20} aria-hidden />
           </a>
         )}
       </header>
 
-      <nav aria-label="Раздел" className="mx-4 flex shrink-0 gap-0.5 rounded-xl border p-[3px]">
+      <nav aria-label="Раздел" className="mx-4 flex shrink-0 gap-0.5 rounded-control-lg border p-0.5">
         {([['page', 'Страница'], ['presents', `Подарки · ${presents.length}`], ['theme', 'Тема']] as const).map(([value, label]) => (
           <button
             key={value}
             type="button"
             aria-pressed={tab === value}
             onClick={() => setTab(value)}
-            className={cn('h-9 flex-1 rounded-lg text-sm font-semibold', tab === value ? 'bg-accent text-foreground' : 'text-muted-foreground')}
+            className={cn('h-control flex-1 rounded-control text-body-sm font-semibold transition-colors duration-fast', tab === value ? 'bg-accent text-foreground' : 'text-muted-foreground')}
           >
             {label}
           </button>
@@ -84,7 +84,7 @@ export function MobileEditor({ wishlist, draft, presents, onShare }: {
             <button
               type="button"
               onClick={() => setBlocked(true)}
-              className="flex w-full items-center gap-3 rounded-2xl border border-dashed p-4 text-left text-sm text-muted-foreground"
+              className="flex w-full items-center gap-3 rounded-card border border-dashed p-4 text-left text-body-sm text-muted-foreground"
             >
               <Laptop size={20} className="shrink-0" aria-hidden />
               Новые блоки и свободная раскладка — в конструкторе на компьютере
@@ -96,8 +96,8 @@ export function MobileEditor({ wishlist, draft, presents, onShare }: {
       </main>
 
       <footer className="flex shrink-0 items-center gap-3 border-t px-4 py-3">
-        <span role="status" className={cn('flex-1 text-sm', draft.error ? 'text-destructive' : 'text-muted-foreground')}>{draft.status}</span>
-        <button type="button" onClick={onShare} className="h-[50px] rounded-[14px] bg-gradient-to-r from-[#17B6D6] to-[#7B5CF0] px-7 text-base font-bold text-white">
+        <span role="status" className={cn('flex-1 text-body-sm', draft.error ? 'text-destructive' : 'text-muted-foreground')}>{draft.status}</span>
+        <button type="button" onClick={onShare} className="h-control-lg rounded-control-lg bg-brand px-7 text-lead font-bold text-white transition-transform duration-fast active:scale-[.97]">
           Поделиться
         </button>
       </footer>
@@ -118,12 +118,12 @@ function MobileBlockCard({ block, open, first, last, onOpen, onChange, onMove }:
   const Icon = blockIcon(block.type)
   const subtitle = block.type === 'cover' ? block.title : block.title || (typeof block.data.name === 'string' ? block.data.name : '') || block.caption
   return (
-    <article className={cn('rounded-2xl border bg-card', open && 'ring-2 ring-primary', block.hidden && !open && 'opacity-60')}>
+    <article className={cn('rounded-card border bg-card', open && 'ring-2 ring-primary', block.hidden && !open && 'opacity-60')}>
       <div className="flex items-center gap-3 p-3.5">
-        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-muted text-primary"><Icon size={17} aria-hidden /></span>
+        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-control bg-muted text-primary"><Icon size={17} aria-hidden /></span>
         <div className="min-w-0 flex-1">
-          <div className="text-xs text-muted-foreground">{block.caption || info?.label}{block.hidden && ' · скрыт'}</div>
-          <div className="truncate text-[15px] font-semibold">{subtitle || info?.label}</div>
+          <div className="text-caption text-muted-foreground">{block.caption || info?.label}{block.hidden && ' · скрыт'}</div>
+          <div className="truncate text-body font-semibold">{subtitle || info?.label}</div>
         </div>
         {open ? (
           <>
@@ -131,7 +131,7 @@ function MobileBlockCard({ block, open, first, last, onOpen, onChange, onMove }:
             <button type="button" aria-label="Ниже" disabled={last} onClick={() => onMove(1)} className="flex h-11 w-9 items-center justify-center text-muted-foreground disabled:opacity-30"><ArrowDown size={18} aria-hidden /></button>
           </>
         ) : (
-          <button type="button" aria-label="Изменить" onClick={onOpen} className="flex h-11 w-11 items-center justify-center rounded-lg text-muted-foreground"><Pencil size={17} aria-hidden /></button>
+          <button type="button" aria-label="Изменить" onClick={onOpen} className="flex size-control-lg items-center justify-center rounded-control-lg text-muted-foreground"><Pencil size={17} aria-hidden /></button>
         )}
       </div>
       {open && (
@@ -141,7 +141,7 @@ function MobileBlockCard({ block, open, first, last, onOpen, onChange, onMove }:
           )}
           <Input aria-label="Заголовок" placeholder="Заголовок" value={block.title ?? ''} onChange={e => onChange({ ...block, title: e.target.value }, `title:${block.id}`)} />
           {block.type === 'text' && (
-            <div className="rounded-xl border p-3">
+            <div className="rounded-control-lg border p-3">
               <InlineTextEditor
                 html={String(block.data.html ?? '')}
                 onChange={html => onChange({ ...block, data: { ...block.data, html } }, `text:${block.id}`)}
@@ -157,7 +157,7 @@ function MobileBlockCard({ block, open, first, last, onOpen, onChange, onMove }:
             />
           )}
           <Toggle label="Показывать" checked={!block.hidden} onChange={visible => onChange({ ...block, hidden: !visible })} />
-          <button type="button" onClick={onOpen} className="h-11 w-full rounded-xl bg-accent text-sm font-semibold">Готово</button>
+          <button type="button" onClick={onOpen} className="h-control-lg w-full rounded-control-lg bg-accent text-body-sm font-semibold">Готово</button>
         </div>
       )}
     </article>
@@ -177,18 +177,18 @@ function MobileBlocked({ wishlist, onClose }: { wishlist: Wishlist; onClose: () 
   return (
     <div className="fixed inset-0 z-40 flex flex-col bg-background text-foreground">
       <header className="flex h-14 items-center px-3">
-        <button type="button" aria-label="Закрыть" onClick={onClose} className="flex h-11 w-11 items-center justify-center"><X size={20} aria-hidden /></button>
+        <button type="button" aria-label="Закрыть" onClick={onClose} className="flex size-control-lg items-center justify-center"><X size={20} aria-hidden /></button>
       </header>
-      <div className="flex flex-1 flex-col items-center gap-[18px] px-7 pt-6 text-center">
+      <div className="flex flex-1 flex-col items-center gap-4 px-7 pt-6 text-center">
         <Laptop size={96} strokeWidth={1.2} className="mt-6 text-muted-foreground" aria-hidden />
-        <h1 className="text-[26px] font-extrabold leading-tight tracking-tight">Конструктор открывается на компьютере</h1>
-        <p className="text-[15px] leading-relaxed text-muted-foreground">
+        <h1 className="text-title font-extrabold">Конструктор открывается на компьютере</h1>
+        <p className="text-body leading-relaxed text-muted-foreground">
           Перетаскивать блоки на маленьком экране неудобно. С телефона можно менять тексты, тему и подарки — этого хватает для большинства правок.
         </p>
       </div>
       <div className="flex flex-col gap-2.5 px-5 pb-8 pt-5">
-        <button type="button" onClick={onClose} className="h-[52px] rounded-[14px] bg-gradient-to-r from-[#17B6D6] to-[#7B5CF0] text-base font-bold text-white">Править на телефоне</button>
-        <button type="button" onClick={copy} className="h-11 text-[15px] font-semibold text-muted-foreground">Скопировать ссылку</button>
+        <button type="button" onClick={onClose} className="h-control-lg rounded-control-lg bg-brand text-lead font-bold text-white transition-transform duration-fast active:scale-[.97]">Править на телефоне</button>
+        <button type="button" onClick={copy} className="h-control-lg text-body font-semibold text-muted-foreground">Скопировать ссылку</button>
       </div>
     </div>
   )
