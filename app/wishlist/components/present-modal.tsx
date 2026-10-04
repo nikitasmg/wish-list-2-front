@@ -337,10 +337,10 @@ export function PresentModal({ wishlistId, present, open, onOpenChange, onCreate
               onClick={() => form.setValue('isMain', !form.watch('isMain'))}
               className={cn(
                 'flex w-full items-center gap-3 rounded-control-lg border p-3 text-left transition-colors',
-                form.watch('isMain') ? 'border-primary bg-primary/10' : 'hover:border-primary/50',
+                form.watch('isMain') ? 'border-warning/50 bg-warning/5' : 'hover:border-warning/40',
               )}
             >
-              <span className={cn('text-title-sm', form.watch('isMain') ? 'text-primary' : 'text-muted-foreground')} aria-hidden>★</span>
+              <span className={cn('text-title-sm', form.watch('isMain') ? 'text-warning' : 'text-muted-foreground')} aria-hidden>★</span>
               <span>
                 <span className="block text-body-sm font-bold">Главная мечта</span>
                 <span className="block text-caption text-muted-foreground">Покажем первой и крупнее остальных</span>
@@ -351,6 +351,7 @@ export function PresentModal({ wishlistId, present, open, onOpenChange, onCreate
               <Button
                 type="button"
                 variant="outline"
+                size="lg"
                 className="flex-1"
                 onClick={() => onOpenChange(false)}
               >
@@ -358,6 +359,8 @@ export function PresentModal({ wishlistId, present, open, onOpenChange, onCreate
               </Button>
               <Button
                 type="submit"
+                variant="brand"
+                size="lg"
                 className="flex-1"
                 disabled={isPending || isImageUploading}
                 loading={isPending}

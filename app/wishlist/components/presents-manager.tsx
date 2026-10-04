@@ -194,7 +194,7 @@ function PresentRow({ present, fresh, onEdit, onDelete, onGifted, onMain }: {
       </button>
 
       <button type="button" onClick={onEdit} className="flex min-w-0 items-center gap-3 text-left">
-        <CardCover cover={present.images?.[0] || present.cover} letter={present.title} title={present.title} className="h-11 w-11 shrink-0 rounded-control-lg" />
+        <CardCover cover={present.images?.[0] || present.cover} letter={present.title} title={present.title} className="h-11 w-11 shrink-0 rounded-control" />
         <span className="truncate text-body font-semibold">{present.title}</span>
         {present.isMain && <span className="flex shrink-0 items-center gap-1 rounded-full bg-primary/15 px-2 py-0.5 text-micro font-bold text-primary"><Star size={10} fill="currentColor" aria-hidden />главная мечта</span>}
         {present.type && present.type !== 'single' && <span className="shrink-0 rounded-full bg-muted px-2 py-0.5 text-micro font-semibold text-muted-foreground">{present.type === 'group' ? 'вскладчину' : 'набор'}</span>}
@@ -237,7 +237,7 @@ function GuestPreview({ wishlist, presents }: { wishlist: Wishlist; presents: Pr
         ) : (
           presents.slice(0, 6).map(present => (
             <div key={present.id} className="flex items-center gap-2.5 border-t py-2.5">
-              <CardCover cover={present.images?.[0] || present.cover} letter={present.title} title={present.title} className="h-10 w-10 shrink-0 rounded-control-lg" />
+              <CardCover cover={present.images?.[0] || present.cover} letter={present.title} title={present.title} className="h-10 w-10 shrink-0 rounded-control" />
               <span className="min-w-0 flex-1">
                 <span className="block truncate text-label font-bold">{present.isMain && '★ '}{present.title}</span>
                 {present.price != null && <span className="block text-caption text-primary">{formatPrice(present.price)}</span>}
