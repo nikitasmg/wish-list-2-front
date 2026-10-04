@@ -32,6 +32,11 @@ export type CreateFromSystemTemplateInput = {
   name?: string
   /** RFC3339; бэк отвергает другие форматы. */
   event_date?: string
+  /** Крупная цифра на обложке «цифрой»; у других обложек не используется. */
+  age?: number
+  /** Место вместо примера; без блока места в шаблоне бэк добавит его над вишлистом. */
+  place_name?: string
+  place_address?: string
 }
 
 export const useApiCreateFromSystemTemplate = () => {

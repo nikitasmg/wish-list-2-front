@@ -1,5 +1,5 @@
 import api from '@/lib/api'
-import { Block, Wishlist } from '@/shared/types'
+import { Block, RowSettings, Wishlist } from '@/shared/types'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
 
@@ -67,6 +67,9 @@ type CreateConstructorInput = {
   locationLink?: string
   locationTime?: string
   blocks?: Block[]
+  rows?: RowSettings[]
+  /** RFC3339 */
+  eventDate?: string
 }
 
 export const useApiCreateConstructorWishlist = () => {
@@ -86,6 +89,8 @@ export const useApiCreateConstructorWishlist = () => {
         location_link: input.locationLink ?? '',
         location_time: input.locationTime ?? '',
         blocks: input.blocks ?? [],
+        rows: input.rows ?? [],
+        event_date: input.eventDate ?? '',
       })
     },
     onSuccess: async () => {
