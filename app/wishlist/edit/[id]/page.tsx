@@ -11,7 +11,7 @@ export default function Page() {
   const wishlist = data?.data
 
   if (!wishlist) {
-    return <div className="flex min-h-screen items-center justify-center text-sm text-muted-foreground">Открываем конструктор…</div>
+    return <div className="flex min-h-screen items-center justify-center text-body-sm text-muted-foreground">Открываем конструктор…</div>
   }
 
   return <ConstructorEditor wishlist={wishlist} />

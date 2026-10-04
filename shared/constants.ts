@@ -66,6 +66,9 @@ export function normalizeScheme(scheme: string | undefined | null): string {
   return LEGACY_SCHEMES[scheme] ?? 'space'
 }
 
+/** Фон «своей схемы» для образца цвета: тёмная и светлая база. */
+export const CUSTOM_BASES = { dark: '#101216', light: '#F5F5F3' } as const
+
 /** Акценты «своей схемы»: пара «для тёмной базы» / «для светлой». */
 export const CUSTOM_ACCENTS = [
   { name: 'Коралл', dark: '#FF8A65', light: '#D2553A' },

@@ -1,6 +1,6 @@
 'use client'
 
-import { CUSTOM_ACCENTS, CUSTOM_SCHEME, colorSchema, normalizeScheme } from '@/shared/constants'
+import { CUSTOM_ACCENTS, CUSTOM_BASES, CUSTOM_SCHEME, colorSchema, normalizeScheme } from '@/shared/constants'
 import { deriveSchemeStyle } from '@/shared/derive-scheme'
 import { CustomScheme } from '@/shared/types'
 import { cn } from '@/lib/utils'
@@ -28,8 +28,8 @@ export const ColorsSelect = ({ value, onChange, customScheme, onCustomChange, co
     return (
       <section aria-label="Цветовая схема" className="space-y-3">
         <div className="flex items-baseline justify-between">
-          <span className="text-xs font-semibold text-muted-foreground">Цветовая схема</span>
-          <span className="text-sm font-semibold">{currentName}</span>
+          <span className="text-caption font-semibold text-muted-foreground">Цветовая схема</span>
+          <span className="text-body-sm font-semibold">{currentName}</span>
         </div>
         <div role="group" aria-label="Схемы" className="flex flex-wrap gap-2">
           {colorSchema.map(scheme => (
@@ -66,7 +66,7 @@ export const ColorsSelect = ({ value, onChange, customScheme, onCustomChange, co
 
   return (
     <section aria-label="Цветовая схема" className="space-y-3">
-      <p className="text-sm font-medium">Цветовая схема</p>
+      <p className="text-body-sm font-medium">Цветовая схема</p>
         <div className="space-y-4">
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
             {colorSchema.map(scheme => (
@@ -84,7 +84,7 @@ export const ColorsSelect = ({ value, onChange, customScheme, onCustomChange, co
               <SchemeSwatch
                 name="Своя"
                 hint="акцент на выбор"
-                colors={[custom.base === 'dark' ? '#101216' : '#F5F5F3', custom.accent]}
+                colors={[CUSTOM_BASES[custom.base === 'dark' ? 'dark' : 'light'], custom.accent]}
                 selected={current === CUSTOM_SCHEME}
                 dashed
                 onClick={() => onChange(CUSTOM_SCHEME)}
@@ -116,7 +116,7 @@ function SchemeSwatch({
       onClick={onClick}
       aria-pressed={selected}
       className={cn(
-        'flex items-center gap-3 rounded-xl border p-2.5 text-left transition-colors',
+        'flex items-center gap-3 rounded-control-lg border p-2.5 text-left transition-colors',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
         dashed && 'border-dashed',
         selected ? 'border-primary ring-1 ring-primary' : 'border-border hover:border-primary/50',
@@ -132,8 +132,8 @@ function SchemeSwatch({
         ))}
       </span>
       <span className="min-w-0">
-        <span className="block text-sm font-semibold truncate">{name}</span>
-        <span className="block text-xs text-muted-foreground truncate">{hint}</span>
+        <span className="block text-body-sm font-semibold truncate">{name}</span>
+        <span className="block text-caption text-muted-foreground truncate">{hint}</span>
       </span>
     </button>
   )
@@ -158,10 +158,10 @@ function CustomSchemeEditor({
   }
 
   return (
-    <div className="rounded-xl border border-border p-3 space-y-3">
+    <div className="rounded-control-lg border border-border p-3 space-y-3">
       <div className="flex items-center justify-between gap-3">
-        <span className="text-sm font-semibold">Своя схема</span>
-        <div className="inline-flex gap-1 p-0.5 rounded-lg border border-border">
+        <span className="text-body-sm font-semibold">Своя схема</span>
+        <div className="inline-flex gap-1 p-0.5 rounded-control-lg border border-border">
           {(['dark', 'light'] as const).map(base => (
             <button
               key={base}
@@ -169,7 +169,7 @@ function CustomSchemeEditor({
               onClick={() => setBase(base)}
               aria-pressed={scheme.base === base}
               className={cn(
-                'h-7 px-2.5 rounded-md text-xs font-semibold',
+                'h-7 px-2.5 rounded-control text-caption font-semibold',
                 scheme.base === base ? 'bg-secondary text-secondary-foreground' : 'text-muted-foreground',
               )}
             >
@@ -201,24 +201,24 @@ function CustomSchemeEditor({
         })}
       </div>
 
-      <p className="text-xs text-muted-foreground">Выберите акцент — остальное подберём</p>
+      <p className="text-caption text-muted-foreground">Выберите акцент — остальное подберём</p>
 
       <div
-        className="rounded-lg border p-3 space-y-2"
+        className="rounded-control-lg border p-3 space-y-2"
         style={deriveSchemeStyle(scheme)}
       >
-        <div className="bg-background text-foreground rounded-md p-3 space-y-2">
-          <div className="text-xs text-muted-foreground">14 ноября · 19:00</div>
-          <div className="text-lg font-extrabold tracking-tight">
+        <div className="bg-background text-foreground rounded-control-lg p-3 space-y-2">
+          <div className="text-caption text-muted-foreground">14 ноября · 19:00</div>
+          <div className="text-title-xs font-extrabold">
             Маше — <span className="text-primary">30!</span>
           </div>
-          <div className="bg-card border border-border rounded-md p-2 flex items-center gap-2">
-            <span className="w-7 h-7 rounded bg-muted shrink-0" />
+          <div className="bg-card border border-border rounded-control-lg p-2 flex items-center gap-2">
+            <span className="w-7 h-7 rounded-xs bg-muted shrink-0" />
             <span className="flex-1 min-w-0">
-              <span className="block text-xs font-bold truncate">Лампа-гриб</span>
-              <span className="block text-[11px] font-semibold text-primary">6 200 ₽</span>
+              <span className="block text-caption font-bold truncate">Лампа-гриб</span>
+              <span className="block text-micro font-semibold text-primary">6 200 ₽</span>
             </span>
-            <span className="h-6 px-2 rounded bg-primary text-primary-foreground text-[11px] font-bold inline-flex items-center">
+            <span className="h-6 px-2 rounded-xs bg-primary text-primary-foreground text-micro font-bold inline-flex items-center">
               Беру
             </span>
           </div>

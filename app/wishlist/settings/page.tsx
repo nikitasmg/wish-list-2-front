@@ -74,13 +74,13 @@ export default function Page() {
 
   return (
     <div className="max-w-md">
-      <h2 className="text-4xl mb-6">Настройки профиля</h2>
+      <h2 className="text-title-lg mb-6">Настройки профиля</h2>
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
           {/* Avatar */}
           <div className="flex flex-col items-start gap-3">
-            <p className="text-sm font-medium">Аватар</p>
+            <p className="text-body-sm font-medium">Аватар</p>
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
@@ -89,7 +89,7 @@ export default function Page() {
               {currentAvatar ? (
                 <img src={currentAvatar} alt="avatar" className="w-full h-full object-cover" />
               ) : (
-                <span className="text-2xl text-muted-foreground">👤</span>
+                <span className="text-title text-muted-foreground">👤</span>
               )}
               <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                 <Camera size={20} className="text-white" />
@@ -121,8 +121,8 @@ export default function Page() {
 
           {/* Username (read-only) */}
           <div className="space-y-1.5">
-            <p className="text-sm font-medium">Логин</p>
-            <p className="text-sm text-muted-foreground bg-muted rounded-md px-3 py-2">
+            <p className="text-body-sm font-medium">Логин</p>
+            <p className="text-body-sm text-muted-foreground bg-muted rounded-control-lg px-3 py-2">
               {user?.username}
             </p>
           </div>

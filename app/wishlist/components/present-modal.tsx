@@ -140,7 +140,7 @@ export function PresentModal({ wishlistId, present, open, onOpenChange, onCreate
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       {/* На телефоне форма — шторка снизу, как в макете AddGiftMobile. */}
-      <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto max-sm:bottom-0 max-sm:top-auto max-sm:max-w-full max-sm:translate-y-0 max-sm:rounded-b-none max-sm:rounded-t-3xl">
+      <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto max-sm:bottom-0 max-sm:top-auto max-sm:max-w-full max-sm:translate-y-0 max-sm:rounded-b-none max-sm:rounded-t-sheet">
         <DialogHeader>
           <DialogTitle>{isEdit ? 'Редактировать подарок' : 'Новый подарок'}</DialogTitle>
         </DialogHeader>
@@ -178,7 +178,7 @@ export function PresentModal({ wishlistId, present, open, onOpenChange, onCreate
               )}
             />
             {presentType === 'group' && (
-              <p className="text-sm text-muted-foreground">
+              <p className="text-body-sm text-muted-foreground">
                 Несколько человек смогут отметить, что хотят подарить.
               </p>
             )}
@@ -308,7 +308,7 @@ export function PresentModal({ wishlistId, present, open, onOpenChange, onCreate
                     <div className="flex items-center justify-between">
                       <FormLabel>Описание</FormLabel>
                       <span className={cn(
-                        'text-xs tabular-nums',
+                        'text-caption tabular-nums',
                         nearLimit ? 'text-amber-500 font-semibold' : 'text-muted-foreground',
                       )}>
                         {used} / {MAX_PRESENT_DESCRIPTION}
@@ -323,7 +323,7 @@ export function PresentModal({ wishlistId, present, open, onOpenChange, onCreate
                       />
                     </FormControl>
                     {nearLimit && left >= 0 && (
-                      <p className="text-xs text-amber-500">Осталось {left} символов</p>
+                      <p className="text-caption text-amber-500">Осталось {left} символов</p>
                     )}
                     <FormMessage />
                   </FormItem>
@@ -336,14 +336,14 @@ export function PresentModal({ wishlistId, present, open, onOpenChange, onCreate
               aria-pressed={Boolean(form.watch('isMain'))}
               onClick={() => form.setValue('isMain', !form.watch('isMain'))}
               className={cn(
-                'flex w-full items-center gap-3 rounded-xl border p-3 text-left transition-colors',
+                'flex w-full items-center gap-3 rounded-control-lg border p-3 text-left transition-colors',
                 form.watch('isMain') ? 'border-primary bg-primary/10' : 'hover:border-primary/50',
               )}
             >
-              <span className={cn('text-xl', form.watch('isMain') ? 'text-primary' : 'text-muted-foreground')} aria-hidden>★</span>
+              <span className={cn('text-title-sm', form.watch('isMain') ? 'text-primary' : 'text-muted-foreground')} aria-hidden>★</span>
               <span>
-                <span className="block text-sm font-bold">Главная мечта</span>
-                <span className="block text-xs text-muted-foreground">Покажем первой и крупнее остальных</span>
+                <span className="block text-body-sm font-bold">Главная мечта</span>
+                <span className="block text-caption text-muted-foreground">Покажем первой и крупнее остальных</span>
               </span>
             </button>
 

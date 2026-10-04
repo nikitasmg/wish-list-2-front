@@ -13,11 +13,11 @@ import * as React from 'react'
  * бы, что витрина рано или поздно покажет не то, что человек получит.
  */
 
-type Palette = { bg: string; accent: string; dark: boolean }
-
-function palette(colorScheme: string): Palette {
-  const scheme = colorSchema.find(s => s.value === normalizeScheme(colorScheme)) ?? colorSchema[0]
-  return { bg: scheme.colors[0], accent: scheme.colors[1], dark: scheme.kind === 'dark' }
+// Класс схемы задаёт роли (фон, карточка, линия, текст, акцент) — миниатюра
+// красится так же, как настоящая страница, без своих цветов.
+function schemeClass(colorScheme: string): string {
+  const value = normalizeScheme(colorScheme)
+  return (colorSchema.find(s => s.value === value) ?? colorSchema[0]).value
 }
 
 function coverBlock(template: SystemTemplate) {
@@ -25,81 +25,76 @@ function coverBlock(template: SystemTemplate) {
 }
 
 export function TemplatePreview({ template, className }: { template: SystemTemplate; className?: string }) {
-  const { bg, accent, dark } = palette(template.colorScheme)
   const cover = coverBlock(template)
   const view = cover?.view ?? 'center'
   const data = (cover?.data ?? {}) as { number?: string; subtitle?: string }
 
-  const ink = dark ? 'rgba(255,255,255,0.92)' : 'rgba(17,17,20,0.9)'
-  const soft = dark ? 'rgba(255,255,255,0.14)' : 'rgba(17,17,20,0.10)'
-  const card = dark ? 'rgba(255,255,255,0.07)' : 'rgba(255,255,255,0.75)'
-
+  // Рамка выбора приходит снаружи и красится цветом интерфейса, поэтому класс
+  // схемы — на внутреннем слое, а не на том, где ring.
   return (
-    <div
-      className={cn('flex flex-col overflow-hidden rounded-xl', className)}
-      style={{ backgroundColor: bg, color: ink }}
-      aria-hidden
-    >
-      <div className="flex-1 p-3">
-        {view === 'number' && (
-          <div className="flex flex-col items-center text-center">
-            <span className="text-4xl font-extrabold leading-none tracking-tighter" style={{ color: accent }}>
-              {data.number ?? '7'}
-            </span>
-            <span className="mt-1.5 text-[11px] font-extrabold line-clamp-1">{template.sampleTitle}</span>
-          </div>
-        )}
-
-        {view === 'circle' && (
-          <div className="flex flex-col items-center gap-2 text-center">
-            <span className="w-12 h-12 rounded-full" style={{ backgroundColor: soft }} />
-            <span className="text-[12px] font-extrabold tracking-tight line-clamp-1">{template.sampleTitle}</span>
-          </div>
-        )}
-
-        {view === 'left' && (
-          <div className="flex flex-col gap-2">
-            <span className="text-[15px] font-extrabold leading-tight tracking-tighter line-clamp-2" style={{ color: accent }}>
-              {template.sampleTitle}
-            </span>
-            <span className="h-6 rounded-md" style={{ backgroundColor: soft }} />
-          </div>
-        )}
-
-        {view === 'photo' && (
-          <div className="flex flex-col gap-2">
-            <span className="h-14 rounded-md" style={{ backgroundColor: soft }} />
-            <span className="text-[12px] font-extrabold tracking-tight line-clamp-1">{template.sampleTitle}</span>
-          </div>
-        )}
-
-        {view === 'arch' && (
-          <div className="flex flex-col items-center gap-2 text-center">
-            <span className="text-[12px] font-extrabold tracking-tight line-clamp-1">{template.sampleTitle}</span>
-            <span className="w-16 h-9 rounded-t-full" style={{ backgroundColor: soft }} />
-          </div>
-        )}
-
-        {view === 'center' && (
-          <div className="flex flex-col items-center gap-2 text-center">
-            <span className="flex w-full h-9 overflow-hidden rounded-md">
-              <span className="flex-1" style={{ backgroundColor: soft }} />
-              <span className="flex-1" style={{ backgroundColor: accent, opacity: 0.35 }} />
-            </span>
-            <span className="text-[12px] font-extrabold tracking-tight line-clamp-1">{template.sampleTitle}</span>
-          </div>
-        )}
-      </div>
-
-      {/* Три полоски — блоки страницы: миниатюра показывает не только обложку */}
-      <div className="flex flex-col gap-1 p-2 pt-0">
-        {[100, 100, 70].map((width, index) => (
-          <span
-            key={index}
-            className="h-4 rounded"
-            style={{ width: `${width}%`, backgroundColor: card, border: `1px solid ${soft}` }}
-          />
-        ))}
+    <div className={cn('overflow-hidden rounded-control-lg', className)} aria-hidden>
+      <div className={cn(schemeClass(template.colorScheme), 'flex h-full flex-col bg-background text-foreground')}>
+        <div className="flex-1 p-3">
+          {view === 'number' && (
+            <div className="flex flex-col items-center text-center">
+              <span className="text-title-lg font-extrabold leading-none text-primary">
+                {data.number ?? '7'}
+              </span>
+              <span className="mt-1.5 text-micro font-extrabold line-clamp-1">{template.sampleTitle}</span>
+            </div>
+          )}
+  
+          {view === 'circle' && (
+            <div className="flex flex-col items-center gap-2 text-center">
+              <span className="w-12 h-12 rounded-full bg-border" />
+              <span className="text-caption font-extrabold line-clamp-1">{template.sampleTitle}</span>
+            </div>
+          )}
+  
+          {view === 'left' && (
+            <div className="flex flex-col gap-2">
+              <span className="text-body font-extrabold leading-tight line-clamp-2 text-primary">
+                {template.sampleTitle}
+              </span>
+              <span className="h-6 rounded-control bg-border" />
+            </div>
+          )}
+  
+          {view === 'photo' && (
+            <div className="flex flex-col gap-2">
+              <span className="h-14 rounded-control-lg bg-border" />
+              <span className="text-caption font-extrabold line-clamp-1">{template.sampleTitle}</span>
+            </div>
+          )}
+  
+          {view === 'arch' && (
+            <div className="flex flex-col items-center gap-2 text-center">
+              <span className="text-caption font-extrabold line-clamp-1">{template.sampleTitle}</span>
+              <span className="w-16 h-9 rounded-t-full bg-border" />
+            </div>
+          )}
+  
+          {view === 'center' && (
+            <div className="flex flex-col items-center gap-2 text-center">
+              <span className="flex w-full h-9 overflow-hidden rounded-control">
+                <span className="flex-1 bg-border" />
+                <span className="flex-1 bg-primary/35" />
+              </span>
+              <span className="text-caption font-extrabold line-clamp-1">{template.sampleTitle}</span>
+            </div>
+          )}
+        </div>
+  
+        {/* Три полоски — блоки страницы: миниатюра показывает не только обложку */}
+        <div className="flex flex-col gap-1 p-2 pt-0">
+          {[100, 100, 70].map((width, index) => (
+            <span
+              key={index}
+              className="h-4 rounded-xs border border-border bg-card"
+              style={{ width: `${width}%` }}
+            />
+          ))}
+        </div>
       </div>
     </div>
   )
@@ -107,26 +102,19 @@ export function TemplatePreview({ template, className }: { template: SystemTempl
 
 /** Телефон с блоками шаблона — для правой колонки страницы выбора. */
 export function TemplatePhonePreview({ template }: { template: SystemTemplate }) {
-  const { bg, accent, dark } = palette(template.colorScheme)
-  const ink = dark ? 'rgba(255,255,255,0.92)' : 'rgba(17,17,20,0.9)'
-  const soft = dark ? 'rgba(255,255,255,0.14)' : 'rgba(17,17,20,0.10)'
-  const muted = dark ? 'rgba(255,255,255,0.55)' : 'rgba(17,17,20,0.5)'
-
   return (
     <div
-      className="w-[150px] shrink-0 overflow-hidden rounded-2xl border-4 p-2"
-      style={{ backgroundColor: bg, color: ink, borderColor: soft }}
+      className={cn(schemeClass(template.colorScheme), 'w-[150px] shrink-0 overflow-hidden rounded-card border-4 border-border bg-background p-2 text-foreground')}
       aria-hidden
     >
-      <div className="py-2 text-center text-[13px] font-extrabold tracking-tight line-clamp-1" style={{ color: accent }}>
+      <div className="py-2 text-center text-label font-extrabold line-clamp-1 text-primary">
         {template.sampleTitle}
       </div>
       <div className="flex flex-col gap-1">
         {template.blocks.slice(0, 7).map(block => (
           <span
             key={block.id || `${block.row}-${block.col}`}
-            className="flex h-5 items-center truncate rounded px-1.5 text-[8px]"
-            style={{ backgroundColor: soft, color: muted }}
+            className="flex h-5 items-center truncate rounded-xs bg-border px-1.5 text-micro text-muted-foreground"
           >
             {block.caption || blockLabel(block.type)}
           </span>

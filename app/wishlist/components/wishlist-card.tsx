@@ -22,7 +22,7 @@ function WishlistCoverPlaceholder({ colorScheme }: { colorScheme: string }) {
   const [bg, accent] = scheme.colors
   return (
     <div
-      className="w-full h-[110px] rounded-t-xl"
+      className="w-full h-[110px] rounded-t-control-lg"
       style={{
         backgroundImage: [
           `radial-gradient(circle, ${accent}26 1px, transparent 1px)`,
@@ -63,13 +63,13 @@ export const WishlistCard = ({ wishlist }: WishlistCardProps) => {
 
   return (
     <div className={cn(
-      'group relative border text-card-foreground rounded-xl shadow hover:shadow-md transition-shadow bg-card flex flex-col',
+      'group relative border text-card-foreground rounded-control-lg hover:shadow-float transition-shadow bg-card flex flex-col',
       // Прошедший праздник приглушаем: он остаётся в списке, но не спорит
       // за внимание с теми, что ещё впереди.
       timing?.past && 'opacity-60 hover:opacity-100',
     )}>
       {wishlist.cover ? (
-        <div className="relative h-[110px] rounded-t-xl overflow-hidden">
+        <div className="relative h-[110px] rounded-t-control-lg overflow-hidden">
           <Image
             src={wishlist.cover}
             alt={wishlist.title}
@@ -83,7 +83,7 @@ export const WishlistCard = ({ wishlist }: WishlistCardProps) => {
       )}
 
       <div className="p-3 flex flex-col flex-1 gap-2">
-        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+        <div className="flex items-center gap-2 text-caption text-muted-foreground">
           <span
             className="w-2.5 h-2.5 rounded-full shrink-0"
             style={{ backgroundColor: scheme.colors[1] }}
@@ -97,20 +97,20 @@ export const WishlistCard = ({ wishlist }: WishlistCardProps) => {
         </div>
 
         <div className="flex items-start justify-between gap-1">
-          <h3 className="text-sm font-semibold line-clamp-2 leading-snug flex-1">
+          <h3 className="text-body-sm font-semibold line-clamp-2 leading-snug flex-1">
             {wishlist.title}
           </h3>
           <WishlistMenu wishlist={wishlist} />
         </div>
 
-        <p className="text-xs text-muted-foreground">
+        <p className="text-caption text-muted-foreground">
           {date || 'без даты'}
           {timing && <> · {timing.label}</>}
         </p>
 
         {total > 0 && (
           <div className="space-y-1">
-            <div className="text-xs text-muted-foreground">
+            <div className="text-caption text-muted-foreground">
               {reserved} из {total} подарков заняты
             </div>
             <div className="h-1 rounded-full bg-muted overflow-hidden">

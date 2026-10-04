@@ -8,9 +8,9 @@ import * as React from 'react'
 export function StepTitle({ title, hint, kicker }: { title: string; hint?: string; kicker?: React.ReactNode }) {
   return (
     <div className="space-y-2">
-      {kicker && <div className="flex items-center gap-2 text-xs font-bold text-primary">{kicker}</div>}
-      <h1 className="text-[28px] font-extrabold leading-tight tracking-tight">{title}</h1>
-      {hint && <p className="text-[15px] leading-snug text-muted-foreground">{hint}</p>}
+      {kicker && <div className="flex items-center gap-2 text-caption font-bold text-primary">{kicker}</div>}
+      <h1 className="text-title-lg font-extrabold">{title}</h1>
+      {hint && <p className="text-body leading-snug text-muted-foreground">{hint}</p>}
     </div>
   )
 }
@@ -18,12 +18,12 @@ export function StepTitle({ title, hint, kicker }: { title: string; hint?: strin
 export function Field({ label, optional, hint, children }: { label: string; optional?: boolean; hint?: string; children: React.ReactNode }) {
   return (
     <label className="block space-y-2">
-      <span className="block text-[13px] font-semibold">
+      <span className="block text-label font-semibold">
         {label}
         {optional && <span className="font-medium text-muted-foreground"> · по желанию</span>}
       </span>
       {children}
-      {hint && <span className="block text-xs text-muted-foreground">{hint}</span>}
+      {hint && <span className="block text-caption text-muted-foreground">{hint}</span>}
     </label>
   )
 }
@@ -40,7 +40,7 @@ export function Chip({ active, onClick, children, className }: {
       onClick={onClick}
       aria-pressed={active}
       className={cn(
-        'inline-flex min-h-11 items-center gap-2 rounded-full border px-4 text-sm font-semibold transition-colors',
+        'inline-flex min-h-11 items-center gap-2 rounded-full border px-4 text-body-sm font-semibold transition-colors',
         active ? 'border-foreground bg-foreground text-background' : 'text-muted-foreground',
         className,
       )}

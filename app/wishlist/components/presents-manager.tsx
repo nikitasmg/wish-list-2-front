@@ -101,8 +101,8 @@ export function PresentsManager({ wishlist, presents, autoAdd }: { wishlist: Wis
       <section className="min-w-0 space-y-4">
         <div className="flex flex-wrap items-end gap-3">
           <div>
-            <h1 className="text-3xl font-extrabold tracking-tight">Подарки</h1>
-            <p className="mt-1 text-sm text-muted-foreground">
+            <h1 className="text-title-lg font-extrabold">Подарки</h1>
+            <p className="mt-1 text-body-sm text-muted-foreground">
               {presents.length} {pluralizeRu(presents.length, ['подарок', 'подарка', 'подарков'])} в списке · порядок меняется перетаскиванием
             </p>
           </div>
@@ -113,7 +113,7 @@ export function PresentsManager({ wishlist, presents, autoAdd }: { wishlist: Wis
         </div>
 
         {eventPassed && takenNotGifted.length > 0 && (
-          <div className="flex flex-wrap items-center gap-3 rounded-2xl border bg-muted/40 p-4 text-sm">
+          <div className="flex flex-wrap items-center gap-3 rounded-card border bg-muted/40 p-4 text-body-sm">
             <Gift size={18} className="text-primary" aria-hidden />
             <span className="flex-1">Праздник прошёл. Отметить {takenNotGifted.length} {pluralizeRu(takenNotGifted.length, ['занятый подарок', 'занятых подарка', 'занятых подарков'])} подаренными?</span>
             <Button size="sm" variant="outline" onClick={() => takenNotGifted.forEach(p => setGifted({ presentId: p.id, gifted: true }))}>Отметить</Button>
@@ -121,15 +121,15 @@ export function PresentsManager({ wishlist, presents, autoAdd }: { wishlist: Wis
         )}
 
         {presents.length === 0 ? (
-          <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed py-16 text-center">
+          <div className="flex flex-col items-center gap-3 rounded-card border border-dashed py-16 text-center">
             <Gift size={28} className="text-muted-foreground" aria-hidden />
-            <p className="text-sm text-muted-foreground">Подарков пока нет. Гость увидит пустой список, пока вы не добавите первый.</p>
+            <p className="text-body-sm text-muted-foreground">Подарков пока нет. Гость увидит пустой список, пока вы не добавите первый.</p>
             <Button variant="outline" onClick={add}>Добавить подарок</Button>
           </div>
         ) : (
           <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
-            <div className="overflow-hidden rounded-2xl border">
-              <div className="hidden grid-cols-[20px_minmax(0,1fr)_110px_130px_130px_36px] gap-3 border-b px-4 py-2.5 text-xs font-semibold text-muted-foreground md:grid">
+            <div className="overflow-hidden rounded-card border">
+              <div className="hidden grid-cols-[20px_minmax(0,1fr)_110px_130px_130px_36px] gap-3 border-b px-4 py-2.5 text-caption font-semibold text-muted-foreground md:grid">
                 <span /><span>Подарок</span><span>Цена</span><span>Где купить</span><span>Статус</span><span />
               </div>
               {list.map(present => (
@@ -178,8 +178,8 @@ function PresentRow({ present, fresh, onEdit, onDelete, onGifted, onMain }: {
       className={cn(
         'relative grid grid-cols-[20px_minmax(0,1fr)_36px] items-center gap-3 border-b bg-background px-4 py-3 last:border-b-0 md:grid-cols-[20px_minmax(0,1fr)_110px_130px_130px_36px]',
         fresh && 'bg-primary/5',
-        isDragging && 'z-10 shadow-xl',
-        isOver && !isDragging && 'shadow-[inset_0_2px_0_hsl(var(--primary))]',
+        isDragging && 'z-10 shadow-float',
+        isOver && !isDragging && 'shadow-drop',
       )}
     >
       <button
@@ -194,19 +194,19 @@ function PresentRow({ present, fresh, onEdit, onDelete, onGifted, onMain }: {
       </button>
 
       <button type="button" onClick={onEdit} className="flex min-w-0 items-center gap-3 text-left">
-        <CardCover cover={present.images?.[0] || present.cover} letter={present.title} title={present.title} className="h-11 w-11 shrink-0 rounded-lg" />
-        <span className="truncate text-[15px] font-semibold">{present.title}</span>
-        {present.isMain && <span className="flex shrink-0 items-center gap-1 rounded-full bg-primary/15 px-2 py-0.5 text-[11px] font-bold text-primary"><Star size={10} fill="currentColor" aria-hidden />главная мечта</span>}
-        {present.type && present.type !== 'single' && <span className="shrink-0 rounded-full bg-muted px-2 py-0.5 text-[11px] font-semibold text-muted-foreground">{present.type === 'group' ? 'вскладчину' : 'набор'}</span>}
-        {fresh && <span className="shrink-0 rounded-full bg-primary/15 px-2 py-0.5 text-[11px] font-bold text-primary">новый</span>}
+        <CardCover cover={present.images?.[0] || present.cover} letter={present.title} title={present.title} className="h-11 w-11 shrink-0 rounded-control-lg" />
+        <span className="truncate text-body font-semibold">{present.title}</span>
+        {present.isMain && <span className="flex shrink-0 items-center gap-1 rounded-full bg-primary/15 px-2 py-0.5 text-micro font-bold text-primary"><Star size={10} fill="currentColor" aria-hidden />главная мечта</span>}
+        {present.type && present.type !== 'single' && <span className="shrink-0 rounded-full bg-muted px-2 py-0.5 text-micro font-semibold text-muted-foreground">{present.type === 'group' ? 'вскладчину' : 'набор'}</span>}
+        {fresh && <span className="shrink-0 rounded-full bg-primary/15 px-2 py-0.5 text-micro font-bold text-primary">новый</span>}
       </button>
 
-      <span className="hidden text-[15px] font-semibold text-primary md:block">{formatPrice(present.price) || '—'}</span>
-      <span className="hidden truncate text-sm text-muted-foreground md:block">{links[0] ? shopName(links[0]) : '—'}</span>
-      <span className={cn('hidden text-sm md:block', status === 'free' ? 'text-foreground' : 'text-muted-foreground')}>{label}</span>
+      <span className="hidden text-body font-semibold text-primary md:block">{formatPrice(present.price) || '—'}</span>
+      <span className="hidden truncate text-body-sm text-muted-foreground md:block">{links[0] ? shopName(links[0]) : '—'}</span>
+      <span className={cn('hidden text-body-sm md:block', status === 'free' ? 'text-foreground' : 'text-muted-foreground')}>{label}</span>
 
       <DropdownMenu>
-        <DropdownMenuTrigger aria-label={`Действия с подарком «${present.title}»`} className="flex h-8 w-8 items-center justify-center rounded-lg hover:bg-accent">
+        <DropdownMenuTrigger aria-label={`Действия с подарком «${present.title}»`} className="flex size-control-sm items-center justify-center rounded-control-lg hover:bg-accent">
           <Ellipsis size={18} className="text-muted-foreground" aria-hidden />
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
@@ -229,26 +229,26 @@ function GuestPreview({ wishlist, presents }: { wishlist: Wishlist; presents: Pr
   const look = pageLook(wishlist.settings)
   return (
     <aside className="hidden space-y-3 lg:sticky lg:top-4 lg:block lg:self-start">
-      <span className="text-xs text-muted-foreground">Так увидят гости</span>
-      <div className={cn('rounded-3xl border-4 bg-background p-4 text-foreground', look.className)} style={look.style}>
-        <div className="heading mb-3 text-[22px] font-extrabold tracking-tight text-primary">Вишлист</div>
+      <span className="text-caption text-muted-foreground">Так увидят гости</span>
+      <div className={cn('rounded-sheet border-4 bg-background p-4 text-foreground', look.className)} style={look.style}>
+        <div className="heading mb-3 text-title font-extrabold text-primary">Вишлист</div>
         {presents.length === 0 ? (
-          <p className="py-6 text-center text-sm text-muted-foreground">Подарков пока нет</p>
+          <p className="py-6 text-center text-body-sm text-muted-foreground">Подарков пока нет</p>
         ) : (
           presents.slice(0, 6).map(present => (
             <div key={present.id} className="flex items-center gap-2.5 border-t py-2.5">
-              <CardCover cover={present.images?.[0] || present.cover} letter={present.title} title={present.title} className="h-10 w-10 shrink-0 rounded-lg" />
+              <CardCover cover={present.images?.[0] || present.cover} letter={present.title} title={present.title} className="h-10 w-10 shrink-0 rounded-control-lg" />
               <span className="min-w-0 flex-1">
-                <span className="block truncate text-[13px] font-bold">{present.isMain && '★ '}{present.title}</span>
-                {present.price != null && <span className="block text-xs text-primary">{formatPrice(present.price)}</span>}
+                <span className="block truncate text-label font-bold">{present.isMain && '★ '}{present.title}</span>
+                {present.price != null && <span className="block text-caption text-primary">{formatPrice(present.price)}</span>}
               </span>
-              <span className="shrink-0 rounded-lg bg-primary px-2.5 py-1 text-[11px] font-bold text-primary-foreground">
+              <span className="shrink-0 rounded-control-lg bg-primary px-2.5 py-1 text-micro font-bold text-primary-foreground">
                 {present.gifted ? 'подарено' : present.reserved ? 'занят' : 'Беру'}
               </span>
             </div>
           ))
         )}
-        {presents.length > 6 && <p className="border-t pt-2.5 text-center text-xs text-muted-foreground">и ещё {presents.length - 6}</p>}
+        {presents.length > 6 && <p className="border-t pt-2.5 text-center text-caption text-muted-foreground">и ещё {presents.length - 6}</p>}
       </div>
     </aside>
   )

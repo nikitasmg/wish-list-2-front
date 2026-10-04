@@ -9,7 +9,7 @@ import { toast } from '@/hooks/use-toast'
 import { useConstructorTour } from '@/hooks/use-constructor-tour'
 import { useWishlistDraft } from '@/hooks/use-wishlist-draft'
 import { cn } from '@/lib/utils'
-import { colorSchema, normalizeScheme } from '@/shared/constants'
+import { colorSchema, CUSTOM_ACCENTS, CUSTOM_BASES, normalizeScheme } from '@/shared/constants'
 import { BLOCK_CATALOG, LibraryItem, libraryBlock } from '@/shared/editor-model'
 import { insertRow, layoutRows, moveToCell, moveToRow, nudge, placeBeside, replaceBlock } from '@/shared/layout'
 import { pageLook, schemeLook } from '@/shared/look'
@@ -164,7 +164,7 @@ function Editor({ wishlist }: { wishlist: Wishlist }) {
         mode={mode}
         presentsCount={presents.length}
         onMode={setMode}
-        scheme={{ name: schemeInfo?.name ?? 'Своя', colors: schemeInfo?.colors ?? ['#101216', draft.settings.customScheme?.accent ?? '#FF8A65'] }}
+        scheme={{ name: schemeInfo?.name ?? 'Своя', colors: schemeInfo?.colors ?? [CUSTOM_BASES.dark, draft.settings.customScheme?.accent ?? CUSTOM_ACCENTS[0].dark] }}
         onScheme={() => { setMode('page'); setTab('design') }}
         device={device}
         onDevice={setDevice}
@@ -176,7 +176,7 @@ function Editor({ wishlist }: { wishlist: Wishlist }) {
       />
 
       {error != null && (
-        <div role="alert" className="flex flex-wrap items-center gap-3 border-b border-destructive bg-destructive/10 px-4 py-2 text-sm">
+        <div role="alert" className="flex flex-wrap items-center gap-3 border-b border-destructive bg-destructive/10 px-4 py-2 text-body-sm">
           <span className="flex-1">Изменения не сохранились. Черновик остался в редакторе.</span>
           <Button size="sm" variant="outline" onClick={() => void retry()}>Повторить</Button>
           <Button
@@ -226,7 +226,7 @@ function Editor({ wishlist }: { wishlist: Wishlist }) {
 
             {panel && (
               <aside className="flex w-[264px] shrink-0 flex-col border-r p-3">
-                <div className="px-1.5 pb-3 text-[15px] font-bold">{panel === 'add' ? 'Добавить блок' : 'Структура'}</div>
+                <div className="px-1.5 pb-3 text-body font-bold">{panel === 'add' ? 'Добавить блок' : 'Структура'}</div>
                 {panel === 'add'
                   ? <LibraryList onPick={insert} />
                   : <StructurePanel layout={layout} selection={selection} onSelect={select} onLayout={setLayout} />}
@@ -254,7 +254,7 @@ function Editor({ wishlist }: { wishlist: Wishlist }) {
                     aria-pressed={tab === value}
                     onClick={() => setTab(value)}
                     className={cn(
-                      'h-[46px] border-b-2 text-sm transition-colors',
+                      'h-[46px] border-b-2 text-body-sm transition-colors',
                       tab === value ? 'border-primary font-bold text-foreground' : 'border-transparent font-semibold text-muted-foreground hover:text-foreground',
                     )}
                   >
@@ -293,7 +293,7 @@ function Editor({ wishlist }: { wishlist: Wishlist }) {
 
           <DragOverlay dropAnimation={null}>
             {dragBlock && (
-              <div className="inline-flex items-center gap-2 rounded-xl border bg-popover px-3 py-2 text-sm font-semibold shadow-2xl">
+              <div className="inline-flex items-center gap-2 rounded-control-lg border bg-popover px-3 py-2 text-body-sm font-semibold shadow-overlay">
                 <DragIcon size={15} className="text-primary" aria-hidden />
                 {dragBlock.caption || BLOCK_CATALOG.find(c => c.type === dragBlock.type)?.label}
               </div>
@@ -304,7 +304,7 @@ function Editor({ wishlist }: { wishlist: Wishlist }) {
 
       {mode === 'preview' && (
         <div className="min-h-0 flex-1 overflow-y-auto bg-muted/50 p-6">
-          <div className={cn('mx-auto overflow-hidden rounded-2xl border shadow-2xl', device === 'phone' ? 'w-[390px] max-w-full' : 'max-w-[1280px]')}>
+          <div className={cn('mx-auto overflow-hidden rounded-card border shadow-overlay', device === 'phone' ? 'w-[390px] max-w-full' : 'max-w-[1280px]')}>
             <WishlistLanding wishlist={draft} presents={presents} isMyWishlist={false} disableBodyTheme />
           </div>
         </div>
@@ -320,18 +320,18 @@ function Editor({ wishlist }: { wishlist: Wishlist }) {
         <div className="min-h-0 flex-1 overflow-y-auto">
           <div className="mx-auto max-w-3xl space-y-6 p-6">
             <div className="flex items-center justify-between gap-3">
-              <h1 className="text-2xl font-extrabold">Ответы гостей</h1>
+              <h1 className="text-title font-extrabold">Ответы гостей</h1>
               <Button variant="outline" onClick={() => setMode('page')}>К странице</Button>
             </div>
             {(wishlist.blocks ?? []).filter(b => GUEST_BLOCKS.includes(b.type)).map(b => (
-              <section key={b.id} className={cn('space-y-4 rounded-2xl border p-5', schemeOnly.className)} style={schemeOnly.style}>
-                <h2 className="text-xl font-bold">
+              <section key={b.id} className={cn('space-y-4 rounded-card border p-5', schemeOnly.className)} style={schemeOnly.style}>
+                <h2 className="text-title-sm font-bold">
                   {b.title || BLOCK_CATALOG.find(c => c.type === b.type)?.label}
                 </h2>
                 <GuestBlockView block={b} wishlistId={wishlist.id} owner />
               </section>
             ))}
-            <p className="text-sm text-muted-foreground">Показаны сохранённые блоки. Новый блок появится здесь после сохранения.</p>
+            <p className="text-body-sm text-muted-foreground">Показаны сохранённые блоки. Новый блок появится здесь после сохранения.</p>
           </div>
         </div>
       )}

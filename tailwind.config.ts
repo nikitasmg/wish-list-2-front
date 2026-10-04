@@ -65,9 +65,11 @@ export default {
       },
       backgroundImage: {
         // Главная кнопка: градиент от акцентов схемы
-        // Пишется здесь, а не CSS-переменной на :root: переменная взяла бы
-        // цвета корня, а не схемы элемента.
-        'brand': 'linear-gradient(90deg, hsl(var(--primary)), hsl(var(--accent)))',
+        // Главная кнопка интерфейса — градиент бренда, один для обеих тем (макет).
+        'brand': 'linear-gradient(90deg, #17B6D6, #7B5CF0)',
+        // Шапка объявлений: ночное небо бренда и светлый точечный узор поверх
+        'hero-night': 'linear-gradient(135deg, #0F3B4A, #2A1F5C)',
+        'dots': 'radial-gradient(rgba(255,255,255,0.12) 1.4px, transparent 2px)',
         'heart': "url('/icons/heart.svg')",
         'star': "url('/icons/star.svg')",
         'party': "url('/icons/party.svg')",
@@ -130,6 +132,8 @@ export default {
         float: '0 16px 40px rgb(0 0 0 / var(--shadow-alpha))',
         overlay: '0 32px 96px rgb(0 0 0 / var(--shadow-alpha-strong))',
         ring: '0 0 0 2px hsl(var(--ring))',
+        // Место вставки при перетаскивании — линия сверху
+        drop: 'inset 0 2px 0 hsl(var(--primary))',
       },
       transitionDuration: { fast: '120ms', base: '200ms', slow: '320ms' },
       transitionTimingFunction: { 'out-soft': 'cubic-bezier(.22, 1, .36, 1)' },

@@ -20,7 +20,7 @@ const twMerge = extendTailwindMerge({
       'rounded-tr': [{ 'rounded-tr': RADII }],
       'rounded-bl': [{ 'rounded-bl': RADII }],
       'rounded-br': [{ 'rounded-br': RADII }],
-      shadow: [{ shadow: ['float', 'overlay', 'ring'] }],
+      shadow: [{ shadow: ['float', 'overlay', 'ring', 'drop'] }],
       h: [{ h: CONTROLS }],
       w: [{ w: CONTROLS }],
       size: [{ size: CONTROLS }],

@@ -168,24 +168,24 @@ export function CreateQuiz({ templates, categories, initialTemplateId, onCreated
     <div className="fixed inset-0 z-50 flex flex-col bg-background text-foreground">
       <header className="flex h-14 shrink-0 items-center gap-1 px-2">
         {index === 0 ? (
-          <Link href="/wishlist" aria-label="Закрыть" className="flex h-11 w-11 items-center justify-center rounded-lg">
+          <Link href="/wishlist" aria-label="Закрыть" className="flex size-control-lg items-center justify-center rounded-control-lg">
             <X size={20} aria-hidden />
           </Link>
         ) : (
-          <button type="button" onClick={() => go(-1)} aria-label="Назад" className="flex h-11 w-11 items-center justify-center rounded-lg">
+          <button type="button" onClick={() => go(-1)} aria-label="Назад" className="flex size-control-lg items-center justify-center rounded-control-lg">
             <ArrowLeft size={20} aria-hidden />
           </button>
         )}
-        <span className="flex-1 text-[13px] text-muted-foreground">
+        <span className="flex-1 text-label text-muted-foreground">
           {index === 0 ? 'Новый вишлист' : `Шаг ${index + 1} из ${steps.length}`}
         </span>
         {current === 'when' && (
-          <button type="button" onClick={() => { setDate(''); setTime(''); go(1) }} className="h-11 px-2.5 text-sm font-semibold text-muted-foreground">
+          <button type="button" onClick={() => { setDate(''); setTime(''); go(1) }} className="h-control-lg px-2.5 text-body-sm font-semibold text-muted-foreground">
             Дата не известна
           </button>
         )}
         {hasQuestions(current as PageBlockKey) && (
-          <button type="button" onClick={() => go(1)} className="h-11 px-2.5 text-sm font-semibold text-muted-foreground">
+          <button type="button" onClick={() => go(1)} className="h-control-lg px-2.5 text-body-sm font-semibold text-muted-foreground">
             Заполню потом
           </button>
         )}
@@ -213,16 +213,16 @@ export function CreateQuiz({ templates, categories, initialTemplateId, onCreated
                     onClick={() => pickOccasion(id)}
                     aria-pressed={active}
                     className={cn(
-                      'flex min-h-[112px] flex-col gap-2.5 rounded-2xl border p-3.5 text-left transition-colors',
+                      'flex min-h-[112px] flex-col gap-2.5 rounded-card border p-3.5 text-left transition-colors',
                       active ? 'border-primary bg-primary/10' : 'bg-card',
                     )}
                   >
-                    <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-muted text-primary">
+                    <span className="flex h-10 w-10 items-center justify-center rounded-control bg-muted text-primary">
                       <Icon size={22} aria-hidden />
                     </span>
                     <span>
-                      <span className="block text-[15px] font-bold leading-tight">{meta.label}</span>
-                      {meta.hint && <span className="mt-0.5 block text-xs text-muted-foreground">{meta.hint}</span>}
+                      <span className="block text-body font-bold leading-tight">{meta.label}</span>
+                      {meta.hint && <span className="mt-0.5 block text-caption text-muted-foreground">{meta.hint}</span>}
                     </span>
                   </button>
                 )
@@ -235,16 +235,16 @@ export function CreateQuiz({ templates, categories, initialTemplateId, onCreated
           <section className="space-y-5">
             <StepTitle title={WHO[occasion]?.title ?? 'Чей праздник?'} hint="Подставим в название — потом его можно поправить" />
             <Field label={WHO[occasion]?.label ?? 'Имя'}>
-              <Input value={name} onChange={e => setName(e.target.value)} placeholder={WHO[occasion]?.placeholder} maxLength={40} className="h-14 text-lg" />
+              <Input value={name} onChange={e => setName(e.target.value)} placeholder={WHO[occasion]?.placeholder} maxLength={40} className="h-control-xl text-lead" />
             </Field>
             {occasion === 'wedding' && (
               <Field label="Второе имя">
-                <Input value={name2} onChange={e => setName2(e.target.value)} placeholder="Лев" maxLength={40} className="h-14 text-lg" />
+                <Input value={name2} onChange={e => setName2(e.target.value)} placeholder="Лев" maxLength={40} className="h-control-xl text-lead" />
               </Field>
             )}
             {asksAge(occasion) && (
               <Field label="Сколько исполняется" optional hint="Крупная цифра на обложке и в названии">
-                <Input value={age} onChange={e => setAge(e.target.value.replace(/\D/g, '').slice(0, 3))} inputMode="numeric" placeholder={occasion === 'kids' ? '7' : occasion === 'jubilee' ? '60' : '30'} className="h-14 text-lg" />
+                <Input value={age} onChange={e => setAge(e.target.value.replace(/\D/g, '').slice(0, 3))} inputMode="numeric" placeholder={occasion === 'kids' ? '7' : occasion === 'jubilee' ? '60' : '30'} className="h-control-xl text-lead" />
               </Field>
             )}
           </section>
@@ -254,10 +254,10 @@ export function CreateQuiz({ templates, categories, initialTemplateId, onCreated
           <section className="space-y-5">
             <StepTitle title="Как назовём вишлист?" hint="Это первое, что увидят гости по ссылке" />
             <Field label="Название">
-              <Input value={title} onChange={e => setTitle(e.target.value)} placeholder={suggestions[0]} maxLength={60} className="h-14 text-lg" />
+              <Input value={title} onChange={e => setTitle(e.target.value)} placeholder={suggestions[0]} maxLength={60} className="h-control-xl text-lead" />
             </Field>
             <div className="space-y-2.5">
-              <span className="text-[13px] text-muted-foreground">Или возьмите готовое</span>
+              <span className="text-label text-muted-foreground">Или возьмите готовое</span>
               <div className="flex flex-wrap gap-2">
                 {suggestions.map(s => <Chip key={s} active={title === s} onClick={() => setTitle(s)}>{s}</Chip>)}
               </div>
@@ -269,10 +269,10 @@ export function CreateQuiz({ templates, categories, initialTemplateId, onCreated
           <section className="space-y-5">
             <StepTitle title="Когда праздник?" hint="Покажем гостям обратный отсчёт и кнопку «В календарь»" />
             <Field label="Дата">
-              <Input type="date" value={date} onChange={e => setDate(e.target.value)} className="h-14 text-lg" />
+              <Input type="date" value={date} onChange={e => setDate(e.target.value)} className="h-control-xl text-lead" />
             </Field>
             <Field label="Начало" optional>
-              <Input type="time" value={time} onChange={e => setTime(e.target.value)} className="h-14 text-lg" />
+              <Input type="time" value={time} onChange={e => setTime(e.target.value)} className="h-control-xl text-lead" />
             </Field>
           </section>
         )}
@@ -294,10 +294,10 @@ export function CreateQuiz({ templates, categories, initialTemplateId, onCreated
         {current === 'look' && (
           <section className="space-y-5">
             <StepTitle title="Ваша страница" />
-            <div className="space-y-2 rounded-2xl border bg-card p-4">
+            <div className="space-y-2 rounded-card border bg-card p-4">
               <div>
-                <p className="text-xs text-muted-foreground">{[selected?.occasion, when].filter(Boolean).join(' · ')}</p>
-                <p className="text-2xl font-extrabold leading-tight tracking-tight" style={scheme ? { color: scheme.colors[1] } : undefined}>
+                <p className="text-caption text-muted-foreground">{[selected?.occasion, when].filter(Boolean).join(' · ')}</p>
+                <p className="text-title font-extrabold" style={scheme ? { color: scheme.colors[1] } : undefined}>
                   {finalTitle}
                 </p>
               </div>
@@ -308,14 +308,14 @@ export function CreateQuiz({ templates, categories, initialTemplateId, onCreated
                 return (
                   <div
                     key={key}
-                    className={cn('flex gap-3 rounded-xl px-3 py-2.5', hidden ? 'border border-dashed' : 'bg-muted/60')}
+                    className={cn('flex gap-3 rounded-control-lg px-3 py-2.5', hidden ? 'border border-dashed' : 'bg-muted/60')}
                   >
                     <Icon size={16} className="mt-0.5 shrink-0 text-muted-foreground" aria-hidden />
                     <div className="min-w-0">
-                      <p className="text-[11px] font-bold uppercase tracking-wide text-muted-foreground">
+                      <p className="text-micro font-bold uppercase tracking-wide text-muted-foreground">
                         {label}{hidden && ' · скрыт'}
                       </p>
-                      <p className={cn('text-sm leading-snug line-clamp-2', hidden && 'text-muted-foreground')}>
+                      <p className={cn('text-body-sm leading-snug line-clamp-2', hidden && 'text-muted-foreground')}>
                         {hidden ? 'Гости не увидят, пока не заполните' : blockSummary(key, answers)}
                       </p>
                     </div>
@@ -325,7 +325,7 @@ export function CreateQuiz({ templates, categories, initialTemplateId, onCreated
             </div>
 
             <div className="space-y-2.5">
-              <span className="block text-[13px] font-semibold">Оформление</span>
+              <span className="block text-label font-semibold">Оформление</span>
               <div className="grid grid-cols-2 gap-3">
                 {shown.map(template => {
                   const active = selected?.id === template.id
@@ -341,7 +341,7 @@ export function CreateQuiz({ templates, categories, initialTemplateId, onCreated
                         template={lookPreview(template)}
                         className={cn('h-[150px]', active ? 'ring-2 ring-primary' : 'ring-1 ring-border')}
                       />
-                      <span className="px-0.5 text-sm font-bold">{template.name}</span>
+                      <span className="px-0.5 text-body-sm font-bold">{template.name}</span>
                     </button>
                   )
                 })}
@@ -355,10 +355,10 @@ export function CreateQuiz({ templates, categories, initialTemplateId, onCreated
         <footer className="shrink-0 space-y-2.5 border-t px-5 pb-7 pt-3">
           {isLast ? (
             <>
-              <Button className="h-[54px] w-full text-base font-bold" onClick={handleCreate} loading={pending} disabled={pending || (occasion !== LIST_OCCASION && !selected)}>
+              <Button className="h-[54px] w-full text-lead font-bold" onClick={handleCreate} loading={pending} disabled={pending || (occasion !== LIST_OCCASION && !selected)}>
                 Создать вишлист
               </Button>
-              <p className="text-center text-xs text-muted-foreground">
+              <p className="text-center text-caption text-muted-foreground">
                 {occasion === LIST_OCCASION
                   ? 'Подарки добавите сразу после создания'
                   : hiddenCount > 0
@@ -367,14 +367,14 @@ export function CreateQuiz({ templates, categories, initialTemplateId, onCreated
               </p>
             </>
           ) : (
-            <Button className="h-[54px] w-full text-base font-bold" onClick={() => go(1)}>
+            <Button className="h-[54px] w-full text-lead font-bold" onClick={() => go(1)}>
               {current === 'blocks' ? nextLabel(answers.blocks) : 'Дальше'}
             </Button>
           )}
         </footer>
       )}
       {index === 0 && (
-        <p className="shrink-0 px-5 pb-7 pt-3 text-center text-[13px] text-muted-foreground">Займёт пару минут</p>
+        <p className="shrink-0 px-5 pb-7 pt-3 text-center text-label text-muted-foreground">Займёт пару минут</p>
       )}
     </div>
   )

@@ -31,7 +31,7 @@ test('смысловые токены порождают CSS', async () => {
     'shadow-float': 'var(--shadow-alpha)',
     'duration-base': 'transition-duration: 200ms',
     'ease-out-soft': 'cubic-bezier(.22, 1, .36, 1)',
-    'bg-brand': 'linear-gradient(90deg, hsl(var(--primary)), hsl(var(--accent)))',
+    'bg-brand': 'linear-gradient(90deg, #17B6D6, #7B5CF0)',
     'bg-overlay': 'var(--overlay)',
     'text-success': 'var(--success)',
     'bg-warning/15': 'var(--warning) / 0.15',

@@ -41,7 +41,7 @@ export function BlocksPicker({ occasionLabel, blocks, onToggle }: {
       />
       {PAGE_GROUPS.map(group => (
         <div key={group.id} className="space-y-2">
-          <span className="block text-[11px] font-bold uppercase tracking-wider text-muted-foreground">{group.title}</span>
+          <span className="block text-micro font-bold uppercase tracking-wider text-muted-foreground">{group.title}</span>
           <div className="flex flex-wrap gap-1.5">
             {PAGE_BLOCKS.filter(b => b.group === group.id).map(b => {
               const Icon = BLOCK_ICONS[b.key]
@@ -51,8 +51,8 @@ export function BlocksPicker({ occasionLabel, blocks, onToggle }: {
                 <Chip key={b.key} active={on} onClick={() => !locked && onToggle(b.key)} className="pl-3 pr-3.5">
                   <Icon size={17} aria-hidden />
                   {b.label}
-                  {locked && <span className="text-[11px] font-semibold opacity-60">всегда</span>}
-                  {on && !locked && !hasQuestions(b.key) && <span className="text-[11px] font-semibold opacity-60">без вопросов</span>}
+                  {locked && <span className="text-micro font-semibold opacity-60">всегда</span>}
+                  {on && !locked && !hasQuestions(b.key) && <span className="text-micro font-semibold opacity-60">без вопросов</span>}
                 </Chip>
               )
             })}
@@ -101,17 +101,17 @@ export function BlockStep({ step, blocks, occasion, answers, onChange }: {
             placeholder="Напишите, как зовёте гостей"
             maxLength={500}
             rows={4}
-            className="text-base"
+            className="text-lead"
             aria-label="Пара слов гостям"
           />
           <div className="space-y-2">
-            <span className="block text-[13px] text-muted-foreground">Начать с готовой фразы</span>
+            <span className="block text-label text-muted-foreground">Начать с готовой фразы</span>
             {aboutPhrases(occasion).map(p => (
               <button
                 key={p}
                 type="button"
                 onClick={() => set('about', p)}
-                className="block w-full rounded-xl border bg-card px-3.5 py-3 text-left text-sm leading-snug text-muted-foreground"
+                className="block w-full rounded-control-lg border bg-card px-3.5 py-3 text-left text-body-sm leading-snug text-muted-foreground"
               >
                 {p}
               </button>
@@ -128,7 +128,7 @@ export function BlockStep({ step, blocks, occasion, answers, onChange }: {
             ))}
           </div>
           <Field label="Место">
-            <Input value={answers.place.name} onChange={e => set('place', { ...answers.place, name: e.target.value })} placeholder="Кафе, лофт, загородный дом" maxLength={200} className="h-14 text-lg" />
+            <Input value={answers.place.name} onChange={e => set('place', { ...answers.place, name: e.target.value })} placeholder="Кафе, лофт, загородный дом" maxLength={200} className="h-14 text-lead" />
           </Field>
           <Field label="Адрес" optional>
             <Input value={answers.place.address} onChange={e => set('place', { ...answers.place, address: e.target.value })} placeholder="Город, улица, дом" maxLength={200} className="h-14" />
@@ -150,7 +150,7 @@ export function BlockStep({ step, blocks, occasion, answers, onChange }: {
                   onChange={e => set('program', answers.program.map((r, j) => j === i ? { ...r, t: e.target.value } : r))}
                   placeholder={['19:00', '20:30', '22:00'][i] ?? '00:00'}
                   maxLength={20}
-                  className="h-12 w-24 shrink-0 text-base font-semibold"
+                  className="h-control-lg w-24 shrink-0 text-lead font-semibold"
                 />
                 <Input
                   aria-label="Что будет"
@@ -158,7 +158,7 @@ export function BlockStep({ step, blocks, occasion, answers, onChange }: {
                   onChange={e => set('program', answers.program.map((r, j) => j === i ? { ...r, v: e.target.value } : r))}
                   placeholder={['Собираемся', 'Торт и тосты', 'Танцы'][i] ?? 'Что будет'}
                   maxLength={150}
-                  className="h-12 min-w-0 flex-1 text-base"
+                  className="h-control-lg min-w-0 flex-1 text-lead"
                 />
               </div>
             ))}
@@ -167,7 +167,7 @@ export function BlockStep({ step, blocks, occasion, answers, onChange }: {
             <button
               type="button"
               onClick={() => set('program', [...answers.program, { t: '', v: '' }])}
-              className="flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-dashed text-sm font-semibold text-muted-foreground"
+              className="flex h-control-lg w-full items-center justify-center gap-2 rounded-control-lg border border-dashed text-body-sm font-semibold text-muted-foreground"
             >
               <Plus size={16} aria-hidden />Ещё пункт
             </button>
@@ -185,7 +185,7 @@ export function BlockStep({ step, blocks, occasion, answers, onChange }: {
                 colors: on ? answers.dress.colors.filter(x => x.hex !== c.hex) : [...answers.dress.colors, c].slice(-MAX_COLORS),
               })
               return (
-                <button key={c.hex} type="button" onClick={toggle} aria-pressed={on} className="flex flex-col items-center gap-1.5 text-[11px] text-muted-foreground">
+                <button key={c.hex} type="button" onClick={toggle} aria-pressed={on} className="flex flex-col items-center gap-1.5 text-micro text-muted-foreground">
                   <span
                     className={cn('h-12 w-12 rounded-full border', on && 'ring-2 ring-primary ring-offset-2 ring-offset-background')}
                     style={{ backgroundColor: c.hex }}
@@ -204,7 +204,7 @@ export function BlockStep({ step, blocks, occasion, answers, onChange }: {
       {step === 'contact' && (
         <>
           <Field label="Кто отвечает на вопросы">
-            <Input value={answers.contact.name} onChange={e => set('contact', { ...answers.contact, name: e.target.value })} placeholder="Оля, сестра" maxLength={100} className="h-14 text-lg" />
+            <Input value={answers.contact.name} onChange={e => set('contact', { ...answers.contact, name: e.target.value })} placeholder="Оля, сестра" maxLength={100} className="h-14 text-lead" />
           </Field>
           <Field label="Телеграм или телефон">
             <Input value={answers.contact.way} onChange={e => set('contact', { ...answers.contact, way: e.target.value })} placeholder="@olya или +7 900 000-00-00" maxLength={100} className="h-14" />
@@ -231,12 +231,12 @@ export function BlockStep({ step, blocks, occasion, answers, onChange }: {
                   onChange={e => set('sizes', { ...answers.sizes, [key]: e.target.value })}
                   placeholder={hint}
                   maxLength={30}
-                  className="h-14 text-lg font-bold"
+                  className="h-control-xl text-title-xs font-bold"
                 />
               </Field>
             ))}
           </div>
-          <p className="text-xs text-muted-foreground">Пустые поля на страницу не попадут</p>
+          <p className="text-caption text-muted-foreground">Пустые поля на страницу не попадут</p>
         </>
       )}
     </section>
@@ -255,14 +255,14 @@ function TagsStep({ list, strike, offers, onChange }: {
   return (
     <>
       {list.length > 0 && (
-        <div className="flex flex-wrap gap-2 rounded-2xl border bg-card p-3">
+        <div className="flex flex-wrap gap-2 rounded-card border bg-card p-3">
           {list.map(item => (
             <button
               key={item}
               type="button"
               onClick={() => onChange(list.filter(x => x !== item))}
               aria-label={`Убрать «${item}»`}
-              className="inline-flex min-h-9 items-center gap-1.5 rounded-full bg-foreground py-1 pl-3 pr-2.5 text-sm font-bold text-background"
+              className="inline-flex min-h-9 items-center gap-1.5 rounded-full bg-foreground py-1 pl-3 pr-2.5 text-body-sm font-bold text-background"
             >
               <span className={cn(strike && 'line-through')}>{item}</span>
               <X size={14} aria-hidden />
@@ -274,20 +274,20 @@ function TagsStep({ list, strike, offers, onChange }: {
         className="flex gap-2"
         onSubmit={e => { e.preventDefault(); add() }}
       >
-        <Input value={draft} onChange={e => setDraft(e.target.value)} placeholder="Своё — например, «книги»" maxLength={100} className="h-12 min-w-0 flex-1 text-base" aria-label="Свой вариант" />
-        <button type="submit" aria-label="Добавить" className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-foreground text-background">
+        <Input value={draft} onChange={e => setDraft(e.target.value)} placeholder="Своё — например, «книги»" maxLength={100} className="h-control-lg min-w-0 flex-1 text-lead" aria-label="Свой вариант" />
+        <button type="submit" aria-label="Добавить" className="flex size-control-lg shrink-0 items-center justify-center rounded-control-lg bg-foreground text-background">
           <Plus size={20} aria-hidden />
         </button>
       </form>
       <div className="space-y-2">
-        <span className="block text-[13px] text-muted-foreground">Частое — нажмите, чтобы добавить</span>
+        <span className="block text-label text-muted-foreground">Частое — нажмите, чтобы добавить</span>
         <div className="flex flex-wrap gap-2">
           {offers.filter(o => !list.includes(o)).map(o => (
             <button
               key={o}
               type="button"
               onClick={() => onChange(addTag(list, o))}
-              className="min-h-10 rounded-full border px-3.5 text-sm font-semibold text-muted-foreground"
+              className="min-h-10 rounded-full border px-3.5 text-body-sm font-semibold text-muted-foreground"
             >
               + {o}
             </button>

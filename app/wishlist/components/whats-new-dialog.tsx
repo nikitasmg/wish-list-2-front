@@ -49,26 +49,26 @@ export function WhatsNewDialog({ wishlists }: { wishlists: Wishlist[] }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[92dvh] gap-0 overflow-y-auto p-0 sm:max-w-[520px]">
-        <div className="relative overflow-hidden bg-gradient-to-br from-[#0F3B4A] to-[#2A1F5C] px-6 pb-6 pt-7 text-white">
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(rgba(255,255,255,0.12)_1.4px,transparent_2px)] [background-size:28px_28px]" aria-hidden />
-          <span className="relative inline-flex h-7 items-center rounded-full border border-white/20 bg-white/10 px-3 text-xs font-bold">Обновление</span>
-          <DialogTitle className="relative mt-3 font-unbounded text-[26px] font-extrabold leading-[1.1] tracking-[-0.04em]">Намекни обновился</DialogTitle>
-          <DialogDescription className="relative mt-2 text-[15px] text-white/75">Вишлист теперь — целая страница праздника</DialogDescription>
+        <div className="relative overflow-hidden bg-hero-night px-6 pb-6 pt-7 text-white">
+          <div className="pointer-events-none absolute inset-0 bg-dots bg-[length:28px_28px]" aria-hidden />
+          <span className="relative inline-flex h-7 items-center rounded-full border border-white/20 bg-white/10 px-3 text-caption font-bold">Обновление</span>
+          <DialogTitle className="relative mt-3 font-unbounded text-title font-extrabold">Намекни обновился</DialogTitle>
+          <DialogDescription className="relative mt-2 text-body text-white/75">Вишлист теперь — целая страница праздника</DialogDescription>
         </div>
 
         <ul className="flex flex-col gap-4 px-6 py-5">
           {NEWS.map(({ icon: Icon, title, text }) => (
             <li key={title} className="flex gap-3">
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/15 text-primary"><Icon size={18} aria-hidden /></span>
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-control bg-primary/15 text-primary"><Icon size={18} aria-hidden /></span>
               <span className="min-w-0">
-                <span className="block text-[15px] font-bold leading-snug">{title}</span>
-                <span className="block text-sm leading-snug text-muted-foreground">{text}</span>
+                <span className="block text-body font-bold leading-snug">{title}</span>
+                <span className="block text-body-sm leading-snug text-muted-foreground">{text}</span>
               </span>
             </li>
           ))}
         </ul>
 
-        <div className="mx-6 flex gap-3 rounded-xl border bg-muted/40 p-3.5 text-sm">
+        <div className="mx-6 flex gap-3 rounded-control-lg border bg-muted/40 p-3.5 text-body-sm">
           <ShieldCheck size={18} className="mt-0.5 shrink-0 text-primary" aria-hidden />
           <span>Ваши вишлисты на месте, ссылки не изменились. Откройте любой — он уже в новом редакторе.</span>
         </div>

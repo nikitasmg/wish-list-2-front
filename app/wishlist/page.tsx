@@ -23,9 +23,9 @@ export default function Page() {
   if (wishlists.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-24 text-center gap-4">
-        <div className="text-6xl">🎁</div>
-        <h3 className="text-xl font-semibold">Пока нет вишлистов</h3>
-        <p className="text-muted-foreground text-sm max-w-xs">
+        <div className="text-display">🎁</div>
+        <h3 className="text-title-sm font-semibold">Пока нет вишлистов</h3>
+        <p className="text-muted-foreground text-body-sm max-w-xs">
           Создайте первый вишлист и поделитесь им с теми, кто хочет сделать вам подарок
         </p>
         <Button asChild>
@@ -40,8 +40,8 @@ export default function Page() {
       <WhatsNewDialog wishlists={wishlists} />
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight">Мои вишлисты</h2>
-          <p className="mt-2 text-sm text-muted-foreground">
+          <h2 className="text-title-lg font-extrabold">Мои вишлисты</h2>
+          <p className="mt-2 text-body-sm text-muted-foreground">
             {wishlists.length} {pluralRu(wishlists.length, ['вишлист', 'вишлиста', 'вишлистов'])}
             {upcoming > 0 && <> · {upcoming} {pluralRu(upcoming, ['праздник скоро', 'праздника скоро', 'праздников скоро'])}</>}
           </p>
@@ -56,7 +56,7 @@ export default function Page() {
 
       {/* Поиск появляется, когда список перестаёт охватываться взглядом */}
       {wishlists.length > 3 && (
-        <label className="flex items-center gap-2 max-w-xs rounded-xl border px-3 h-10 text-muted-foreground focus-within:ring-2 focus-within:ring-ring">
+        <label className="flex items-center gap-2 max-w-xs rounded-control border px-3 h-control text-muted-foreground focus-within:ring-2 focus-within:ring-ring">
           <Search size={16} aria-hidden />
           <Input
             value={query}
@@ -83,12 +83,12 @@ export default function Page() {
           {!query && (
             <Link
               href="/wishlist/create"
-              className="hidden md:flex flex-col items-center justify-center gap-3 min-h-[220px] rounded-xl border border-dashed text-muted-foreground hover:text-foreground hover:border-primary/50 transition-colors"
+              className="hidden md:flex flex-col items-center justify-center gap-3 min-h-[220px] rounded-control-lg border border-dashed text-muted-foreground hover:text-foreground hover:border-primary/50 transition-colors"
             >
               <span className="flex items-center justify-center w-12 h-12 rounded-full border text-primary">
                 <Plus size={22} aria-hidden />
               </span>
-              <span className="text-sm font-semibold">Создать вишлист</span>
+              <span className="text-body-sm font-semibold">Создать вишлист</span>
             </Link>
           )}
         </div>
@@ -97,15 +97,15 @@ export default function Page() {
       {/* Телефон: создать можно только из шаблона — конструктор открывается
           на компьютере (макет MobileStart). */}
       <section className="space-y-3 md:hidden">
-        <h3 className="text-lg font-extrabold">Новый вишлист</h3>
-        <Link href="/wishlist/create" className="flex items-center gap-3.5 rounded-2xl border p-4">
-          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#17B6D6] to-[#7B5CF0] text-white"><LayoutTemplate size={22} aria-hidden /></span>
-          <span className="min-w-0 flex-1"><span className="block font-bold">Из шаблона</span><span className="block text-sm text-muted-foreground">Готовая страница за пару минут</span></span>
+        <h3 className="text-title-xs font-extrabold">Новый вишлист</h3>
+        <Link href="/wishlist/create" className="flex items-center gap-3.5 rounded-card border p-4">
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-control-lg bg-brand text-white"><LayoutTemplate size={22} aria-hidden /></span>
+          <span className="min-w-0 flex-1"><span className="block font-bold">Из шаблона</span><span className="block text-body-sm text-muted-foreground">Готовая страница за пару минут</span></span>
           <ChevronRight size={18} className="text-muted-foreground" aria-hidden />
         </Link>
-        <div className="flex items-center gap-3.5 rounded-2xl border p-4 text-muted-foreground">
-          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-muted"><Monitor size={22} aria-hidden /></span>
-          <span><span className="block font-bold">Конструктор</span><span className="block text-sm">Доступен на компьютере</span></span>
+        <div className="flex items-center gap-3.5 rounded-card border p-4 text-muted-foreground">
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-control-lg bg-muted"><Monitor size={22} aria-hidden /></span>
+          <span><span className="block font-bold">Конструктор</span><span className="block text-body-sm">Доступен на компьютере</span></span>
         </div>
       </section>
     </div>

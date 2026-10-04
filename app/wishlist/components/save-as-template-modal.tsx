@@ -67,7 +67,7 @@ export function SaveAsTemplateModal({ wishlistId, wishlistTitle, open, onOpenCha
             title: 'Шаблон сохранён',
             description: (
               <button
-                className="underline text-sm"
+                className="underline text-body-sm"
                 onClick={() => router.push('/templates')}
               >
                 Посмотреть в пользовательских шаблонах →
