@@ -53,6 +53,31 @@
     --chart-5: 36 87% 51%;
   }
 
+  /*
+   * Роли дизайн-системы сверх семи цветов схемы (docs/design-system.md).
+   * На светлом success и warning затемнены до контраста AA.
+   */
+  :root,
+  .powder, .linen, .pastel {
+    --success: 160 81% 30%;
+    --success-foreground: 0 0% 100%;
+    --warning: 36 90% 38%;
+    --warning-foreground: 0 0% 100%;
+    --overlay: 3 5 12;
+    --shadow-alpha: 0.12;
+    --shadow-alpha-strong: 0.18;
+  }
+
+  .dark,
+  .space, .midnight, .graphite, .lavender, .malachite, .lagoon {
+    --success: 160 70% 45%;
+    --success-foreground: 222 55% 10%;
+    --warning: 43 100% 70%;
+    --warning-foreground: 45 100% 9%;
+    --shadow-alpha: 0.45;
+    --shadow-alpha-strong: 0.5;
+  }
+
   /* Тёмная тема по умолчанию — «Космос» */
   .dark {
     --background: 222 55% 10%;
@@ -334,6 +359,19 @@ html:not(.dark) .demo-scheme {
   .btn-gradient {
     @apply text-white;
     background-image: linear-gradient(90deg, hsl(var(--primary)), hsl(var(--accent)));
+  }
+}
+
+/*
+ * Уменьшенное движение: без сдвигов и масштаба — только прозрачность и
+ * цвет. Обратная связь остаётся, вестибулярной нагрузки нет.
+ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-property: opacity, color, background-color, border-color !important;
+    scroll-behavior: auto !important;
   }
 }
 

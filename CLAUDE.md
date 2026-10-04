@@ -43,6 +43,8 @@ This is a **Next.js 16 App Router** project — a wishlist service (prosto-namek
 
 **Theming**: `next-themes` with 10 custom color schemes (main, dark, pink, green, blue, dark-blue, monochrome, dark-brown, rainbow, dark-rainbow). Schemes are defined in `shared/constants.ts` and applied as CSS classes.
 
+**Design system**: only role-named tokens — `text-body`, `rounded-control`, `h-control`, `shadow-float`, `duration-base` — never stock Tailwind sizes or arbitrary `[…]` values. Reference: `docs/design-system.md`. Check with `node tests/token-audit.cjs <dir>`.
+
 **Forms**: react-hook-form + zod for validation. Form data for wishlists/presents is sent as `multipart/form-data`.
 
 **Core types** (from `shared/types.ts`):

@@ -1,5 +1,34 @@
 import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { extendTailwindMerge } from "tailwind-merge"
+
+// Смысловые токены дизайн-системы (docs/design-system.md). Без этой
+// настройки twMerge примет `text-body` за цвет и выкинет его рядом с
+// `text-primary`.
+const RADII = ['xs', 'tag', 'control', 'control-lg', 'card', 'sheet', 'block', 'block-sm']
+const CONTROLS = ['control-sm', 'control', 'control-lg', 'control-xl']
+
+const twMerge = extendTailwindMerge({
+  extend: {
+    classGroups: {
+      'font-size': [{ text: ['micro', 'eyebrow', 'caption', 'label', 'body-sm', 'body', 'lead', 'title-xs', 'title-sm', 'title', 'title-lg', 'display-sm', 'display', 'display-xl'] }],
+      rounded: [{ rounded: RADII }],
+      'rounded-t': [{ 'rounded-t': RADII }],
+      'rounded-b': [{ 'rounded-b': RADII }],
+      'rounded-l': [{ 'rounded-l': RADII }],
+      'rounded-r': [{ 'rounded-r': RADII }],
+      'rounded-tl': [{ 'rounded-tl': RADII }],
+      'rounded-tr': [{ 'rounded-tr': RADII }],
+      'rounded-bl': [{ 'rounded-bl': RADII }],
+      'rounded-br': [{ 'rounded-br': RADII }],
+      shadow: [{ shadow: ['float', 'overlay', 'ring'] }],
+      h: [{ h: CONTROLS }],
+      w: [{ w: CONTROLS }],
+      size: [{ size: CONTROLS }],
+      duration: [{ duration: ['fast', 'base', 'slow'] }],
+      ease: [{ ease: ['out-soft'] }],
+    },
+  },
+})
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
