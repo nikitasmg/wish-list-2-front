@@ -46,3 +46,15 @@ test('смысловые токены порождают CSS', async () => {
     assert.ok(body.includes(fragment), `${cls}: ждали «${fragment}», получили «${body}»`)
   }
 })
+
+test('стоковых размеров больше нет — только токены', async () => {
+  const stock = ['text-sm', 'text-xl', 'rounded-lg', 'rounded-2xl', 'shadow-md', 'shadow-2xl', 'duration-200']
+  const out = await css(stock)
+  for (const cls of stock) assert.equal(rule(out, cls), undefined, cls + ' всё ещё порождает CSS')
+})
+
+test('служебные значения остались', async () => {
+  const keep = ['rounded-full', 'rounded-none', 'shadow-none', 'duration-0']
+  const out = await css(keep)
+  for (const cls of keep) assert.ok(rule(out, cls), 'нет правила для ' + cls)
+})

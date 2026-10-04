@@ -18,6 +18,7 @@ const RULES = {
   'произвольный трекинг/интерлиньяж': /(?<![\w-])(?:tracking|leading)-\[/g,
   'transition-all': /(?<![\w-])transition-all(?![\w-])/g,
   'длительность числом': /(?<![\w-])duration-\d+(?![\w-])/g,
+  'стоковая палитра': /(?<![\w-])(?:text|bg|border|ring|from|via|to|fill|stroke|outline|divide|placeholder|decoration|shadow)-(?:slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-\d{2,3}(?![\w-])/g,
   'цвет в коде': /(?<![&\w])#[0-9a-fA-F]{3,8}(?![\w-])|rgba?\(/g,
 }
 

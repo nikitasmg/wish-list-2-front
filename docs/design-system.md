@@ -160,6 +160,21 @@ Hex и `rgba()` в TSX — только в файлах-данных (палит
 | `style={{ color: '#FFD166' }}` | `text-warning` | цвет — роль, а не hex |
 | `<button className="h-10 rounded-xl bg-primary …">` | `<Button>` | один компонент — одно поведение |
 
+## Как это охраняется
+
+- В `tailwind.config.ts` шкалы `fontSize`, `borderRadius`, `boxShadow`,
+  `transitionDuration` заданы в `theme`, а не в `extend`: стоковых `text-sm`,
+  `rounded-lg`, `shadow-md`, `duration-200` просто нет — Tailwind не сгенерирует
+  для них CSS (это проверяет `tests/tailwind-tokens.test.cjs`).
+- `tests/design-tokens.test.cjs` сканирует `app/`, `components/`, `shared/` и
+  падает на стоковых и произвольных кеглях, скруглениях, тенях, отступах,
+  `transition-all`, длительностях числом, стоковой палитре и hex/`rgba(`
+  вне файлов-данных.
+- ESLint (`no-restricted-syntax`) показывает самые частые нарушения прямо в
+  редакторе.
+- Имена классов не собираются из кусков (`text-${size}`): сторож их не видит,
+  а Tailwind не сгенерирует. Пишите классы целиком, выбирайте объектом.
+
 ## Как проверить
 
 ```bash
