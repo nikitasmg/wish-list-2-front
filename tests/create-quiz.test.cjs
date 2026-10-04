@@ -9,12 +9,58 @@ function load(file) {
   new Function('exports', 'require', 'module', output)(loaded.exports, require, loaded)
   return loaded.exports
 }
-const { quizSteps, titleSuggestions, eventDateTime, parseAge, yearsWord, personName } = load('shared/create-quiz.ts')
+const {
+  quizSteps, titleSuggestions, eventDateTime, parseAge, yearsWord, personName,
+  defaultBlocks, emptyAnswers, pagePayload, blockFilled, blockSummary, addTag,
+} = load('shared/create-quiz.ts')
 
-test('у «Просто списка» нет ни имени, ни даты, ни места, ни шаблона', () => {
-  assert.deepEqual(quizSteps('list'), ['occasion', 'title'])
-  assert.deepEqual(quizSteps('bday'), ['occasion', 'who', 'title', 'when', 'where', 'look'])
-  assert.deepEqual(quizSteps(null), ['occasion', 'who', 'title', 'when', 'where', 'look'])
+test('у «Просто списка» нет ни имени, ни даты, ни страницы, ни шаблона', () => {
+  assert.deepEqual(quizSteps('list', ['gifts', 'stop']), ['occasion', 'title'])
+})
+
+test('экраны вопросов — только у отмеченных блоков и в порядке каталога', () => {
+  assert.deepEqual(
+    quizSteps('bday', ['gifts', 'stop', 'rsvp', 'place', 'about']),
+    ['occasion', 'who', 'title', 'when', 'blocks', 'about', 'place', 'stop', 'look'],
+  )
+  assert.deepEqual(quizSteps(null), ['occasion', 'who', 'title', 'when', 'blocks', 'look'])
+})
+
+test('подарки отмечены всегда, остальное — под повод', () => {
+  assert.deepEqual(defaultBlocks('bday'), ['gifts', 'about', 'place', 'stop', 'rsvp'])
+  assert.ok(defaultBlocks('wedding').includes('dress'))
+  assert.equal(defaultBlocks('неизвестный')[0], 'gifts')
+})
+
+test('page для бэка: без подарков, строки обрезаны, пустая программа выкинута', () => {
+  const a = emptyAnswers('bday')
+  a.about = '  Привет  '
+  a.place.name = ' Дома '
+  a.program = [{ t: '19:00', v: ' Сбор ' }, { t: '20:00', v: '  ' }]
+  const page = pagePayload(a)
+  assert.deepEqual(page.blocks, ['about', 'place', 'stop', 'rsvp'])
+  assert.equal(page.about, 'Привет')
+  assert.deepEqual(page.place, { name: 'Дома', address: '', note: '' })
+  assert.deepEqual(page.program, [{ t: '19:00', v: 'Сбор' }])
+})
+
+test('незаполненный блок узнаётся — на странице он будет скрыт', () => {
+  const a = emptyAnswers('bday')
+  assert.equal(blockFilled('stop', a), false)
+  assert.equal(blockFilled('place', a), false)
+  assert.equal(blockFilled('rsvp', a), true, 'ответу гостя заполнять нечего')
+  a.place.address = 'ул. Мира, 1'
+  assert.equal(blockFilled('place', a), true)
+  a.sizes.shoes = '42'
+  assert.equal(blockSummary('sizes', a), 'обувь 42')
+})
+
+test('чипы: без пустых, повторов и не больше 12', () => {
+  assert.deepEqual(addTag(['носки'], ' носки '), ['носки'])
+  assert.deepEqual(addTag(['носки'], '  '), ['носки'])
+  assert.deepEqual(addTag([], ' плед '), ['плед'])
+  const full = Array.from({ length: 12 }, (_, i) => String(i))
+  assert.equal(addTag(full, 'ещё').length, 12)
 })
 
 test('названия-подсказки — в именительном падеже, без склонения имени', () => {

@@ -1,4 +1,5 @@
 import api from '@/lib/api'
+import type { pagePayload } from '@/shared/create-quiz'
 import { SystemTemplate, SystemTemplateCategory, Wishlist } from '@/shared/types'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
@@ -34,9 +35,11 @@ export type CreateFromSystemTemplateInput = {
   event_date?: string
   /** Крупная цифра на обложке «цифрой»; у других обложек не используется. */
   age?: number
-  /** Место вместо примера; без блока места в шаблоне бэк добавит его над вишлистом. */
-  place_name?: string
-  place_address?: string
+  /**
+   * Страница из ответов опросника: шаблон даёт только оформление, тексты-
+   * примеры в вишлист не попадают. Без page блоки шаблона копируются как есть.
+   */
+  page?: ReturnType<typeof pagePayload>
 }
 
 export const useApiCreateFromSystemTemplate = () => {
