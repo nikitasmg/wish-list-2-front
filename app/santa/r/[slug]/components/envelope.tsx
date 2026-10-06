@@ -10,7 +10,7 @@ const isHttpUrl = (value: string) => /^https?:\/\/[^\s/]+/i.test(value)
 
 export function Envelope({ slug, room, receiver }: { slug: string; room: SantaInvite; receiver: SantaReceiver | null }) {
   const key = `santa:${slug}:opened`
-  const [opened, setOpened] = useState(false)
+  const [opened, setOpened] = useState<boolean | null>(null)
 
   useEffect(() => {
     try {
@@ -32,6 +32,8 @@ export function Envelope({ slug, room, receiver }: { slug: string; room: SantaIn
   if (!receiver) {
     return <p className="text-body text-muted-foreground">Пары обновляются — загляните чуть позже.</p>
   }
+
+  if (opened === null) return null
 
   if (!opened) {
     return (

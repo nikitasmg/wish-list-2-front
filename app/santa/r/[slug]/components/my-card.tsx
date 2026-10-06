@@ -7,12 +7,14 @@ import { apiErrorMessage } from '@/shared/santa'
 import { SANTA_ORIGIN, santaHref } from '@/shared/santa-route'
 import { getSantaToken } from '@/shared/santa-token'
 import type { SantaMe } from '@/shared/types'
+import { useQueryClient } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
 import { ConfirmAction } from '../../../components/confirm-action'
 import { CopyField } from '../../../components/copy-field'
 import { ProfileForm } from './profile-form'
 
 export function MyCard({ slug, me }: { slug: string; me: SantaMe }) {
+  const queryClient = useQueryClient()
   const update = useApiSantaUpdateMe(slug)
   const leave = useApiSantaLeave(slug)
   const drawn = me.room.status === 'drawn'
@@ -30,7 +32,14 @@ export function MyCard({ slug, me }: { slug: string; me: SantaMe }) {
     setPersonalLink(`${origin}${santaHref(`/r/${slug}`)}?t=${encodeURIComponent(token)}`)
   }, [slug])
 
-  const onError = (err: unknown) => toast({ variant: 'destructive', title: apiErrorMessage(err) })
+  const onError = (err: unknown) => {
+    toast({ variant: 'destructive', title: apiErrorMessage(err) })
+  }
+  // 409 после жеребьёвки в другой вкладке — перечитать состояние, чтобы показать конверт.
+  const onUpdateError = (err: unknown) => {
+    onError(err)
+    void queryClient.invalidateQueries({ queryKey: ['santa-me', slug] })
+  }
 
   return (
     <section className="space-y-6 rounded-card border border-border bg-card p-6">
@@ -55,11 +64,11 @@ export function MyCard({ slug, me }: { slug: string; me: SantaMe }) {
         nameLocked={drawn}
         submitLabel="Сохранить"
         pending={update.isPending}
-        onSubmit={values => update.mutate(values, { onSuccess: () => toast({ title: 'Сохранено' }), onError })}
+        onSubmit={values => update.mutate(values, { onSuccess: () => toast({ title: 'Сохранено' }), onError: onUpdateError })}
       />
       {!drawn && (
         <ConfirmAction
-          trigger={<Button variant="ghost" className="text-destructive">Выйти из комнаты</Button>}
+          trigger={<Button variant="ghost" className="text-destructive" loading={leave.isPending}>Выйти из комнаты</Button>}
           title="Выйти из комнаты?"
           description="Ваши имя и пожелания удалятся. Вернуться можно по приглашению, пока не прошла жеребьёвка."
           confirmLabel="Выйти"
