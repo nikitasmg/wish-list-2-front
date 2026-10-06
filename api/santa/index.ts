@@ -1,4 +1,5 @@
 import api from '@/lib/api'
+import { isValidRoomId, isValidSantaSlug } from '@/shared/santa'
 import { clearSantaToken, santaHeaders, setSantaToken } from '@/shared/santa-token'
 import type {
   SantaInvite, SantaJoinResult, SantaMe, SantaProfileInput, SantaRoom,
@@ -8,6 +9,8 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { AxiosError, isAxiosError } from 'axios'
 
 type Data<T> = { data: T }
+
+const seg = encodeURIComponent
 
 // ── Организатор ────────────────────────────────────────────────────
 
@@ -20,7 +23,8 @@ export const useApiSantaRooms = () =>
 export const useApiSantaRoom = (id: string) =>
   useQuery({
     queryKey: ['santa-room', id],
-    queryFn: () => api.get<Data<SantaRoomDetails>>(`santa/rooms/${id}`),
+    enabled: isValidRoomId(id),
+    queryFn: () => api.get<Data<SantaRoomDetails>>(`santa/rooms/${seg(id)}`),
     retry: false,
   })
 
@@ -35,7 +39,7 @@ export const useApiCreateSantaRoom = () => {
 export const useApiUpdateSantaRoom = (id: string) => {
   const queryClient = useQueryClient()
   return useMutation<Data<SantaRoom>, AxiosError, SantaRoomInput>({
-    mutationFn: body => api.patch(`santa/rooms/${id}`, body),
+    mutationFn: body => api.patch(`santa/rooms/${seg(id)}`, body),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ['santa-room', id] })
       await queryClient.invalidateQueries({ queryKey: ['santa-rooms'] })
@@ -46,7 +50,7 @@ export const useApiUpdateSantaRoom = (id: string) => {
 export const useApiDeleteSantaRoom = (id: string) => {
   const queryClient = useQueryClient()
   return useMutation<Data<boolean>, AxiosError>({
-    mutationFn: () => api.delete(`santa/rooms/${id}`),
+    mutationFn: () => api.delete(`santa/rooms/${seg(id)}`),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['santa-rooms'] }),
   })
 }
@@ -54,7 +58,7 @@ export const useApiDeleteSantaRoom = (id: string) => {
 export const useApiRemoveSantaParticipant = (roomId: string) => {
   const queryClient = useQueryClient()
   return useMutation<Data<boolean>, AxiosError, string>({
-    mutationFn: participantId => api.delete(`santa/rooms/${roomId}/participants/${participantId}`),
+    mutationFn: participantId => api.delete(`santa/rooms/${seg(roomId)}/participants/${seg(participantId)}`),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['santa-room', roomId] }),
   })
 }
@@ -62,7 +66,7 @@ export const useApiRemoveSantaParticipant = (roomId: string) => {
 const useRoomAction = (roomId: string, action: 'draw' | 'redraw') => {
   const queryClient = useQueryClient()
   return useMutation<Data<boolean>, AxiosError>({
-    mutationFn: () => api.post(`santa/rooms/${roomId}/${action}`),
+    mutationFn: () => api.post(`santa/rooms/${seg(roomId)}/${action}`),
     onSettled: async () => {
       // И при 409: комнату могли разыграть в другой вкладке — показать как есть.
       await queryClient.invalidateQueries({ queryKey: ['santa-room', roomId] })
@@ -79,7 +83,8 @@ export const useApiSantaRedraw = (roomId: string) => useRoomAction(roomId, 'redr
 export const useApiSantaInvite = (slug: string) =>
   useQuery({
     queryKey: ['santa-invite', slug],
-    queryFn: () => api.get<Data<SantaInvite>>(`santa/r/${slug}`),
+    enabled: isValidSantaSlug(slug),
+    queryFn: () => api.get<Data<SantaInvite>>(`santa/r/${seg(slug)}`),
     retry: false,
   })
 
@@ -87,11 +92,11 @@ export const useApiSantaInvite = (slug: string) =>
 export const useApiSantaMe = (slug: string, enabled: boolean) =>
   useQuery({
     queryKey: ['santa-me', slug],
-    enabled,
+    enabled: enabled && isValidSantaSlug(slug),
     retry: false,
     queryFn: async () => {
       try {
-        return await api.get<Data<SantaMe>>(`santa/r/${slug}/me`, { headers: santaHeaders(slug) })
+        return await api.get<Data<SantaMe>>(`santa/r/${seg(slug)}/me`, { headers: santaHeaders(slug) })
       } catch (err) {
         // Устаревший токен (участника убрали, комнату удалили) — не ошибка,
         // а «вы не в комнате».
@@ -104,7 +109,7 @@ export const useApiSantaMe = (slug: string, enabled: boolean) =>
 export const useApiSantaJoin = (slug: string) => {
   const queryClient = useQueryClient()
   return useMutation<Data<SantaJoinResult>, AxiosError, SantaProfileInput>({
-    mutationFn: body => api.post(`santa/r/${slug}/join`, body),
+    mutationFn: body => api.post(`santa/r/${seg(slug)}/join`, body, { headers: santaHeaders(slug) }),
     onSuccess: res => {
       setSantaToken(slug, res.data.token)
       queryClient.setQueryData(['santa-me', slug], { data: res.data.me })
@@ -116,7 +121,7 @@ export const useApiSantaJoin = (slug: string) => {
 export const useApiSantaUpdateMe = (slug: string) => {
   const queryClient = useQueryClient()
   return useMutation<Data<SantaMe>, AxiosError, SantaProfileInput>({
-    mutationFn: body => api.patch(`santa/r/${slug}/me`, body, { headers: santaHeaders(slug) }),
+    mutationFn: body => api.patch(`santa/r/${seg(slug)}/me`, body, { headers: santaHeaders(slug) }),
     onSuccess: res => queryClient.setQueryData(['santa-me', slug], res),
   })
 }
@@ -124,7 +129,7 @@ export const useApiSantaUpdateMe = (slug: string) => {
 export const useApiSantaLeave = (slug: string) => {
   const queryClient = useQueryClient()
   return useMutation<Data<boolean>, AxiosError>({
-    mutationFn: () => api.delete(`santa/r/${slug}/me`, { headers: santaHeaders(slug) }),
+    mutationFn: () => api.delete(`santa/r/${seg(slug)}/me`, { headers: santaHeaders(slug) }),
     onSuccess: () => {
       clearSantaToken(slug)
       queryClient.setQueryData(['santa-me', slug], null)

@@ -9,16 +9,34 @@ import { RoomChips } from '../../../components/room-chips'
 const isHttpUrl = (value: string) => /^https?:\/\/[^\s/]+/i.test(value)
 
 export function Envelope({ slug, room, receiver }: { slug: string; room: SantaInvite; receiver: SantaReceiver | null }) {
-  const key = `santa:${slug}:opened`
+  // Флаг привязан к жеребьёвке: после перезапуска drawnAt другой, конверт снова закрыт.
+  const prefix = `santa:${slug}:opened`
+  const key = `${prefix}:${room.drawnAt ?? ''}`
   const [opened, setOpened] = useState<boolean | null>(null)
+  const [restarted, setRestarted] = useState(false)
 
   useEffect(() => {
     try {
-      setOpened(localStorage.getItem(key) === '1')
+      if (localStorage.getItem(key) === '1') {
+        setOpened(true)
+        return
+      }
+      // Флага для текущей жеребьёвки нет, но этот конверт открывали раньше
+      // (старый ключ, в том числе без drawnAt) — организатор перезапустил её.
+      let hadOlder = false
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i)
+        if (k && k !== key && (k === prefix || k.startsWith(`${prefix}:`))) {
+          hadOlder = true
+          break
+        }
+      }
+      setRestarted(hadOlder)
+      setOpened(false)
     } catch {
       setOpened(false)
     }
-  }, [key])
+  }, [key, prefix])
 
   const reveal = () => {
     setOpened(true)
@@ -38,6 +56,11 @@ export function Envelope({ slug, room, receiver }: { slug: string; room: SantaIn
   if (!opened) {
     return (
       <section className="flex flex-col items-center gap-7 py-10 text-center">
+        {restarted && (
+          <p role="status" className="max-w-sm rounded-control border border-border bg-card px-4 py-3 text-body-sm">
+            Организатор перезапустил жеребьёвку — у вас новый подопечный.
+          </p>
+        )}
         <div aria-hidden className="flex h-40 w-60 items-center justify-center rounded-card bg-festive shadow-overlay">
           <Star className="size-12 text-tone-gold" fill="currentColor" />
         </div>

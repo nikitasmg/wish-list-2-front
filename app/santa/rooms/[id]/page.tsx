@@ -5,7 +5,7 @@ import {
 } from '@/api/santa'
 import { Button } from '@/components/ui/button'
 import { toast } from '@/hooks/use-toast'
-import { MIN_PARTICIPANTS, apiErrorMessage, formatDay, participantsLabel } from '@/shared/santa'
+import { MIN_PARTICIPANTS, apiErrorMessage, formatDay, isValidRoomId, participantsLabel } from '@/shared/santa'
 import { SANTA_ORIGIN, santaHref } from '@/shared/santa-route'
 import { Settings, Shuffle, Trash2 } from 'lucide-react'
 import { isAxiosError } from 'axios'
@@ -30,8 +30,8 @@ export default function SantaRoomPage() {
     if (!SANTA_ORIGIN) setOrigin(window.location.origin)
   }, [])
 
-  if (isError) {
-    const notFound = isAxiosError(error) && error.response?.status === 404
+  const notFound = !isValidRoomId(id) || (isAxiosError(error) && error.response?.status === 404)
+  if (isError || notFound) {
     return (
       <div className="space-y-4">
         <p className="text-body text-muted-foreground">{notFound ? 'Комната не найдена.' : 'Не удалось загрузить комнату'}</p>

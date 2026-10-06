@@ -23,6 +23,9 @@ export function JoinForm({ slug }: { slug: string }) {
           onError: err => toast({ variant: 'destructive', title: apiErrorMessage(err) }),
         })}
       />
+      <p className="text-body-sm text-muted-foreground">
+        Уже вступали на другом устройстве? Откройте свою личную ссылку — она пришла вам после вступления.
+      </p>
     </section>
   )
 }

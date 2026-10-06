@@ -4,7 +4,7 @@ const { load } = require('./load.cjs')
 
 const {
   formatBudget, formatDay, participantsLabel, toRoomInput, roomToFormValues,
-  roomSchema, profileSchema, apiErrorMessage, EMPTY_ROOM_FORM,
+  roomSchema, profileSchema, apiErrorMessage, EMPTY_ROOM_FORM, isValidSantaSlug, isValidRoomId,
 } = load('shared/santa.ts')
 
 test('бюджет: рубли с неразрывным пробелом или «без лимита»', () => {
@@ -70,4 +70,19 @@ test('ссылка на вишлист — только http(s)', () => {
 test('текст ошибки берётся из ответа API', () => {
   assert.equal(apiErrorMessage({ response: { data: { error: 'жеребьёвка уже прошла' } } }), 'жеребьёвка уже прошла')
   assert.equal(apiErrorMessage(new Error('x')), 'Что-то пошло не так. Попробуйте ещё раз.')
+})
+
+test('адрес комнаты: ровно 8 латинских букв и цифр', () => {
+  assert.equal(isValidSantaSlug('AbCd2345'), true)
+  for (const bad of ['', 'abc', 'AbCd23456', '..%2Frooms', '../rooms/x', 'AbCd234?', 'АбВгДеЁж', 'AbCd 345', 'AbCd234\n']) {
+    assert.equal(isValidSantaSlug(bad), false, bad)
+  }
+})
+
+test('id комнаты: только UUID', () => {
+  assert.equal(isValidRoomId('3f2b8c1e-9d4a-4e7b-8a61-0c5d2e9f1a77'), true)
+  assert.equal(isValidRoomId('3F2B8C1E-9D4A-4E7B-8A61-0C5D2E9F1A77'), true)
+  for (const bad of ['', '123', '../x', '3f2b8c1e-9d4a-4e7b-8a61-0c5d2e9f1a7', '3f2b8c1e-9d4a-4e7b-8a61-0c5d2e9f1a77/draw', '3f2b8c1e9d4a4e7b8a610c5d2e9f1a77']) {
+    assert.equal(isValidRoomId(bad), false, bad)
+  }
 })

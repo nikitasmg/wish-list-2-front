@@ -1,9 +1,11 @@
 'use client'
 
 import { useApiSantaRoom, useApiUpdateSantaRoom } from '@/api/santa'
+import { Button } from '@/components/ui/button'
 import { toast } from '@/hooks/use-toast'
-import { apiErrorMessage, roomToFormValues, toRoomInput } from '@/shared/santa'
+import { apiErrorMessage, isValidRoomId, roomToFormValues, toRoomInput } from '@/shared/santa'
 import { santaHref } from '@/shared/santa-route'
+import { isAxiosError } from 'axios'
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
 import { RoomForm } from '../../../components/room-form'
@@ -11,11 +13,20 @@ import { RoomForm } from '../../../components/room-form'
 export default function EditSantaRoomPage() {
   const { id } = useParams<{ id: string }>()
   const router = useRouter()
-  const { data, isError } = useApiSantaRoom(id)
+  const { data, isError, error, refetch } = useApiSantaRoom(id)
   const update = useApiUpdateSantaRoom(id)
   const room = data?.data.room
 
-  if (isError) return <p className="text-body text-muted-foreground">Комната не найдена.</p>
+  const notFound = !isValidRoomId(id) || (isAxiosError(error) && error.response?.status === 404)
+  if (notFound) return <p className="text-body text-muted-foreground">Комната не найдена.</p>
+  if (isError) {
+    return (
+      <div className="space-y-4">
+        <p className="text-body text-muted-foreground">Не удалось загрузить настройки</p>
+        <Button variant="secondary" onClick={() => refetch()}>Повторить</Button>
+      </div>
+    )
+  }
   if (!room) return <p className="text-body text-muted-foreground">Загружаем настройки…</p>
 
   return (

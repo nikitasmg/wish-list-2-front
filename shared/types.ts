@@ -362,6 +362,8 @@ export type SantaInvite = {
   message: string
   participantsCount: number
   status: SantaRoomStatus
+  /** Когда прошла последняя жеребьёвка (меняется при перезапуске); null до неё. */
+  drawnAt: string | null
 }
 
 export type SantaReceiver = { name: string; wishes: string; wishlistUrl: string }

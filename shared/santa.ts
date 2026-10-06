@@ -4,6 +4,14 @@ import type { SantaRoom, SantaRoomInput } from './types'
 
 export const MIN_PARTICIPANTS = 3
 
+// Адрес комнаты бэк генерирует как 8 символов [a-zA-Z0-9] (usecase/santa/secret.go).
+const SLUG_RE = /^[A-Za-z0-9]{8}$/
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
+/** Параметры маршрута приходят из адресной строки: в запрос идут только правильные по форме. */
+export const isValidSantaSlug = (value: string): boolean => SLUG_RE.test(value)
+export const isValidRoomId = (value: string): boolean => UUID_RE.test(value)
+
 /** «до 3 000 ₽» или «без лимита». */
 export function formatBudget(budget: number | null): string {
   if (budget === null) return 'без лимита'

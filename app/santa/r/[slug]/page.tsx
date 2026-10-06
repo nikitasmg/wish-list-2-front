@@ -2,8 +2,10 @@
 
 import { useApiSantaInvite, useApiSantaMe } from '@/api/santa'
 import { Button } from '@/components/ui/button'
+import { isValidSantaSlug } from '@/shared/santa'
 import { setSantaToken } from '@/shared/santa-token'
 import { useQueryClient } from '@tanstack/react-query'
+import { isAxiosError } from 'axios'
 import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { Suspense, useEffect, useState } from 'react'
 import { Envelope } from './components/envelope'
@@ -27,7 +29,7 @@ function InvitePage() {
     // иначе он уедет в историю браузера и в скриншоты.
     if (rawToken !== null) {
       // Токен бэкенда — 32 случайных байта в base64url; остальное игнорируем.
-      if (urlToken && TOKEN_RE.test(urlToken)) {
+      if (urlToken && TOKEN_RE.test(urlToken) && isValidSantaSlug(slug)) {
         setSantaToken(slug, urlToken)
         // Токен не входит в ключ запроса: закешированное «не участник» (null)
         // от прошлого визита иначе показало бы форму вступления настоящему участнику.
@@ -46,8 +48,17 @@ function InvitePage() {
   const invite = useApiSantaInvite(slug)
   const me = useApiSantaMe(slug, ready)
 
-  if (invite.isError) {
+  const notFound = !isValidSantaSlug(slug) || (isAxiosError(invite.error) && invite.error.response?.status === 404)
+  if (notFound) {
     return <p className="text-body text-muted-foreground">Комната не найдена. Проверьте ссылку у организатора.</p>
+  }
+  if (invite.isError) {
+    return (
+      <div className="space-y-4">
+        <p className="text-body text-muted-foreground">Не удалось загрузить приглашение</p>
+        <Button variant="secondary" onClick={() => invite.refetch()}>Повторить</Button>
+      </div>
+    )
   }
   if (!invite.data || !ready || me.isPending) {
     return <p className="text-body text-muted-foreground">Загружаем приглашение…</p>
