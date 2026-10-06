@@ -5,7 +5,7 @@
  */
 export const SANTA_BASE = process.env.NEXT_PUBLIC_SANTA_BASE ?? '/santa'
 export const SANTA_ORIGIN = process.env.NEXT_PUBLIC_SANTA_ORIGIN ?? ''
-export const MAIN_ORIGIN = process.env.NEXT_PUBLIC_APP_URL ||'https://prosto-namekni.ru'
+export const MAIN_ORIGIN = process.env.NEXT_PUBLIC_APP_URL || 'https://prosto-namekni.ru'
 
 /** Путь страницы Санты с учётом того, где он живёт. */
 export function santaHref(path: string, base: string = SANTA_BASE): string {
@@ -53,7 +53,10 @@ export function safeNext(raw: string | null | undefined, allowedOrigins: string[
     const base = allowedOrigins[0] ?? MAIN_ORIGIN
     try {
       const url = new URL(raw, base)
-      return url.origin === new URL(base).origin ? `${url.pathname}${url.search}${url.hash}` : null
+      if (url.origin !== new URL(base).origin) return null
+      // Точечные сегменты («/.//evil.com») схлопываются в «//evil.com» — это уже чужой адрес.
+      if (url.pathname.startsWith('//')) return null
+      return `${url.pathname}${url.search}${url.hash}`
     } catch {
       return null
     }

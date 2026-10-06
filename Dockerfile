@@ -16,7 +16,7 @@ RUN pnpm install
 COPY . .
 
 # NEXT_PUBLIC_* вшиваются в сборку, поэтому приходят аргументами сборки
-# (в Dokploy — Build-time Arguments). Не переданы — берутся боевые значения.
+# (в Dokploy — Build-time Arguments). Для боевой сборки обязательны оба NEXT_PUBLIC_SANTA_*: SANTA_BASE (пусто) и SANTA_ORIGIN (https://santa.prosto-namekni.ru); без SANTA_ORIGIN поддомен не настроен.
 ARG NEXT_PUBLIC_API_URL
 ARG NEXT_PUBLIC_APP_URL
 ARG NEXT_PUBLIC_SANTA_BASE

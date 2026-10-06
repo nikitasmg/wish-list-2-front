@@ -52,6 +52,12 @@ test('после входа ведём только к себе', () => {
   assert.equal(safeNext('/\r/evil.com', allowed), null)
   assert.equal(safeNext(new URLSearchParams('next=/%09/evil.com').get('next'), allowed), null)
   assert.equal(safeNext('/wishlist?a=1#x', allowed), '/wishlist?a=1#x')
+  assert.equal(safeNext('/.//evil.com', allowed), null)
+  assert.equal(safeNext('/a/..//evil.com', allowed), null)
+  assert.equal(safeNext('/%2e//evil.com', allowed), null)
+  for (const ok of ['/wishlist?a=1#x', '/a/../b', `${ORIGIN}/rooms/new`]) {
+    assert.equal(safeNext(safeNext(ok, allowed), allowed), safeNext(ok, allowed))
+  }
   assert.equal(safeNext('', allowed), null)
   assert.equal(safeNext(null, allowed), null)
 })
