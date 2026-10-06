@@ -20,6 +20,9 @@ const buttonVariants = cva(
         // Главное действие интерфейса — градиент из акцентов схемы.
         brand:
           "bg-brand text-white font-bold hover:opacity-90",
+        // Главное действие Тайного Санты.
+        festive:
+          "bg-festive text-white font-bold hover:opacity-90",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90",
         outline:
