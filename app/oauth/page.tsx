@@ -2,6 +2,7 @@
 
 import { useApiAuth } from '@/api/auth'
 import { toast } from '@/hooks/use-toast'
+import { takeNext } from '@/shared/auth-next'
 import { AuthProps } from '@/shared/types'
 import { useSearchParams } from 'next/navigation'
 
@@ -28,7 +29,7 @@ function Auth() {
       const authData = parseAuthParams()
       if (authData) {
         mutate(authData, {
-          onSuccess: () => window.location.replace('/wishlist'),
+          onSuccess: () => window.location.replace(takeNext()),
           onError: () => {
             toast({
               variant: 'destructive',

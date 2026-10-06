@@ -1,6 +1,7 @@
 'use client'
 
 import { useApiLogin, useApiRegister } from '@/api/auth'
+import { takeNext } from '@/shared/auth-next'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -45,13 +46,13 @@ export function AuthForm({ isLogin, disabled }: Props) {
     if (isLogin) {
       login(data, {
         onSuccess: () => {
-          window.location.replace('/wishlist')
+          window.location.replace(takeNext())
         },
       })
     } else {
       register(data, {
         onSuccess: () => {
-          window.location.replace('/wishlist')
+          window.location.replace(takeNext())
         },
       })
     }
