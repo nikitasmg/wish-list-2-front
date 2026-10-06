@@ -8,6 +8,7 @@ import { toast } from '@/hooks/use-toast'
 import { MIN_PARTICIPANTS, apiErrorMessage, formatDay, participantsLabel } from '@/shared/santa'
 import { SANTA_ORIGIN, santaHref } from '@/shared/santa-route'
 import { Settings, Shuffle, Trash2 } from 'lucide-react'
+import { isAxiosError } from 'axios'
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -18,7 +19,7 @@ import { RoomChips } from '../../components/room-chips'
 export default function SantaRoomPage() {
   const { id } = useParams<{ id: string }>()
   const router = useRouter()
-  const { data, isError } = useApiSantaRoom(id)
+  const { data, isError, error, refetch } = useApiSantaRoom(id)
   const draw = useApiSantaDraw(id)
   const redraw = useApiSantaRedraw(id)
   const remove = useApiRemoveSantaParticipant(id)
@@ -29,7 +30,18 @@ export default function SantaRoomPage() {
     if (!SANTA_ORIGIN) setOrigin(window.location.origin)
   }, [])
 
-  if (isError) return <p className="text-body text-muted-foreground">Комната не найдена.</p>
+  if (isError) {
+    const notFound = isAxiosError(error) && error.response?.status === 404
+    return (
+      <div className="space-y-4">
+        <p className="text-body text-muted-foreground">{notFound ? 'Комната не найдена.' : 'Не удалось загрузить комнату'}</p>
+        <div className="flex flex-wrap items-center gap-4">
+          {!notFound && <Button variant="secondary" onClick={() => refetch()}>Повторить</Button>}
+          <Link href={santaHref('/rooms')} className="text-body-sm text-muted-foreground hover:text-foreground">← Мои комнаты</Link>
+        </div>
+      </div>
+    )
+  }
   const details = data?.data
   if (!details) return null
 
@@ -78,7 +90,7 @@ export default function SantaRoomPage() {
                 </span>
                 {open && (
                   <ConfirmAction
-                    trigger={<Button variant="ghost" size="icon-sm" aria-label={`Убрать ${p.name}`}><Trash2 aria-hidden /></Button>}
+                    trigger={<Button variant="ghost" size="icon-sm" loading={remove.isPending} aria-label={`Убрать ${p.name}`}><Trash2 aria-hidden /></Button>}
                     title={`Убрать ${p.name}?`}
                     description="Его имя и пожелания удалятся. Он сможет вступить снова по ссылке, пока не прошла жеребьёвка."
                     confirmLabel="Убрать"
@@ -112,7 +124,7 @@ export default function SantaRoomPage() {
                 <p className="text-body-sm text-muted-foreground">
                   {enough
                     ? 'Каждый получит одного подопечного. После жеребьёвки вступить в комнату и убрать участника будет нельзя.'
-                    : `Нужно минимум ${MIN_PARTICIPANTS} участника, сейчас ${participantsLabel(participants.length)}.`}
+                    : `Нужно минимум ${participantsLabel(MIN_PARTICIPANTS)}, сейчас ${participantsLabel(participants.length)}.`}
                 </p>
                 <ConfirmAction
                   trigger={<Button variant="festive" size="lg" className="w-full" disabled={!enough} loading={draw.isPending}>Провести жеребьёвку</Button>}
@@ -140,7 +152,7 @@ export default function SantaRoomPage() {
           </section>
 
           <ConfirmAction
-            trigger={<Button variant="ghost" className="w-full text-destructive">Удалить комнату</Button>}
+            trigger={<Button variant="ghost" className="w-full text-destructive" loading={del.isPending}>Удалить комнату</Button>}
             title="Удалить комнату?"
             description="Участники, пожелания и пары удалятся навсегда."
             confirmLabel="Удалить"
