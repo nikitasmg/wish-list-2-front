@@ -67,12 +67,13 @@
     --tone-cyan: 191 86% 39%;
     --tone-violet: 253 72% 59%;
     --tone-pink: 328 59% 54%;
+    --tone-gold: 38 92% 34%;
     --shadow-alpha: 0.12;
     --shadow-alpha-strong: 0.18;
   }
 
   .dark,
-  .space, .midnight, .graphite, .lavender, .malachite, .lagoon {
+  .space, .midnight, .graphite, .lavender, .malachite, .lagoon, .santa {
     --success: 160 70% 45%;
     --success-foreground: 222 55% 10%;
     --warning: 43 100% 70%;
@@ -80,6 +81,7 @@
     --tone-cyan: 191 80% 52%;
     --tone-violet: 255 92% 76%;
     --tone-pink: 330 86% 70%;
+    --tone-gold: 43 96% 64%;
     --shadow-alpha: 0.45;
     --shadow-alpha-strong: 0.5;
   }
@@ -138,6 +140,44 @@
   --input: 222 38% 19%;
   --ring: 187 85% 60%;
   --radius: 0.875rem;
+}
+
+/*
+ * Тайный Санта — ночь «Космоса» с клюквой и золотом. Это не схема вишлиста:
+ * её нет в выборе, ею красится только раздел santa. Кнопка «Создать» —
+ * bg-festive, а primary здесь светлая клюква: она же цвет ссылок и
+ * выделения, поэтому должна читаться на тёмном фоне.
+ */
+.santa {
+  --background: 222 55% 10%;
+  --foreground: 220 33% 95%;
+  --card: 222 48% 13%;
+  --card-foreground: 220 33% 95%;
+  --popover: 222 48% 13%;
+  --popover-foreground: 220 33% 95%;
+  --primary: 350 85% 74%;
+  --primary-foreground: 222 55% 10%;
+  --secondary: 222 38% 19%;
+  --secondary-foreground: 220 33% 95%;
+  --muted: 222 38% 19%;
+  --muted-foreground: 220 14% 62%;
+  --accent: 345 45% 26%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 63% 42%;
+  --destructive-foreground: 220 33% 95%;
+  --border: 222 38% 19%;
+  --input: 222 38% 19%;
+  --ring: 350 85% 74%;
+  --radius: 0.875rem;
+}
+
+/* Снег: две сетки точек со сдвигом — не выглядит узором. */
+.santa-snow {
+  background-image:
+    radial-gradient(rgb(255 255 255 / 0.5) 1px, transparent 1.6px),
+    radial-gradient(rgb(255 255 255 / 0.2) 1px, transparent 1.6px);
+  background-size: 140px 140px, 70px 70px;
+  background-position: 0 0, 35px 45px;
 }
 
 /* Полночь — ДР мальчика. Ею же рисуются примеры на главной в тёмной теме. */

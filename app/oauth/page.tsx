@@ -2,6 +2,7 @@
 
 import { useApiAuth } from '@/api/auth'
 import { toast } from '@/hooks/use-toast'
+import { peekNext, takeNext } from '@/shared/auth-next'
 import { AuthProps } from '@/shared/types'
 import { useSearchParams } from 'next/navigation'
 
@@ -28,14 +29,15 @@ function Auth() {
       const authData = parseAuthParams()
       if (authData) {
         mutate(authData, {
-          onSuccess: () => window.location.replace('/wishlist'),
+          onSuccess: () => window.location.replace(takeNext()),
           onError: () => {
             toast({
               variant: 'destructive',
               title: 'Ошибка авторизации',
               duration: 2000, // Показывать 2 секунды
             });
-            setTimeout(() => window.location.replace('/login'), 2000);
+            const next = peekNext();
+            setTimeout(() => window.location.replace(next ? `/login?next=${encodeURIComponent(next)}` : '/login'), 2000);
           }
         })
       }

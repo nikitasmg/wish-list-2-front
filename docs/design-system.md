@@ -99,7 +99,9 @@
 Семь ролей схемы (`background`, `card`, `border`, `foreground`,
 `muted-foreground`, `primary`, `accent`) плюс `success`, `warning`,
 `destructive`, `overlay` (подложка модалок), `bg-brand` (градиент главной
-кнопки интерфейса, один для обеих тем), `bg-hero-night` + `bg-dots` (шапки объявлений).
+кнопки интерфейса, один для обеих тем), `bg-festive` (градиент главной кнопки Тайного Санты), `bg-hero-night` + `bg-dots` (шапки объявлений).
+
+Раздел Тайного Санты красится схемой `.santa` (вместе с `.dark`), фон-снег — `santa-snow`.
 
 Hex и `rgba()` в TSX — только в файлах-данных (палитры схем, дресс-код,
 конфетти, базы «своей схемы» — `CUSTOM_BASES`). Мокапы схем рисуются классами схем (`.midnight`, `.linen`) и
@@ -110,7 +112,7 @@ Hex и `rgba()` в TSX — только в файлах-данных (палит
 - Палитра бренда, одна в обеих темах: `brand-cyan`, `brand-sky`, `brand-violet`,
   `brand-ink`, `brand-night`, `brand-chat`. Только для лендинга и иллюстраций —
   интерфейс красится ролями схемы.
-- Тона иконок и плашек: `tone-cyan`, `tone-violet`, `tone-pink` — на светлом
+- Тона иконок и плашек: `tone-cyan`, `tone-violet`, `tone-pink`, `tone-gold` — на светлом
   темнее, на тёмном светлее (`bg-tone-pink/15 text-tone-pink`).
 - Фоны: `bg-glow-cyan`, `bg-glow-violet` (свечения), `bg-hero-night` + `bg-dots`.
 - **Превью-картинки помечаются.** Мокап, нарисованный живыми блоками, —
@@ -135,7 +137,7 @@ Hex и `rgba()` в TSX — только в файлах-данных (палит
 ## Компоненты
 
 - `Button` — `variant`: `default` (цвет схемы), `brand` (градиент, главное
-  действие интерфейса), `secondary`, `outline`, `ghost`, `destructive`,
+  действие интерфейса), `festive` (градиент Санты), `secondary`, `outline`, `ghost`, `destructive`,
   `link`; `size`: `sm`, `default`, `lg`, `xl`, `icon-sm`, `icon`, `icon-lg`.
   Нажатие сжимает до 0.97.
 - `Input`, `Textarea` — 48px, 16px текста до `md` (иначе iOS увеличивает

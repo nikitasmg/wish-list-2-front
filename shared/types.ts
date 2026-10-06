@@ -314,3 +314,81 @@ export type AuthProps = {
   photo_url: string
   hash: string
 }
+
+// ── Тайный Санта ─────────────────────────────────────────────────────
+// API оборачивает каждый успешный ответ в { data: T }. Типы ниже описывают
+// внутреннюю часть T; хуки API должны разворачивать .data.
+// Даты приходят из Go как ISO-строки; exchangeDate — полночь UTC дня обмена.
+
+export type SantaRoomStatus = 'open' | 'drawn'
+
+export type SantaRoom = {
+  id: string
+  ownerId: string
+  slug: string
+  title: string
+  /** Рубли; null — без лимита. */
+  budget: number | null
+  exchangeDate: string | null
+  drawAt: string | null
+  message: string
+  status: SantaRoomStatus
+  drawnAt: string | null
+  createdAt: string
+  updatedAt: string
+}
+
+export type SantaRoomSummary = SantaRoom & { isOwner: boolean; participantsCount: number }
+
+/** Участник глазами организатора: без текста пожеланий и без пар. */
+export type SantaParticipantView = {
+  id: string
+  name: string
+  hasWishes: boolean
+  hasWishlist: boolean
+  isOwner: boolean
+  createdAt: string
+}
+
+export type SantaRoomDetails = { room: SantaRoom; participants: SantaParticipantView[] }
+
+export type SantaInvite = {
+  slug: string
+  title: string
+  organizerName: string
+  budget: number | null
+  exchangeDate: string | null
+  drawAt: string | null
+  message: string
+  participantsCount: number
+  status: SantaRoomStatus
+  /** Когда прошла последняя жеребьёвка (меняется при перезапуске); null до неё. */
+  drawnAt: string | null
+}
+
+export type SantaReceiver = { name: string; wishes: string; wishlistUrl: string }
+
+export type SantaMe = {
+  participantId: string
+  name: string
+  wishes: string
+  wishlistUrl: string
+  room: SantaInvite
+  /** Подопечный; null до жеребьёвки. */
+  receiver: SantaReceiver | null
+}
+
+export type SantaJoinResult = { token: string; me: SantaMe }
+
+export type SantaRoomInput = {
+  title: string
+  budget: number | null
+  /** ГГГГ-ММ-ДД или null. */
+  exchangeDate: string | null
+  message: string
+  organizerJoins: boolean
+  organizerName: string
+  organizerWishes: string
+}
+
+export type SantaProfileInput = { name: string; wishes: string; wishlistUrl: string }

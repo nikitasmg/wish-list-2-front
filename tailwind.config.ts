@@ -119,6 +119,7 @@ export default {
           cyan: 'hsl(var(--tone-cyan) / <alpha-value>)',
           violet: 'hsl(var(--tone-violet) / <alpha-value>)',
           pink: 'hsl(var(--tone-pink) / <alpha-value>)',
+          gold: 'hsl(var(--tone-gold) / <alpha-value>)',
         },
         // Подложка модалок и шторок
         overlay: 'rgb(var(--overlay) / 0.72)',
@@ -137,6 +138,9 @@ export default {
         // Главная кнопка: градиент от акцентов схемы
         // Главная кнопка интерфейса — градиент бренда, один для обеих тем (макет).
         'brand': 'linear-gradient(90deg, #17B6D6, #7B5CF0)',
+        // Главная кнопка Тайного Санты: клюква → ягода. Белый текст читается
+        // на обоих концах (контраст ≥ 4.5).
+        'festive': 'linear-gradient(90deg, #C92A47, #9E2F68)',
         // Шапка объявлений: ночное небо бренда и светлый точечный узор поверх
         'hero-night': 'linear-gradient(135deg, #0F3B4A, #2A1F5C)',
         'dots': 'radial-gradient(rgba(255,255,255,0.12) 1.4px, transparent 2px)',

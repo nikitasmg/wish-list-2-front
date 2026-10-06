@@ -16,11 +16,15 @@ RUN pnpm install
 COPY . .
 
 # NEXT_PUBLIC_* вшиваются в сборку, поэтому приходят аргументами сборки
-# (в Dokploy — Build-time Arguments). Не переданы — берутся боевые значения.
+# (в Dokploy — Build-time Arguments). Значения по умолчанию — боевые: APP_URL https://prosto-namekni.ru, SANTA_BASE пусто, SANTA_ORIGIN https://santa.prosto-namekni.ru. Без SANTA_ORIGIN поддомен не настроен.
 ARG NEXT_PUBLIC_API_URL
-ARG NEXT_PUBLIC_APP_URL
+ARG NEXT_PUBLIC_APP_URL=https://prosto-namekni.ru
+ARG NEXT_PUBLIC_SANTA_BASE=
+ARG NEXT_PUBLIC_SANTA_ORIGIN=https://santa.prosto-namekni.ru
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 ENV NEXT_PUBLIC_APP_URL=$NEXT_PUBLIC_APP_URL
+ENV NEXT_PUBLIC_SANTA_BASE=$NEXT_PUBLIC_SANTA_BASE
+ENV NEXT_PUBLIC_SANTA_ORIGIN=$NEXT_PUBLIC_SANTA_ORIGIN
 
 # Собираем приложение
 RUN pnpm run build
