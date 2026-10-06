@@ -53,6 +53,12 @@ test('организатору-участнику нужно имя', () => {
   assert.equal(roomSchema.safeParse({ ...EMPTY_ROOM_FORM, title: 'Офис', organizerName: 'Н', budget: '3 000' }).success, false)
 })
 
+test('бюджет: граница 1 000 000', () => {
+  assert.equal(roomSchema.safeParse({ ...EMPTY_ROOM_FORM, title: 'Офис', organizerJoins: false, budget: '1000000' }).success, true)
+  assert.equal(roomSchema.safeParse({ ...EMPTY_ROOM_FORM, title: 'Офис', organizerJoins: false, budget: '1000001' }).success, false)
+  assert.equal(roomSchema.safeParse({ ...EMPTY_ROOM_FORM, title: 'Офис', organizerJoins: false, budget: '' }).success, true)
+})
+
 test('ссылка на вишлист — только http(s)', () => {
   const base = { name: 'Маша', wishes: '' }
   assert.equal(profileSchema.safeParse({ ...base, wishlistUrl: '' }).success, true)

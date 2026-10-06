@@ -37,6 +37,9 @@ export const roomSchema = z.object({
 }).refine(v => !v.organizerJoins || v.organizerName.length > 0, {
   path: ['organizerName'],
   message: 'Как вас назвать в комнате?',
+}).refine(v => v.budget.trim() === '' || Number(v.budget) <= 1_000_000, {
+  path: ['budget'],
+  message: 'Не больше 1 000 000 ₽',
 })
 
 export type RoomFormValues = z.infer<typeof roomSchema>
