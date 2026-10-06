@@ -31,3 +31,12 @@ export function takeNext(fallback = '/wishlist'): string {
   }
   return safeNext(raw, allowed()) ?? fallback
 }
+
+/** Запомненный адрес возврата без стирания — чтобы не потерять его при ошибке входа. */
+export function peekNext(): string | null {
+  try {
+    return safeNext(sessionStorage.getItem(KEY), allowed())
+  } catch {
+    return null
+  }
+}

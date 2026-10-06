@@ -5,7 +5,7 @@
  */
 export const SANTA_BASE = process.env.NEXT_PUBLIC_SANTA_BASE ?? '/santa'
 export const SANTA_ORIGIN = process.env.NEXT_PUBLIC_SANTA_ORIGIN ?? ''
-export const MAIN_ORIGIN = process.env.NEXT_PUBLIC_APP_URL ?? 'https://prosto-namekni.ru'
+export const MAIN_ORIGIN = process.env.NEXT_PUBLIC_APP_URL ||'https://prosto-namekni.ru'
 
 /** Путь страницы Санты с учётом того, где он живёт. */
 export function santaHref(path: string, base: string = SANTA_BASE): string {
@@ -45,7 +45,19 @@ export function needsLogin(pathname: string): boolean {
 export function safeNext(raw: string | null | undefined, allowedOrigins: string[]): string | null {
   if (!raw) return null
   // «//evil.com» и «/\evil.com» браузер читает как адрес другого сайта.
-  if (raw.startsWith('/') && !raw.startsWith('//') && !raw.startsWith('/\\')) return raw
+  // Управляющие символы и обратный слэш: парсер URL выкидывает табы и переводы строк,
+  // так что «/<TAB>/evil.com» превращается в «//evil.com».
+  if (/[\u0000-\u001F\u007F\\]/.test(raw)) return null
+  if (raw.startsWith('/')) {
+    if (raw.startsWith('//')) return null
+    const base = allowedOrigins[0] ?? MAIN_ORIGIN
+    try {
+      const url = new URL(raw, base)
+      return url.origin === new URL(base).origin ? `${url.pathname}${url.search}${url.hash}` : null
+    } catch {
+      return null
+    }
+  }
   try {
     const url = new URL(raw)
     return allowedOrigins.includes(url.origin) ? url.toString() : null
