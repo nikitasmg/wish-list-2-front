@@ -26,5 +26,6 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   // Всё, кроме статики Next и файлов с расширением: поддомен переписывается целиком.
-  matcher: ['/((?!_next/|.*\\.[a-zA-Z0-9]+$).*)'],
+  // robots.txt и sitemap.xml — отдельно: поддомен Санты отдаёт свои, основной хост не меняется.
+  matcher: ['/((?!_next/|.*\\.[a-zA-Z0-9]+$).*)', '/robots.txt', '/sitemap.xml'],
 }

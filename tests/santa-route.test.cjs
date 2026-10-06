@@ -68,3 +68,9 @@ test('ссылка на вход несёт адрес возврата', () => 
     'https://prosto-namekni.ru/login?next=https%3A%2F%2Fsanta.prosto-namekni.ru%2Frooms%3Fa%3D1',
   )
 })
+
+test('robots.txt и sitemap.xml поддомена переписываются на свои обработчики', () => {
+  assert.deepEqual(resolveSantaRoute('santa.prosto-namekni.ru', '/robots.txt', ORIGIN), { type: 'rewrite', pathname: '/santa/robots.txt' })
+  assert.deepEqual(resolveSantaRoute('santa.prosto-namekni.ru', '/sitemap.xml', ORIGIN), { type: 'rewrite', pathname: '/santa/sitemap.xml' })
+  assert.deepEqual(resolveSantaRoute('prosto-namekni.ru', '/robots.txt', ORIGIN), { type: 'next' })
+})

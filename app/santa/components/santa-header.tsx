@@ -7,7 +7,7 @@ import { Star } from 'lucide-react'
 import Link from 'next/link'
 
 export function SantaHeader() {
-  const { data } = useApiGetMyProfile()
+  const { data, isPending } = useApiGetMyProfile()
   const signedIn = Boolean(data?.user)
 
   return (
@@ -25,13 +25,17 @@ export function SantaHeader() {
           <a href={`${MAIN_ORIGIN}/wishlist`} className="hover:text-foreground">Вишлисты</a>
         </nav>
         <div className="ml-auto">
-          {signedIn ? (
+          {isPending ? (
+            // Пока неизвестно, вошёл ли человек, держим место кнопки — без мигания «Войти».
+            <div className="h-control w-32" aria-hidden />
+          ) : signedIn ? (
             <Button asChild variant="festive">
               <Link href={santaHref('/rooms/new')}>Создать комнату</Link>
             </Button>
           ) : (
-            <Button variant="secondary" onClick={() => window.location.assign(loginUrl(window.location.href))}>
-              Войти
+            // Дойти сюда можно только на клиенте: на сервере запрос всегда в ожидании.
+            <Button asChild variant="secondary">
+              <a href={loginUrl(window.location.href)}>Войти</a>
             </Button>
           )}
         </div>
