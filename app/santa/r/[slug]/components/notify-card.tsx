@@ -17,7 +17,7 @@ const RESEND_SECONDS = 60
 const TG_POLL_MS = 4000
 const TG_POLL_LIMIT_MS = 3 * 60 * 1000
 
-export function NotifyCard({ slug, notify, drawn }: { slug: string; notify: SantaNotifyView; drawn: boolean }) {
+export function NotifyCard({ slug, notify, drawn, inDraw = true }: { slug: string; notify: SantaNotifyView; drawn: boolean; inDraw?: boolean }) {
   const [editing, setEditing] = useState(false)
   const showChooser = !notify.ready || editing
 
@@ -31,8 +31,11 @@ export function NotifyCard({ slug, notify, drawn }: { slug: string; notify: Sant
       {notify.ready && !editing && (
         <div className="space-y-3">
           <p className="text-body">
-            {drawn ? 'Новости о подопечном придут ' : 'Имя подопечного придёт '}
+            {drawn && !inDraw
+              ? 'Канал подключён: '
+              : drawn ? 'Новости о подопечном придут ' : 'Имя подопечного придёт '}
             <span className="font-semibold">{channelLabel(notify)}</span>.
+            {drawn && !inDraw && ' Чтобы попасть в пары, попросите организатора перезапустить жеребьёвку.'}
           </p>
           <Button variant="ghost" onClick={() => setEditing(true)}>Сменить</Button>
         </div>
@@ -40,14 +43,16 @@ export function NotifyCard({ slug, notify, drawn }: { slug: string; notify: Sant
 
       {showChooser && (
         <>
-          {notify.ready && (
+          {notify.ready && notify.channel === 'email' && (
             <p className="text-body-sm text-muted-foreground">
               Новый адрес почты нужно подтвердить заново: пока вы не введёте код, вы будете считаться неподключённым.
             </p>
           )}
           {!notify.ready && (
             <p className="text-body-sm text-muted-foreground">
-              {drawn
+              {drawn && !inDraw
+                ? 'Подключите почту или Telegram и попросите организатора перезапустить жеребьёвку — иначе вы не попадёте в пары.'
+                : drawn
                 ? 'Подключите почту или Telegram — пришлём, если подопечный поменяет пожелания.'
                 : 'Без подтверждённой почты или Telegram вы не попадёте в жеребьёвку: так мы точно сообщим вам имя подопечного.'}
             </p>
@@ -156,7 +161,7 @@ function EmailConnect({ slug, notify, onDone }: { slug: string; notify: SantaNot
             <FormItem>
               <FormLabel>Код из письма на {sentTo}</FormLabel>
               <FormControl>
-                <Input inputMode="numeric" autoComplete="one-time-code" maxLength={6} placeholder="000000" {...field} />
+                <Input inputMode="numeric" autoComplete="one-time-code" maxLength={6} placeholder="000000" disabled={verify.isPending} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -166,7 +171,7 @@ function EmailConnect({ slug, notify, onDone }: { slug: string; notify: SantaNot
             <Button type="button" variant="ghost" disabled={cooldown > 0} loading={request.isPending} onClick={() => send(sentTo)}>
               {cooldown > 0 ? `Ещё раз через ${cooldown} с` : 'Прислать код ещё раз'}
             </Button>
-            <Button type="button" variant="ghost" onClick={() => setSentTo(null)}>Другой адрес</Button>
+            <Button type="button" variant="ghost" onClick={() => { codeForm.reset({ code: '' }); setSentTo(null) }}>Другой адрес</Button>
           </div>
           <p className="text-caption text-muted-foreground">Код действует 15 минут. Не пришло — проверьте «Спам».</p>
         </form>

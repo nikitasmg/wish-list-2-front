@@ -84,7 +84,7 @@ function InvitePage() {
     return (
       <div className="mx-auto max-w-xl space-y-8">
         <Envelope slug={slug} room={mine.room} receiver={mine.receiver} ready={mine.notify.ready} />
-        <NotifyCard slug={slug} notify={mine.notify} drawn />
+        <NotifyCard slug={slug} notify={mine.notify} drawn inDraw={mine.receiver !== null} />
         <MyCard slug={slug} me={mine} />
       </div>
     )
