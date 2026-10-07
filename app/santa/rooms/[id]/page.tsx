@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { toast } from '@/hooks/use-toast'
 import {
   MIN_PARTICIPANTS, apiErrorMessage, canRemind, formatDay, formatTime, isValidRoomId, participantsLabel, readyCount, remindAvailableAt,
+  remindResultToast,
 } from '@/shared/santa'
 import { SANTA_ORIGIN, santaHref } from '@/shared/santa-route'
 import { BellRing, CircleCheck, CircleDashed, Settings, Shuffle, Trash2 } from 'lucide-react'
@@ -174,13 +175,7 @@ export default function SantaRoomPage() {
             <Button
               variant="secondary" className="w-full" disabled={!remindOpen} loading={remind.isPending}
               onClick={() => remind.mutate(undefined, {
-                onSuccess: res => {
-                  const { sent, unreachable } = res.data
-                  toast({
-                    title: sent > 0 ? `Напомнили: ${participantsLabel(sent)}` : 'Всем уже есть что подарить',
-                    description: unreachable > 0 ? `Ещё ${participantsLabel(unreachable)} без почты и Telegram.` : undefined,
-                  })
-                },
+                onSuccess: res => toast(remindResultToast(res.data.sent, res.data.unreachable)),
                 onError,
               })}
             >

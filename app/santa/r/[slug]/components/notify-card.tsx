@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { toast } from '@/hooks/use-toast'
-import { type CodeValues, type EmailValues, apiErrorMessage, channelLabel, codeSchema, emailSchema } from '@/shared/santa'
+import { type CodeValues, type EmailValues, apiErrorMessage, channelLabel, codeSchema, emailSchema, telegramActive } from '@/shared/santa'
 import type { SantaNotifyView } from '@/shared/types'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useQueryClient } from '@tanstack/react-query'
@@ -57,7 +57,7 @@ export function NotifyCard({ slug, notify, drawn, inDraw = true }: { slug: strin
                 : 'Без подтверждённой почты или Telegram вы не попадёте в жеребьёвку: так мы точно сообщим вам имя подопечного.'}
             </p>
           )}
-          <TelegramConnect slug={slug} connected={notify.telegram} />
+          <TelegramConnect slug={slug} connected={telegramActive(notify)} />
           <div className="flex items-center gap-3 text-caption text-muted-foreground" aria-hidden>
             <span className="h-px flex-1 bg-border" />или<span className="h-px flex-1 bg-border" />
           </div>

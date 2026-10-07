@@ -138,6 +138,29 @@ export function channelLabel(n: SantaNotifyView): string {
   return n.channel === 'telegram' ? 'в Telegram' : `на почту ${n.email}`
 }
 
+/**
+ * Telegram — текущий канал. Чат остаётся привязанным и после перехода на
+ * почту: тогда предлагаем подключить Telegram заново, а не «уже подключён».
+ */
+export function telegramActive(n: SantaNotifyView): boolean {
+  return n.channel === 'telegram' && n.telegram
+}
+
+/** Тост после «Напомнить»: sent — кому ушло, unreachable — без канала. */
+export function remindResultToast(sent: number, unreachable: number): { title: string; description?: string } {
+  if (sent > 0) {
+    return {
+      title: `Напомнили: ${participantsLabel(sent)}`,
+      description: unreachable > 0 ? `Ещё ${participantsLabel(unreachable)} без почты и Telegram.` : undefined,
+    }
+  }
+  if (unreachable > 0) {
+    const who = `${unreachable} ${pluralRu(unreachable, ['участника', 'участников', 'участников'])}`
+    return { title: `Напоминать пока некому: у ${who} не подключён канал`, description: 'Позовите их сами.' }
+  }
+  return { title: 'Всем уже есть что подарить' }
+}
+
 export function formatTime(d: Date): string {
   return d.toLocaleString('ru-RU', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })
 }

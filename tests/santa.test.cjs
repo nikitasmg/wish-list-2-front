@@ -5,7 +5,7 @@ const { load } = require('./load.cjs')
 const {
   formatBudget, formatDay, participantsLabel, toRoomInput, roomToFormValues,
   roomSchema, profileSchema, apiErrorMessage, EMPTY_ROOM_FORM, isValidSantaSlug, isValidRoomId,
-  emailSchema, codeSchema, canRemind, remindAvailableAt, readyCount, channelLabel,
+  emailSchema, codeSchema, canRemind, remindAvailableAt, readyCount, channelLabel, telegramActive, remindResultToast,
 } = load('shared/santa.ts')
 
 test('бюджет: рубли с неразрывным пробелом или «без лимита»', () => {
@@ -114,4 +114,20 @@ test('готовые к жеребьёвке и подпись канала', ()
   assert.equal(channelLabel({ ...base, channel: 'telegram', telegram: true, ready: true }), 'в Telegram')
   assert.equal(channelLabel({ ...base, channel: 'email', email: 'a@b.ru', emailVerified: true, ready: true }), 'на почту a@b.ru')
   assert.equal(channelLabel(base), '')
+})
+
+test('Telegram подключён, только пока он текущий канал', () => {
+  const base = { channel: '', email: '', emailVerified: false, emailPending: false, telegram: false, ready: false }
+  assert.equal(telegramActive({ ...base, channel: 'telegram', telegram: true, ready: true }), true)
+  // Перешли на почту — чат остался, но вернуться к Telegram можно.
+  assert.equal(telegramActive({ ...base, channel: 'email', email: 'a@b.ru', emailVerified: true, telegram: true, ready: true }), false)
+  assert.equal(telegramActive(base), false)
+})
+
+test('тост «Напомнить» зависит от того, кому ушло', () => {
+  assert.deepEqual(remindResultToast(2, 0), { title: 'Напомнили: 2 участника', description: undefined })
+  assert.deepEqual(remindResultToast(1, 3), { title: 'Напомнили: 1 участник', description: 'Ещё 3 участника без почты и Telegram.' })
+  assert.equal(remindResultToast(0, 1).title, 'Напоминать пока некому: у 1 участника не подключён канал')
+  assert.equal(remindResultToast(0, 5).title, 'Напоминать пока некому: у 5 участников не подключён канал')
+  assert.deepEqual(remindResultToast(0, 0), { title: 'Всем уже есть что подарить' })
 })
