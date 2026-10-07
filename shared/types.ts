@@ -334,6 +334,7 @@ export type SantaRoom = {
   message: string
   status: SantaRoomStatus
   drawnAt: string | null
+  lastRemindedAt: string | null
   createdAt: string
   updatedAt: string
 }
@@ -346,6 +347,8 @@ export type SantaParticipantView = {
   name: string
   hasWishes: boolean
   hasWishlist: boolean
+  /** Канал подтверждён: попадёт в жеребьёвку. */
+  ready: boolean
   isOwner: boolean
   createdAt: string
 }
@@ -368,17 +371,35 @@ export type SantaInvite = {
 
 export type SantaReceiver = { name: string; wishes: string; wishlistUrl: string }
 
+export type SantaChannel = '' | 'email' | 'telegram'
+
+/** Куда участнику придут уведомления; видит только он сам. */
+export type SantaNotifyView = {
+  channel: SantaChannel
+  email: string
+  emailVerified: boolean
+  /** Код отправлен, адрес ещё не подтверждён. */
+  emailPending: boolean
+  telegram: boolean
+  /** Канал подтверждён — участник попадёт в жеребьёвку. */
+  ready: boolean
+}
+
 export type SantaMe = {
   participantId: string
   name: string
   wishes: string
   wishlistUrl: string
+  notify: SantaNotifyView
   room: SantaInvite
   /** Подопечный; null до жеребьёвки. */
   receiver: SantaReceiver | null
 }
 
 export type SantaJoinResult = { token: string; me: SantaMe }
+
+/** Итог «Напомнить»: сколько получат и сколько без канала. */
+export type SantaRemindResult = { sent: number; unreachable: number }
 
 export type SantaRoomInput = {
   title: string

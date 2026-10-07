@@ -5,6 +5,7 @@ const { load } = require('./load.cjs')
 const {
   formatBudget, formatDay, participantsLabel, toRoomInput, roomToFormValues,
   roomSchema, profileSchema, apiErrorMessage, EMPTY_ROOM_FORM, isValidSantaSlug, isValidRoomId,
+  emailSchema, codeSchema, canRemind, remindAvailableAt, readyCount, channelLabel,
 } = load('shared/santa.ts')
 
 test('бюджет: рубли с неразрывным пробелом или «без лимита»', () => {
@@ -85,4 +86,32 @@ test('id комнаты: только UUID', () => {
   for (const bad of ['', '123', '../x', '3f2b8c1e-9d4a-4e7b-8a61-0c5d2e9f1a7', '3f2b8c1e-9d4a-4e7b-8a61-0c5d2e9f1a77/draw', '3f2b8c1e9d4a4e7b8a610c5d2e9f1a77']) {
     assert.equal(isValidRoomId(bad), false, bad)
   }
+})
+
+test('почта и код: проверка формы', () => {
+  assert.equal(emailSchema.safeParse({ email: 'anna@example.com' }).success, true)
+  assert.equal(emailSchema.safeParse({ email: 'не адрес' }).success, false)
+  assert.equal(emailSchema.safeParse({ email: '' }).success, false)
+  assert.equal(codeSchema.safeParse({ code: '042137' }).success, true)
+  assert.equal(codeSchema.safeParse({ code: ' 042137 ' }).success, true)
+  assert.equal(codeSchema.safeParse({ code: '42137' }).success, false)
+  assert.equal(codeSchema.safeParse({ code: 'abcdef' }).success, false)
+})
+
+test('напомнить можно раз в 12 часов', () => {
+  const at = '2026-11-20T10:00:00Z'
+  const base = Date.parse(at)
+  assert.equal(canRemind(null), true)
+  assert.equal(canRemind(at, base + 11 * 3600e3), false)
+  assert.equal(canRemind(at, base + 12 * 3600e3), true)
+  assert.equal(remindAvailableAt(null), null)
+  assert.equal(remindAvailableAt(at).getTime(), base + 12 * 3600e3)
+})
+
+test('готовые к жеребьёвке и подпись канала', () => {
+  assert.equal(readyCount([{ ready: true }, { ready: false }, { ready: true }]), 2)
+  const base = { channel: '', email: '', emailVerified: false, emailPending: false, telegram: false, ready: false }
+  assert.equal(channelLabel({ ...base, channel: 'telegram', telegram: true, ready: true }), 'в Telegram')
+  assert.equal(channelLabel({ ...base, channel: 'email', email: 'a@b.ru', emailVerified: true, ready: true }), 'на почту a@b.ru')
+  assert.equal(channelLabel(base), '')
 })
