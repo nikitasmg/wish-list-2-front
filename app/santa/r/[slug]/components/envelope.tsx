@@ -8,7 +8,7 @@ import { RoomChips } from '../../../components/room-chips'
 
 const isHttpUrl = (value: string) => /^https?:\/\/[^\s/]+/i.test(value)
 
-export function Envelope({ slug, room, receiver }: { slug: string; room: SantaInvite; receiver: SantaReceiver | null }) {
+export function Envelope({ slug, room, receiver, ready }: { slug: string; room: SantaInvite; receiver: SantaReceiver | null; ready: boolean }) {
   // Флаг привязан к жеребьёвке: после перезапуска drawnAt другой, конверт снова закрыт.
   const prefix = `santa:${slug}:opened`
   const key = `${prefix}:${room.drawnAt ?? ''}`
@@ -48,7 +48,13 @@ export function Envelope({ slug, room, receiver }: { slug: string; room: SantaIn
   }
 
   if (!receiver) {
-    return <p className="text-body text-muted-foreground">Пары обновляются — загляните чуть позже.</p>
+    return (
+      <p className="text-body text-muted-foreground">
+        {ready
+          ? 'Вы не попали в жеребьёвку: канал подключён уже после неё. Напишите организатору — пусть перезапустит жеребьёвку, и вы попадёте в пары.'
+          : 'Вы не попали в жеребьёвку: к её началу не была подтверждена почта или Telegram. Подключите канал ниже и напишите организатору — он может перезапустить жеребьёвку.'}
+      </p>
+    )
   }
 
   if (opened === null) return null

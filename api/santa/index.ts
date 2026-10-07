@@ -3,7 +3,7 @@ import { isValidRoomId, isValidSantaSlug } from '@/shared/santa'
 import { clearSantaToken, santaHeaders, setSantaToken } from '@/shared/santa-token'
 import type {
   SantaInvite, SantaJoinResult, SantaMe, SantaProfileInput, SantaRoom,
-  SantaRoomDetails, SantaRoomInput, SantaRoomSummary,
+  SantaRemindResult, SantaRoomDetails, SantaRoomInput, SantaRoomSummary,
 } from '@/shared/types'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { AxiosError, isAxiosError } from 'axios'
@@ -78,6 +78,14 @@ const useRoomAction = (roomId: string, action: 'draw' | 'redraw') => {
 export const useApiSantaDraw = (roomId: string) => useRoomAction(roomId, 'draw')
 export const useApiSantaRedraw = (roomId: string) => useRoomAction(roomId, 'redraw')
 
+export const useApiSantaRemind = (roomId: string) => {
+  const queryClient = useQueryClient()
+  return useMutation<Data<SantaRemindResult>, AxiosError>({
+    mutationFn: () => api.post(`santa/rooms/${seg(roomId)}/remind`),
+    onSettled: () => queryClient.invalidateQueries({ queryKey: ['santa-room', roomId] }),
+  })
+}
+
 // ── Участник ───────────────────────────────────────────────────────
 
 export const useApiSantaInvite = (slug: string) =>
@@ -137,3 +145,25 @@ export const useApiSantaLeave = (slug: string) => {
     },
   })
 }
+
+export const useApiSantaRequestEmailCode = (slug: string) => {
+  const queryClient = useQueryClient()
+  return useMutation<Data<boolean>, AxiosError, string>({
+    mutationFn: email => api.post(`santa/r/${seg(slug)}/me/email`, { email }, { headers: santaHeaders(slug) }),
+    // emailPending и новый адрес — из карточки участника.
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['santa-me', slug] }),
+  })
+}
+
+export const useApiSantaVerifyEmail = (slug: string) => {
+  const queryClient = useQueryClient()
+  return useMutation<Data<SantaMe>, AxiosError, string>({
+    mutationFn: code => api.post(`santa/r/${seg(slug)}/me/email/verify`, { code }, { headers: santaHeaders(slug) }),
+    onSuccess: res => queryClient.setQueryData(['santa-me', slug], res),
+  })
+}
+
+export const useApiSantaTelegramLink = (slug: string) =>
+  useMutation<Data<{ url: string }>, AxiosError>({
+    mutationFn: () => api.post(`santa/r/${seg(slug)}/me/telegram`, undefined, { headers: santaHeaders(slug) }),
+  })

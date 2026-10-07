@@ -5,6 +5,7 @@ const { load } = require('./load.cjs')
 const {
   formatBudget, formatDay, participantsLabel, toRoomInput, roomToFormValues,
   roomSchema, profileSchema, apiErrorMessage, EMPTY_ROOM_FORM, isValidSantaSlug, isValidRoomId,
+  emailSchema, codeSchema, canRemind, remindAvailableAt, readyCount, channelLabel, telegramActive, remindResultToast,
 } = load('shared/santa.ts')
 
 test('бюджет: рубли с неразрывным пробелом или «без лимита»', () => {
@@ -85,4 +86,48 @@ test('id комнаты: только UUID', () => {
   for (const bad of ['', '123', '../x', '3f2b8c1e-9d4a-4e7b-8a61-0c5d2e9f1a7', '3f2b8c1e-9d4a-4e7b-8a61-0c5d2e9f1a77/draw', '3f2b8c1e9d4a4e7b8a610c5d2e9f1a77']) {
     assert.equal(isValidRoomId(bad), false, bad)
   }
+})
+
+test('почта и код: проверка формы', () => {
+  assert.equal(emailSchema.safeParse({ email: 'anna@example.com' }).success, true)
+  assert.equal(emailSchema.safeParse({ email: 'не адрес' }).success, false)
+  assert.equal(emailSchema.safeParse({ email: '' }).success, false)
+  assert.equal(codeSchema.safeParse({ code: '042137' }).success, true)
+  assert.equal(codeSchema.safeParse({ code: ' 042137 ' }).success, true)
+  assert.equal(codeSchema.safeParse({ code: '42137' }).success, false)
+  assert.equal(codeSchema.safeParse({ code: 'abcdef' }).success, false)
+})
+
+test('напомнить можно раз в 12 часов', () => {
+  const at = '2026-11-20T10:00:00Z'
+  const base = Date.parse(at)
+  assert.equal(canRemind(null), true)
+  assert.equal(canRemind(at, base + 11 * 3600e3), false)
+  assert.equal(canRemind(at, base + 12 * 3600e3), true)
+  assert.equal(remindAvailableAt(null), null)
+  assert.equal(remindAvailableAt(at).getTime(), base + 12 * 3600e3)
+})
+
+test('готовые к жеребьёвке и подпись канала', () => {
+  assert.equal(readyCount([{ ready: true }, { ready: false }, { ready: true }]), 2)
+  const base = { channel: '', email: '', emailVerified: false, emailPending: false, telegram: false, ready: false }
+  assert.equal(channelLabel({ ...base, channel: 'telegram', telegram: true, ready: true }), 'в Telegram')
+  assert.equal(channelLabel({ ...base, channel: 'email', email: 'a@b.ru', emailVerified: true, ready: true }), 'на почту a@b.ru')
+  assert.equal(channelLabel(base), '')
+})
+
+test('Telegram подключён, только пока он текущий канал', () => {
+  const base = { channel: '', email: '', emailVerified: false, emailPending: false, telegram: false, ready: false }
+  assert.equal(telegramActive({ ...base, channel: 'telegram', telegram: true, ready: true }), true)
+  // Перешли на почту — чат остался, но вернуться к Telegram можно.
+  assert.equal(telegramActive({ ...base, channel: 'email', email: 'a@b.ru', emailVerified: true, telegram: true, ready: true }), false)
+  assert.equal(telegramActive(base), false)
+})
+
+test('тост «Напомнить» зависит от того, кому ушло', () => {
+  assert.deepEqual(remindResultToast(2, 0), { title: 'Напомнили: 2 участника', description: undefined })
+  assert.deepEqual(remindResultToast(1, 3), { title: 'Напомнили: 1 участник', description: 'Ещё 3 участника без почты и Telegram.' })
+  assert.equal(remindResultToast(0, 1).title, 'Напоминать пока некому: у 1 участника не подключён канал')
+  assert.equal(remindResultToast(0, 5).title, 'Напоминать пока некому: у 5 участников не подключён канал')
+  assert.deepEqual(remindResultToast(0, 0), { title: 'Всем уже есть что подарить' })
 })

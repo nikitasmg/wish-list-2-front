@@ -12,6 +12,7 @@ import { Envelope } from './components/envelope'
 import { InviteHeader } from './components/invite-header'
 import { JoinForm } from './components/join-form'
 import { MyCard } from './components/my-card'
+import { NotifyCard } from './components/notify-card'
 
 const TOKEN_RE = /^[A-Za-z0-9_-]{20,100}$/
 
@@ -82,7 +83,8 @@ function InvitePage() {
   if (mine && mine.room.status === 'drawn') {
     return (
       <div className="mx-auto max-w-xl space-y-8">
-        <Envelope slug={slug} room={mine.room} receiver={mine.receiver} />
+        <Envelope slug={slug} room={mine.room} receiver={mine.receiver} ready={mine.notify.ready} />
+        <NotifyCard slug={slug} notify={mine.notify} drawn inDraw={mine.receiver !== null} />
         <MyCard slug={slug} me={mine} />
       </div>
     )
@@ -91,6 +93,7 @@ function InvitePage() {
   return (
     <div className="mx-auto max-w-xl space-y-6">
       <InviteHeader invite={room} />
+      {mine && <NotifyCard slug={slug} notify={mine.notify} drawn={false} />}
       {mine && <MyCard slug={slug} me={mine} />}
       {!mine && room.status === 'open' && <JoinForm slug={slug} />}
       {!mine && room.status === 'drawn' && (

@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { pluralRu } from './event-date'
-import type { SantaRoom, SantaRoomInput } from './types'
+import type { SantaNotifyView, SantaRoom, SantaRoomInput } from './types'
 
 export const MIN_PARTICIPANTS = 3
 
@@ -102,4 +102,65 @@ export type ProfileValues = z.infer<typeof profileSchema>
 export function apiErrorMessage(err: unknown): string {
   const message = (err as { response?: { data?: { error?: unknown } } })?.response?.data?.error
   return typeof message === 'string' && message ? message : 'Что-то пошло не так. Попробуйте ещё раз.'
+}
+
+export const emailSchema = z.object({
+  email: z.string().trim().min(1, 'Укажите почту').max(254, 'Слишком длинный адрес').email('Проверьте адрес'),
+})
+export type EmailValues = z.infer<typeof emailSchema>
+
+export const codeSchema = z.object({
+  code: z.string().trim().regex(/^\d{6}$/, 'Код — 6 цифр из письма'),
+})
+export type CodeValues = z.infer<typeof codeSchema>
+
+/** «Напомнить» — не чаще раза в 12 ч (как на бэке). */
+export const REMIND_COOLDOWN_MS = 12 * 60 * 60 * 1000
+
+export function remindAvailableAt(lastRemindedAt: string | null): Date | null {
+  if (!lastRemindedAt) return null
+  const t = Date.parse(lastRemindedAt)
+  return Number.isNaN(t) ? null : new Date(t + REMIND_COOLDOWN_MS)
+}
+
+export function canRemind(lastRemindedAt: string | null, now: number = Date.now()): boolean {
+  const at = remindAvailableAt(lastRemindedAt)
+  return !at || at.getTime() <= now
+}
+
+export function readyCount(ps: { ready: boolean }[]): number {
+  return ps.filter(p => p.ready).length
+}
+
+/** «в Telegram» / «на почту a@b.ru» / '' — для фразы «Результат придёт …». */
+export function channelLabel(n: SantaNotifyView): string {
+  if (!n.ready) return ''
+  return n.channel === 'telegram' ? 'в Telegram' : `на почту ${n.email}`
+}
+
+/**
+ * Telegram — текущий канал. Чат остаётся привязанным и после перехода на
+ * почту: тогда предлагаем подключить Telegram заново, а не «уже подключён».
+ */
+export function telegramActive(n: SantaNotifyView): boolean {
+  return n.channel === 'telegram' && n.telegram
+}
+
+/** Тост после «Напомнить»: sent — кому ушло, unreachable — без канала. */
+export function remindResultToast(sent: number, unreachable: number): { title: string; description?: string } {
+  if (sent > 0) {
+    return {
+      title: `Напомнили: ${participantsLabel(sent)}`,
+      description: unreachable > 0 ? `Ещё ${participantsLabel(unreachable)} без почты и Telegram.` : undefined,
+    }
+  }
+  if (unreachable > 0) {
+    const who = `${unreachable} ${pluralRu(unreachable, ['участника', 'участников', 'участников'])}`
+    return { title: `Напоминать пока некому: у ${who} не подключён канал`, description: 'Позовите их сами.' }
+  }
+  return { title: 'Всем уже есть что подарить' }
+}
+
+export function formatTime(d: Date): string {
+  return d.toLocaleString('ru-RU', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })
 }

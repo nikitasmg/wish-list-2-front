@@ -1,13 +1,16 @@
 'use client'
 
 import {
-  useApiDeleteSantaRoom, useApiRemoveSantaParticipant, useApiSantaDraw, useApiSantaRedraw, useApiSantaRoom,
+  useApiDeleteSantaRoom, useApiRemoveSantaParticipant, useApiSantaDraw, useApiSantaRedraw, useApiSantaRemind, useApiSantaRoom,
 } from '@/api/santa'
 import { Button } from '@/components/ui/button'
 import { toast } from '@/hooks/use-toast'
-import { MIN_PARTICIPANTS, apiErrorMessage, formatDay, isValidRoomId, participantsLabel } from '@/shared/santa'
+import {
+  MIN_PARTICIPANTS, apiErrorMessage, canRemind, formatDay, formatTime, isValidRoomId, participantsLabel, readyCount, remindAvailableAt,
+  remindResultToast,
+} from '@/shared/santa'
 import { SANTA_ORIGIN, santaHref } from '@/shared/santa-route'
-import { Settings, Shuffle, Trash2 } from 'lucide-react'
+import { BellRing, CircleCheck, CircleDashed, Settings, Shuffle, Trash2 } from 'lucide-react'
 import { isAxiosError } from 'axios'
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
@@ -23,6 +26,7 @@ export default function SantaRoomPage() {
   const draw = useApiSantaDraw(id)
   const redraw = useApiSantaRedraw(id)
   const remove = useApiRemoveSantaParticipant(id)
+  const remind = useApiSantaRemind(id)
   const del = useApiDeleteSantaRoom(id)
   // На проде адрес известен из env; в разработке берём origin браузера после монтирования (без рассинхрона SSR).
   const [origin, setOrigin] = useState(SANTA_ORIGIN)
@@ -47,7 +51,10 @@ export default function SantaRoomPage() {
 
   const { room, participants } = details
   const open = room.status === 'open'
-  const enough = participants.length >= MIN_PARTICIPANTS
+  const ready = readyCount(participants)
+  const enough = ready >= MIN_PARTICIPANTS
+  const remindAt = remindAvailableAt(room.lastRemindedAt)
+  const remindOpen = canRemind(room.lastRemindedAt)
   const ownerJoined = participants.some(p => p.isOwner)
   const invitePath = santaHref(`/r/${room.slug}`)
   const inviteLink = `${origin}${invitePath}`
@@ -84,7 +91,12 @@ export default function SantaRoomPage() {
                 </span>
                 <span className="min-w-0 flex-1">
                   <span className="block truncate text-body font-semibold">{p.name}{p.isOwner ? ' · вы' : ''}</span>
-                  <span className="block text-caption text-muted-foreground">
+                  <span className="flex items-center gap-1.5 text-caption text-muted-foreground">
+                    {p.ready
+                      ? <CircleCheck className="size-3.5 text-success" aria-hidden />
+                      : <CircleDashed className="size-3.5" aria-hidden />}
+                    {p.ready ? 'канал подтверждён' : 'нет почты или Telegram'}
+                    {' · '}
                     {[p.hasWishes && 'пожелания', p.hasWishlist && 'вишлист'].filter(Boolean).join(' + ') || 'пожеланий нет'}
                   </span>
                 </span>
@@ -123,8 +135,8 @@ export default function SantaRoomPage() {
               <>
                 <p className="text-body-sm text-muted-foreground">
                   {enough
-                    ? 'Каждый получит одного подопечного. После жеребьёвки вступить в комнату и убрать участника будет нельзя.'
-                    : `Нужно минимум ${participantsLabel(MIN_PARTICIPANTS)}, сейчас ${participantsLabel(participants.length)}.`}
+                    ? `Готовы ${ready} из ${participants.length}. Каждый готовый получит подопечного; кто не подтвердил почту или Telegram — в жеребьёвку не попадёт.`
+                    : `Нужно минимум ${participantsLabel(MIN_PARTICIPANTS)} с подтверждённой почтой или Telegram, сейчас готовы ${ready} из ${participants.length}.`}
                 </p>
                 <ConfirmAction
                   trigger={<Button variant="festive" size="lg" className="w-full" disabled={!enough} loading={draw.isPending}>Провести жеребьёвку</Button>}
@@ -148,6 +160,29 @@ export default function SantaRoomPage() {
                   onConfirm={() => redraw.mutate(undefined, { onError })}
                 />
               </>
+            )}
+          </section>
+
+          <section className="space-y-4 rounded-card border border-border bg-card p-6">
+            <div className="flex items-center gap-2.5">
+              <BellRing className="size-5 text-tone-gold" aria-hidden />
+              <h2 className="text-title-xs">Напомнить</h2>
+            </div>
+            <p className="text-body-sm text-muted-foreground">
+              Пришлём просьбу написать пожелания тем, у кого их нет. Участникам без почты и Telegram
+              напоминание не дойдёт — позовите их сами.
+            </p>
+            <Button
+              variant="secondary" className="w-full" disabled={!remindOpen} loading={remind.isPending}
+              onClick={() => remind.mutate(undefined, {
+                onSuccess: res => toast(remindResultToast(res.data.sent, res.data.unreachable)),
+                onError,
+              })}
+            >
+              Напомнить
+            </Button>
+            {!remindOpen && remindAt && (
+              <p className="text-caption text-muted-foreground">Следующее напоминание — {formatTime(remindAt)}.</p>
             )}
           </section>
 
