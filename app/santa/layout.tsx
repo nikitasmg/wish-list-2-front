@@ -8,6 +8,8 @@ export const metadata: Metadata = {
     template: '%s | Тайный Санта',
   },
   description: 'Соберите друзей или коллег в комнату: каждый напишет пожелания, а мы тайно распределим, кто кому дарит.',
+  applicationName: 'Тайный Санта — Просто намекни',
+  openGraph: { siteName: 'Просто намекни', locale: 'ru_RU', type: 'website' },
 }
 
 export default function SantaLayout({ children }: { children: React.ReactNode }) {
