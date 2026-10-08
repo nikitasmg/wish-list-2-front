@@ -7,6 +7,7 @@ const {
   roomSchema, profileSchema, apiErrorMessage, EMPTY_ROOM_FORM, isValidSantaSlug, isValidRoomId,
   emailSchema, codeSchema, canRemind, remindAvailableAt, readyCount, channelLabel, telegramActive, remindResultToast,
   toLocalInput, fromLocalInput, formatDrawAt, chatSchema, chatTabLabel, withChatRead,
+  santaPromoVisible, serviceWishlistShortId, wishlistOptions, guestWishlistHref, isFromSanta, giftsReadyLabel,
 } = load('shared/santa.ts')
 
 test('бюджет: рубли с неразрывным пробелом или «без лимита»', () => {
@@ -183,4 +184,49 @@ test('открытая вкладка чата обнуляет только с�
   assert.deepEqual(withChatRead(me, 'receiver').chat, { fromSanta: 2, fromReceiver: 0 })
   assert.equal(withChatRead({ name: 'Аня', chat: null }, 'santa').chat, null)
   assert.equal(me.chat.fromSanta, 2, 'исходный объект не меняется')
+})
+
+test('сезон карточки Санты: с 1 ноября по 31 декабря', () => {
+  assert.equal(santaPromoVisible(new Date(2026, 9, 31, 23, 59)), false)
+  assert.equal(santaPromoVisible(new Date(2026, 10, 1, 0, 0)), true)
+  assert.equal(santaPromoVisible(new Date(2026, 11, 31, 23, 59)), true)
+  assert.equal(santaPromoVisible(new Date(2027, 0, 1, 0, 0)), false)
+  assert.equal(santaPromoVisible(new Date(2027, 5, 15)), false)
+})
+
+test('короткий id вишлиста сервиса', () => {
+  assert.equal(serviceWishlistShortId('https://prosto-namekni.ru/s/abc123'), 'abc123')
+  assert.equal(serviceWishlistShortId('https://www.prosto-namekni.ru/s/abc123/'), 'abc123')
+  assert.equal(serviceWishlistShortId('https://prosto-namekni.ru/s/abc123?x=1'), 'abc123')
+  assert.equal(serviceWishlistShortId('http://prosto-namekni.ru/s/abc123'), 'abc123')
+  assert.equal(serviceWishlistShortId('https://prosto-namekni.ru.evil.com/s/abc123'), null)
+  assert.equal(serviceWishlistShortId('https://evil.com/s/abc123'), null)
+  assert.equal(serviceWishlistShortId('https://prosto-namekni.ru/wishlist/abc'), null)
+  assert.equal(serviceWishlistShortId('https://prosto-namekni.ru/s/'), null)
+  assert.equal(serviceWishlistShortId('мусор'), null)
+  assert.equal(serviceWishlistShortId(''), null)
+})
+
+test('свои вишлисты для выбора: только с коротким адресом', () => {
+  assert.deepEqual(wishlistOptions([
+    { title: 'День рождения', shortId: 'abc' },
+    { title: 'Черновик' },
+    { title: '  ', shortId: 'def' },
+  ], 'https://prosto-namekni.ru'), [
+    { title: 'День рождения', url: 'https://prosto-namekni.ru/s/abc' },
+    { title: 'Без названия', url: 'https://prosto-namekni.ru/s/def' },
+  ])
+})
+
+test('гостевая страница вишлиста из конверта', () => {
+  assert.equal(guestWishlistHref('abc', 'https://prosto-namekni.ru'), 'https://prosto-namekni.ru/s/abc?from=santa')
+  assert.equal(isFromSanta('?from=santa'), true)
+  assert.equal(isFromSanta('?x=1&from=santa'), true)
+  assert.equal(isFromSanta('?from=other'), false)
+  assert.equal(isFromSanta(''), false)
+})
+
+test('счётчик готовых подарков', () => {
+  assert.equal(giftsReadyLabel(0, 5), 'Подарки готовы у 0 из 5')
+  assert.equal(giftsReadyLabel(5, 5), 'Подарки готовы у всех 5')
 })

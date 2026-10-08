@@ -355,7 +355,8 @@ export type SantaParticipantView = {
   createdAt: string
 }
 
-export type SantaRoomDetails = { room: SantaRoom; participants: SantaParticipantView[] }
+/** giftsReady — сколько отметили «Подарок готов»; без имён: пары тайные. */
+export type SantaRoomDetails = { room: SantaRoom; participants: SantaParticipantView[]; giftsReady: number }
 
 export type SantaInvite = {
   slug: string
@@ -401,6 +402,8 @@ export type SantaMe = {
   receiver: SantaReceiver | null
   /** Непрочитанные в чате; null, пока у участника нет пары. */
   chat: SantaChatUnread | null
+  /** Участник отметил, что подарок подопечному готов. */
+  giftReady: boolean
 }
 
 export type SantaJoinResult = { token: string; me: SantaMe }

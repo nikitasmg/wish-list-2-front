@@ -3,9 +3,10 @@ import { Block, RowSettings, Wishlist } from '@/shared/types'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
 
-export const useApiGetAllWishlists = () => {
+export const useApiGetAllWishlists = (enabled = true) => {
   return useQuery({
     queryKey: [ 'wishlists' ],
+    enabled,
     queryFn: async () => api.get<{ data: Wishlist[] }>('wishlists'),
   })
 }
