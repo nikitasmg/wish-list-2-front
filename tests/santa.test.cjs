@@ -6,6 +6,7 @@ const {
   formatBudget, formatDay, participantsLabel, toRoomInput, roomToFormValues,
   roomSchema, profileSchema, apiErrorMessage, EMPTY_ROOM_FORM, isValidSantaSlug, isValidRoomId,
   emailSchema, codeSchema, canRemind, remindAvailableAt, readyCount, channelLabel, telegramActive, remindResultToast,
+  toLocalInput, fromLocalInput, formatDrawAt, chatSchema, chatTabLabel, withChatRead,
 } = load('shared/santa.ts')
 
 test('бюджет: рубли с неразрывным пробелом или «без лимита»', () => {
@@ -31,7 +32,7 @@ test('форма комнаты → запрос', () => {
   assert.deepEqual(toRoomInput({
     ...EMPTY_ROOM_FORM, title: '  Офис ', budget: '3000', exchangeDate: '2026-12-27', organizerName: ' Никита ',
   }), {
-    title: 'Офис', budget: 3000, exchangeDate: '2026-12-27', message: '',
+    title: 'Офис', budget: 3000, exchangeDate: '2026-12-27', drawAt: null, message: '',
     organizerJoins: true, organizerName: 'Никита', organizerWishes: '',
   })
   assert.equal(toRoomInput({ ...EMPTY_ROOM_FORM, title: 'А', budget: '' }).budget, null)
@@ -41,9 +42,10 @@ test('форма комнаты → запрос', () => {
 test('комната → форма правки', () => {
   const values = roomToFormValues({
     id: '1', ownerId: '2', slug: 's', title: 'Офис', budget: null, exchangeDate: '2026-12-27T00:00:00Z',
-    drawAt: null, message: 'Привет', status: 'open', drawnAt: null, createdAt: '', updatedAt: '',
+    drawAt: null, message: 'Привет', status: 'open', drawnAt: null, drawFailedAt: null, lastRemindedAt: null, createdAt: '', updatedAt: '',
   })
   assert.equal(values.budget, '')
+  assert.equal(values.drawAt, '')
   assert.equal(values.exchangeDate, '2026-12-27')
   assert.equal(values.organizerJoins, false)
 })
@@ -130,4 +132,55 @@ test('тост «Напомнить» зависит от того, кому у�
   assert.equal(remindResultToast(0, 1).title, 'Напоминать пока некому: у 1 участника не подключён канал')
   assert.equal(remindResultToast(0, 5).title, 'Напоминать пока некому: у 5 участников не подключён канал')
   assert.deepEqual(remindResultToast(0, 0), { title: 'Всем уже есть что подарить' })
+})
+
+test('время жеребьёвки: поле формы ↔ ISO без сдвига пояса', () => {
+  const iso = new Date(2026, 11, 20, 18, 30).toISOString()
+  assert.equal(toLocalInput(iso), '2026-12-20T18:30')
+  assert.equal(fromLocalInput('2026-12-20T18:30'), iso)
+  assert.equal(toLocalInput(null), '')
+  assert.equal(toLocalInput('мусор'), '')
+  assert.equal(fromLocalInput(''), null)
+  assert.equal(fromLocalInput('мусор'), null)
+})
+
+test('время жеребьёвки уходит в запрос и возвращается в форму', () => {
+  const iso = new Date(2026, 11, 20, 18, 30).toISOString()
+  assert.equal(toRoomInput({ ...EMPTY_ROOM_FORM, title: 'А', drawAt: '2026-12-20T18:30' }).drawAt, iso)
+  assert.equal(toRoomInput({ ...EMPTY_ROOM_FORM, title: 'А', drawAt: '' }).drawAt, null)
+  const values = roomToFormValues({
+    id: '1', ownerId: '2', slug: 's', title: 'Офис', budget: null, exchangeDate: null, drawAt: iso,
+    message: '', status: 'open', drawnAt: null, drawFailedAt: null, lastRemindedAt: null, createdAt: '', updatedAt: '',
+  })
+  assert.equal(values.drawAt, '2026-12-20T18:30')
+})
+
+test('подпись времени жеребьёвки', () => {
+  assert.equal(formatDrawAt(null), null)
+  assert.equal(formatDrawAt('мусор'), null)
+  const label = formatDrawAt(new Date(2026, 11, 20, 18, 30).toISOString())
+  assert.ok(label.includes('20 декабря'), label)
+  assert.ok(label.includes('18:30'), label)
+})
+
+test('сообщение чата: от 1 до 1000 символов', () => {
+  assert.equal(chatSchema.safeParse({ body: 'Какой размер?' }).success, true)
+  assert.equal(chatSchema.safeParse({ body: '   ' }).success, false)
+  assert.equal(chatSchema.safeParse({ body: 'я'.repeat(1000) }).success, true)
+  assert.equal(chatSchema.safeParse({ body: 'я'.repeat(1001) }).success, false)
+})
+
+test('подпись вкладки чата со счётчиком', () => {
+  assert.equal(chatTabLabel('receiver', null), 'Подопечному')
+  assert.equal(chatTabLabel('santa', { fromSanta: 0, fromReceiver: 3 }), 'Моему Санте')
+  assert.equal(chatTabLabel('santa', { fromSanta: 2, fromReceiver: 0 }), 'Моему Санте · 2 новых')
+  assert.equal(chatTabLabel('receiver', { fromSanta: 0, fromReceiver: 1 }), 'Подопечному · 1 новое')
+})
+
+test('открытая вкладка чата обнуляет только свой счётчик', () => {
+  const me = { name: 'Аня', chat: { fromSanta: 2, fromReceiver: 1 } }
+  assert.deepEqual(withChatRead(me, 'santa').chat, { fromSanta: 0, fromReceiver: 1 })
+  assert.deepEqual(withChatRead(me, 'receiver').chat, { fromSanta: 2, fromReceiver: 0 })
+  assert.equal(withChatRead({ name: 'Аня', chat: null }, 'santa').chat, null)
+  assert.equal(me.chat.fromSanta, 2, 'исходный объект не меняется')
 })

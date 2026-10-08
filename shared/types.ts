@@ -334,6 +334,8 @@ export type SantaRoom = {
   message: string
   status: SantaRoomStatus
   drawnAt: string | null
+  /** Жеребьёвка по расписанию не прошла: готовых меньше трёх. Сбрасывается новым временем или жеребьёвкой. */
+  drawFailedAt: string | null
   lastRemindedAt: string | null
   createdAt: string
   updatedAt: string
@@ -376,9 +378,12 @@ export type SantaChannel = '' | 'email' | 'telegram'
 /** Куда участнику придут уведомления; видит только он сам. */
 export type SantaNotifyView = {
   channel: SantaChannel
+  /** Подтверждённый адрес — на него идут письма. */
   email: string
   emailVerified: boolean
-  /** Код отправлен, адрес ещё не подтверждён. */
+  /** Новый адрес, ждущий кода; пусто — нет. Пока он не подтверждён, письма идут на email. */
+  pendingEmail: string
+  /** Код отправлен на pendingEmail и ещё не введён. */
   emailPending: boolean
   telegram: boolean
   /** Канал подтверждён — участник попадёт в жеребьёвку. */
@@ -394,6 +399,8 @@ export type SantaMe = {
   room: SantaInvite
   /** Подопечный; null до жеребьёвки. */
   receiver: SantaReceiver | null
+  /** Непрочитанные в чате; null, пока у участника нет пары. */
+  chat: SantaChatUnread | null
 }
 
 export type SantaJoinResult = { token: string; me: SantaMe }
@@ -401,11 +408,24 @@ export type SantaJoinResult = { token: string; me: SantaMe }
 /** Итог «Напомнить»: сколько получат и сколько без канала. */
 export type SantaRemindResult = { sent: number; unreachable: number }
 
+/** С кем переписка: со своим подопечным или со своим Сантой. */
+export type SantaChatWith = 'receiver' | 'santa'
+
+/** Сообщение глазами участника: без имён и id сторон. */
+export type SantaChatMessage = { id: string; mine: boolean; body: string; createdAt: string }
+
+export type SantaChat = { with: SantaChatWith; messages: SantaChatMessage[] }
+
+/** Непрочитанные: от своего Санты и от своего подопечного. */
+export type SantaChatUnread = { fromSanta: number; fromReceiver: number }
+
 export type SantaRoomInput = {
   title: string
   budget: number | null
   /** ГГГГ-ММ-ДД или null. */
   exchangeDate: string | null
+  /** Время жеребьёвки по расписанию (ISO) или null — только вручную. */
+  drawAt: string | null
   message: string
   organizerJoins: boolean
   organizerName: string
