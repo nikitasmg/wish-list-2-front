@@ -1,6 +1,7 @@
 'use client'
 
 import { useApiGetAllWishlists } from '@/api/wishlist'
+import { SantaPromo } from '@/app/wishlist/components/santa-promo'
 import { WhatsNewDialog } from '@/app/wishlist/components/whats-new-dialog'
 import { WishlistCard } from '@/app/wishlist/components/wishlist-card'
 import { Button } from '@/components/ui/button'
@@ -31,6 +32,7 @@ export default function Page() {
         <Button asChild>
           <Link href="/wishlist/create">Создать первый вишлист</Link>
         </Button>
+        <div className="w-full max-w-2xl text-left"><SantaPromo /></div>
       </div>
     )
   }
@@ -53,6 +55,8 @@ export default function Page() {
           </Link>
         </Button>
       </div>
+
+      <SantaPromo />
 
       {/* Поиск появляется, когда список перестаёт охватываться взглядом */}
       {wishlists.length > 3 && (

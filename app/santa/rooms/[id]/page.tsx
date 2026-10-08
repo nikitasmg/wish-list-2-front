@@ -6,11 +6,11 @@ import {
 import { Button } from '@/components/ui/button'
 import { toast } from '@/hooks/use-toast'
 import {
-  MIN_PARTICIPANTS, apiErrorMessage, canRemind, formatDay, formatDrawAt, formatTime, isValidRoomId, participantsLabel, readyCount, remindAvailableAt,
+  MIN_PARTICIPANTS, apiErrorMessage, canRemind, formatDay, formatDrawAt, formatTime, giftsReadyLabel, isValidRoomId, participantsLabel, readyCount, remindAvailableAt,
   remindResultToast,
 } from '@/shared/santa'
 import { SANTA_ORIGIN, santaHref } from '@/shared/santa-route'
-import { BellRing, CircleCheck, CircleDashed, Settings, Shuffle, Trash2 } from 'lucide-react'
+import { BellRing, CircleCheck, CircleDashed, Gift, Settings, Shuffle, Trash2 } from 'lucide-react'
 import { isAxiosError } from 'axios'
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
@@ -18,6 +18,7 @@ import { useEffect, useState } from 'react'
 import { ConfirmAction } from '../../components/confirm-action'
 import { CopyField } from '../../components/copy-field'
 import { RoomChips } from '../../components/room-chips'
+import { InviteQr } from './components/invite-qr'
 
 export default function SantaRoomPage() {
   const { id } = useParams<{ id: string }>()
@@ -49,7 +50,7 @@ export default function SantaRoomPage() {
   const details = data?.data
   if (!details) return null
 
-  const { room, participants } = details
+  const { room, participants, giftsReady } = details
   const open = room.status === 'open'
   const ready = readyCount(participants)
   const enough = ready >= MIN_PARTICIPANTS
@@ -119,6 +120,7 @@ export default function SantaRoomPage() {
           <section className="space-y-4 rounded-card border border-border bg-card p-6">
             <h2 className="text-title-xs">Позвать людей</h2>
             {origin && <CopyField label="Ссылка-приглашение" value={inviteLink} />}
+            {origin && open && <InviteQr link={inviteLink} title={room.title} />}
             {!ownerJoined && open && (
               <p className="text-body-sm text-muted-foreground">
                 Вы не участвуете. Чтобы участвовать, откройте{' '}
@@ -164,6 +166,10 @@ export default function SantaRoomPage() {
                 <p className="text-body-sm text-muted-foreground">
                   Жеребьёвка прошла{room.drawnAt ? ` ${formatDay(room.drawnAt)}` : ''}. Каждый откроет своего
                   подопечного по ссылке-приглашению.
+                </p>
+                <p className="flex items-center gap-2 text-body-sm">
+                  <Gift className="size-4 text-success" aria-hidden />
+                  {giftsReadyLabel(giftsReady, participants.filter(p => p.ready).length)}
                 </p>
                 <ConfirmAction
                   trigger={<Button variant="secondary" className="w-full" loading={redraw.isPending}>Перезапустить жеребьёвку</Button>}

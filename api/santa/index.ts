@@ -209,3 +209,11 @@ export const useApiSantaSendChat = (slug: string) => {
       old ? { data: { ...old.data, messages: [...old.data.messages, res.data] } } : old),
   })
 }
+
+export const useApiSantaGiftReady = (slug: string) => {
+  const queryClient = useQueryClient()
+  return useMutation<Data<SantaMe>, AxiosError, boolean>({
+    mutationFn: ready => api.put(`santa/r/${seg(slug)}/me/gift`, { ready }, { headers: santaHeaders(slug) }),
+    onSuccess: res => queryClient.setQueryData(['santa-me', slug], res),
+  })
+}

@@ -2,11 +2,10 @@
 
 import { Button } from '@/components/ui/button'
 import type { SantaInvite, SantaReceiver } from '@/shared/types'
-import { ExternalLink, Star } from 'lucide-react'
+import { Star } from 'lucide-react'
 import { type ReactNode, useEffect, useState } from 'react'
 import { RoomChips } from '../../../components/room-chips'
-
-const isHttpUrl = (value: string) => /^https?:\/\/[^\s/]+/i.test(value)
+import { WardWishlist } from './ward-wishlist'
 
 export function Envelope({ slug, room, receiver, ready, children }: {
   slug: string
@@ -102,14 +101,7 @@ export function Envelope({ slug, room, receiver, ready, children }: {
         ) : (
           <p className="text-body text-muted-foreground">Пожеланий нет — придётся угадывать. Посмотрите, нет ли вишлиста.</p>
         )}
-        {receiver.wishlistUrl && isHttpUrl(receiver.wishlistUrl) && (
-          <Button asChild variant="secondary" size="lg">
-            <a href={receiver.wishlistUrl} target="_blank" rel="noopener noreferrer nofollow">
-              <ExternalLink aria-hidden />
-              Открыть вишлист
-            </a>
-          </Button>
-        )}
+        <WardWishlist name={receiver.name} url={receiver.wishlistUrl} />
       </section>
       {children}
     </>

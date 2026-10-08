@@ -210,3 +210,43 @@ export function withChatRead(me: SantaMe, withWho: SantaChatWith): SantaMe {
   if (!me.chat) return me
   return { ...me, chat: { ...me.chat, [withWho === 'receiver' ? 'fromReceiver' : 'fromSanta']: 0 } }
 }
+
+/** Карточку «Устройте Тайного Санту» показываем с 1 ноября по 31 декабря. */
+export function santaPromoVisible(now: Date): boolean {
+  return now.getMonth() >= 10
+}
+
+const SERVICE_HOSTS = new Set(['prosto-namekni.ru', 'www.prosto-namekni.ru'])
+
+/** Вишлист с нашего сервиса — короткий id из «https://prosto-namekni.ru/s/<id>»; иначе null. */
+export function serviceWishlistShortId(url: string): string | null {
+  try {
+    const u = new URL(url)
+    if (!SERVICE_HOSTS.has(u.hostname)) return null
+    const m = /^\/s\/([A-Za-z0-9_-]+)\/?$/.exec(u.pathname)
+    return m ? m[1] : null
+  } catch {
+    return null
+  }
+}
+
+/** Свои вишлисты для выбора при вступлении: только опубликованные короткой ссылкой. */
+export function wishlistOptions(wishlists: { title: string; shortId?: string }[], mainOrigin: string): { title: string; url: string }[] {
+  return wishlists
+    .filter(w => w.shortId)
+    .map(w => ({ title: w.title.trim() || 'Без названия', url: `${mainOrigin}/s/${w.shortId}` }))
+}
+
+/** Гостевая страница вишлиста подопечного: from=santa включает анонимную бронь. */
+export function guestWishlistHref(shortId: string, mainOrigin: string): string {
+  return `${mainOrigin}/s/${encodeURIComponent(shortId)}?from=santa`
+}
+
+export function isFromSanta(search: string): boolean {
+  return new URLSearchParams(search).get('from') === 'santa'
+}
+
+/** «Подарки готовы у 3 из 7». Только число: кто именно — тайна. */
+export function giftsReadyLabel(ready: number, total: number): string {
+  return ready === total && total > 0 ? `Подарки готовы у всех ${total}` : `Подарки готовы у ${ready} из ${total}`
+}
