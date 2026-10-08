@@ -6,7 +6,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { toast } from '@/hooks/use-toast'
 import {
-  MIN_PARTICIPANTS, apiErrorMessage, canRemind, formatDay, formatTime, isValidRoomId, participantsLabel, readyCount, remindAvailableAt,
+  MIN_PARTICIPANTS, apiErrorMessage, canRemind, formatDay, formatDrawAt, formatTime, isValidRoomId, participantsLabel, readyCount, remindAvailableAt,
   remindResultToast,
 } from '@/shared/santa'
 import { SANTA_ORIGIN, santaHref } from '@/shared/santa-route'
@@ -59,6 +59,7 @@ export default function SantaRoomPage() {
   const invitePath = santaHref(`/r/${room.slug}`)
   const inviteLink = `${origin}${invitePath}`
   const onError = (err: unknown) => toast({ variant: 'destructive', title: apiErrorMessage(err) })
+  const drawAtLabel = open ? formatDrawAt(room.drawAt) : null
 
   return (
     <div className="space-y-8">
@@ -66,7 +67,7 @@ export default function SantaRoomPage() {
         <div className="space-y-4">
           <Link href={santaHref('/rooms')} className="text-body-sm text-muted-foreground hover:text-foreground">← Мои комнаты</Link>
           <h1 className="text-title-lg md:text-display-sm">{room.title}</h1>
-          <RoomChips budget={room.budget} exchangeDate={room.exchangeDate} />
+          <RoomChips budget={room.budget} exchangeDate={room.exchangeDate} drawAt={open ? room.drawAt : null} />
         </div>
         {open && (
           <Button asChild variant="secondary">
@@ -133,6 +134,18 @@ export default function SantaRoomPage() {
             </div>
             {open ? (
               <>
+                {room.drawFailedAt && (
+                  <p role="alert" className="rounded-control border border-destructive/40 bg-destructive/10 px-4 py-3 text-body-sm">
+                    Жеребьёвка по расписанию не прошла: мало готовых участников. Попросите остальных подключить почту
+                    или Telegram и проведите жеребьёвку вручную — или назначьте новое время в настройках.
+                  </p>
+                )}
+                {drawAtLabel && (
+                  <p className="text-body-sm">
+                    Пройдёт автоматически {drawAtLabel}.
+                    {!enough && ' Если к этому времени готовых будет меньше трёх, она не состоится.'}
+                  </p>
+                )}
                 <p className="text-body-sm text-muted-foreground">
                   {enough
                     ? `Готовы ${ready} из ${participants.length}. Каждый готовый получит подопечного; кто не подтвердил почту или Telegram — в жеребьёвку не попадёт.`
