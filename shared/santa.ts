@@ -211,9 +211,9 @@ export function withChatRead(me: SantaMe, withWho: SantaChatWith): SantaMe {
   return { ...me, chat: { ...me.chat, [withWho === 'receiver' ? 'fromReceiver' : 'fromSanta']: 0 } }
 }
 
-/** Карточку «Устройте Тайного Санту» показываем с 1 ноября по 31 декабря. */
+/** Карточку «Устройте Тайного Санту» показываем с 1 октября по 31 декабря. */
 export function santaPromoVisible(now: Date): boolean {
-  return now.getMonth() >= 10
+  return now.getMonth() >= 9
 }
 
 const SERVICE_HOSTS = new Set(['prosto-namekni.ru', 'www.prosto-namekni.ru'])

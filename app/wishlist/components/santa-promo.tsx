@@ -6,7 +6,7 @@ import { SANTA_ORIGIN, santaHref } from '@/shared/santa-route'
 import { Star } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
-/** «Устройте Тайного Санту» — с 1 ноября по 31 декабря (макет «Переход из вишлиста»). */
+/** «Устройте Тайного Санту» — с 1 октября по 31 декабря (макет «Переход из вишлиста»). */
 export function SantaPromo() {
   const [visible, setVisible] = useState(false)
   useEffect(() => setVisible(santaPromoVisible(new Date())), [])

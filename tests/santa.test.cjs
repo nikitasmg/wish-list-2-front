@@ -186,8 +186,10 @@ test('открытая вкладка чата обнуляет только с�
   assert.equal(me.chat.fromSanta, 2, 'исходный объект не меняется')
 })
 
-test('сезон карточки Санты: с 1 ноября по 31 декабря', () => {
-  assert.equal(santaPromoVisible(new Date(2026, 9, 31, 23, 59)), false)
+test('сезон карточки Санты: с 1 октября по 31 декабря', () => {
+  assert.equal(santaPromoVisible(new Date(2026, 8, 30, 23, 59)), false)
+  assert.equal(santaPromoVisible(new Date(2026, 9, 1, 0, 0)), true)
+  assert.equal(santaPromoVisible(new Date(2026, 9, 31, 23, 59)), true)
   assert.equal(santaPromoVisible(new Date(2026, 10, 1, 0, 0)), true)
   assert.equal(santaPromoVisible(new Date(2026, 11, 31, 23, 59)), true)
   assert.equal(santaPromoVisible(new Date(2027, 0, 1, 0, 0)), false)
