@@ -12,6 +12,7 @@ import { useEffect, useState } from 'react'
 import { ConfirmAction } from '../../../components/confirm-action'
 import { CopyField } from '../../../components/copy-field'
 import { ProfileForm } from './profile-form'
+import { useMyWishlistOptions } from './wishlist-picker'
 
 export function MyCard({ slug, me }: { slug: string; me: SantaMe }) {
   const queryClient = useQueryClient()
@@ -19,6 +20,7 @@ export function MyCard({ slug, me }: { slug: string; me: SantaMe }) {
   const leave = useApiSantaLeave(slug)
   const drawn = me.room.status === 'drawn'
   const [personalLink, setPersonalLink] = useState<string | null>(null)
+  const wishlists = useMyWishlistOptions()
 
   useEffect(() => {
     // Ссылка только у вошедших по токену; по аккаунту и так узнаем.
@@ -60,6 +62,8 @@ export function MyCard({ slug, me }: { slug: string; me: SantaMe }) {
         </div>
       )}
       <ProfileForm
+        key={wishlists.length}
+        wishlists={wishlists}
         defaultValues={{ name: me.name, wishes: me.wishes, wishlistUrl: me.wishlistUrl }}
         nameLocked={drawn}
         submitLabel="Сохранить"
