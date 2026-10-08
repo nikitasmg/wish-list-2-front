@@ -1,8 +1,8 @@
 import api from '@/lib/api'
-import { isValidRoomId, isValidSantaSlug } from '@/shared/santa'
+import { isValidRoomId, isValidSantaSlug, withChatRead } from '@/shared/santa'
 import { clearSantaToken, santaHeaders, setSantaToken } from '@/shared/santa-token'
 import type {
-  SantaInvite, SantaJoinResult, SantaMe, SantaProfileInput, SantaRoom,
+  SantaChat, SantaChatMessage, SantaChatWith, SantaInvite, SantaJoinResult, SantaMe, SantaProfileInput, SantaRoom,
   SantaRemindResult, SantaRoomDetails, SantaRoomInput, SantaRoomSummary,
 } from '@/shared/types'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
@@ -11,6 +11,11 @@ import { AxiosError, isAxiosError } from 'axios'
 type Data<T> = { data: T }
 
 const seg = encodeURIComponent
+
+// Жеребьёвка по расписанию проходит на сервере — итог подтягиваем сами.
+const ROOM_POLL_MS = 60_000
+// Новые сообщения чата без перезагрузки страницы.
+const CHAT_POLL_MS = 15_000
 
 // ── Организатор ────────────────────────────────────────────────────
 
@@ -26,6 +31,10 @@ export const useApiSantaRoom = (id: string) =>
     enabled: isValidRoomId(id),
     queryFn: () => api.get<Data<SantaRoomDetails>>(`santa/rooms/${seg(id)}`),
     retry: false,
+    refetchInterval: query => {
+      const room = query.state.data?.data.room
+      return room?.status === 'open' && room.drawAt ? ROOM_POLL_MS : false
+    },
   })
 
 export const useApiCreateSantaRoom = () => {
@@ -102,6 +111,11 @@ export const useApiSantaMe = (slug: string, enabled: boolean) =>
     queryKey: ['santa-me', slug],
     enabled: enabled && isValidSantaSlug(slug),
     retry: false,
+    // Ждём жеребьёвку по расписанию; после неё — свежие счётчики чата.
+    refetchInterval: query => {
+      const me = query.state.data?.data
+      return me && (me.room.status === 'drawn' || me.room.drawAt) ? ROOM_POLL_MS : false
+    },
     queryFn: async () => {
       try {
         return await api.get<Data<SantaMe>>(`santa/r/${seg(slug)}/me`, { headers: santaHeaders(slug) })
@@ -167,3 +181,31 @@ export const useApiSantaTelegramLink = (slug: string) =>
   useMutation<Data<{ url: string }>, AxiosError>({
     mutationFn: () => api.post(`santa/r/${seg(slug)}/me/telegram`, undefined, { headers: santaHeaders(slug) }),
   })
+
+export const useApiSantaChat = (slug: string, withWho: SantaChatWith) => {
+  const queryClient = useQueryClient()
+  return useQuery({
+    queryKey: ['santa-chat', slug, withWho],
+    enabled: isValidSantaSlug(slug),
+    retry: false,
+    refetchInterval: CHAT_POLL_MS,
+    queryFn: async () => {
+      const res = await api.get<Data<SantaChat>>(`santa/r/${seg(slug)}/me/chat`, {
+        headers: santaHeaders(slug),
+        params: { with: withWho },
+      })
+      // Бэк отметил входящие прочитанными — обнуляем счётчик вкладки без лишнего запроса.
+      queryClient.setQueryData<Data<SantaMe> | null>(['santa-me', slug], old => (old ? { data: withChatRead(old.data, withWho) } : old))
+      return res
+    },
+  })
+}
+
+export const useApiSantaSendChat = (slug: string) => {
+  const queryClient = useQueryClient()
+  return useMutation<Data<SantaChatMessage>, AxiosError, { with: SantaChatWith; body: string }>({
+    mutationFn: body => api.post(`santa/r/${seg(slug)}/me/chat`, body, { headers: santaHeaders(slug) }),
+    onSuccess: (res, vars) => queryClient.setQueryData<Data<SantaChat>>(['santa-chat', slug, vars.with], old =>
+      old ? { data: { ...old.data, messages: [...old.data.messages, res.data] } } : old),
+  })
+}

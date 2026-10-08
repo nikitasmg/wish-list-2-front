@@ -66,6 +66,18 @@ export function RoomForm({ defaultValues, showOrganizer, submitLabel, pending, o
           )} />
         </div>
 
+        <FormField control={form.control} name="drawAt" render={({ field }) => (
+          <FormItem>
+            <FormLabel>Жеребьёвка по расписанию — необязательно</FormLabel>
+            <FormControl><Input type="datetime-local" {...field} /></FormControl>
+            <p className="text-caption text-muted-foreground">
+              В это время пары вытянутся сами. Если готовых участников будет меньше трёх, жеребьёвка не пройдёт
+              и в комнате появится предупреждение. Пусто — проведёте вручную.
+            </p>
+            <FormMessage />
+          </FormItem>
+        )} />
+
         <FormField control={form.control} name="message" render={({ field }) => (
           <FormItem>
             <FormLabel>Пара слов участникам — необязательно</FormLabel>

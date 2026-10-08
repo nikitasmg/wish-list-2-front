@@ -37,15 +37,20 @@ export function NotifyCard({ slug, notify, drawn, inDraw = true }: { slug: strin
             <span className="font-semibold">{channelLabel(notify)}</span>.
             {drawn && !inDraw && ' Чтобы попасть в пары, попросите организатора перезапустить жеребьёвку.'}
           </p>
-          <Button variant="ghost" onClick={() => setEditing(true)}>Сменить</Button>
+          {notify.emailPending && (
+            <p className="text-body-sm text-muted-foreground">
+              Новый адрес {notify.pendingEmail} ждёт кода из письма — до подтверждения пишем по-старому.
+            </p>
+          )}
+          <Button variant="ghost" onClick={() => setEditing(true)}>{notify.emailPending ? 'Ввести код' : 'Сменить'}</Button>
         </div>
       )}
 
       {showChooser && (
         <>
-          {notify.ready && notify.channel === 'email' && (
+          {notify.ready && (
             <p className="text-body-sm text-muted-foreground">
-              Новый адрес почты нужно подтвердить заново: пока вы не введёте код, вы будете считаться неподключённым.
+              Пока новый канал не подтверждён, сообщения приходят {channelLabel(notify)}.
             </p>
           )}
           {!notify.ready && (
@@ -116,12 +121,12 @@ function TelegramConnect({ slug, connected }: { slug: string; connected: boolean
 function EmailConnect({ slug, notify, onDone }: { slug: string; notify: SantaNotifyView; onDone: () => void }) {
   const request = useApiSantaRequestEmailCode(slug)
   const verify = useApiSantaVerifyEmail(slug)
-  const [sentTo, setSentTo] = useState<string | null>(notify.emailPending ? notify.email : null)
+  const [sentTo, setSentTo] = useState<string | null>(notify.emailPending ? notify.pendingEmail : null)
   const [cooldown, setCooldown] = useState(0)
 
   const emailForm = useForm<EmailValues>({
     resolver: zodResolver(emailSchema),
-    defaultValues: { email: notify.email },
+    defaultValues: { email: notify.pendingEmail || notify.email },
   })
   const codeForm = useForm<CodeValues>({ resolver: zodResolver(codeSchema), defaultValues: { code: '' } })
 

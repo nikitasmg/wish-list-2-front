@@ -8,6 +8,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { isAxiosError } from 'axios'
 import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { Suspense, useEffect, useState } from 'react'
+import { ChatCard } from './components/chat-card'
 import { Envelope } from './components/envelope'
 import { InviteHeader } from './components/invite-header'
 import { JoinForm } from './components/join-form'
@@ -83,7 +84,9 @@ function InvitePage() {
   if (mine && mine.room.status === 'drawn') {
     return (
       <div className="mx-auto max-w-xl space-y-8">
-        <Envelope slug={slug} room={mine.room} receiver={mine.receiver} ready={mine.notify.ready} />
+        <Envelope slug={slug} room={mine.room} receiver={mine.receiver} ready={mine.notify.ready}>
+          {mine.receiver && <ChatCard slug={slug} receiverName={mine.receiver.name} unread={mine.chat} />}
+        </Envelope>
         <NotifyCard slug={slug} notify={mine.notify} drawn inDraw={mine.receiver !== null} />
         <MyCard slug={slug} me={mine} />
       </div>

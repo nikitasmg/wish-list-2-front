@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { pluralRu } from './event-date'
-import type { SantaNotifyView, SantaRoom, SantaRoomInput } from './types'
+import type { SantaChatUnread, SantaChatWith, SantaMe, SantaNotifyView, SantaRoom, SantaRoomInput } from './types'
 
 export const MIN_PARTICIPANTS = 3
 
@@ -38,6 +38,7 @@ export const roomSchema = z.object({
   // Пусто — без лимита.
   budget: z.string().trim().regex(/^\d{0,7}$/, 'Только цифры, без пробелов'),
   exchangeDate: z.string(),
+  drawAt: z.string(),
   message: z.string().max(500, 'До 500 символов'),
   organizerJoins: z.boolean(),
   organizerName: z.string().trim().max(40, 'До 40 символов'),
@@ -56,6 +57,7 @@ export const EMPTY_ROOM_FORM: RoomFormValues = {
   title: '',
   budget: '3000',
   exchangeDate: '',
+  drawAt: '',
   message: '',
   organizerJoins: true,
   organizerName: '',
@@ -67,6 +69,7 @@ export function toRoomInput(v: RoomFormValues): SantaRoomInput {
     title: v.title.trim(),
     budget: v.budget.trim() === '' ? null : Number(v.budget),
     exchangeDate: v.exchangeDate || null,
+    drawAt: fromLocalInput(v.drawAt),
     message: v.message.trim(),
     organizerJoins: v.organizerJoins,
     organizerName: v.organizerName.trim(),
@@ -80,11 +83,36 @@ export function roomToFormValues(room: SantaRoom): RoomFormValues {
     title: room.title,
     budget: room.budget === null ? '' : String(room.budget),
     exchangeDate: room.exchangeDate ? room.exchangeDate.slice(0, 10) : '',
+    drawAt: toLocalInput(room.drawAt),
     message: room.message,
     organizerJoins: false,
     organizerName: '',
     organizerWishes: '',
   }
+}
+
+const pad2 = (n: number) => String(n).padStart(2, '0')
+
+/** ISO из бэка → значение input type="datetime-local" в поясе браузера: «2026-12-20T18:30». */
+export function toLocalInput(iso: string | null): string {
+  if (!iso) return ''
+  const d = new Date(iso)
+  if (Number.isNaN(d.getTime())) return ''
+  return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}T${pad2(d.getHours())}:${pad2(d.getMinutes())}`
+}
+
+/** Значение datetime-local (время браузера) → ISO UTC для бэка; пусто или мусор — null. */
+export function fromLocalInput(value: string): string | null {
+  if (!value) return null
+  const d = new Date(value)
+  return Number.isNaN(d.getTime()) ? null : d.toISOString()
+}
+
+/** «20 декабря в 18:30» в поясе браузера; null — времени нет. */
+export function formatDrawAt(value: string | null): string | null {
+  if (!value) return null
+  const d = new Date(value)
+  return Number.isNaN(d.getTime()) ? null : formatTime(d)
 }
 
 export const profileSchema = z.object({
@@ -163,4 +191,22 @@ export function remindResultToast(sent: number, unreachable: number): { title: s
 
 export function formatTime(d: Date): string {
   return d.toLocaleString('ru-RU', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })
+}
+
+export const chatSchema = z.object({
+  body: z.string().trim().min(1, 'Напишите сообщение').max(1000, 'До 1000 символов'),
+})
+export type ChatValues = z.infer<typeof chatSchema>
+
+/** Подпись вкладки чата: «Моему Санте · 2 новых». */
+export function chatTabLabel(withWho: SantaChatWith, unread: SantaChatUnread | null): string {
+  const base = withWho === 'receiver' ? 'Подопечному' : 'Моему Санте'
+  const n = unread ? (withWho === 'receiver' ? unread.fromReceiver : unread.fromSanta) : 0
+  return n > 0 ? `${base} · ${n} ${pluralRu(n, ['новое', 'новых', 'новых'])}` : base
+}
+
+/** Карточка участника после открытия вкладки: её входящие бэк отметил прочитанными. */
+export function withChatRead(me: SantaMe, withWho: SantaChatWith): SantaMe {
+  if (!me.chat) return me
+  return { ...me, chat: { ...me.chat, [withWho === 'receiver' ? 'fromReceiver' : 'fromSanta']: 0 } }
 }
