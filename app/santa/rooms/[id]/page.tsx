@@ -18,6 +18,7 @@ import { useEffect, useState } from 'react'
 import { ConfirmAction } from '../../components/confirm-action'
 import { CopyField } from '../../components/copy-field'
 import { RoomChips } from '../../components/room-chips'
+import { InviteQr } from './components/invite-qr'
 
 export default function SantaRoomPage() {
   const { id } = useParams<{ id: string }>()
@@ -119,6 +120,7 @@ export default function SantaRoomPage() {
           <section className="space-y-4 rounded-card border border-border bg-card p-6">
             <h2 className="text-title-xs">Позвать людей</h2>
             {origin && <CopyField label="Ссылка-приглашение" value={inviteLink} />}
+            {origin && open && <InviteQr link={inviteLink} title={room.title} />}
             {!ownerJoined && open && (
               <p className="text-body-sm text-muted-foreground">
                 Вы не участвуете. Чтобы участвовать, откройте{' '}
