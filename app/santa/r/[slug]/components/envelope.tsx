@@ -3,12 +3,19 @@
 import { Button } from '@/components/ui/button'
 import type { SantaInvite, SantaReceiver } from '@/shared/types'
 import { ExternalLink, Star } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { type ReactNode, useEffect, useState } from 'react'
 import { RoomChips } from '../../../components/room-chips'
 
 const isHttpUrl = (value: string) => /^https?:\/\/[^\s/]+/i.test(value)
 
-export function Envelope({ slug, room, receiver, ready }: { slug: string; room: SantaInvite; receiver: SantaReceiver | null; ready: boolean }) {
+export function Envelope({ slug, room, receiver, ready, children }: {
+  slug: string
+  room: SantaInvite
+  receiver: SantaReceiver | null
+  ready: boolean
+  /** Показывается только после вскрытия: там имя подопечного. */
+  children?: ReactNode
+}) {
   // Флаг привязан к жеребьёвке: после перезапуска drawnAt другой, конверт снова закрыт.
   const prefix = `santa:${slug}:opened`
   const key = `${prefix}:${room.drawnAt ?? ''}`
@@ -80,28 +87,31 @@ export function Envelope({ slug, room, receiver, ready }: { slug: string; room: 
   }
 
   return (
-    <section className="space-y-6" aria-live="polite">
-      <div>
-        <p className="text-lead text-muted-foreground">Вы — Тайный Санта для</p>
-        <h1 className="mt-2 text-display-sm">{receiver.name}</h1>
-      </div>
-      <RoomChips budget={room.budget} exchangeDate={room.exchangeDate} />
-      {receiver.wishes ? (
-        <div className="space-y-2 rounded-card border border-border bg-card p-5">
-          <p className="text-eyebrow uppercase text-muted-foreground">Пожелания</p>
-          <p className="whitespace-pre-line break-words text-body">{receiver.wishes}</p>
+    <>
+      <section className="space-y-6" aria-live="polite">
+        <div>
+          <p className="text-lead text-muted-foreground">Вы — Тайный Санта для</p>
+          <h1 className="mt-2 text-display-sm">{receiver.name}</h1>
         </div>
-      ) : (
-        <p className="text-body text-muted-foreground">Пожеланий нет — придётся угадывать. Посмотрите, нет ли вишлиста.</p>
-      )}
-      {receiver.wishlistUrl && isHttpUrl(receiver.wishlistUrl) && (
-        <Button asChild variant="secondary" size="lg">
-          <a href={receiver.wishlistUrl} target="_blank" rel="noopener noreferrer nofollow">
-            <ExternalLink aria-hidden />
-            Открыть вишлист
-          </a>
-        </Button>
-      )}
-    </section>
+        <RoomChips budget={room.budget} exchangeDate={room.exchangeDate} />
+        {receiver.wishes ? (
+          <div className="space-y-2 rounded-card border border-border bg-card p-5">
+            <p className="text-eyebrow uppercase text-muted-foreground">Пожелания</p>
+            <p className="whitespace-pre-line break-words text-body">{receiver.wishes}</p>
+          </div>
+        ) : (
+          <p className="text-body text-muted-foreground">Пожеланий нет — придётся угадывать. Посмотрите, нет ли вишлиста.</p>
+        )}
+        {receiver.wishlistUrl && isHttpUrl(receiver.wishlistUrl) && (
+          <Button asChild variant="secondary" size="lg">
+            <a href={receiver.wishlistUrl} target="_blank" rel="noopener noreferrer nofollow">
+              <ExternalLink aria-hidden />
+              Открыть вишлист
+            </a>
+          </Button>
+        )}
+      </section>
+      {children}
+    </>
   )
 }
