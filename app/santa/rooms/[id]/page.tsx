@@ -10,7 +10,7 @@ import {
   remindResultToast,
 } from '@/shared/santa'
 import { SANTA_ORIGIN, santaHref } from '@/shared/santa-route'
-import { BellRing, CircleCheck, CircleDashed, Gift, Settings, Shuffle, Trash2 } from 'lucide-react'
+import { BellRing, CircleCheck, CircleDashed, Gift, Settings, Shuffle, Trash2, UserRound } from 'lucide-react'
 import { isAxiosError } from 'axios'
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
@@ -56,7 +56,8 @@ export default function SantaRoomPage() {
   const enough = ready >= MIN_PARTICIPANTS
   const remindAt = remindAvailableAt(room.lastRemindedAt)
   const remindOpen = canRemind(room.lastRemindedAt)
-  const ownerJoined = participants.some(p => p.isOwner)
+  const owner = participants.find(p => p.isOwner)
+  const ownerJoined = owner !== undefined
   const invitePath = santaHref(`/r/${room.slug}`)
   const inviteLink = `${origin}${invitePath}`
   const onError = (err: unknown) => toast({ variant: 'destructive', title: apiErrorMessage(err) })
@@ -92,7 +93,15 @@ export default function SantaRoomPage() {
                   {p.name.slice(0, 1).toUpperCase()}
                 </span>
                 <span className="min-w-0 flex-1">
-                  <span className="block truncate text-body font-semibold">{p.name}{p.isOwner ? ' · вы' : ''}</span>
+                  <span className="block truncate text-body font-semibold">
+                    {p.name}
+                    {p.isOwner && (
+                      <>
+                        {' · '}
+                        <Link href={invitePath} className="font-normal text-primary underline-offset-4 hover:underline">вы, моя карточка</Link>
+                      </>
+                    )}
+                  </span>
                   <span className="flex items-center gap-1.5 text-caption text-muted-foreground">
                     {p.ready
                       ? <CircleCheck className="size-3.5 text-success" aria-hidden />
@@ -117,6 +126,30 @@ export default function SantaRoomPage() {
         </section>
 
         <aside className="space-y-4">
+          {owner && (
+            <section className="space-y-4 rounded-card border border-border bg-card p-6" aria-labelledby="me-title">
+              <div className="flex items-center gap-2.5">
+                <UserRound className="size-5 text-tone-violet" aria-hidden />
+                <h2 id="me-title" className="text-title-xs">Вы участник</h2>
+              </div>
+              {!owner.ready && (
+                <p role="status" className="rounded-control border border-destructive/40 bg-destructive/10 px-4 py-3 text-body-sm">
+                  {open
+                    ? 'Подключите почту или Telegram — иначе вы не попадёте в жеребьёвку.'
+                    : 'У вас не подключены почта и Telegram, поэтому вы не попали в пары. Подключите канал и перезапустите жеребьёвку.'}
+                </p>
+              )}
+              <p className="text-body-sm text-muted-foreground">
+                {open
+                  ? 'В своей карточке вы подключаете почту или Telegram и пишете пожелания — как и остальные участники.'
+                  : 'В своей карточке вы откроете подопечного и напишете ему в анонимный чат.'}
+              </p>
+              <Button asChild variant={owner.ready ? 'secondary' : 'festive'} className="w-full">
+                <Link href={invitePath}>{owner.ready ? 'Моя карточка' : 'Подключить почту или Telegram'}</Link>
+              </Button>
+            </section>
+          )}
+
           <section className="space-y-4 rounded-card border border-border bg-card p-6">
             <h2 className="text-title-xs">Позвать людей</h2>
             {origin && <CopyField label="Ссылка-приглашение" value={inviteLink} />}
