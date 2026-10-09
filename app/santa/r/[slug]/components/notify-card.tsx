@@ -151,7 +151,10 @@ function EmailConnect({ slug, notify, onDone }: { slug: string; notify: SantaNot
   if (sentTo) {
     return (
       <Form {...codeForm}>
+        {/* Разные key у форм почты и кода: иначе React переиспользует поле, а useController
+            оставит обработчики прежней формы — ввод уйдёт в форму почты, а инпут кода замрёт. */}
         <form
+          key="code"
           className="space-y-4"
           onSubmit={codeForm.handleSubmit(v => verify.mutate(v.code, {
             onSuccess: () => {
@@ -186,7 +189,7 @@ function EmailConnect({ slug, notify, onDone }: { slug: string; notify: SantaNot
 
   return (
     <Form {...emailForm}>
-      <form className="space-y-4" onSubmit={emailForm.handleSubmit(v => send(v.email.trim().toLowerCase()))}>
+      <form key="email" className="space-y-4" onSubmit={emailForm.handleSubmit(v => send(v.email.trim().toLowerCase()))}>
         <FormField control={emailForm.control} name="email" render={({ field }) => (
           <FormItem>
             <FormLabel>Почта</FormLabel>
