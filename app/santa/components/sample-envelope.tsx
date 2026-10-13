@@ -3,7 +3,7 @@ import { MessageCircle, Star } from 'lucide-react'
 /** Картинка героя: как выглядит конверт участника. Вымышленные данные, без действий. */
 export function SampleEnvelope() {
   return (
-    <figure className="relative mx-auto w-full max-w-sm" aria-label="Пример: так участник увидит своего подопечного">
+    <figure className="relative mx-auto w-full max-w-sm" aria-label="Пример: так участник увидит своего получателя">
       <div aria-hidden className="absolute inset-0 -rotate-6 rounded-sheet border border-border bg-card" />
       <div aria-hidden className="relative flex rotate-2 flex-col gap-5 rounded-sheet border border-border bg-background p-7 shadow-overlay">
         <div className="flex items-center justify-between">

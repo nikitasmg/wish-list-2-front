@@ -13,6 +13,9 @@ export function santaHref(path: string, base: string = SANTA_BASE): string {
   return path === '/' ? base : `${base}${path}`
 }
 
+/** Лендинг Санты — для ссылок с основного сайта (на проде это другой домен). */
+export const SANTA_LANDING = `${SANTA_ORIGIN}${santaHref('/')}`
+
 export type SantaRoute =
   | { type: 'next' }
   | { type: 'rewrite'; pathname: string }

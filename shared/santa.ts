@@ -200,7 +200,7 @@ export type ChatValues = z.infer<typeof chatSchema>
 
 /** Подпись вкладки чата: «Моему Санте · 2 новых». */
 export function chatTabLabel(withWho: SantaChatWith, unread: SantaChatUnread | null): string {
-  const base = withWho === 'receiver' ? 'Подопечному' : 'Моему Санте'
+  const base = withWho === 'receiver' ? 'Получателю' : 'Моему Санте'
   const n = unread ? (withWho === 'receiver' ? unread.fromReceiver : unread.fromSanta) : 0
   return n > 0 ? `${base} · ${n} ${pluralRu(n, ['новое', 'новых', 'новых'])}` : base
 }

@@ -49,7 +49,7 @@ export function MyCard({ slug, me }: { slug: string; me: SantaMe }) {
         <h2 className="text-title-sm">{drawn ? 'Ваши пожелания' : 'Вы в комнате'}</h2>
         {!drawn && (
           <p className="mt-1 text-body-sm text-muted-foreground">
-            Когда организатор проведёт жеребьёвку, здесь появится конверт с именем вашего подопечного.
+            Когда организатор проведёт жеребьёвку, здесь появится конверт с именем вашего получателя.
           </p>
         )}
       </div>
