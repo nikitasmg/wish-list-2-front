@@ -69,7 +69,7 @@ const BLOCKS: { title: string; text: string; stage: React.ReactNode; desktopOnly
 export function BlocksSection() {
   return (
     <section id="blocks" className="scroll-mt-20 border-y bg-muted/30 py-20 md:border-y-0 md:bg-transparent md:py-28">
-      <Container className="space-y-10 md:space-y-10">
+      <Container className="space-y-10">
         <SectionTitle
           eyebrow="14 блоков"
           title={<>Всё о празднике —<br className="hidden md:block" /> на одной странице</>}

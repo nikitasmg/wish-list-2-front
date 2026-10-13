@@ -28,8 +28,8 @@ export function ThemesSection() {
   const look = pageLook({ colorScheme: scheme, showGiftAvailability: true, headingFont: font, pattern: 'stars' })
 
   return (
-    <section className="py-20 md:py-28">
-      <Container className="space-y-10 md:space-y-10">
+    <section className="pb-20 md:py-28">
+      <Container className="space-y-10">
         <SectionTitle
           eyebrow="Оформление"
           title={<>Девять схем, шесть шрифтов<br className="hidden md:block" /> и своя палитра</>}

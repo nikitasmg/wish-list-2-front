@@ -29,7 +29,7 @@ const STEPS = [
 export function HowSection() {
   return (
     <section id="how" className="scroll-mt-20 py-20 md:py-28">
-      <Container className="space-y-10 md:space-y-14">
+      <Container className="space-y-10">
         <SectionTitle
           eyebrow="Как это работает"
           title="Три шага до готовой страницы"
