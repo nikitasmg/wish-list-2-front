@@ -18,7 +18,7 @@ const FACTS = [
  */
 export function ConstructorSection() {
   return (
-    <section className="hidden border-y bg-muted/30 py-24 md:block">
+    <section className="hidden border-y bg-muted/30 py-28 md:block">
       <Container className="space-y-10">
         <SectionTitle
           eyebrow="Конструктор"

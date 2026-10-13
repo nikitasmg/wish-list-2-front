@@ -6,10 +6,12 @@ import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { cn } from '@/lib/utils'
-import { checkImageFile, cropRect, formatMb, isHeic } from '@/shared/image'
+import { checkImageFile, formatMb, isHeic } from '@/shared/image'
 import { isAxiosError } from 'axios'
 import { ImageIcon, Trash2, UploadIcon } from 'lucide-react'
 import React, { useEffect, useRef, useState } from 'react'
+import ReactCrop, { type Crop, centerCrop, makeAspectCrop } from 'react-image-crop'
+import 'react-image-crop/dist/ReactCrop.css'
 
 export type ImageUploadValue =
   | { type: 'file'; value: File }   // kept for type compatibility, no longer emitted
@@ -32,8 +34,8 @@ type State =
 
 /**
  * Загрузка картинки по макету «Загрузка картинок»: перетаскивание, выбор
- * файла и Ctrl+V; прогресс с отменой; понятная ошибка; обрезка 1:1, 4:3,
- * 16:9. HEIC переводится в JPEG браузером — бэк его не принимает, а на
+ * файла и Ctrl+V; прогресс с отменой; понятная ошибка; обрезка рамкой — свободно,
+ * 1:1, 4:3, 16:9. HEIC переводится в JPEG браузером — бэк его не принимает, а на
  * айфоне фото чаще всего именно в нём.
  */
 export function ImageUpload({ label = 'Обложка', onChange, onUploadingChange, previewUrl, pasteAnywhere }: Props) {
@@ -214,43 +216,42 @@ async function heicToJpeg(file: File): Promise<Blob | null> {
   }
 }
 
-const ASPECTS: [string, number][] = [['1:1', 1], ['4:3', 4 / 3], ['16:9', 16 / 9]]
+/** «Свободно» — рамку тянут за любой угол, пропорция не держится. */
+const ASPECTS: [string, number | undefined][] = [['Свободно', undefined], ['1:1', 1], ['4:3', 4 / 3], ['16:9', 16 / 9]]
+
+/** Рамка на 90% картинки по центру — с пропорцией или во всю картинку. */
+function startCrop(image: HTMLImageElement, aspect?: number): Crop {
+  if (!aspect) return { unit: '%', x: 5, y: 5, width: 90, height: 90 }
+  return centerCrop(makeAspectCrop({ unit: '%', width: 90 }, aspect, image.width, image.height), image.width, image.height)
+}
 
 /**
- * Обрезка: рамка выбранной пропорции, масштаб ползунком, сдвиг — перетаскиванием
- * картинки. Режет canvas на клиенте и загружает результат как новый файл.
+ * Обрезка: картинка целиком в окне постоянного размера, рамку двигают и
+ * тянут за углы — масштаб задаёт сама рамка. Режет canvas на клиенте и
+ * загружает результат как новый файл.
  */
 function CropDialog({ src, onClose, onDone }: { src: string; onClose: () => void; onDone: (blob: Blob) => void }) {
-  const [aspect, setAspect] = useState(ASPECTS[1])
-  const [zoom, setZoom] = useState(1)
-  const [focus, setFocus] = useState({ x: 0.5, y: 0.5 })
-  const [size, setSize] = useState<{ w: number; h: number } | null>(null)
+  const [aspect, setAspect] = useState(ASPECTS[2])
+  const [crop, setCrop] = useState<Crop>()
   const [failed, setFailed] = useState(false)
   const image = useRef<HTMLImageElement>(null)
-  const frame = 320
-  const rect = size ? cropRect(size.w, size.h, aspect[1], zoom, focus.x, focus.y) : null
-  const scale = rect ? frame / rect.width : 1
-
-  const drag = (event: React.PointerEvent) => {
-    if (!size || !rect) return
-    const start = { x: event.clientX, y: event.clientY, focus }
-    const move = (e: PointerEvent) => {
-      const dx = (start.x - e.clientX) / scale / Math.max(1, size.w - rect.width)
-      const dy = (start.y - e.clientY) / scale / Math.max(1, size.h - rect.height)
-      setFocus({ x: Math.min(1, Math.max(0, start.focus.x + dx)), y: Math.min(1, Math.max(0, start.focus.y + dy)) })
-    }
-    const up = () => { window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up) }
-    window.addEventListener('pointermove', move)
-    window.addEventListener('pointerup', up)
-  }
 
   const finish = () => {
-    if (!image.current || !rect) return
+    const node = image.current
+    if (!node || !crop) return
+    // Рамка хранится в процентах: пересчёт в пиксели исходника не зависит от
+    // того, насколько картинка уменьшена в окне.
+    const rect = {
+      x: Math.round(crop.x / 100 * node.naturalWidth),
+      y: Math.round(crop.y / 100 * node.naturalHeight),
+      width: Math.max(1, Math.round(crop.width / 100 * node.naturalWidth)),
+      height: Math.max(1, Math.round(crop.height / 100 * node.naturalHeight)),
+    }
     try {
       const canvas = document.createElement('canvas')
       canvas.width = rect.width
       canvas.height = rect.height
-      canvas.getContext('2d')?.drawImage(image.current, rect.x, rect.y, rect.width, rect.height, 0, 0, rect.width, rect.height)
+      canvas.getContext('2d')?.drawImage(node, rect.x, rect.y, rect.width, rect.height, 0, 0, rect.width, rect.height)
       canvas.toBlob(blob => { if (blob) onDone(blob); else setFailed(true) }, 'image/jpeg', 0.9)
     } catch {
       // Картинка с чужого домена без CORS «пачкает» canvas — вырезать нельзя.
@@ -260,41 +261,52 @@ function CropDialog({ src, onClose, onDone }: { src: string; onClose: () => void
 
   return (
     <Dialog open onOpenChange={open => { if (!open) onClose() }}>
-      <DialogContent className="max-w-[420px] space-y-4">
+      <DialogContent className="max-w-3xl space-y-4">
         <DialogTitle>Обрезка</DialogTitle>
-        <div
-          className="relative mx-auto touch-none overflow-hidden rounded-control-lg bg-muted"
-          style={{ width: frame, height: frame / aspect[1], cursor: 'grab' }}
-          onPointerDown={drag}
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            ref={image}
-            src={src}
-            alt=""
-            crossOrigin="anonymous"
-            draggable={false}
-            onLoad={e => setSize({ w: e.currentTarget.naturalWidth, h: e.currentTarget.naturalHeight })}
-            className="pointer-events-none absolute left-0 top-0 max-w-none select-none"
-            style={rect && size ? { width: size.w * scale, height: size.h * scale, transform: `translate(${-rect.x * scale}px, ${-rect.y * scale}px)` } : { opacity: 0 }}
-          />
+        {/* Высота окна постоянная: смена пропорции меняет рамку, а не размер модалки. */}
+        <div className="flex h-[56vh] items-center justify-center overflow-hidden rounded-control-lg bg-muted">
+          <ReactCrop
+            crop={crop}
+            aspect={aspect[1]}
+            keepSelection
+            ruleOfThirds
+            minWidth={32}
+            minHeight={32}
+            onChange={(_, percent) => setCrop(percent)}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              ref={image}
+              src={src}
+              alt=""
+              crossOrigin="anonymous"
+              draggable={false}
+              onLoad={e => setCrop(startCrop(e.currentTarget, aspect[1]))}
+              onError={() => setFailed(true)}
+              className="block max-h-[56vh] max-w-full select-none"
+            />
+          </ReactCrop>
         </div>
-        <div role="group" aria-label="Пропорция" className="flex justify-center gap-1.5">
+        <div role="group" aria-label="Пропорция" className="flex flex-wrap justify-center gap-1.5">
           {ASPECTS.map(a => (
-            <Button key={a[0]} type="button" size="sm" variant={aspect[0] === a[0] ? 'default' : 'outline'} onClick={() => { setAspect(a); setFocus({ x: 0.5, y: 0.5 }) }}>{a[0]}</Button>
+            <Button
+              key={a[0]}
+              type="button"
+              size="sm"
+              variant={aspect[0] === a[0] ? 'default' : 'outline'}
+              onClick={() => { setAspect(a); if (image.current && a[1]) setCrop(startCrop(image.current, a[1])) }}
+            >
+              {a[0]}
+            </Button>
           ))}
         </div>
-        <label className="flex items-center gap-3 text-body-sm">
-          Масштаб
-          <input type="range" min={1} max={3} step={0.05} value={zoom} onChange={e => setZoom(Number(e.target.value))} className="flex-1 accent-[hsl(var(--primary))]" />
-        </label>
+        <p className="text-center text-caption text-muted-foreground">Двигайте рамку и тяните её за углы.</p>
         {failed && <p className="text-body-sm text-destructive">Эту картинку не получится обрезать — загрузите её файлом.</p>}
         <div className="flex justify-end gap-2">
           <Button type="button" variant="ghost" onClick={onClose}>Отмена</Button>
-          <Button type="button" onClick={finish} disabled={!rect}>Готово</Button>
+          <Button type="button" onClick={finish} disabled={!crop}>Готово</Button>
         </div>
       </DialogContent>
     </Dialog>
   )
 }
-

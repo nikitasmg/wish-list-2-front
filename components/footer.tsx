@@ -1,6 +1,7 @@
 'use client'
 
 import { Logo } from '@/components/logo'
+import { SANTA_LANDING } from '@/shared/santa-route'
 import Link from 'next/link'
 import React from 'react'
 
@@ -8,6 +9,7 @@ const NAV_LINKS = [
   { label: 'Как это работает', href: '/how-it-works' },
   { label: 'Шаблоны', href: '/wishlist-for' },
   { label: 'Блог', href: '/blog' },
+  { label: 'Тайный Санта', href: SANTA_LANDING },
 ]
 
 const LEGAL_LINKS = [

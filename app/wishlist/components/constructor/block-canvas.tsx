@@ -1,6 +1,7 @@
 'use client'
 
-import { BlockContent } from '@/app/s/[shortId]/components/blocks/block-renderer'
+import { BlockContent, BlockHeader } from '@/app/s/[shortId]/components/blocks/block-renderer'
+import { CardCover } from '@/components/card-cover'
 import { blockIcon } from '@/app/wishlist/components/constructor/block-icons'
 import { cn } from '@/lib/utils'
 import { BLOCK_CATALOG, LibraryItem, addBlockAfter, libraryBlock } from '@/shared/editor-model'
@@ -15,7 +16,6 @@ import {
   nudge,
   ratioShare,
   readingOrder,
-  removeBlock,
   replaceBlock,
   snapRatio,
   updateRow,
@@ -24,9 +24,9 @@ import { convertBlock } from '@/shared/slash-menu'
 import { isEmptyBlock } from '@/shared/block-data'
 import { Block, Present, RowRatio, Wishlist } from '@/shared/types'
 import { useDraggable, useDroppable, useDndContext } from '@dnd-kit/core'
-import { ArrowDown, ArrowUp, Columns2, Copy, Lock, Trash2 } from 'lucide-react'
+import { ArrowDown, ArrowUp, Columns2, Copy, Lock, Plus, Trash2 } from 'lucide-react'
 import * as React from 'react'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { InlineTextEditor } from './inline-text-editor'
 import { InsertButton } from './insert-menu'
 
@@ -51,6 +51,9 @@ type Props = {
   schemeStyle?: React.CSSProperties
   onSelect: (selection: Selection) => void
   onLayout: (layout: Layout, key?: string) => void
+  onRemove: (blockId: string) => void
+  /** «Добавить подарки» в блоке вишлиста: уводит в раздел «Подарки» с открытой формой. */
+  onAddGifts: () => void
 }
 
 /**
@@ -66,6 +69,18 @@ export function BlockCanvas(props: Props) {
   const rows = layoutRows(layout)
   const { active } = useDndContext()
   const dragging = Boolean(active)
+
+  // Новый блок может встать за краем экрана — подводим к нему холст. Блок,
+  // вернувшийся по «Отменить», не выделен и холст не двигает.
+  const known = useRef(new Set(layout.blocks.map(block => block.id)))
+  const selectedId = props.selection?.kind === 'block' ? props.selection.id : null
+  useEffect(() => {
+    const added = layout.blocks.filter(block => !known.current.has(block.id))
+    known.current = new Set(layout.blocks.map(block => block.id))
+    if (added.length !== 1 || added[0].id !== selectedId) return
+    const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    document.querySelector(`[data-block-id="${CSS.escape(added[0].id)}"]`)?.scrollIntoView({ block: 'center', behavior: calm ? 'auto' : 'smooth' })
+  }, [layout.blocks, selectedId])
 
   const label = (block?: Block | null) => block ? (block.caption || BLOCK_CATALOG.find(c => c.type === block.type)?.label || 'блок') : ''
   const gapHint = (at: number) => {
@@ -133,19 +148,14 @@ function EmptyPage(props: Props & { onInsert: (item: LibraryItem) => void }) {
 function Gap({ at, dragging, hint, last, onInsert, ...props }: Props & { at: number; dragging: boolean; hint: string; last?: boolean; onInsert: (item: LibraryItem) => void }) {
   const { setNodeRef, isOver } = useDroppable({ id: `gap-${at}`, data: { kind: 'gap', at } satisfies DropData })
   return (
-    <div
-      ref={setNodeRef}
-      className={cn('group/gap relative flex items-center justify-center', dragging ? 'h-10' : last ? 'h-14' : 'h-7')}
-    >
+    // Высота при переносе не меняется — иначе страница прыгает под курсором.
+    <div className={cn('group/gap relative flex items-center justify-center', last ? 'h-14' : 'h-7')}>
+      {/* Цель шире самого промежутка: попасть в полоску 28px на ходу трудно. */}
+      <div ref={setNodeRef} className={cn('absolute inset-x-0', dragging ? '-inset-y-5' : 'inset-y-0')} />
       <div className={cn(
         'absolute inset-x-0 top-1/2 h-0.5 -translate-y-1/2 rounded-full transition-colors',
         isOver ? 'bg-primary' : 'bg-transparent',
       )} />
-      {isOver && (
-        <span className="absolute -top-1 rounded-control-lg bg-primary px-2 py-0.5 text-micro font-bold text-primary-foreground">
-          Вставится сюда
-        </span>
-      )}
       {!dragging && (
         <div className={cn('relative transition-opacity', last ? 'opacity-60 hover:opacity-100' : 'opacity-0 group-hover/gap:opacity-100 focus-within:opacity-100')}>
           <InsertButton hint={hint} {...props} onInsert={onInsert} />
@@ -309,17 +319,7 @@ function SideTarget({ block, side }: { block: Block; side: 'left' | 'right' }) {
       ref={setNodeRef}
       className={cn('absolute inset-y-0 z-20 w-12', side === 'left' ? '-left-3' : '-right-3')}
     >
-      {isOver && (
-        <>
-          <div className={cn('absolute inset-y-2 w-1 rounded-full bg-primary', side === 'left' ? 'left-2' : 'right-2')} />
-          <span className={cn(
-            'absolute top-1/2 -translate-y-1/2 whitespace-nowrap rounded-control-lg bg-primary px-2 py-0.5 text-micro font-bold text-primary-foreground',
-            side === 'left' ? 'left-4' : 'right-4',
-          )}>
-            Поставить рядом
-          </span>
-        </>
-      )}
+      {isOver && <div className={cn('absolute inset-y-2 w-1 rounded-full bg-primary', side === 'left' ? 'left-2' : 'right-2')} />}
     </div>
   )
 }
@@ -332,7 +332,7 @@ export function snapAspect(heightToWidth: number): string {
 }
 
 function CanvasBlock(props: Props & { block: Block; draggable: boolean; alone?: boolean; equal?: boolean }) {
-  const { block, layout, selection, onSelect, onLayout, wishlist, presents, draggable, alone, equal } = props
+  const { block, layout, selection, onSelect, onLayout, onRemove, onAddGifts, wishlist, presents, draggable, alone, equal } = props
   const selected = selection?.kind === 'block' && selection.id === block.id
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: block.id,
@@ -351,20 +351,15 @@ function CanvasBlock(props: Props & { block: Block; draggable: boolean; alone?: 
   const resizable = (block.type === 'media' || (block.type === 'cover' && block.view === 'photo'))
   const aspect = liveAspect ?? (typeof block.data.aspect === 'string' ? block.data.aspect : '')
 
-  // Перенос начинается с любой точки блока, кроме полей ввода и кнопок:
-  // иначе нельзя было бы выделить текст мышью.
+  // Перенос начинается с любой точки блока, кроме полей ввода и кнопок.
+  // Текст тоже тянется, пока в нём не стоит курсор: когда его правят, зажатая
+  // мышь выделяет слова.
   const pointerDown = (event: React.PointerEvent) => {
     const target = event.target as Element
-    if (target.closest('[contenteditable="true"], input, textarea, button, [role="slider"], a')) return
+    if (target.closest('input, textarea, button, [role="slider"], a')) return
+    const editable = target.closest('[contenteditable="true"]')
+    if (editable && editable.contains(document.activeElement)) return
     listeners?.onPointerDown?.(event)
-  }
-
-  if (isDragging) {
-    return (
-      <div className="flex min-h-[96px] items-center justify-center rounded-card border-2 border-dashed border-primary/50 text-body-sm text-muted-foreground">
-        Здесь был блок «{block.caption || info?.label}»
-      </div>
-    )
   }
 
   const startResize = (event: React.PointerEvent) => {
@@ -393,10 +388,13 @@ function CanvasBlock(props: Props & { block: Block; draggable: boolean; alone?: 
       {...attributes}
       onPointerDown={draggable ? pointerDown : undefined}
       tabIndex={-1}
+      data-block-id={block.id}
       aria-roledescription="блок"
       aria-label={block.caption || info?.label}
       className={cn(
-        'relative min-w-0 rounded-card',
+        'group/block relative min-w-0 rounded-card',
+        // Блок остаётся на месте и тускнеет: место под ним не схлопывается.
+        isDragging && 'opacity-40',
         equal && 'h-full',
         draggable && 'cursor-grab active:cursor-grabbing',
         selected ? 'outline outline-2 outline-offset-4 outline-primary' : 'outline outline-1 outline-offset-4 outline-transparent hover:outline-border',
@@ -411,7 +409,7 @@ function CanvasBlock(props: Props & { block: Block; draggable: boolean; alone?: 
         </>
       )}
 
-      {selected && (
+      {selected && !isDragging && (
         <>
           <span className="absolute -top-3 left-3 z-10 flex items-center gap-1 rounded-control-lg bg-primary px-2 py-0.5 text-micro font-bold text-primary-foreground">
             <Icon size={11} aria-hidden />
@@ -427,13 +425,9 @@ function CanvasBlock(props: Props & { block: Block; draggable: boolean; alone?: 
             <ToolbarButton label="Ниже (Alt+↓)" onClick={() => onLayout(nudge(layout, block.id, 1))}><ArrowDown size={14} aria-hidden /></ToolbarButton>
             <ToolbarButton label="Дублировать блок" onClick={() => onLayout(duplicateBlock(layout, block.id))}><Copy size={14} aria-hidden /></ToolbarButton>
             <ToolbarButton
-              label="Удалить блок"
+              label="Удалить блок (Backspace)"
               destructive
-              onClick={() => {
-                if (!window.confirm('Удалить блок? Ответы гостей для него больше не будут видны на странице.')) return
-                onLayout(removeBlock(layout, block.id))
-                onSelect(null)
-              }}
+              onClick={() => onRemove(block.id)}
             >
               <Trash2 size={14} aria-hidden />
             </ToolbarButton>
@@ -443,8 +437,14 @@ function CanvasBlock(props: Props & { block: Block; draggable: boolean; alone?: 
 
       <div ref={bodyRef}>
         {interactive ? (
-          <div onFocusCapture={() => onSelect({ kind: 'block', id: block.id })} onClick={() => onSelect({ kind: 'block', id: block.id })}>
+          <div className="space-y-5" onFocusCapture={() => onSelect({ kind: 'block', id: block.id })} onClick={() => onSelect({ kind: 'block', id: block.id })}>
+            {/* Подпись, заголовок, фото и размер — те же, что у TextBlockView на странице гостя. */}
+            <BlockHeader block={block} />
+            <div className={cn('flex gap-6', block.data.imagePosition === 'side' ? 'flex-col sm:flex-row' : 'flex-col')}>
+              {Boolean(block.data.imageUrl) && <CardCover cover={String(block.data.imageUrl)} className={cn('h-56 shrink-0', block.data.imagePosition === 'side' && 'sm:w-1/3')} />}
+              <div className="min-w-0 flex-1">
             <InlineTextEditor
+              className={cn(block.data.align === 'center' && 'text-center', block.data.size === 'sm' ? 'text-body-sm' : block.data.size === 'lg' ? 'text-body-lg' : 'text-lead')}
               html={String(block.data.html ?? block.data.content ?? '')}
               onChange={html => onLayout(replaceBlock(layout, { ...block, data: { ...block.data, html } }), `text:${block.id}`)}
               onSplit={() => {
@@ -457,6 +457,8 @@ function CanvasBlock(props: Props & { block: Block; draggable: boolean; alone?: 
                 onSelect({ kind: 'block', id: block.id })
               }}
             />
+              </div>
+            </div>
           </div>
         ) : (
           <div onClick={() => onSelect({ kind: 'block', id: block.id })}>
@@ -466,15 +468,29 @@ function CanvasBlock(props: Props & { block: Block; draggable: boolean; alone?: 
                   <Lock size={12} aria-hidden /> Гости увидят после {secretDate?.toLocaleString('ru', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })}
                 </div>
               )}
-              {isEmptyBlock(block)
+              {isEmptyBlock(block) && block.type !== 'location'
                 ? <div className="flex min-h-[96px] items-center justify-center rounded-card border border-dashed text-body-sm text-muted-foreground">{block.caption || info?.label}: пусто — заполните справа</div>
                 : <BlockContent block={{ ...shown, hidden: false, revealAt: null }} wishlist={wishlist} presents={presents} preview />}
+              {/* «Место» пустым выглядит так же, как у гостя, — отличается только подсказка владельцу. */}
+              {isEmptyBlock(block) && block.type === 'location' && (
+                <p className="mt-2 text-caption text-muted-foreground">Так блок видят гости, пока место не указано. Название или адрес — справа.</p>
+              )}
             </div>
+            {/* Кнопка только для владельца в редакторе: у гостя и в предпросмотре её нет. */}
+            {block.type === 'wishlist' && (
+              <button
+                type="button"
+                onClick={event => { event.stopPropagation(); onAddGifts() }}
+                className="mt-4 flex h-control w-full items-center justify-center gap-2 rounded-control-lg border border-dashed border-primary/50 text-label font-semibold text-primary hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                <Plus size={16} aria-hidden />Добавить подарки
+              </button>
+            )}
           </div>
         )}
       </div>
 
-      {selected && resizable && (
+      {selected && resizable && !isDragging && (
         <div
           role="slider"
           tabIndex={0}

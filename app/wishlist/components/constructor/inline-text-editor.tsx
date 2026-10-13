@@ -41,6 +41,9 @@ export function InlineTextEditor({ html, onChange, onSplit, onConvert, className
   const ref = useRef<HTMLDivElement>(null)
   const [active, setActive] = useState(false)
   const [highlight, setHighlight] = useState(0)
+  // Форма ссылки: выделение запоминаем до того, как фокус уйдёт в её поле.
+  const [link, setLink] = useState<{ url: string; error: boolean } | null>(null)
+  const linkRange = useRef<Range | null>(null)
 
   // Меню открывается, только когда «/» — это всё содержимое блока: иначе
   // «ул. Мира 7/2» открывало бы его посреди набора адреса.
@@ -106,18 +109,36 @@ export function InlineTextEditor({ html, onChange, onSplit, onConvert, className
     format('insertHTML', `<mark>${text.replace(/[<>&]/g, char => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' }[char] ?? char))}</mark>`)
   }
 
-  const addLink = () => {
-    const url = window.prompt('Адрес ссылки', 'https://')
-    if (!url) return
+  const openLink = () => {
+    const selection = window.getSelection()
+    const inside = selection?.rangeCount && ref.current?.contains(selection.anchorNode)
+    linkRange.current = inside ? selection.getRangeAt(0).cloneRange() : null
+    setLink({ url: '', error: false })
+  }
+
+  const applyLink = () => {
+    if (!link) return
+    const raw = link.url.trim()
+    let href = ''
     try {
-      const parsed = new URL(url)
+      // «site.ru» без протокола — тоже ссылка, человек так её и набирает.
+      const parsed = new URL(/^[a-z][a-z\d+.-]*:/i.test(raw) ? raw : `https://${raw}`)
       // Только http(s): javascript: в ссылке — это XSS, и чистилка его
       // вырежет, но лучше не давать человеку думать, что ссылка сохранилась.
-      if (!['http:', 'https:'].includes(parsed.protocol)) return
-      format('createLink', parsed.href)
+      if (['http:', 'https:'].includes(parsed.protocol) && parsed.hostname.includes('.')) href = parsed.href
     } catch {
-      /* не ссылка — молча ничего не делаем */
+      /* не ссылка — покажем ошибку ниже */
     }
+    if (!href) { setLink({ ...link, error: true }); return }
+    setLink(null)
+    ref.current?.focus()
+    if (linkRange.current) {
+      const selection = window.getSelection()
+      selection?.removeAllRanges()
+      selection?.addRange(linkRange.current)
+    }
+    document.execCommand('createLink', false, href)
+    commit()
   }
 
   const onKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
@@ -182,7 +203,7 @@ export function InlineTextEditor({ html, onChange, onSplit, onConvert, className
           <ToolbarButton label="Курсив" onClick={() => format('italic')}><Italic className="h-4 w-4" /></ToolbarButton>
           <ToolbarButton label="Подчёркнутый" onClick={() => format('underline')}><Underline className="h-4 w-4" /></ToolbarButton>
           <span className="mx-1 h-5 w-px bg-border" aria-hidden />
-          <ToolbarButton label="Ссылка" onClick={addLink}><Link2 className="h-4 w-4" /></ToolbarButton>
+          <ToolbarButton label="Ссылка" onClick={openLink}><Link2 className="h-4 w-4" /></ToolbarButton>
           <ToolbarButton label="Список" onClick={() => format('insertUnorderedList')}><List className="h-4 w-4" /></ToolbarButton>
           <ToolbarButton label="Выделить акцентом" onClick={applyHighlight}>
             <span className="h-4 w-4 rounded-full bg-primary" />
@@ -201,11 +222,42 @@ export function InlineTextEditor({ html, onChange, onSplit, onConvert, className
         onInput={commit}
         onKeyDown={onKeyDown}
         className={cn(
-          'wishlist-prose min-w-0 break-words rounded-control-lg px-3 py-2 outline-none transition-colors',
+          // Пока в тексте стоит курсор, блок за него не тянется — и указатель текстовый.
+          'wishlist-prose min-w-0 break-words rounded-control-lg px-3 py-2 outline-none transition-colors focus:cursor-text',
           active ? 'ring-2 ring-primary' : 'ring-1 ring-transparent hover:ring-border',
           className,
         )}
       />
+
+      {active && link && (
+        <div className="absolute left-0 top-full z-30 mt-1 w-72 space-y-1.5 rounded-control-lg border bg-popover p-2 shadow-float">
+          <div className="flex gap-1.5">
+            <input
+              autoFocus
+              aria-label="Адрес ссылки"
+              aria-invalid={link.error}
+              placeholder="https://"
+              value={link.url}
+              onChange={event => setLink({ url: event.target.value, error: false })}
+              onKeyDown={event => {
+                if (event.key === 'Enter') { event.preventDefault(); applyLink() }
+                if (event.key === 'Escape') { event.preventDefault(); setLink(null); ref.current?.focus() }
+              }}
+              className="h-control-sm min-w-0 flex-1 rounded-tag border border-input bg-background px-2.5 text-body-sm text-foreground outline-none placeholder:text-muted-foreground focus-visible:border-ring"
+            />
+            <button
+              type="button"
+              onClick={applyLink}
+              className="h-control-sm shrink-0 rounded-tag bg-primary px-3 text-body-sm font-semibold text-primary-foreground hover:opacity-90"
+            >
+              Готово
+            </button>
+          </div>
+          <p className={cn('px-1 text-caption', link.error ? 'text-destructive' : 'text-muted-foreground')}>
+            {link.error ? 'Не похоже на ссылку. Нужен адрес вида site.ru или https://…' : linkRange.current && !linkRange.current.collapsed ? 'Ссылкой станет выделенный текст.' : 'Сначала выделите текст, который станет ссылкой.'}
+          </p>
+        </div>
+      )}
 
       {menuOpen && (
         <ul

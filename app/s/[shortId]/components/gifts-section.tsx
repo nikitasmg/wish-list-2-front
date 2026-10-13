@@ -269,7 +269,7 @@ function GiftAction({ present, reservation, context, compact }: {
         <input type="checkbox" checked={anonymous} onChange={e => setAnonymous(e.target.checked)} className="h-4 w-4 accent-[hsl(var(--primary))]" />
         Анонимно
       </label>
-      {santa && <p className="text-caption text-muted-foreground">Вы Тайный Санта — бронь без имени, подопечный не узнает, кто дарит.</p>}
+      {santa && <p className="text-caption text-muted-foreground">Вы Тайный Санта — бронь без имени, получатель не узнает, кто дарит.</p>}
       <div className="flex gap-2">
         <Button type="submit" size="sm" className="flex-1" loading={reservation.isPending}>Готово</Button>
         <Button type="button" size="sm" variant="ghost" onClick={() => setEditing(false)}>Отмена</Button>

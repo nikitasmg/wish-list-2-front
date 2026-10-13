@@ -70,7 +70,7 @@ export function Envelope({ slug, room, receiver, ready, children }: {
       <section className="flex flex-col items-center gap-7 py-10 text-center">
         {restarted && (
           <p role="status" className="max-w-sm rounded-control border border-border bg-card px-4 py-3 text-body-sm">
-            Организатор перезапустил жеребьёвку — у вас новый подопечный.
+            Организатор перезапустил жеребьёвку — у вас новый получатель.
           </p>
         )}
         <div aria-hidden className="flex h-40 w-60 items-center justify-center rounded-card bg-festive shadow-overlay">

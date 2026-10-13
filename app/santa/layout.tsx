@@ -16,7 +16,7 @@ export default function SantaLayout({ children }: { children: React.ReactNode })
   // Санта всегда ночной, какой бы ни была тема сайта: «dark» включает
   // dark:-варианты компонентов, «santa» задаёт цвета.
   return (
-    <div className="dark santa min-h-svh bg-background text-foreground">
+    <div className="dark santa min-h-svh overflow-x-clip bg-background text-foreground">
       <SantaHeader />
       <main className="mx-auto max-w-6xl px-4 pb-20 pt-10 md:px-16">{children}</main>
     </div>

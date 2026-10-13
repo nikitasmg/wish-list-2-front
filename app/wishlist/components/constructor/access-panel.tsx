@@ -8,7 +8,7 @@ import { Toggle } from './controls'
 
 /**
  * «Доступ»: ссылка на страницу и то, что видит сам организатор. Видимость
- * и время раскрытия — у каждого блока свои, во вкладке «Блок».
+ * и время раскрытия — у каждого блока свои, в его настройках справа.
  */
 export function AccessPanel({ wishlist, onSettings, onCopy, onResponses, hasGuestBlocks }: {
   wishlist: Wishlist

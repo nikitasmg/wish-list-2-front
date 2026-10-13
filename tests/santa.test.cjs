@@ -172,10 +172,10 @@ test('сообщение чата: от 1 до 1000 символов', () => {
 })
 
 test('подпись вкладки чата со счётчиком', () => {
-  assert.equal(chatTabLabel('receiver', null), 'Подопечному')
+  assert.equal(chatTabLabel('receiver', null), 'Получателю')
   assert.equal(chatTabLabel('santa', { fromSanta: 0, fromReceiver: 3 }), 'Моему Санте')
   assert.equal(chatTabLabel('santa', { fromSanta: 2, fromReceiver: 0 }), 'Моему Санте · 2 новых')
-  assert.equal(chatTabLabel('receiver', { fromSanta: 0, fromReceiver: 1 }), 'Подопечному · 1 новое')
+  assert.equal(chatTabLabel('receiver', { fromSanta: 0, fromReceiver: 1 }), 'Получателю · 1 новое')
 })
 
 test('открытая вкладка чата обнуляет только свой счётчик', () => {

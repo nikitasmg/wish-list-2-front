@@ -4,6 +4,7 @@ import { useApiEditPresent, useApiRemovePresent, useApiReorderPresents, useApiSe
 import { PresentModal } from '@/app/wishlist/components/present-modal'
 import { CardCover } from '@/components/card-cover'
 import { Button } from '@/components/ui/button'
+import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -165,6 +166,7 @@ function PresentRow({ present, fresh, onEdit, onDelete, onGifted, onMain }: {
 }) {
   const { attributes, listeners, setNodeRef: dragRef, isDragging, transform } = useDraggable({ id: present.id, disabled: present.isMain })
   const { setNodeRef: dropRef, isOver } = useDroppable({ id: `drop:${present.id}` })
+  const [askDelete, setAskDelete] = useState(false)
   const links = giftLinks(present)
   const status = giftStatus(present)
   const label = present.type === 'group'
@@ -215,11 +217,21 @@ function PresentRow({ present, fresh, onEdit, onDelete, onGifted, onMain }: {
           <DropdownMenuItem onClick={() => onGifted(!present.gifted)}>{present.gifted ? 'Снять «Уже подарено»' : 'Отметить «Уже подарено»'}</DropdownMenuItem>
           {links[0] && <DropdownMenuItem asChild><a href={links[0]} target="_blank" rel="noopener noreferrer">Открыть в магазине</a></DropdownMenuItem>}
           <DropdownMenuSeparator />
-          <DropdownMenuItem className="text-destructive" onClick={() => { if (window.confirm(`Удалить «${present.title}»? Бронь гостя тоже пропадёт.`)) onDelete() }}>
+          <DropdownMenuItem className="text-destructive" onClick={() => setAskDelete(true)}>
             Удалить
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+
+      {/* Подарок спрашиваем, блок страницы — нет: бронь гостя «Отменить» уже не вернёт. */}
+      <ConfirmDialog
+        open={askDelete}
+        title={`Удалить «${present.title}»?`}
+        description="Бронь гостя тоже пропадёт."
+        confirmLabel="Удалить"
+        onConfirm={() => { setAskDelete(false); onDelete() }}
+        onCancel={() => setAskDelete(false)}
+      />
     </div>
   )
 }

@@ -1,6 +1,6 @@
 'use client'
 
-import { Input } from '@/components/ui/input'
+import { DateTimePicker } from '@/components/ui/date-time-picker'
 import { Label } from '@/components/ui/label'
 import React from 'react'
 
@@ -13,10 +13,10 @@ export function TimingBlockEditor({ data, onChange }: Props) {
   return (
     <div className="space-y-2">
       <Label>Дата/время события</Label>
-      <Input
-        type="datetime-local"
+      <DateTimePicker
+        aria-label="Дата и время события"
         value={(data.end as string) ?? ''}
-        onChange={(e) => onChange({ ...data, end: e.target.value })}
+        onChange={end => onChange({ ...data, end })}
       />
     </div>
   )

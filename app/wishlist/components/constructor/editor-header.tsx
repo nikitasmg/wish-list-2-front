@@ -36,7 +36,10 @@ type Props = {
 export function EditorHeader(props: Props) {
   const { mode, onMode } = props
   return (
-    <header className="flex h-[60px] shrink-0 items-center gap-3 border-b px-4">
+    // Три колонки, крайние равные: табы стоят по центру и не едут, когда
+    // меняется название или статус сохранения.
+    <header className="grid h-[60px] shrink-0 grid-cols-[1fr_auto_1fr] items-center gap-3 border-b px-4">
+      <div className="flex min-w-0 items-center gap-3">
       <Link
         href="/wishlist"
         aria-label="Назад к вишлистам"
@@ -59,8 +62,7 @@ export function EditorHeader(props: Props) {
           {props.status}
         </span>
       </div>
-
-      <div className="flex-1" />
+      </div>
 
       <nav aria-label="Раздел" className="flex gap-0.5 rounded-control border p-0.5">
         <ModeTab active={mode === 'page' || mode === 'responses'} onClick={() => onMode('page')}>Страница</ModeTab>
@@ -69,8 +71,7 @@ export function EditorHeader(props: Props) {
         </ModeTab>
       </nav>
 
-      <div className="flex-1" />
-
+      <div className="flex min-w-0 items-center justify-end gap-3">
       <div className="flex items-center gap-0.5">
         <IconButton label="Отменить (Ctrl+Z)" disabled={!props.canUndo} onClick={props.onUndo}><Undo2 size={16} aria-hidden /></IconButton>
         <IconButton label="Повторить (Ctrl+Shift+Z)" disabled={!props.canRedo} onClick={props.onRedo}><Redo2 size={16} aria-hidden /></IconButton>
@@ -128,6 +129,7 @@ export function EditorHeader(props: Props) {
         <Share2 size={15} aria-hidden />
         Поделиться
       </button>
+      </div>
     </header>
   )
 }

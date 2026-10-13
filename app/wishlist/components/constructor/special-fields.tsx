@@ -1,10 +1,11 @@
 'use client'
 
+import { DatePicker } from '@/components/ui/date-time-picker'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { cn } from '@/lib/utils'
-import { DressColor, Person, Place, RSVPQuestion, contactPeople, dressColors, locationPoints, pollSettings, rsvpSettings } from '@/shared/block-data'
+import { DressColor, Person, Place, RSVPQuestion, contactPeople, dressColors, pollSettings, rsvpSettings } from '@/shared/block-data'
 import { DRESS_DEFAULT, DRESS_PRESETS } from '@/shared/constants'
 import { newBlockId } from '@/shared/ids'
 import { ArrowDown, ArrowUp, Plus, X } from 'lucide-react'
@@ -70,7 +71,7 @@ export function RSVPFields({ data, onChange, blockId }: Props) {
         )}
       </div>
       <Field label="Ответить до" hint="После этой даты форма закроется">
-        <Input type="date" value={s.deadline.slice(0, 10)} onChange={e => onChange({ ...data, deadline: e.target.value })} />
+        <DatePicker aria-label="Ответить до" placeholder="Без срока" value={s.deadline.slice(0, 10)} onChange={deadline => onChange({ ...data, deadline })} />
       </Field>
       <Toggle label="Показывать «Кто идёт»" checked={s.showGuests} onChange={showGuests => onChange({ ...data, showGuests })} />
     </div>
@@ -138,7 +139,7 @@ export function PollFields({ data, onChange, blockId }: Props) {
         </div>
       </Field>
       <Field label="Закрыть голосование" hint="Пусто — открыто всегда">
-        <Input type="date" value={s.closesAt.slice(0, 10)} onChange={e => onChange({ ...data, closesAt: e.target.value })} />
+        <DatePicker aria-label="Закрыть голосование" placeholder="Открыто всегда" value={s.closesAt.slice(0, 10)} onChange={closesAt => onChange({ ...data, closesAt })} />
       </Field>
       <Toggle label="Гости могут добавить вариант" checked={s.guestOptions} onChange={guestOptions => onChange({ ...data, guestOptions })} />
     </div>
@@ -255,8 +256,10 @@ export function DressCodeFields({ data, onChange, blockId }: Props) {
 
 /** «Место»: до трёх точек — у свадьбы регистрация и банкет в разных местах. */
 export function LocationFields({ data, onChange, blockId }: Props) {
-  const points = locationPoints(data)
-  const list: Place[] = points.length ? points : [{ name: '', address: '', link: '' }]
+  // Список без отсева пустых: locationPoints выкидывает точку без названия и
+  // адреса, и только что добавленная «ещё точка» пропадала бы сразу.
+  const place = (p?: Partial<Place>): Place => ({ name: String(p?.name ?? ''), address: String(p?.address ?? ''), link: String(p?.link ?? '') })
+  const list: Place[] = [place(data as Partial<Place>), ...(Array.isArray(data.points) ? data.points as Place[] : []).map(place)]
   const save = (next: Place[], key?: string) => {
     const [first, ...rest] = next
     onChange({ ...data, name: first?.name ?? '', address: first?.address ?? '', link: first?.link ?? '', points: rest }, key)

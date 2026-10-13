@@ -142,7 +142,7 @@ export default function SantaRoomPage() {
               <p className="text-body-sm text-muted-foreground">
                 {open
                   ? 'В своей карточке вы подключаете почту или Telegram и пишете пожелания — как и остальные участники.'
-                  : 'В своей карточке вы откроете подопечного и напишете ему в анонимный чат.'}
+                  : 'В своей карточке вы узнаете своего получателя и напишете ему в анонимный чат.'}
               </p>
               <Button asChild variant={owner.ready ? 'secondary' : 'festive'} className="w-full">
                 <Link href={invitePath}>{owner.ready ? 'Моя карточка' : 'Подключить почту или Telegram'}</Link>
@@ -183,7 +183,7 @@ export default function SantaRoomPage() {
                 )}
                 <p className="text-body-sm text-muted-foreground">
                   {enough
-                    ? `Готовы ${ready} из ${participants.length}. Каждый готовый получит подопечного; кто не подтвердил почту или Telegram — в жеребьёвку не попадёт.`
+                    ? `Готовы ${ready} из ${participants.length}. Каждый готовый узнает, кому дарит; кто не подтвердил почту или Telegram — в жеребьёвку не попадёт.`
                     : `Нужно минимум ${participantsLabel(MIN_PARTICIPANTS)} с подтверждённой почтой или Telegram, сейчас готовы ${ready} из ${participants.length}.`}
                 </p>
                 <ConfirmAction
@@ -198,7 +198,7 @@ export default function SantaRoomPage() {
               <>
                 <p className="text-body-sm text-muted-foreground">
                   Жеребьёвка прошла{room.drawnAt ? ` ${formatDay(room.drawnAt)}` : ''}. Каждый откроет своего
-                  подопечного по ссылке-приглашению.
+                  получателя по ссылке-приглашению.
                 </p>
                 <p className="flex items-center gap-2 text-body-sm">
                   <Gift className="size-4 text-success" aria-hidden />
@@ -207,7 +207,7 @@ export default function SantaRoomPage() {
                 <ConfirmAction
                   trigger={<Button variant="secondary" className="w-full" loading={redraw.isPending}>Перезапустить жеребьёвку</Button>}
                   title="Перезапустить жеребьёвку?"
-                  description="Все получат новых подопечных, старые пары пропадут. Кто уже купил подарок — расстроится."
+                  description="У всех сменятся получатели, старые пары пропадут. Кто уже купил подарок — расстроится."
                   confirmLabel="Перезапустить"
                   onConfirm={() => redraw.mutate(undefined, { onError })}
                 />

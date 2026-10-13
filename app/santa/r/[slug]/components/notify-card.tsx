@@ -33,7 +33,7 @@ export function NotifyCard({ slug, notify, drawn, inDraw = true }: { slug: strin
           <p className="text-body">
             {drawn && !inDraw
               ? 'Канал подключён: '
-              : drawn ? 'Новости о подопечном придут ' : 'Имя подопечного придёт '}
+              : drawn ? 'Новости о получателе придут ' : 'Имя получателя придёт '}
             <span className="font-semibold">{channelLabel(notify)}</span>.
             {drawn && !inDraw && ' Чтобы попасть в пары, попросите организатора перезапустить жеребьёвку.'}
           </p>
@@ -58,8 +58,8 @@ export function NotifyCard({ slug, notify, drawn, inDraw = true }: { slug: strin
               {drawn && !inDraw
                 ? 'Подключите почту или Telegram и попросите организатора перезапустить жеребьёвку — иначе вы не попадёте в пары.'
                 : drawn
-                ? 'Подключите почту или Telegram — пришлём, если подопечный поменяет пожелания.'
-                : 'Без подтверждённой почты или Telegram вы не попадёте в жеребьёвку: так мы точно сообщим вам имя подопечного.'}
+                ? 'Подключите почту или Telegram — пришлём, если получатель поменяет пожелания.'
+                : 'Без подтверждённой почты или Telegram вы не попадёте в жеребьёвку: так мы точно сообщим вам имя получателя.'}
             </p>
           )}
           <TelegramConnect slug={slug} connected={telegramActive(notify)} />
@@ -123,6 +123,8 @@ function EmailConnect({ slug, notify, onDone }: { slug: string; notify: SantaNot
   const verify = useApiSantaVerifyEmail(slug)
   const [sentTo, setSentTo] = useState<string | null>(notify.emailPending ? notify.pendingEmail : null)
   const [cooldown, setCooldown] = useState(0)
+  // Ошибка отправки остаётся под полем: тост исчезает раньше, чем человек решит, что делать дальше.
+  const [sendError, setSendError] = useState<string | null>(null)
 
   const emailForm = useForm<EmailValues>({
     resolver: zodResolver(emailSchema),
@@ -138,15 +140,17 @@ function EmailConnect({ slug, notify, onDone }: { slug: string; notify: SantaNot
 
   const onError = (err: unknown) => toast({ variant: 'destructive', title: apiErrorMessage(err) })
 
-  const send = (email: string) =>
+  const send = (email: string) => {
+    setSendError(null)
     request.mutate(email, {
       onSuccess: () => {
         setSentTo(email)
         setCooldown(RESEND_SECONDS)
         codeForm.reset({ code: '' })
       },
-      onError,
+      onError: err => setSendError(apiErrorMessage(err)),
     })
+  }
 
   if (sentTo) {
     return (
@@ -181,6 +185,7 @@ function EmailConnect({ slug, notify, onDone }: { slug: string; notify: SantaNot
             </Button>
             <Button type="button" variant="ghost" onClick={() => { codeForm.reset({ code: '' }); setSentTo(null) }}>Другой адрес</Button>
           </div>
+          {sendError && <p role="alert" className="text-body-sm text-destructive">{sendError}</p>}
           <p className="text-caption text-muted-foreground">Код действует 15 минут. Не пришло — проверьте «Спам».</p>
         </form>
       </Form>
@@ -197,6 +202,7 @@ function EmailConnect({ slug, notify, onDone }: { slug: string; notify: SantaNot
             <FormMessage />
           </FormItem>
         )} />
+        {sendError && <p role="alert" className="text-body-sm text-destructive">{sendError}</p>}
         <Button type="submit" variant="secondary" size="lg" className="w-full" loading={request.isPending}>
           <Mail aria-hidden />Прислать код
         </Button>

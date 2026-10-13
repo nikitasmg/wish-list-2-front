@@ -39,6 +39,9 @@ const schemeConfigs: Record<string, SchemeConfig> = {
   powder:    { ...defaultConfig, decorativeEmoji: '🌸', cardRounded: 'rounded-block' },
   linen:     { ...defaultConfig, decorativeEmoji: '🕊️', cardRounded: 'rounded-block-sm' },
   pastel:    { ...defaultConfig, decorativeEmoji: '🎈' },
+  mint:      { ...defaultConfig, decorativeEmoji: '🍃', cardRounded: 'rounded-block' },
+  sky:       { ...defaultConfig, decorativeEmoji: '☁️' },
+  peach:     { ...defaultConfig, decorativeEmoji: '🍑', cardRounded: 'rounded-block' },
 }
 
 /** Старые значения colorScheme сначала переводятся в новые (normalizeScheme). */
