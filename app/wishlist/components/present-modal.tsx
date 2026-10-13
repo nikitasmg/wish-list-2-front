@@ -3,6 +3,7 @@
 import { useApiCreatePresent, useApiEditPresent } from '@/api/present'
 import { ImageUpload, ImageUploadValue } from '@/components/image-upload'
 import { Button } from '@/components/ui/button'
+import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import {
   Dialog,
   DialogContent,
@@ -56,6 +57,15 @@ const FormSchema = z.object({
 
 type FormValues = z.infer<typeof FormSchema>
 
+/**
+ * Слепок формы для вопроса «закрыть и потерять?». Тип у нового подарка не
+ * считаем: переключатель без единого заполненного поля терять не жалко.
+ */
+const snapshot = (v: Partial<FormValues>, withType: boolean) => JSON.stringify([
+  v.title ?? '', v.description ?? '', v.link ?? '', v.price ?? '', v.coverUrl ?? '',
+  withType ? v.type : '', v.images ?? [], v.links ?? [], Boolean(v.isMain),
+])
+
 type Props = {
   wishlistId: string
   present?: Present
@@ -74,6 +84,8 @@ export function PresentModal({ wishlistId, present, open, onOpenChange, onCreate
   const isPending = createPending || editPending
 
   const [isImageUploading, setIsImageUploading] = React.useState(false)
+  const [askClose, setAskClose] = React.useState(false)
+  const initial = React.useRef('')
 
   const form = useForm<FormValues>({
     resolver: zodResolver(FormSchema),
@@ -106,8 +118,15 @@ export function PresentModal({ wishlistId, present, open, onOpenChange, onCreate
         links: present?.links ?? [],
         isMain: present?.isMain ?? false,
       })
+      initial.current = snapshot(form.getValues(), Boolean(present))
     }
   }, [open, present, form])
+
+  // Крестик, Esc, клик мимо и «Отмена» идут сюда: заполненную форму молча не закрываем.
+  const requestClose = () => {
+    if (snapshot(form.getValues(), isEdit) !== initial.current) setAskClose(true)
+    else onOpenChange(false)
+  }
 
   const onSuccess = () => {
     queryClient.invalidateQueries({ queryKey: ['presents', wishlistId] })
@@ -138,7 +157,8 @@ export function PresentModal({ wishlistId, present, open, onOpenChange, onCreate
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <>
+    <Dialog open={open} onOpenChange={next => { if (next) onOpenChange(true); else requestClose() }}>
       {/* На телефоне форма — шторка снизу, как в макете AddGiftMobile. */}
       <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto max-sm:bottom-0 max-sm:top-auto max-sm:max-w-full max-sm:translate-y-0 max-sm:rounded-b-none max-sm:rounded-t-sheet">
         <DialogHeader>
@@ -353,7 +373,7 @@ export function PresentModal({ wishlistId, present, open, onOpenChange, onCreate
                 variant="outline"
                 size="lg"
                 className="flex-1"
-                onClick={() => onOpenChange(false)}
+                onClick={requestClose}
               >
                 Отмена
               </Button>
@@ -372,5 +392,15 @@ export function PresentModal({ wishlistId, present, open, onOpenChange, onCreate
         </Form>
       </DialogContent>
     </Dialog>
+    <ConfirmDialog
+      open={askClose}
+      title={isEdit ? 'Закрыть без сохранения?' : 'Закрыть и не добавлять подарок?'}
+      description={isEdit ? 'Изменения в подарке потеряются.' : 'Всё, что вы заполнили, потеряется.'}
+      confirmLabel="Закрыть"
+      cancelLabel="Вернуться к форме"
+      onConfirm={() => { setAskClose(false); onOpenChange(false) }}
+      onCancel={() => setAskClose(false)}
+    />
+    </>
   )
 }

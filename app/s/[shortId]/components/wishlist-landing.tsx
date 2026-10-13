@@ -30,10 +30,10 @@ export function WishlistLanding({ wishlist, presents, isMyWishlist, isExample, d
   const pageRef = useRef<HTMLDivElement>(null)
   // В предпросмотре редактора страница живёт внутри интерфейса — фон сайта не трогаем.
   usePageBackground(pageRef, !disableBodyTheme, JSON.stringify(wishlist.settings))
-  return <div ref={pageRef} className={cn('min-h-screen bg-background text-foreground', look.className)} style={look.style}>
+  return <div ref={pageRef} className={cn('flex min-h-screen flex-col bg-background text-foreground', look.className)} style={look.style}>
     {/* В предпросмотре шапки нет: она принадлежит опубликованной странице,
         а в редакторе только съедала бы место. */}
-    {!disableBodyTheme && <div className="mx-auto flex max-w-[1120px] items-center justify-between px-4 pt-5 md:px-8">
+    {!disableBodyTheme && <div className="mx-auto flex w-full max-w-[1120px] items-center justify-between px-4 pt-5 md:px-8">
       <Link href="/" className="flex flex-col leading-none">
         <span className="text-micro tracking-wide text-muted-foreground">просто</span>
         <span className="text-title-xs font-extrabold">намекни<span className="text-primary">;)</span></span>
@@ -41,7 +41,7 @@ export function WishlistLanding({ wishlist, presents, isMyWishlist, isExample, d
       <ShareWishlist wishlist={wishlist} />
     </div>}
     {isLegacyWishlist(wishlist) && !blocks.some(b => b.type === 'cover') && <HeroHeader wishlist={wishlist} config={getSchemeConfig(scheme)} />}
-    <div className="mx-auto max-w-[1120px] space-y-12 px-4 py-12 md:px-8 md:py-16">
+    <div className="mx-auto w-full max-w-[1120px] flex-1 space-y-12 px-4 py-12 md:px-8 md:py-16">
       <BlockRenderer blocks={blocks} rows={wishlist.rows} wishlist={wishlist} presents={presents} owner={isMyWishlist} preview={disableBodyTheme} isExample={isExample} />
       {isLegacyWishlist(wishlist) && !blocks.some(b => b.type === 'wishlist') && presents.length > 0 && <section className="space-y-6"><h2 className="text-title-lg font-bold">Желанные подарки</h2><GiftsSection wishlist={wishlist} presents={presents} owner={isMyWishlist} preview={disableBodyTheme} isExample={isExample} /></section>}
     </div>

@@ -50,6 +50,14 @@ export function pageLook(settings: Wishlist['settings']): { className: string; s
   }
 }
 
+/**
+ * Тот же вид без узора фона — для кусочков страницы, которые рисуются поверх
+ * интерфейса (превью блока в меню, блок под курсором): узор там лёг бы на них.
+ */
+export function withoutPattern(className?: string): string {
+  return (className ?? '').split(' ').filter(name => name && !name.startsWith('look-pattern-')).join(' ')
+}
+
 /** Только цвета схемы — для поповеров, которые рендерятся вне страницы. */
 export function schemeLook(settings: Wishlist['settings']): { className: string; style?: CSSProperties } {
   const scheme = normalizeScheme(settings.colorScheme)

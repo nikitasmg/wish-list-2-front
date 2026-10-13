@@ -7,6 +7,7 @@ import { CreateQuiz } from '@/app/wishlist/create/components/create-quiz'
 import { FromUserTemplateDialog } from '@/app/wishlist/create/components/from-user-template-dialog'
 import { TemplatePhonePreview, TemplatePreview, blockLabel } from '@/app/wishlist/create/components/template-preview'
 import { Button } from '@/components/ui/button'
+import { DatePicker } from '@/components/ui/date-time-picker'
 import { Input } from '@/components/ui/input'
 import { useToast } from '@/hooks/use-toast'
 import { cn } from '@/lib/utils'
@@ -247,7 +248,7 @@ export default function CreateWishlistPage() {
                 </label>
                 <label className="space-y-1 text-body-sm">
                   <span className="font-semibold">Дата</span>
-                  <Input type="date" value={eventDate} onChange={e => setEventDate(e.target.value)} />
+                  <DatePicker aria-label="Дата" value={eventDate} onChange={setEventDate} />
                 </label>
               </div>
 

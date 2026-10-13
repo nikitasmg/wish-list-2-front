@@ -23,7 +23,7 @@ export function CoverBlockView({ block, wishlist, preview = false }: { block: Bl
   return <div className={cn('relative isolate overflow-hidden rounded-block px-6 py-14', view === 'left' ? 'text-left' : 'text-center')}>
     {view === 'photo' && image && <><CardCover cover={image} className="absolute inset-0 h-full rounded-none" /><div className="absolute inset-0 bg-background/80" /></>}
     <div className="relative space-y-6">
-      {image && view !== 'photo' && <CardCover cover={image} title={title} className={cn('mx-auto h-52 max-w-xs', view === 'circle' && 'size-44 rounded-full', view === 'arch' && 'h-72 rounded-t-block')} />}
+      {image && view !== 'photo' && <CardCover cover={image} title={title} className={cn('mx-auto h-52 max-w-xs', view === 'circle' && 'size-44 rounded-full', view === 'arch' && 'h-72 rounded-t-full')} />}
       {(block.caption || badge) && <p className="text-body-sm font-semibold text-primary">{block.caption || badge}</p>}
       {view === 'number' && <div className="text-display-xl font-extrabold text-primary">{String(block.data.number ?? '')}</div>}
       <h1 className="text-title-lg font-extrabold [overflow-wrap:anywhere] lg:text-display">{title}</h1>

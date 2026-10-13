@@ -28,10 +28,13 @@ const FormSchema = z.object({
 
 type Props = {
   isLogin?: boolean
-  disabled?: boolean
+  /** Последняя проверка перед отправкой: false — форма не уходит (нет согласия). */
+  canSubmit?: () => boolean
+  /** Встаёт между полями и кнопкой — согласие при регистрации. */
+  beforeSubmit?: React.ReactNode
 }
 
-export function AuthForm({ isLogin, disabled }: Props) {
+export function AuthForm({ isLogin, canSubmit, beforeSubmit }: Props) {
   const { mutate: login, isPending: loginLoading } = useApiLogin()
   const { mutate: register, isPending: registerLoading } = useApiRegister()
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -43,6 +46,7 @@ export function AuthForm({ isLogin, disabled }: Props) {
   })
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
+    if (canSubmit && !canSubmit()) return
     if (isLogin) {
       login(data, {
         onSuccess: () => {
@@ -87,7 +91,8 @@ export function AuthForm({ isLogin, disabled }: Props) {
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={loginLoading || registerLoading || disabled}>
+        {beforeSubmit}
+        <Button type="submit" disabled={loginLoading || registerLoading}>
           {isLogin ? 'Войти' : 'Регистрация'}
         </Button>
       </form>

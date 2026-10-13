@@ -1,35 +1,39 @@
 'use client'
 
 import { useApiGetAllPresents } from '@/api/present'
+import { BlockContent } from '@/app/s/[shortId]/components/blocks/block-renderer'
 import { GuestBlockView } from '@/app/s/[shortId]/components/blocks/guest-block-view'
 import { WishlistLanding } from '@/app/s/[shortId]/components/wishlist-landing'
 import { PresentsManager } from '@/app/wishlist/components/presents-manager'
 import { Button } from '@/components/ui/button'
+import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import { InputDensity } from '@/components/ui/input-density'
+import { ToastAction } from '@/components/ui/toast'
 import { toast } from '@/hooks/use-toast'
 import { useConstructorTour } from '@/hooks/use-constructor-tour'
 import { useWishlistDraft } from '@/hooks/use-wishlist-draft'
 import { cn } from '@/lib/utils'
 import { colorSchema, CUSTOM_ACCENTS, CUSTOM_BASES, normalizeScheme } from '@/shared/constants'
 import { BLOCK_CATALOG, LibraryItem, libraryBlock } from '@/shared/editor-model'
-import { insertRow, layoutRows, moveToCell, moveToRow, nudge, placeBeside, replaceBlock } from '@/shared/layout'
-import { pageLook, schemeLook } from '@/shared/look'
+import { insertRow, layoutRows, moveToCell, moveToRow, nudge, placeBeside, removeBlock, replaceBlock } from '@/shared/layout'
+import { pageLook, schemeLook, withoutPattern } from '@/shared/look'
 import { Wishlist } from '@/shared/types'
 import {
+  CollisionDetection,
   DndContext,
   DragEndEvent,
   DragOverlay,
   DragStartEvent,
+  Modifier,
   PointerSensor,
   pointerWithin,
   useSensor,
   useSensors,
 } from '@dnd-kit/core'
-import { CircleHelp, ListTree, Palette, Plus, Undo2 } from 'lucide-react'
+import { CircleHelp, ListTree, Palette, Plus, Undo2, Users, X } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
 import { AccessPanel } from './constructor/access-panel'
 import { BlockCanvas, DragData, DropData, Selection } from './constructor/block-canvas'
-import { blockIcon } from './constructor/block-icons'
 import { BlockInspector } from './constructor/block-inspector'
 import { DesignPanel } from './constructor/design-panel'
 import { EditorHeader, EditorMode, IconButton } from './constructor/editor-header'
@@ -42,15 +46,43 @@ export function ConstructorEditor({ wishlist }: { wishlist: Wishlist }) {
   return <Editor key={wishlist.id} wishlist={wishlist} />
 }
 
-type Panel = 'add' | 'structure' | null
-type Tab = 'block' | 'design' | 'access'
+type Panel = 'add' | 'structure' | 'design' | 'access' | null
+
+const PANEL_TITLE: Record<Exclude<Panel, null>, string> = {
+  add: 'Добавить блок',
+  structure: 'Структура',
+  design: 'Оформление страницы',
+  access: 'Доступ',
+}
 
 const GUEST_BLOCKS = ['rsvp', 'poll', 'playlist', 'guestbook']
 
+/** Выше этого блок под курсором обрезается: длинный вишлист закрыл бы весь холст. */
+const PREVIEW_MAX = 360
+
+/**
+ * Обрезанное превью держим под курсором: блок, взятый за низ, иначе уехал бы
+ * вверх и тащить пришлось бы пустоту.
+ */
+const keepUnderCursor: Modifier = ({ transform, activatorEvent, activeNodeRect }) => {
+  if (!activeNodeRect || !(activatorEvent instanceof PointerEvent)) return transform
+  const below = activatorEvent.clientY - activeNodeRect.top - (PREVIEW_MAX - 48)
+  return below > 0 ? { ...transform, y: transform.y + below } : transform
+}
+
+/** Край соседа важнее промежутка: их цели перекрываются у углов блока. */
+const sideFirst: CollisionDetection = args => {
+  const hits = pointerWithin(args)
+  const side = hits.find(hit => String(hit.id).startsWith('side-'))
+  return side ? [side] : hits
+}
+
 /**
  * Конструктор по макету: шапка, рельс слева (добавить блок, структура,
- * оформление, отменить), холст по центру и инспектор справа — «Блок» или
- * «Ряд», «Оформление», «Доступ».
+ * оформление, доступ, отменить), холст по центру и инспектор справа.
+ *
+ * Справа — только выделенное: блок или ряд. Настройки всей страницы живут
+ * слева, иначе «Оформление» и «Доступ» читаются как настройки блока.
  *
  * Редактор занимает весь экран: у него своя шапка, и шапка сайта над ней
  * только отнимала бы высоту у холста.
@@ -60,11 +92,14 @@ function Editor({ wishlist }: { wishlist: Wishlist }) {
   const { draft, layout, change, setLayout, undo, redo, status, error, retry } = draftState
   const [autoAdd] = useState(() => typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('add') === 'gift')
   const [mode, setMode] = useState<EditorMode>(autoAdd ? 'presents' : 'page')
+  // Форма подарка открыта сразу: пришли по «+» из кабинета или из блока вишлиста.
+  const [giftForm, setGiftForm] = useState(autoAdd)
+  const addGifts = () => { setGiftForm(true); setMode('presents') }
   const [panel, setPanel] = useState<Panel>(null)
-  const [tab, setTab] = useState<Tab>('block')
   const [device, setDevice] = useState<'desktop' | 'phone'>('desktop')
   const [selection, setSelection] = useState<Selection>(null)
   const [dragId, setDragId] = useState<string | null>(null)
+  const [askReload, setAskReload] = useState(false)
   const narrow = useNarrowScreen()
   const { data: presentsData } = useApiGetAllPresents(wishlist.id)
   const presents = presentsData?.data ?? []
@@ -78,10 +113,7 @@ function Editor({ wishlist }: { wishlist: Wishlist }) {
   const selectedBlock = selection?.kind === 'block' ? layout.blocks.find(b => b.id === selection.id) : undefined
   const selectedRowColumns = selectedBlock ? layoutRows(layout)[selectedBlock.row]?.settings.columns ?? 1 : 1
 
-  const select = useCallback((next: Selection) => {
-    setSelection(next)
-    if (next) setTab('block')
-  }, [])
+  const select = setSelection
 
   const copyLink = async () => {
     const url = `${window.location.origin}/s/${wishlist.shortId}`
@@ -102,7 +134,14 @@ function Editor({ wishlist }: { wishlist: Wishlist }) {
     select({ kind: 'block', id: block.id })
   }
 
-  // Клавиатура: отмена/повтор и Alt+стрелки. В полях ввода отмену оставляем
+  // Без вопроса «точно удалить?»: ошибку исправляет «Отменить» в тосте и Ctrl+Z.
+  const remove = useCallback((blockId: string) => {
+    setLayout(removeBlock(layout, blockId))
+    setSelection(null)
+    toast({ title: 'Блок удалён', action: <ToastAction altText="Вернуть блок" onClick={undo}>Отменить</ToastAction> })
+  }, [layout, setLayout, undo])
+
+  // Клавиатура: отмена/повтор, удаление и Alt+стрелки. В полях ввода отмену оставляем
   // браузеру — там Ctrl+Z должен откатывать набранные буквы, а не всю правку.
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -119,15 +158,26 @@ function Editor({ wishlist }: { wishlist: Wishlist }) {
         setLayout(nudge(layout, selection.id, event.key === 'ArrowUp' ? -1 : 1))
       } else if (event.key === 'Escape' && !editing && !dragId) {
         setSelection(null)
+      } else if ((event.key === 'Backspace' || event.key === 'Delete') && !editing && !dragId && selection?.kind === 'block') {
+        // Только с холста: Backspace на кнопке в панели настроек блок не трогает.
+        if (target !== document.body && !target.closest('[data-tour="block-canvas"]')) return
+        event.preventDefault()
+        remove(selection.id)
       }
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [undo, redo, selection, layout, setLayout, dragId])
+  }, [undo, redo, selection, layout, setLayout, dragId, remove])
 
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }))
 
-  const onDragStart = (event: DragStartEvent) => setDragId((event.active.data.current as DragData).blockId)
+  const onDragStart = (event: DragStartEvent) => {
+    // Блок с текстом берётся за сам текст: нажатие успело поставить в него
+    // курсор и начать выделение — на время переноса снимаем и то и другое.
+    if (document.activeElement instanceof HTMLElement && document.activeElement.isContentEditable) document.activeElement.blur()
+    window.getSelection()?.removeAllRanges()
+    setDragId((event.active.data.current as DragData).blockId)
+  }
   const onDragEnd = (event: DragEndEvent) => {
     setDragId(null)
     const drag = event.active.data.current as DragData | undefined
@@ -140,19 +190,33 @@ function Editor({ wishlist }: { wishlist: Wishlist }) {
     select({ kind: 'block', id: drag.blockId })
   }
 
+  const leaveDialog = (
+    <ConfirmDialog
+      open={draftState.leave.asking}
+      title="Уйти из редактора?"
+      description="Последние правки ещё не сохранились — они потеряются."
+      confirmLabel="Уйти без сохранения"
+      cancelLabel="Остаться"
+      onConfirm={draftState.leave.confirm}
+      onCancel={draftState.leave.cancel}
+    />
+  )
+
   if (narrow) {
     return (
-      <MobileEditor
-        wishlist={wishlist}
-        draft={draftState}
-        presents={presents}
-        onShare={copyLink}
-      />
+      <>
+        <MobileEditor
+          wishlist={wishlist}
+          draft={draftState}
+          presents={presents}
+          onShare={copyLink}
+        />
+        {leaveDialog}
+      </>
     )
   }
 
   const dragBlock = dragId ? layout.blocks.find(b => b.id === dragId) : undefined
-  const DragIcon = dragBlock ? blockIcon(dragBlock.type) : Plus
   const hasGuestBlocks = layout.blocks.some(b => GUEST_BLOCKS.includes(b.type))
 
   return (
@@ -164,9 +228,9 @@ function Editor({ wishlist }: { wishlist: Wishlist }) {
         error={error != null}
         mode={mode}
         presentsCount={presents.length}
-        onMode={setMode}
+        onMode={next => { setGiftForm(false); setMode(next) }}
         scheme={{ name: schemeInfo?.name ?? 'Своя', colors: schemeInfo?.colors ?? [CUSTOM_BASES.dark, draft.settings.customScheme?.accent ?? CUSTOM_ACCENTS[0].dark] }}
-        onScheme={() => { setMode('page'); setTab('design') }}
+        onScheme={() => { setMode('page'); setPanel('design') }}
         device={device}
         onDevice={setDevice}
         canUndo={draftState.canUndo}
@@ -198,9 +262,7 @@ function Editor({ wishlist }: { wishlist: Wishlist }) {
           <Button
             size="sm"
             variant="outline"
-            onClick={() => {
-              if (window.confirm('Локальные несохранённые изменения будут потеряны. Загрузить серверную версию?')) window.location.reload()
-            }}
+            onClick={() => setAskReload(true)}
           >
             Загрузить актуальную
           </Button>
@@ -210,7 +272,7 @@ function Editor({ wishlist }: { wishlist: Wishlist }) {
       {mode === 'page' && (
         <DndContext
           sensors={sensors}
-          collisionDetection={pointerWithin}
+          collisionDetection={sideFirst}
           onDragStart={onDragStart}
           onDragEnd={onDragEnd}
           onDragCancel={() => setDragId(null)}
@@ -219,19 +281,43 @@ function Editor({ wishlist }: { wishlist: Wishlist }) {
             <nav aria-label="Инструменты" data-tour="block-palette" className="flex w-14 shrink-0 flex-col items-center gap-1.5 border-r py-3">
               <IconButton label="Добавить блок" active={panel === 'add'} onClick={() => setPanel(panel === 'add' ? null : 'add')}><Plus size={20} aria-hidden /></IconButton>
               <IconButton label="Структура" active={panel === 'structure'} onClick={() => setPanel(panel === 'structure' ? null : 'structure')}><ListTree size={20} aria-hidden /></IconButton>
-              <IconButton label="Оформление" active={tab === 'design'} onClick={() => setTab('design')}><Palette size={20} aria-hidden /></IconButton>
+              <IconButton label="Оформление страницы" active={panel === 'design'} onClick={() => setPanel(panel === 'design' ? null : 'design')}><Palette size={20} aria-hidden /></IconButton>
+              <IconButton label="Доступ" active={panel === 'access'} onClick={() => setPanel(panel === 'access' ? null : 'access')}><Users size={20} aria-hidden /></IconButton>
               <div className="flex-1" />
               <IconButton label="Отменить (Ctrl+Z)" disabled={!draftState.canUndo} onClick={undo}><Undo2 size={18} aria-hidden /></IconButton>
               <IconButton label="Как пользоваться редактором" onClick={startTour}><CircleHelp size={18} aria-hidden /></IconButton>
             </nav>
 
             {panel && (
-              <aside className="flex w-[264px] shrink-0 flex-col border-r p-3">
-                <div className="px-1.5 pb-3 text-body font-bold">{panel === 'add' ? 'Добавить блок' : 'Структура'}</div>
+              <aside className={cn('flex shrink-0 flex-col border-r', panel === 'design' || panel === 'access' ? 'w-[320px]' : 'w-[264px]')}>
+                <div className="flex shrink-0 items-center justify-between gap-2 py-2 pl-5 pr-2">
+                  <span className="text-body font-bold">{PANEL_TITLE[panel]}</span>
+                  <IconButton label="Закрыть панель" onClick={() => setPanel(null)}><X size={16} aria-hidden /></IconButton>
+                </div>
                 <InputDensity value="md">
-                  {panel === 'add'
-                    ? <LibraryList onPick={insert} />
-                    : <StructurePanel layout={layout} selection={selection} onSelect={select} onLayout={setLayout} />}
+                  {(panel === 'add' || panel === 'structure') && (
+                    <div className="flex min-h-0 flex-1 flex-col px-3 pb-3">
+                      {panel === 'add'
+                        ? <LibraryList onPick={insert} />
+                        : <StructurePanel layout={layout} selection={selection} onSelect={select} onLayout={setLayout} />}
+                    </div>
+                  )}
+                  {panel === 'design' && (
+                    <div className="min-h-0 flex-1 overflow-y-auto">
+                      <DesignPanel settings={draft.settings} onChange={(settings, key) => change({ settings }, key)} />
+                    </div>
+                  )}
+                  {panel === 'access' && (
+                    <div className="min-h-0 flex-1 overflow-y-auto">
+                      <AccessPanel
+                        wishlist={draft}
+                        onSettings={settings => change({ settings })}
+                        onCopy={copyLink}
+                        hasGuestBlocks={hasGuestBlocks}
+                        onResponses={() => setMode('responses')}
+                      />
+                    </div>
+                  )}
                 </InputDensity>
               </aside>
             )}
@@ -246,32 +332,18 @@ function Editor({ wishlist }: { wishlist: Wishlist }) {
               schemeStyle={look.style}
               onSelect={select}
               onLayout={setLayout}
+              onRemove={remove}
+              onAddGifts={addGifts}
             />
 
-            <aside className="flex w-[340px] shrink-0 flex-col border-l">
-              <nav className="flex shrink-0 gap-5 border-b px-5" aria-label="Настройки">
-                {([['block', selection?.kind === 'row' ? 'Ряд' : 'Блок'], ['design', 'Оформление'], ['access', 'Доступ']] as const).map(([value, label]) => (
-                  <button
-                    key={value}
-                    type="button"
-                    aria-pressed={tab === value}
-                    onClick={() => setTab(value)}
-                    className={cn(
-                      'h-[46px] border-b-2 text-body-sm transition-colors',
-                      tab === value ? 'border-primary font-bold text-foreground' : 'border-transparent font-semibold text-muted-foreground hover:text-foreground',
-                    )}
-                  >
-                    {label}
-                  </button>
-                ))}
-              </nav>
+            <aside aria-label={selection?.kind === 'row' ? 'Настройки ряда' : 'Настройки блока'} className="flex w-[340px] shrink-0 flex-col border-l">
               {/* Панели плотные, как в макете инспектора: поля 40px, а не 48. */}
               <InputDensity value="md">
               <div className="min-h-0 flex-1 overflow-y-auto">
-                {tab === 'block' && selection?.kind === 'row' && (
+                {selection?.kind === 'row' && (
                   <RowInspector layout={layout} index={selection.index} onLayout={setLayout} onDone={() => setSelection(null)} />
                 )}
-                {tab === 'block' && selection?.kind !== 'row' && (
+                {selection?.kind !== 'row' && (
                   <BlockInspector
                     block={selectedBlock}
                     alone={selectedRowColumns === 1}
@@ -280,28 +352,20 @@ function Editor({ wishlist }: { wishlist: Wishlist }) {
                     onWishlist={change}
                   />
                 )}
-                {tab === 'design' && (
-                  <DesignPanel settings={draft.settings} onChange={(settings, key) => change({ settings }, key)} />
-                )}
-                {tab === 'access' && (
-                  <AccessPanel
-                    wishlist={draft}
-                    onSettings={settings => change({ settings })}
-                    onCopy={copyLink}
-                    hasGuestBlocks={hasGuestBlocks}
-                    onResponses={() => setMode('responses')}
-                  />
-                )}
               </div>
               </InputDensity>
             </aside>
           </div>
 
-          <DragOverlay dropAnimation={null}>
+          {/* За курсором идёт сам блок, в схеме страницы: оверлей рисуется вне листа. */}
+          <DragOverlay dropAnimation={null} modifiers={[keepUnderCursor]}>
             {dragBlock && (
-              <div className="inline-flex items-center gap-2 rounded-control-lg border bg-popover px-3 py-2 text-body-sm font-semibold shadow-overlay">
-                <DragIcon size={15} className="text-primary" aria-hidden />
-                {dragBlock.caption || BLOCK_CATALOG.find(c => c.type === dragBlock.type)?.label}
+              <div
+                inert
+                className={cn('pointer-events-none w-full select-none overflow-hidden rounded-card bg-background text-foreground opacity-90 shadow-float', withoutPattern(look.className))}
+                style={{ ...look.style, maxHeight: PREVIEW_MAX }}
+              >
+                <BlockContent block={{ ...dragBlock, hidden: false, revealAt: null }} wishlist={draft} presents={presents} preview />
               </div>
             )}
           </DragOverlay>
@@ -318,7 +382,7 @@ function Editor({ wishlist }: { wishlist: Wishlist }) {
 
       {mode === 'presents' && (
         <div className="min-h-0 flex-1 overflow-y-auto">
-          <PresentsManager wishlist={draft} presents={presents} autoAdd={autoAdd} />
+          <PresentsManager wishlist={draft} presents={presents} autoAdd={giftForm} />
         </div>
       )}
 
@@ -341,6 +405,16 @@ function Editor({ wishlist }: { wishlist: Wishlist }) {
           </div>
         </div>
       )}
+
+      {leaveDialog}
+      <ConfirmDialog
+        open={askReload}
+        title="Загрузить серверную версию?"
+        description="Несохранённые правки из этой вкладки потеряются."
+        confirmLabel="Загрузить"
+        onConfirm={() => window.location.reload()}
+        onCancel={() => setAskReload(false)}
+      />
     </div>
   )
 }

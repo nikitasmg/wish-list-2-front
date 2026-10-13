@@ -58,7 +58,7 @@ export function BlockFields({ block, onChange }: { block: Block; wishlist?: Wish
           {image('imageUrl')}
           {Boolean(data.imageUrl) && (
             <Field label="Фото">
-              <Segmented label="Где фото" value={(data.imagePosition as 'side' | 'top') ?? 'side'} options={[['side', 'Сбоку'], ['top', 'Сверху']] as const} onChange={imagePosition => onChange({ ...data, imagePosition })} />
+              <Segmented label="Где фото" value={(data.imagePosition as 'side' | 'top') ?? 'top'} options={[['side', 'Сбоку'], ['top', 'Сверху']] as const} onChange={imagePosition => onChange({ ...data, imagePosition })} />
             </Field>
           )}
         </div>

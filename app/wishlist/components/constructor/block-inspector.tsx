@@ -2,6 +2,7 @@
 
 import { blockIcon, viewIcon } from '@/app/wishlist/components/constructor/block-icons'
 import { Field, Segmented, Toggle, ViewTiles } from '@/app/wishlist/components/constructor/controls'
+import { DateTimePicker } from '@/components/ui/date-time-picker'
 import { Input } from '@/components/ui/input'
 import { BLOCK_CATALOG, localDateTime } from '@/shared/editor-model'
 import { Block, Wishlist } from '@/shared/types'
@@ -26,7 +27,7 @@ export function BlockInspector({ block, alone, wishlist, onChange, onWishlist }:
   if (!block) {
     return (
       <p className="p-6 text-body-sm text-muted-foreground">
-        Выберите блок на странице или добавьте новый: «+» между блоками или панель слева.
+        Выберите блок на странице — здесь появятся его настройки. Новый блок — «+» между блоками или панель слева; там же оформление всей страницы и доступ.
       </p>
     )
   }
@@ -71,15 +72,13 @@ export function BlockInspector({ block, alone, wishlist, onChange, onWishlist }:
               }}
             />
           </Field>
-          <div className="grid grid-cols-[1fr_auto] gap-2">
-            <Field label="Дата праздника">
-              <Input
-                type="datetime-local"
-                value={localDateTime(wishlist.eventDate)}
-                onChange={e => onWishlist({ eventDate: e.target.value ? new Date(e.target.value).toISOString() : null })}
-              />
-            </Field>
-          </div>
+          <Field label="Дата праздника">
+            <DateTimePicker
+              aria-label="Дата праздника"
+              value={localDateTime(wishlist.eventDate)}
+              onChange={value => onWishlist({ eventDate: value ? new Date(value).toISOString() : null })}
+            />
+          </Field>
           <Field label="Повод" hint="Пишется над названием: «день рождения · 14 ноября»">
             <Input value={wishlist.occasion ?? ''} onChange={e => onWishlist({ occasion: e.target.value }, 'occasion')} placeholder="День рождения" />
           </Field>
@@ -121,12 +120,6 @@ export function BlockInspector({ block, alone, wishlist, onChange, onWishlist }:
 /** «Секрет до даты» — не отдельный блок, а настройка любого блока. */
 function SecretSettings({ block, onChange }: { block: Block; onChange: (patch: Partial<Block>, key?: string) => void }) {
   const enabled = Boolean(block.revealAt)
-  const local = localDateTime(block.revealAt)
-  const [date, time] = local ? local.split('T') : ['', '']
-  const setDateTime = (nextDate: string, nextTime: string) => {
-    if (!nextDate) return
-    onChange({ revealAt: new Date(`${nextDate}T${nextTime || '00:00'}`).toISOString() })
-  }
 
   return (
     <div className="space-y-3">
@@ -140,10 +133,13 @@ function SecretSettings({ block, onChange }: { block: Block; onChange: (patch: P
       {enabled && (
         <>
           <Field label="Откроется">
-            <div className="grid grid-cols-[1fr_96px] gap-1.5">
-              <Input type="date" aria-label="Дата раскрытия" value={date} onChange={e => setDateTime(e.target.value, time)} />
-              <Input type="time" aria-label="Время раскрытия" value={time} onChange={e => setDateTime(date, e.target.value)} />
-            </div>
+            {/* Снять дату здесь нельзя: секрет выключается переключателем выше. */}
+            <DateTimePicker
+              aria-label="Откроется"
+              clearable={false}
+              value={localDateTime(block.revealAt)}
+              onChange={value => { if (value) onChange({ revealAt: new Date(value).toISOString() }) }}
+            />
           </Field>
           <Field label="До этого гости видят">
             <div role="group" aria-label="До этого гости видят" className="flex flex-col gap-0.5 rounded-control border p-0.5">

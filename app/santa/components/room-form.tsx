@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { DatePicker, DateTimePicker } from '@/components/ui/date-time-picker'
 import { Input } from '@/components/ui/input'
 import { Toggle } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
@@ -60,7 +61,8 @@ export function RoomForm({ defaultValues, showOrganizer, submitLabel, pending, o
           <FormField control={form.control} name="exchangeDate" render={({ field }) => (
             <FormItem>
               <FormLabel>Дата обмена подарками</FormLabel>
-              <FormControl><Input type="date" {...field} /></FormControl>
+              {/* Поповер рисуется вне раздела — схему Санты задаём ему явно. */}
+              <FormControl><DatePicker value={field.value ?? ''} onChange={field.onChange} contentClassName="dark santa" /></FormControl>
               <FormMessage />
             </FormItem>
           )} />
@@ -69,7 +71,7 @@ export function RoomForm({ defaultValues, showOrganizer, submitLabel, pending, o
         <FormField control={form.control} name="drawAt" render={({ field }) => (
           <FormItem>
             <FormLabel>Жеребьёвка по расписанию — необязательно</FormLabel>
-            <FormControl><Input type="datetime-local" {...field} /></FormControl>
+            <FormControl><DateTimePicker value={field.value ?? ''} onChange={field.onChange} contentClassName="dark santa" /></FormControl>
             <p className="text-caption text-muted-foreground">
               В это время пары вытянутся сами. Если готовых участников будет меньше трёх, жеребьёвка не пройдёт
               и в комнате появится предупреждение. Пусто — проведёте вручную.

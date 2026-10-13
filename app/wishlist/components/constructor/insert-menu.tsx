@@ -4,6 +4,7 @@ import { BlockContent } from '@/app/s/[shortId]/components/blocks/block-renderer
 import { blockIcon } from '@/app/wishlist/components/constructor/block-icons'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { cn } from '@/lib/utils'
+import { withoutPattern } from '@/shared/look'
 import { BLOCK_LIBRARY, LibraryItem, libraryBlock } from '@/shared/editor-model'
 import { Present, Wishlist } from '@/shared/types'
 import { Plus, Search } from 'lucide-react'
@@ -138,7 +139,7 @@ export function InsertButton({ hint, wishlist, presents, schemeClass, schemeStyl
             В тексте можно набрать «/»
           </p>
         </div>
-        <div className={cn('hidden w-[320px] flex-col justify-between md:flex', schemeClass)} style={schemeStyle}>
+        <div className={cn('hidden w-[320px] flex-col justify-between md:flex', withoutPattern(schemeClass))} style={schemeStyle}>
           {hover
             ? <LibraryPreview item={hover} wishlist={wishlist} presents={presents} />
             : <p className="pt-10 text-center text-body-sm text-muted-foreground">Наведите на блок, чтобы увидеть превью</p>}

@@ -24,6 +24,8 @@ export function useWishlistDraft(initial: Wishlist) {
   const [status, setStatus] = useState('Сохранено')
   const [dirty, setDirty] = useState(false)
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const [leaveHref, setLeaveHref] = useState<string | null>(null)
+  const leaving = useRef(false)
   const [history] = useState(() => new History<Wishlist>())
   const [, setHistoryVersion] = useState(0)
   const client = useQueryClient()
@@ -65,13 +67,15 @@ export function useWishlistDraft(initial: Wishlist) {
   }))
   useEffect(() => {
     queue.start()
-    const unload = (event: BeforeUnloadEvent) => { if (timer.current || queue.dirty) { event.preventDefault(); event.returnValue = '' } }
+    const unload = (event: BeforeUnloadEvent) => { if (!leaving.current && (timer.current || queue.dirty)) { event.preventDefault(); event.returnValue = '' } }
     const navigate = (event: MouseEvent) => {
       const link = event.target instanceof Element ? event.target.closest('a') : null
       if (!link || link.target === '_blank' || link.hasAttribute('download') || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return
       const destination = new URL(link.href, window.location.href)
       if (destination.origin !== window.location.origin || destination.pathname === window.location.pathname) return
-      if ((timer.current || queue.dirty) && !window.confirm('Есть несохранённые изменения. Покинуть редактор и потерять их?')) { event.preventDefault(); event.stopPropagation() }
+      // Переход внутри сайта останавливаем и спрашиваем своим диалогом; закрытие
+      // вкладки — только системным, его браузер заменить не даёт.
+      if (timer.current || queue.dirty) { event.preventDefault(); event.stopPropagation(); setLeaveHref(destination.href) }
     }
     window.addEventListener('beforeunload', unload)
     document.addEventListener('click', navigate, true)
@@ -110,5 +114,11 @@ export function useWishlistDraft(initial: Wishlist) {
     draft, layout, change, setLayout, undo, redo,
     canUndo: history.canUndo, canRedo: history.canRedo,
     status, dirty, flush, retry, error: queue.error,
+    /** Вопрос «уйти и потерять правки?» — редактор показывает его диалогом. */
+    leave: {
+      asking: leaveHref !== null,
+      confirm: () => { if (leaveHref) { leaving.current = true; window.location.assign(leaveHref) } },
+      cancel: () => setLeaveHref(null),
+    },
   }
 }

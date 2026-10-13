@@ -4,6 +4,7 @@ import { useApiCreateFromSystemTemplate } from '@/api/system-template'
 import { useApiCreateConstructorWishlist } from '@/api/wishlist'
 import { TemplatePreview } from '@/app/wishlist/create/components/template-preview'
 import { Button } from '@/components/ui/button'
+import { DatePicker, TimePicker } from '@/components/ui/date-time-picker'
 import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
 import { colorSchema, normalizeScheme } from '@/shared/constants'
@@ -269,10 +270,10 @@ export function CreateQuiz({ templates, categories, initialTemplateId, onCreated
           <section className="space-y-5">
             <StepTitle title="Когда праздник?" hint="Покажем гостям обратный отсчёт и кнопку «В календарь»" />
             <Field label="Дата">
-              <Input type="date" value={date} onChange={e => setDate(e.target.value)} className="h-control-xl text-lead" />
+              <DatePicker aria-label="Дата" value={date} onChange={setDate} className="h-control-xl text-lead" />
             </Field>
             <Field label="Начало" optional>
-              <Input type="time" value={time} onChange={e => setTime(e.target.value)} className="h-control-xl text-lead" />
+              <TimePicker aria-label="Начало" placeholder="Не указано" value={time} onChange={setTime} className="h-control-xl text-lead" />
             </Field>
           </section>
         )}
