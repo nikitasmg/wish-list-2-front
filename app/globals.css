@@ -58,7 +58,7 @@
    * На светлом success и warning затемнены до контраста AA.
    */
   :root,
-  .powder, .linen, .pastel {
+  .powder, .linen, .pastel, .mint, .sky, .peach {
     --success: 160 81% 30%;
     --success-foreground: 0 0% 100%;
     --warning: 36 90% 38%;
@@ -375,6 +375,78 @@ html:not(.dark) .demo-scheme {
   --input: 231 22% 89%;
   --ring: 338 54% 49%;
   --radius: 0.875rem;
+}
+
+/* Мята — пикник, праздник на природе */
+.mint {
+  --background: 150 30% 96%;
+  --foreground: 160 25% 14%;
+  --card: 0 0% 100%;
+  --card-foreground: 160 25% 14%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 160 25% 14%;
+  --primary: 160 64% 27%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 150 24% 91%;
+  --secondary-foreground: 160 25% 14%;
+  --muted: 150 24% 92%;
+  --muted-foreground: 158 10% 40%;
+  --accent: 160 64% 27%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 150 22% 87%;
+  --input: 150 22% 87%;
+  --ring: 160 64% 27%;
+  --radius: 1rem;
+}
+
+/* Небо — ДР мальчика, крестины */
+.sky {
+  --background: 210 45% 97%;
+  --foreground: 218 32% 16%;
+  --card: 0 0% 100%;
+  --card-foreground: 218 32% 16%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 218 32% 16%;
+  --primary: 217 72% 46%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 212 40% 92%;
+  --secondary-foreground: 218 32% 16%;
+  --muted: 212 40% 93%;
+  --muted-foreground: 216 12% 42%;
+  --accent: 217 72% 46%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 212 34% 88%;
+  --input: 212 34% 88%;
+  --ring: 217 72% 46%;
+  --radius: 0.75rem;
+}
+
+/* Персик — новоселье, тёплый семейный праздник */
+.peach {
+  --background: 26 60% 96%;
+  --foreground: 18 28% 15%;
+  --card: 0 0% 100%;
+  --card-foreground: 18 28% 15%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 18 28% 15%;
+  --primary: 16 68% 42%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 26 48% 91%;
+  --secondary-foreground: 18 28% 15%;
+  --muted: 26 48% 92%;
+  --muted-foreground: 20 12% 42%;
+  --accent: 16 68% 42%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 26 40% 87%;
+  --input: 26 40% 87%;
+  --ring: 16 68% 42%;
+  --radius: 1.125rem;
 }
 
 @layer base {

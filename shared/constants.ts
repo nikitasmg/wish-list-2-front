@@ -26,6 +26,9 @@ export const colorSchema = [
   { name: 'Пудра',    value: 'powder',    kind: 'light', colors: [ '#FBF3F5', '#C93A6E' ] },
   { name: 'Лён',      value: 'linen',     kind: 'light', colors: [ '#F6F4EF', '#85693A' ] },
   { name: 'Пастель',  value: 'pastel',    kind: 'light', colors: [ '#F5F6FA', '#C23A6C' ] },
+  { name: 'Мята',     value: 'mint',      kind: 'light', colors: [ '#F2F8F5', '#197155' ] },
+  { name: 'Небо',     value: 'sky',       kind: 'light', colors: [ '#F4F7FB', '#215FCA' ] },
+  { name: 'Персик',   value: 'peach',     kind: 'light', colors: [ '#FBF4EF', '#B44A22' ] },
 ] as const
 
 export type ColorSchemeValue = (typeof colorSchema)[number]['value'] | typeof CUSTOM_SCHEME
@@ -37,8 +40,8 @@ export const CUSTOM_SCHEME = 'custom'
  * Старые схемы → новые.
  *
  * Обратная совместимость не приоритет, но терять тему у существующих
- * вишлистов незачем: сопоставляем по светлоте и семейству акцента. Там, где
- * точного соответствия нет (светло-зелёная «мята»), берём ближайшую светлую.
+ * вишлистов незачем: сопоставляем по светлоте и семейству акцента. Старая
+ * светло-зелёная «mint» совпала по имени с новой «Мятой» и открывается ею.
  */
 const LEGACY_SCHEMES: Record<string, string> = {
   aurora: 'space',
@@ -47,7 +50,6 @@ const LEGACY_SCHEMES: Record<string, string> = {
   forest: 'malachite',
   ember: 'graphite',
   cloud: 'pastel',
-  mint: 'linen',
   sand: 'linen',
   blush: 'powder',
   // старая «lavender» была светлой — одноимённая новая тёмная, поэтому
