@@ -265,7 +265,10 @@ function CropDialog({ src, onClose, onDone }: { src: string; onClose: () => void
         <DialogTitle>Обрезка</DialogTitle>
         {/* Высота окна постоянная: смена пропорции меняет рамку, а не размер модалки. */}
         <div className="flex h-[56vh] items-center justify-center overflow-hidden rounded-control-lg bg-muted">
+          {/* Высоту ограничиваем на самом ReactCrop: его CSS ставит картинке
+              max-height: inherit и перебивает классы на <img>. */}
           <ReactCrop
+            className="max-h-[56vh]"
             crop={crop}
             aspect={aspect[1]}
             keepSelection
@@ -283,7 +286,7 @@ function CropDialog({ src, onClose, onDone }: { src: string; onClose: () => void
               draggable={false}
               onLoad={e => setCrop(startCrop(e.currentTarget, aspect[1]))}
               onError={() => setFailed(true)}
-              className="block max-h-[56vh] max-w-full select-none"
+              className="block select-none"
             />
           </ReactCrop>
         </div>
